@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : DaddyPC
+Source Server         : WorkPC
 Source Server Version : 50617
 Source Host           : localhost:3306
 Source Database       : conforg
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2014-12-14 18:23:20
+Date: 2014-12-17 16:57:13
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -68,17 +68,28 @@ CREATE TABLE `conference` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for conferencetype
+-- ----------------------------
+DROP TABLE IF EXISTS `conferencetype`;
+CREATE TABLE `conferencetype` (
+  `ConferenceType` varchar(100) NOT NULL,
+  `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
+  `CreatedBy` int(11) NOT NULL,
+  `DateCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ConferenceType`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
 -- Table structure for conference_bill
 -- ----------------------------
 DROP TABLE IF EXISTS `conference_bill`;
 CREATE TABLE `conference_bill` (
+  `BillId` int(11) NOT NULL AUTO_INCREMENT,
   `ConfId` int(11) NOT NULL,
   `UserId` int(11) NOT NULL,
-  `BillId` int(11) NOT NULL AUTO_INCREMENT,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ConfId`,`UserId`),
-  UNIQUE KEY `idx_BillId` (`BillId`) USING BTREE,
-  KEY `ConfId` (`ConfId`,`UserId`,`BillId`)
+  PRIMARY KEY (`BillId`),
+  UNIQUE KEY `idx_BillId` (`BillId`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -129,18 +140,13 @@ CREATE TABLE `conference_participantbarred` (
 DROP TABLE IF EXISTS `conference_paymenttransaction`;
 CREATE TABLE `conference_paymenttransaction` (
   `TransactionId` int(11) NOT NULL AUTO_INCREMENT,
-  `ConfId` int(11) NOT NULL,
-  `UserId` int(11) NOT NULL,
   `BillId` int(11) NOT NULL,
   `PaymentType` varchar(255) NOT NULL,
   `CreatedBy` int(11) NOT NULL,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`TransactionId`),
-  KEY `FK_ConfPaymentTransac_01` (`ConfId`,`UserId`,`BillId`),
-  KEY `TransactionId` (`TransactionId`,`UserId`,`BillId`),
-  KEY `PaymentType` (`PaymentType`),
-  CONSTRAINT `conference_paymenttransaction_ibfk_1` FOREIGN KEY (`PaymentType`) REFERENCES `paymenttype` (`PaymentType`),
-  CONSTRAINT `FK_ConfPaymentTransac_01` FOREIGN KEY (`ConfId`, `UserId`, `BillId`) REFERENCES `conference_bill` (`ConfId`, `UserId`, `BillId`)
+  KEY `BillId` (`BillId`),
+  CONSTRAINT `conference_paymenttransaction_ibfk_1` FOREIGN KEY (`BillId`) REFERENCES `conference_bill` (`BillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -173,15 +179,15 @@ CREATE TABLE `conference_venue` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Table structure for conferencetype
+-- Table structure for paymenttype
 -- ----------------------------
-DROP TABLE IF EXISTS `conferencetype`;
-CREATE TABLE `conferencetype` (
-  `ConferenceType` varchar(100) NOT NULL,
+DROP TABLE IF EXISTS `paymenttype`;
+CREATE TABLE `paymenttype` (
+  `PaymentType` varchar(100) NOT NULL,
   `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
   `CreatedBy` int(11) NOT NULL,
   `DateCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ConferenceType`)
+  PRIMARY KEY (`PaymentType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -195,7 +201,7 @@ CREATE TABLE `payment_cash` (
   `AmountPaid` double(7,2) NOT NULL,
   `DatePaid` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`TransactionId`,`UserId`,`BillId`),
-  CONSTRAINT `FK_PaymentCash_01` FOREIGN KEY (`TransactionId`, `UserId`, `BillId`) REFERENCES `conference_paymenttransaction` (`TransactionId`, `UserId`, `BillId`)
+  CONSTRAINT `payment_cash_ibfk_1` FOREIGN KEY (`TransactionId`) REFERENCES `conference_paymenttransaction` (`TransactionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -210,17 +216,5 @@ CREATE TABLE `payment_creditcard` (
   `AmountPaid` double(7,2) NOT NULL,
   `DatePaid` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`TransactionId`,`UserId`,`BillId`),
-  CONSTRAINT `fk_payment_cc_01` FOREIGN KEY (`TransactionId`, `UserId`, `BillId`) REFERENCES `conference_paymenttransaction` (`TransactionId`, `UserId`, `BillId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Table structure for paymenttype
--- ----------------------------
-DROP TABLE IF EXISTS `paymenttype`;
-CREATE TABLE `paymenttype` (
-  `PaymentType` varchar(100) NOT NULL,
-  `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
-  `CreatedBy` int(11) NOT NULL,
-  `DateCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`PaymentType`)
+  CONSTRAINT `payment_creditcard_ibfk_1` FOREIGN KEY (`TransactionId`) REFERENCES `conference_paymenttransaction` (`TransactionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
