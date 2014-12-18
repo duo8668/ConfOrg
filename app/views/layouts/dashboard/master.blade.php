@@ -35,7 +35,7 @@
     </div>
     <!-- /#wrapper -->
 
-    @include('layouts.dashboard.footerdash')
+    <!-- @include('layouts.dashboard.footerdash') -->
 
 </body>
 

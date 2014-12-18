@@ -4,14 +4,9 @@ class ConferenceController extends \BaseController {
 
 	/*
 	|--------------------------------------------------------------------------
-	| Default Home Controller
+	| ConferenceController
 	|--------------------------------------------------------------------------
 	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
 	|
 	*/
 
@@ -23,6 +18,25 @@ class ConferenceController extends \BaseController {
 		$view = View::make('conference.management.index',array('wtf'=>'wtf','wtf2'=>'wtf2')); 
 
 		return $view;
+	}
+
+	public function create()
+	{
+		
+		$confTypes=ConferenceType::where('IsEnabled','=','1')->lists('ConferenceType', 'ConferenceType');
+		//$confTypes=ConferenceType::where('IsEnabled','=','1');
+
+		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
+
+		return $view;
+	}
+
+
+	public function createConference()
+	{
+		 
+
+		return 'WTH';
 	}
 
 }

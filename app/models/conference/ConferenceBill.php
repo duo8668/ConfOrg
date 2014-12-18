@@ -14,30 +14,33 @@ class ConferenceBill extends Eloquent {
 
 	public function BillAmount(){
 
-		$billComponents = this->hasMany('BillComponent','BillId','BillId');
-		$amount=0;
-		foreach ($billComponents as $billComp) {
-			$amount += $billComp->sum('Amount');
-		}
+		$amount = DB::tables('bill_component')
+		->select(DB::raw('sum(Amount)'))
+		->where('BillId','=',this->$BillId);
 
 		return $amount;
 	}
 
 	public function PaidAmount(){
-		$allTransactions = this->hasMany('ConferencePaymentTransaction','BillId','BillId');
+		ConferencePaymentTransaction::where('BillId','=',this->$BillId);
 
-		$totalPaid = 0;
 
-		foreach ($allTransactions as $transaction) {
-			$totalPaid += $transaction->PaymentCash('Amount');
-
-		}
 
 		return $totalPaid;
 	}
 
 	public function BillComponents(){
 		return this->hasMany('BillComponent','BillId','BillId');
+	}
+
+	public function PaymentCashs()
+	{
+		return $this->hasManyThrough('PaymentCash', 'ConferencePaymentTransaction','TransactionId','TransactionId');
+	}
+
+	public function PaymentCreditCards()
+	{
+		return $this->hasManyThrough('PaymentCreditCard', 'ConferencePaymentTransaction','TransactionId','TransactionId');
 	}
 
 	public function ConferencePaymentTransactions(){

@@ -3,9 +3,9 @@ class ConferenceType extends Eloquent {
 
 	protected $table = 'conferencetype';
 	
-	protected $fillable = array('ConfId','UserId');
+	protected $fillable = array('IsEnabled','CreatedBy');
 
-	protected $guarded = array('BillId','DateCreated');
+	protected $guarded = array('ConferenceType','DateCreated');
 	
 	public $timestamps = false;
 	
