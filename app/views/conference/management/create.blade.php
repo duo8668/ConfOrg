@@ -3,17 +3,19 @@
 @section('page-header')
 Create a conference
 @stop
-<!-- Bootstrap Core CSS -->
 
+<!-- extraScripts Section -->
 @section('extraScripts')
 
 <link href="{{ asset('css/fullcalendar/fullcalendar.min.css') }}" rel="stylesheet" type="text/css">
- 
-<script src="{{ asset('js/lib/moment.min.js') }}"></script>
- 
 
- 
+<link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+
+<script src="{{ asset('js/lib/moment.min.js') }}"></script>
+
 <script src="{{ asset('js/fullcalendar/fullcalendar.min.js') }}"></script>
+
+<script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
 
 <style>
 
@@ -31,120 +33,71 @@ Create a conference
 
 </style>
 
+
+
 @stop
 
-
-
-
+<!-- Content Section -->
 @section('content')
-
-@if (!Auth::Id())
-<div id=''>
 <script>
 
-	$(document).ready(function() {
-		
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			defaultDate: '2014-11-12',
-			selectable: true,
-			selectHelper: true,
-			selectOverlap : function(event) {
-			 
-			return !event._allDay;
-			//return event.rendering === 'background';
-		},
-		/*
-			select: function(start, end) {
-				var title = prompt('Event Title:');
-				var eventData;
-				if (title) {
-					eventData = {
-						title: title,
-						start: start,
-						end: end
-					};
-					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-				}
-				$('#calendar').fullCalendar('unselect');
-			},
-			*/
-			dayClick: function(date, jsEvent, view) {
+	$(document).ready(function(){
+
+		$('#btnSelectDate').click(function(){
 			
-			$('#calendar').fullCalendar( 'changeView', 'agendaDay' );
-			$('#calendar').fullCalendar( 'gotoDate', date )
-			},
-			editable: true,
-			eventLimit: true, // allow "more" link when too many events
-			events: [
-				{
-					title: 'All Day Event',
-					start: '2014-11-01'
+			$('#showCalendar').dialog({
+				autoOpen: true,
+				minHeight: 768,
+				width: 1024,
+				modal: true,
+				closeOnEscape: false,
+				draggable: false,
+				resizable: false,
+				open: function (event, ui) {
+					$('.ui-dialog').css('z-index',9999);
+					$('.ui-widget-overlay').css('z-index',9998);
+					$('#myCalendar').load("../../utils/customcalendar",{'name':'John'}, function( res, stat, xhr ){
+						if ( status == "error" ) {
+							var msg = "Sorry but there was an error: ";
+							$( "#error" ).html( msg + xhr.status + " " + xhr.statusText );
+						}
+					});
+
 				},
-				{
-					title: 'Long Event',
-					start: '2014-11-07',
-					end: '2014-11-10'
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: '2014-11-09T16:00:00'
-				},
-				{
-					id: 998,
-					title: 'Repeating Event',
-					start: '2014-11-16T16:00:00'
-				},
-				{
-					title: 'Conference',
-					start: '2014-11-11',
-					end: '2014-11-13'
-				},
-				{
-					title: 'Meeting',
-					start: '2014-11-12T10:30:00',
-					end: '2014-11-12T12:30:00'
-				},
-				{
-					title: 'Lunch',
-					start: '2014-11-12T12:00:00'
-				},
-				{
-					title: 'Meeting',
-					start: '2014-11-12T14:30:00'
-				},
-				{
-					title: 'Happy Hour',
-					start: '2014-11-12T17:30:00'
-				},
-				{
-					title: 'Dinner',
-					start: '2014-11-12T20:00:00'
-				},
-				{
-					title: 'Birthday Party',
-					start: '2014-11-13T07:00:00'
+				buttons: {
+					'Yes': function(){
+						$(this).dialog('close');
+						callback(true);
+					},
+					'No': function(){
+						$(this).dialog('close');
+						callback(false);
+					}			
 				}
-			]
+			});
+
+
 		});
-		
 	});
 
+	function callback(evt){
+
+	}
+
 </script>
+@if (!Auth::Id())
+<div id='divFormBody'>
+
 	{{ Form::open(array('url' => 'conference/management/submitCreateConf')) }}
 
 	{{ Form::label('lblConfTitle', 'Title :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'')}} </br>
 	{{ Form::label('lblConfType', 'Type :') }} {{ Form::select('confType',$confTypes) }} </br>
-	{{ Form::label('beginDate', 'Begin :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'') }}</br>
-	{{ Form::label('endDate', 'End :') }}	<div id='calendar'></div> </br>
+	{{ Form::label('dtConference', 'Date Range :') }} {{ Form::button('Select Date!',array('name'=>'btnSelectDate','id'=>'btnSelectDate')) }} <div id='showCalendar'><div id="myCalendar"></div></div></div></br>
+	{{ Form::label('beginDate', 'Begin :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'') }}
+	{{ Form::label('endDate', 'End :') }}	{{ Form::text('conferenceTitle',isset($value)?$value:'') }}</br>
 	{{ Form::label('isFree', 'IsFree? :') }} {{ Form::checkbox('chkIsFree', 'checked',0) }} </br>
 
-	{{Form::submit('Click Me!');}}
+	{{ Form::submit('Click Me!')}}
 
 	{{ Form::close() }}
 

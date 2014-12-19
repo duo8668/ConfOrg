@@ -13,6 +13,8 @@
 
 //mousheng's route
 include('customroutes/confManagementRoutes.php');
+include('customroutes/utilsRoutes.php');
+
 //bella's route
 include('customroutes/submissionRoutes.php');
 //thomas's route
