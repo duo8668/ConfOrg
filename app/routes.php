@@ -17,3 +17,5 @@ include('customroutes/confManagementRoutes.php');
 include('customroutes/submissionRoutes.php');
 //thomas's route
 include('customroutes/thomasRoutes.php');
+//pohjun's route
+include('customroutes/pohjunRoutes.php');
