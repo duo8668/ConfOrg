@@ -21,3 +21,8 @@ include('customroutes/submissionRoutes.php');
 include('customroutes/thomasRoutes.php');
 //pohjun's route
 include('customroutes/pohjunRoutes.php');
+
+Event::Listen('illuminate.query',function($query, $bindings, $time, $name){
+
+	//var_dump($query);
+});

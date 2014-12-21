@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 class ConferenceVenue extends Eloquent {
 
 	protected $table = 'conference_venue';

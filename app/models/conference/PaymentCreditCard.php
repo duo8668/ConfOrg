@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 class PaymentCreditCard extends Eloquent {
 
 	protected $table = 'payment_creditcard';

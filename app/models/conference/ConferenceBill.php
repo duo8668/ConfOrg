@@ -1,6 +1,5 @@
-
-
-<?php
+<?php namespace ConfOrg\Model\Conference;
+ 
 class ConferenceBill extends Eloquent {
 
 	protected $table = 'conference_bill';

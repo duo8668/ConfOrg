@@ -121,8 +121,7 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
-		'Appitventures\Phpgmaps\PhpgmapsServiceProvider',
-
+		'Appitventures\Phpgmaps\PhpgmapsServiceProvider'
 	),
 
 	/*
@@ -189,7 +188,7 @@ return array(
 		'URL'               => 'Illuminate\Support\Facades\URL',
 		'Validator'         => 'Illuminate\Support\Facades\Validator',
 		'View'              => 'Illuminate\Support\Facades\View',
-		'Gmaps' 			=> 'Appitventures\Phpgmaps\Facades\Phpgmaps',
+		'Gmaps' 			=> 'Appitventures\Phpgmaps\Facades\Phpgmaps'
 
 	),
 

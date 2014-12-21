@@ -1,9 +1,10 @@
-<?php
+<?php 
+
 class ConferencePaymentTransaction extends Eloquent {
 
 	protected $table = 'conference_paymenttransaction';
 	
-	protected $fillable = array('PaymentType','BillId');
+	protected $fillable = array('PaymentTypeId','BillId','CreatedBy');
 
 	protected $guarded = array('TransactionId','DateCreated');
 	

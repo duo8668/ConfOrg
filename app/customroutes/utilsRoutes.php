@@ -9,4 +9,4 @@
 |
 */
 
-Route::get('utils/customcalendar', 'UtilsController@customCalender'); 
+Route::post('utils/customcalendar', 'UtilsController@customCalender'); 

@@ -1,11 +1,12 @@
-<?php
+<?php 
+
 class PaymentType extends Eloquent {
 
 	protected $table = 'paymenttype';
 	
-	protected $fillable = array('ConfId','UserId');
+	protected $fillable = array('PaymentType','IsEnabled','CreatedBy');
 
-	protected $guarded = array('BillId','DateCreated');
+	protected $guarded = array('PaymentId','DateCreated');
 	
 	public $timestamps = false;
 	

@@ -1,11 +1,12 @@
-<?php
+<?php 
+
 class ConferenceType extends Eloquent {
 
 	protected $table = 'conferencetype';
 	
-	protected $fillable = array('IsEnabled','CreatedBy');
+	protected $fillable = array('ConferenceType','IsEnabled','CreatedBy');
 
-	protected $guarded = array('ConferenceType','DateCreated');
+	protected $guarded = array('ConfTypeId','DateCreated');
 	
 	public $timestamps = false;
 	

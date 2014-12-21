@@ -50,6 +50,6 @@ protected $hidden = array('password', 'remember_token');
 	}
 
 	public function Roles(){
-		return this->hasManyThrough('Role','UserRole','roleid','roleid');
+		return $this->hasManyThrough('Role','UserRole','roleid','roleid');
 	}
 }

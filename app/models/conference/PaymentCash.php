@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 class PaymentCash extends Eloquent {
 
 	protected $table = 'payment_cash';

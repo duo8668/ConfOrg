@@ -17,6 +17,8 @@ Create a conference
 
 <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
 
+<script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
+
 <style>
 
 	body {
@@ -40,11 +42,16 @@ Create a conference
 <!-- Content Section -->
 @section('content')
 <script>
-
+	$(document).ajaxStop($.unblockUI); 
+	
+	
+	var eventData;
 	$(document).ready(function(){
 
-		$('#btnSelectDate').click(function(){
-			
+		$('#dtConference').click(function(){
+			var myTitle = $('#conferenceTitle').val();
+			$('#showCalendar').attr('title','Create Conference for : '+myTitle);
+
 			$('#showCalendar').dialog({
 				autoOpen: true,
 				minHeight: 768,
@@ -56,46 +63,88 @@ Create a conference
 				open: function (event, ui) {
 					$('.ui-dialog').css('z-index',9999);
 					$('.ui-widget-overlay').css('z-index',9998);
-					$('#myCalendar').load("../../utils/customcalendar",{'name':'John'}, function( res, stat, xhr ){
-						if ( status == "error" ) {
-							var msg = "Sorry but there was an error: ";
-							$( "#error" ).html( msg + xhr.status + " " + xhr.statusText );
-						}
+					blockUI();
+					$.ajax({
+						type: "post",
+						url: "../../utils/customcalendar",
+						data: { 'title': myTitle}
+					}).done(function(data) {
+						$('#myCalendar').html(data);
+					})
+					.fail(function(xhr,stat,msg) {
+						alert(xhr.responseText);
+					})
+					.always(function(data) {
+						
 					});
-
 				},
 				buttons: {
 					'Yes': function(){
 						$(this).dialog('close');
-						callback(true);
+						callback(eventData);
 					},
 					'No': function(){
 						$(this).dialog('close');
-						callback(false);
+						//callback(eventData);
 					}			
 				}
 			});
-
-
 		});
+
+$("#frmCreateConf").submit(function(e){
+	e.preventDefault();
+	var conferenceTitle = $("input#conferenceTitle").val();
+	var confType =  $("#confType option:selected").val();
+	var beginDate =  $("#beginDate").val();
+	var endDate =  $("#endDate").val();
+	var isFree =  $("#chkIsFree").is(':checked');
+	blockUI();
+	$.ajax({
+		type: "POST",
+		url : "submitCreateConf",
+		data : {conferenceTitle:conferenceTitle,confType:confType,beginDate:beginDate,endDate:endDate,isFree:isFree}
+	})
+	.done(function(data) {
+		alert(data);
+	})
+	.fail(function(xhr,stat,msg) {
+		alert(xhr.responseText);
+	})
+	.always(function(data) {
+
 	});
+});
+});
 
-	function callback(evt){
+function callback(eventData){
 
+	if(eventData != undefined){
+		$('#beginDate').val(eventData.start.format('DD-MMM-YYYY'));
+		$('#endDate').val(eventData.end.subtract(1,'days').format('DD-MMM-YYYY'));
+		eventData.end.add(1,'days');
 	}
+	$('#myCalendar').html('');
+}
+
+function blockUI(){
+
+	$.blockUI({ message: "<h1><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h1>" }); 
+}
 
 </script>
+<!-- include('../../utils/customcalendar') -->
+
 @if (!Auth::Id())
 <div id='divFormBody'>
 
-	{{ Form::open(array('url' => 'conference/management/submitCreateConf')) }}
+	{{ Form::open(array('url' => 'conference/management/submitCreateConf','method'=>'POST','id'=>'frmCreateConf')) }}
 
-	{{ Form::label('lblConfTitle', 'Title :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'')}} </br>
-	{{ Form::label('lblConfType', 'Type :') }} {{ Form::select('confType',$confTypes) }} </br>
-	{{ Form::label('dtConference', 'Date Range :') }} {{ Form::button('Select Date!',array('name'=>'btnSelectDate','id'=>'btnSelectDate')) }} <div id='showCalendar'><div id="myCalendar"></div></div></div></br>
-	{{ Form::label('beginDate', 'Begin :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'') }}
-	{{ Form::label('endDate', 'End :') }}	{{ Form::text('conferenceTitle',isset($value)?$value:'') }}</br>
-	{{ Form::label('isFree', 'IsFree? :') }} {{ Form::checkbox('chkIsFree', 'checked',0) }} </br>
+	{{ Form::label('lblConfTitle', 'Title :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle'))}} </br>
+	{{ Form::label('lblConfType', 'Type :') }} {{ Form::select('confType',$confTypes,null,array('name'=>'confType','id'=>'confType')) }} </br>
+	{{ Form::label('dtConference', 'Date Range :') }} {{ Form::button('Select Date!',array('name'=>'dtConference','id'=>'dtConference')) }} <div id='showCalendar'><div id="myCalendar"></div></div></div></br>
+	{{ Form::label('beginDate', 'Begin :') }} {{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly')) }}
+	{{ Form::label('endDate', 'End :') }}	{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly')) }}</br>
+	{{ Form::label('isFree', 'IsFree? :') }} {{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }} </br>
 
 	{{ Form::submit('Click Me!')}}
 

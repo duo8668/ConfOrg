@@ -11,7 +11,7 @@ class UtilsController extends \BaseController {
 
 	public function customCalender()
 	{ 
-		$view = View::make('utils.customcalendar'); 
+		$view = View::make('utils.customcalendar',array('title' =>Input::get('title'))); 
 
 		return $view;
 	} 

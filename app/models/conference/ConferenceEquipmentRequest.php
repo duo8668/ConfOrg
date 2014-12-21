@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 class ConferenceEquipmentRequest extends Eloquent {
 
 	protected $table = 'conference_equipmentrequest';
