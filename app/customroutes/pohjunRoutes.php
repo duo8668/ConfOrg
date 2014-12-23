@@ -16,12 +16,19 @@ Route::get('/createUser', function()
 {
 	User::create([
 		'title' => 'mr',
-		'firstname' => 'jason',
-		'lastname' => 'ng',
-		'email' => 'jason@gmail.com',
-		'password' => Hash::make('changeme')
-
+		'firstname' => 'pewpew',
+		'lastname' => 'pewpew',
+		'email' => 'pewpew@gmail.com',
+		'password' => Hash::make('pewpew')
 		]);
+
+	// 	$reviewer = Role::create(['rolename' => 'reviewer','remarks' => 'reviewer',]);
+	// 	$participant = Role::create(['rolename' => 'participant','remarks' => 'participant',]);
+	// 	$author = Role::create(['rolename' => 'athuor','remarks' => 'author',]);
+
+	// 	$xbox = Conference::create(['title' => 'xbox','conferencetype' => 'xbox','description' => 'xbox',
+	// 		'begindate' => '221214','begintime' => '0000','enddate' => '231214','endtime' => '0000',
+	// 		'isfree' => 'free','speaker' => 'xbox']);
 
 });
 
