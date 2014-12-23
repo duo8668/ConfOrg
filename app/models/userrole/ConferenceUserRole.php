@@ -1,11 +1,11 @@
 <?php
 class ConferenceUserRole extends Eloquent {
 
-	protected $table = 'conferenceuserrole';
+	protected $table = 'confuserrole';
+protected $primaryKey = 'confuserrole_id';
+	protected $fillable = array( 'user_id', 'role_id', 'conf_id', 'remarks');
 
-	protected $fillable = array( 'userid', 'roleid', 'confid', 'remarks');
-
-	protected $guarded = array('confuserid');
+	protected $guarded = array('confuserrole_id');
 
 	public $timestamps = false;
 
