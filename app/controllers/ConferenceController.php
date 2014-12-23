@@ -12,8 +12,12 @@ class ConferenceController extends BaseController {
 
 	public function index()
 	{
+		$confs = Conference::where('IsEnabled','=','1')
+		->get();
 
-		$view = View::make('conference.management.index',array('wtf'=>'wtf','wtf2'=>'wtf2')); 
+		dd($confs);
+		
+		$view = View::make('conference.management.index',array('confs'=>$confs)); 
 
 		return $view;
 	}
@@ -21,8 +25,20 @@ class ConferenceController extends BaseController {
 	public function create()
 	{
 		
-		$confTypes=ConferenceType::where('IsEnabled','=','1')->lists('ConferenceType', 'ConfTypeId');
-		//$confTypes=ConferenceType::where('IsEnabled','=','1');
+		$confTypes=ConferenceType::where('IsEnabled','=','1')
+		->lists('ConferenceType', 'ConfTypeId');
+
+		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
+
+		return $view;
+	}
+
+	public function register($confId)
+	{
+		
+		$confs=Conference::where('IsEnabled','=','1')
+		->where(DB::raw('beginDate > curdate()'))
+		->get();
 
 		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
 

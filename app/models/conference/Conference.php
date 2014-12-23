@@ -10,6 +10,9 @@ class Conference extends Eloquent {
 	
 	public $timestamps = false;
 
+	public function ConferenceParticipants(){
+		return $this->hasMany('ConferenceParticipant', 'ConfId', 'ConfId');
+	}
 	
 	public function AllJsonConference($beginTime,$endTime){
 
