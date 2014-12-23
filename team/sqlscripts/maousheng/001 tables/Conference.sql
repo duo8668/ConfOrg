@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : WorkPC
+Source Server         : conforg
 Source Server Version : 50617
 Source Host           : localhost:3306
 Source Database       : conforg
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2014-12-18 18:50:07
+Date: 2014-12-23 23:04:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,14 +22,14 @@ DROP TABLE IF EXISTS `bill_component`;
 CREATE TABLE `bill_component` (
   `ComponentId` int(11) NOT NULL AUTO_INCREMENT,
   `BillId` int(11) NOT NULL,
-  `ComponentType` varchar(100) NOT NULL,
+  `ComponentTypeId` int(11) NOT NULL,
   `ComponentDescription` varchar(255) NOT NULL,
   `Amount` decimal(7,2) NOT NULL,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ComponentId`),
   KEY `FK_BillComp_01` (`BillId`),
-  KEY `ComponentType` (`ComponentType`),
-  CONSTRAINT `bill_component_ibfk_1` FOREIGN KEY (`ComponentType`) REFERENCES `componenttype` (`ComponentType`),
+  KEY `ComponentType` (`ComponentTypeId`),
+  CONSTRAINT `bill_component_ibfk_1` FOREIGN KEY (`ComponentTypeId`) REFERENCES `componenttype` (`ComponentTypeId`),
   CONSTRAINT `FK_BillComp_01` FOREIGN KEY (`BillId`) REFERENCES `conference_bill` (`BillId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -59,11 +59,12 @@ CREATE TABLE `category` (
 -- ----------------------------
 DROP TABLE IF EXISTS `componenttype`;
 CREATE TABLE `componenttype` (
+  `ComponentTypeId` int(11) NOT NULL AUTO_INCREMENT,
   `ComponentType` varchar(100) NOT NULL,
   `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
   `CreatedBy` int(11) NOT NULL,
-  `DateCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ComponentType`)
+  `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ComponentTypeId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -76,9 +77,9 @@ CREATE TABLE `componenttype` (
 DROP TABLE IF EXISTS `conference`;
 CREATE TABLE `conference` (
   `ConfId` int(11) NOT NULL AUTO_INCREMENT,
-  `Title` varchar(255) NOT NULL,
-  `ConferenceType` varchar(255) NOT NULL,
-  `Description` varchar(255) NOT NULL,
+  `Title` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `ConfTypeId` int(11) NOT NULL,
+  `Description` varchar(255) CHARACTER SET latin1 NOT NULL,
   `BeginDate` date NOT NULL,
   `BeginTime` datetime NOT NULL,
   `EndDate` date NOT NULL,
@@ -88,32 +89,37 @@ CREATE TABLE `conference` (
   `CreatedBy` int(11) NOT NULL,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ConfId`),
-  KEY `ConferenceType` (`ConferenceType`),
-  CONSTRAINT `conference_ibfk_1` FOREIGN KEY (`ConferenceType`) REFERENCES `conferencetype` (`ConferenceType`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  UNIQUE KEY `Title` (`Title`),
+  KEY `ConferenceType` (`ConfTypeId`),
+  CONSTRAINT `conference_ibfk_1` FOREIGN KEY (`ConfTypeId`) REFERENCES `conferencetype` (`ConfTypeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of conference
 -- ----------------------------
+INSERT INTO `conference` VALUES ('1', 'MyConf 01', '3', 'Duno what to write', '2015-01-23', '2015-01-23 08:30:00', '2015-01-26', '2015-01-26 20:30:00', '\0', null, '1', '2014-12-21 13:29:30');
+INSERT INTO `conference` VALUES ('7', 'djio', '1', 'djio', '2014-12-30', '2014-12-30 00:00:00', '2014-12-31', '2014-12-31 00:00:00', '', '-1', '0', '2014-12-21 19:14:11');
+INSERT INTO `conference` VALUES ('11', 'djio1', '1', 'djio1', '2014-12-30', '2014-12-30 00:00:00', '2014-12-31', '2014-12-31 00:00:00', '', '-1', '0', '2014-12-21 19:19:44');
 
 -- ----------------------------
 -- Table structure for conferencetype
 -- ----------------------------
 DROP TABLE IF EXISTS `conferencetype`;
 CREATE TABLE `conferencetype` (
+  `ConfTypeId` int(11) NOT NULL AUTO_INCREMENT,
   `ConferenceType` varchar(100) NOT NULL,
   `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
   `CreatedBy` int(11) NOT NULL,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ConferenceType`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`ConfTypeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of conferencetype
 -- ----------------------------
-INSERT INTO `conferencetype` VALUES ('Community', '', '0', '2014-12-18 12:41:43');
-INSERT INTO `conferencetype` VALUES ('Food', '', '0', '2014-12-18 12:40:23');
-INSERT INTO `conferencetype` VALUES ('Technology', '', '0', '2014-12-18 12:41:15');
+INSERT INTO `conferencetype` VALUES ('1', 'Community', '', '0', '2014-12-18 12:41:43');
+INSERT INTO `conferencetype` VALUES ('2', 'Food', '', '0', '2014-12-18 12:40:23');
+INSERT INTO `conferencetype` VALUES ('3', 'Technology', '', '0', '2014-12-18 12:41:15');
 
 -- ----------------------------
 -- Table structure for conferencevenueroomschedule
@@ -157,6 +163,7 @@ CREATE TABLE `conference_bill` (
   PRIMARY KEY (`BillId`),
   UNIQUE KEY `idx_BillId` (`BillId`) USING BTREE,
   KEY `ConfId` (`ConfId`),
+  CONSTRAINT `conference_bill_ibfk_2` FOREIGN KEY (`ConfId`) REFERENCES `conference_participant` (`ConfId`),
   CONSTRAINT `conference_bill_ibfk_1` FOREIGN KEY (`ConfId`) REFERENCES `conference` (`ConfId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -193,12 +200,15 @@ CREATE TABLE `conference_participant` (
   `CreatedBy` int(11) NOT NULL,
   `DateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ConfId`,`UserId`),
+  KEY `ConfId` (`ConfId`),
   CONSTRAINT `FK_ConfParti_01` FOREIGN KEY (`ConfId`) REFERENCES `conference` (`ConfId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of conference_participant
 -- ----------------------------
+INSERT INTO `conference_participant` VALUES ('1', '1', '0', '2014-12-23 22:42:40');
+INSERT INTO `conference_participant` VALUES ('7', '1', '0', '2014-12-23 22:43:30');
 
 -- ----------------------------
 -- Table structure for conference_participantbarred
@@ -225,12 +235,14 @@ DROP TABLE IF EXISTS `conference_paymenttransaction`;
 CREATE TABLE `conference_paymenttransaction` (
   `TransactionId` int(11) NOT NULL AUTO_INCREMENT,
   `BillId` int(11) NOT NULL,
-  `PaymentType` varchar(255) NOT NULL,
+  `PaymentTypeId` int(11) NOT NULL,
   `CreatedBy` int(11) NOT NULL,
   `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`TransactionId`),
   KEY `BillId` (`BillId`),
-  CONSTRAINT `conference_paymenttransaction_ibfk_1` FOREIGN KEY (`BillId`) REFERENCES `conference_bill` (`BillId`)
+  KEY `PaymentTypeId` (`PaymentTypeId`),
+  CONSTRAINT `conference_paymenttransaction_ibfk_1` FOREIGN KEY (`BillId`) REFERENCES `conference_bill` (`BillId`),
+  CONSTRAINT `conference_paymenttransaction_ibfk_2` FOREIGN KEY (`PaymentTypeId`) REFERENCES `paymenttype` (`PaymentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -275,6 +287,32 @@ CREATE TABLE `conference_venue` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for confuserrole
+-- ----------------------------
+DROP TABLE IF EXISTS `confuserrole`;
+CREATE TABLE `confuserrole` (
+  `confuserrole_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `conf_id` int(11) NOT NULL,
+  PRIMARY KEY (`confuserrole_id`),
+  KEY `confuserrole_role_id_index_01` (`role_id`),
+  KEY `confuserrole_user_id_index_02` (`user_id`),
+  KEY `confuserrole_ibfk_1` (`conf_id`),
+  CONSTRAINT `confuserrole_ibfk_1` FOREIGN KEY (`conf_id`) REFERENCES `conference` (`ConfId`) ON DELETE CASCADE,
+  CONSTRAINT `confuserrole_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE,
+  CONSTRAINT `confuserrole_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of confuserrole
+-- ----------------------------
+INSERT INTO `confuserrole` VALUES ('1', '1', '1', '1');
+INSERT INTO `confuserrole` VALUES ('2', '2', '1', '7');
+INSERT INTO `confuserrole` VALUES ('3', '3', '2', '1');
+INSERT INTO `confuserrole` VALUES ('4', '2', '2', '1');
+
+-- ----------------------------
 -- Table structure for equipment
 -- ----------------------------
 DROP TABLE IF EXISTS `equipment`;
@@ -301,11 +339,12 @@ CREATE TABLE `equipment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `paymenttype`;
 CREATE TABLE `paymenttype` (
+  `PaymentId` int(11) NOT NULL AUTO_INCREMENT,
   `PaymentType` varchar(100) NOT NULL,
   `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
   `CreatedBy` int(11) NOT NULL,
   `DateCreate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`PaymentType`)
+  PRIMARY KEY (`PaymentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -354,6 +393,25 @@ CREATE TABLE `payment_creditcard` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for roles
+-- ----------------------------
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
+  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `rolename` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `remarks` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `roles_rolename_unique` (`rolename`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of roles
+-- ----------------------------
+INSERT INTO `roles` VALUES ('1', 'reviewer', 'reviewer');
+INSERT INTO `roles` VALUES ('2', 'participant', 'participant');
+INSERT INTO `roles` VALUES ('3', 'author', 'author');
+
+-- ----------------------------
 -- Table structure for room
 -- ----------------------------
 DROP TABLE IF EXISTS `room`;
@@ -397,6 +455,28 @@ CREATE TABLE `roomequipment` (
 -- ----------------------------
 -- Records of roomequipment
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `firstname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `lastname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES ('1', 'mr', 'jason', 'ng', 'jason@gmail.com', '$2y$10$Bahmed8JSm2QI7dPXRQgT.6Z8Y.Dt4AWNnQksx1X7u/8jisVDmg1.', 'thdvKPSqIBvCDGgvoexFsMu2sozwB6Qh1EDrzZP5JC9tAcLaqIirqHLGDRpv');
+INSERT INTO `users` VALUES ('2', 'mr', 'pewpew', 'pewpew', 'pewpew@gmail.com', '$2y$10$MYnkqi7TI069Kz3F5wdFXOLWtvJpw/Ru3kV6fKZWDs76BVLSPoxAK', null);
 
 -- ----------------------------
 -- Table structure for venue

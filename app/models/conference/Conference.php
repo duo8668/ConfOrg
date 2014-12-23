@@ -13,7 +13,35 @@ class Conference extends Eloquent {
 	public function ConferenceParticipants(){
 		return $this->hasMany('ConferenceParticipant', 'ConfId', 'ConfId');
 	}
+
+	public function ConferenceType(){
+		return $this->hasOne('ConferenceType', 'ConfTypeId', 'ConfTypeId');	
+	}
 	
+	public function getStatusInConference(){
+ 
+		$user = User::where('user_id','=',1)->first();
+		Auth::login($user);
+		//dd(Auth::user()->user_id);
+ 	
+		$participantId = $this
+		->ConferenceParticipants()
+		->where('UserId','=',Auth::user()->user_id)
+		->first();
+		
+		//dd(DB::getQueryLog());
+		if($participantId == null){
+			// mean this person has not participant yet
+
+			return 'Not Participating';
+		}else{
+			return 'Participant';
+		}
+
+
+		return 'goodtoGO';
+	}
+
 	public function AllJsonConference($beginTime,$endTime){
 
 		//$five = date("Y-m-d",strtotime("-5 minutes",strtotime($thestime)));

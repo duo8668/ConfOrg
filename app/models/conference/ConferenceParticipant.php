@@ -12,17 +12,19 @@ class ConferenceParticipant extends Eloquent {
 
 	public function OutStandingAmount()
 	{
-		return this->OutStandingAmount($ConfId);
-	}
+		
 
+
+	}
+ 
 	public function Conference(){
 
 		return $this->belongsTo('Conference', 'ConfId', 'ConfId');
 	}
 
 	public function ConferenceBill(){
-		return ConferenceBill::where('ConfId','=',this->$ConfId)
-		->where('UserId','=',this->$UserId)
+		return ConferenceBill::where('ConfId','=',$this->$ConfId)
+		->where('UserId','=', $this->$UserId)
 		->get();
 	}
 

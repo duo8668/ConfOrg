@@ -12,11 +12,12 @@ class ConferenceController extends BaseController {
 
 	public function index()
 	{
-		$confs = Conference::where('IsEnabled','=','1')
+		$confs = Conference::where('beginDate','>',DB::raw('curdate()'))
 		->get();
 
-		dd($confs);
-		
+		//dd(DB::getQueryLog());
+		//dd($confs);
+
 		$view = View::make('conference.management.index',array('confs'=>$confs)); 
 
 		return $view;
@@ -43,6 +44,21 @@ class ConferenceController extends BaseController {
 		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
 
 		return $view;
+	}
+
+	public function ValidateConference($divId){
+		//conf_id_col_\d+$
+
+		$subject = "abcdef";
+		$pattern = '^conf_id_col_\d+$';
+
+		$matching = preg_match($pattern, $divId, $output_array);
+
+		if($matching){
+
+		}else{
+			
+		}
 	}
 
 	public function conferenceEvents($begin,$end)
