@@ -7,7 +7,12 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">      
-
+      
+    @if($map!='')
+        <div>
+            <?php echo $map['js']; ?>
+        </div>
+    @endif
 </head>
 <body>
 <div class="container">
@@ -20,8 +25,15 @@
             <strong>Venue Name:</strong> {{ $venue->Name }}<br>
             <strong>Venue Address:</strong> {{ $venue->Address }}
         </p>
-    </div>
-
+    </div>        
+    @if($map!='')
+        <center>
+            <div style="max-width:900px">
+                    <?php echo $map['html']; ?> 
+            </div>
+        </center>
+    @endif
+    
 </div>
 </body>
 </html>

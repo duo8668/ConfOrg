@@ -12,6 +12,7 @@
 
 // Route::get('/about', array('as' => 'about', 'uses' => 'ThomasController@about'));
 Route::resource('venue', 'ThomasController');
+Route::resource('category', 'CategoryController');
 
 
 //Route::get('foo/bar', 'FooController@about');

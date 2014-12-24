@@ -12,7 +12,7 @@
 */
 
 //mousheng's route
-include('customroutes/confManagementRoutes.php');
+//include('customroutes/confManagementRoutes.php');
 include('customroutes/utilsRoutes.php');
 
 //bella's route
@@ -21,8 +21,3 @@ include('customroutes/submissionRoutes.php');
 include('customroutes/thomasRoutes.php');
 //pohjun's route
 include('customroutes/pohjunRoutes.php');
-
-Event::Listen('illuminate.query',function($query, $bindings, $time, $name){
-
-	//var_dump($query);
-});

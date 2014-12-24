@@ -7,7 +7,11 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">      
-
+    @if(Session::has('map'))    
+      <div>
+        <?php echo Session::get('map')['js']; ?>
+      </div>    
+    @endif
 </head>
 <body>
 
@@ -21,7 +25,7 @@
     <div class="form-group @if ($errors->has('venueName')) has-error @endif">
       <label class="col-md-4 control-label" for="venueName">Venue Name</label>  
       <div class="col-md-4">                      
-        {{ Form::text('venueName', Input::old('venueName'), array('class' => 'form-control input-md', 'placeholder' => $venue->Name)) }} 
+        {{ Form::text('venueName', $venue->Name, array('class' => 'form-control input-md')) }} 
         @if ($errors->has('venueName')) <p class="help-block">{{ $errors->first('venueName') }}</p> @endif        
       </div>    
     </div>
@@ -29,7 +33,7 @@
     <div class="form-group  @if ($errors->has('venueAddress')) has-error @endif">
       <label class="col-md-4 control-label" for="venueAddress">Venue Address</label>
       <div class="col-md-4">                     
-        {{ Form::text('venueAddress', Input::old('venueAddress'), array('class' => 'form-control input-md', 'placeholder' => $venue->Address)) }}
+        {{ Form::text('venueAddress', $venue->Address, array('class' => 'form-control input-md')) }}
          @if ($errors->has('venueAddress')) <p class="help-block">{{ $errors->first('venueAddress') }}</p> @endif
       </div>
     </div>
@@ -37,11 +41,20 @@
     <div class="form-group">
       <label class="col-md-4 control-label" for="submit"></label>
       <div class="col-md-4">            
-      {{ Form::submit('Edit the Venue!', array('class' => 'btn btn-primary')) }}
+      {{ Form::submit('Preview Map', array('name'=>'Preview','class' => 'btn btn-primary')) }}
+      {{ Form::submit('Edit the Venue!', array('name'=>'Edit','class' => 'btn btn-primary')) }}
       </div>
     </div>
     </fieldset>    
 {{ Form::close() }}
+
+   @if(Session::has('map'))      
+    <center>
+      <div style="max-width:900px">
+        <?php echo Session::get('map')['html']; ?> 
+    </div>
+  </center>
+  @endif
     
 </div>
 </body>

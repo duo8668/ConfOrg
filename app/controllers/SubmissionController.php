@@ -9,8 +9,7 @@ class SubmissionController extends \BaseController {
 	 */
 	public function index()
 	{
-		$submission = Submission::all();
-		return View::make('submission.index')->with('submissions', $submission);
+		//
 	}
 
 

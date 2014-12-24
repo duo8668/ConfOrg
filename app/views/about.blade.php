@@ -39,6 +39,13 @@
    <li><a href="#">PHP</a></li>
 </ul>#wrapper -->
 
+<div id="wrapthis">
+<div class="alert alert-success" style="max-width:500px;" role="alert" span3>..wagwagawgwagagwagw.</div>
+<div class="alert alert-info" role="alert">...</div>
+<div class="alert alert-warning" role="alert">...</div>
+<div class="alert alert-danger" role="alert">...</div>
+</div>
+
     <!-- jQuery -->
     <script src="{{ asset('js/jquery.js') }}"></script>
     <!-- Bootstrap Core JavaScript -->

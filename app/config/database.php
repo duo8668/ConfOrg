@@ -55,7 +55,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'conforg',
+			'database'  => 'ConfOrg2',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',

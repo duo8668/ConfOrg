@@ -9,18 +9,24 @@
     <title>Venue - Conference organizer</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">      
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">  
+
+    @if(Session::has('map'))    
+      <div>
+        <?php echo Session::get('map')['js']; ?>
+      </div>    
+    @endif
+    
 
 </head>
 
 <body>
 <center><legend><h1>Create Venue</h1></legend></center>
 
-@if (Session::has('message'))
-    <div class="alert alert-danger">{{ Session::get('message') }}</div>
-@endif
-
-
+    @if (Session::has('message'))
+        <div class="alert alert-danger">{{ Session::get('message') }}</div>
+    @endif
+    
     {{ Form::open(array('url' => 'venue', 'class' => 'form-horizontal')) }}
     <fieldset>  
     <div class="form-group @if ($errors->has('venueName')) has-error @endif">
@@ -43,14 +49,34 @@
     
     <div class="form-group">
       <label class="col-md-4 control-label" for="submit"></label>
-      <div class="col-md-4">            
-      {{ Form::submit('Create Venue!', array('class' => 'btn btn-primary')) }}
+      <div class="col-md-4">      
+      {{ Form::submit('Preview Map', array('name'=>'Preview','class' => 'btn btn-primary')) }}
+      {{ Form::submit('Create Venue!', array('name'=>'Create','class' => 'btn btn-primary')) }}
       </div>
     </div>
     </fieldset>
-
     {{ Form::close() }}
 
+    @if(Session::has('map'))      
+      <center>
+        <div style="max-width:900px">
+          <?php echo Session::get('map')['html']; ?> 
+      </div>
+    </center>
+    @endif
+
+              <table>
+                    <tr><td><button class="btn btn-small btn-info" onclick="$('#1').toggle();">Show/Hide</button></td></tr>
+                    <tr><td><div id="1" style="display: none">
+                    Hide show.....
+                </div></td></tr>
+                <tr><td><button class="btn btn-small btn-info" onclick="$('#2').toggle();">Show/Hide</button></td></tr>
+                    <tr><td><div id="2" style="display: none">
+                    Hide show.....
+                </div></td></tr>
+                
+                
+                </table>
     <!-- jQuery -->
     <script src="{{ asset('js/jquery.js') }}"></script>
     <!-- Bootstrap Core JavaScript -->
@@ -58,3 +84,5 @@
 </body>
 
 </html>
+
+

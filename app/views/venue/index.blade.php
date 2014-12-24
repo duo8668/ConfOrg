@@ -4,11 +4,11 @@
 <html>
 <head>
     <title>Look! I'm CRUDding</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">    
 </head>
 <body>
 
-<h1>All the Nerds</h1>
+<h1>All the Venues</h1>
 
 <!-- will be used to show any messages -->
 @if (Session::has('message'))
@@ -25,7 +25,7 @@
     <tbody>
     @foreach($venue as $key => $value)
         <tr>
-            <td>{{ $value->Name }}</td>
+            <td>{{ $value->Name }}</td> 
             <td>{{ $value->Address }}</td>            
 
             <!-- we will also add show, edit, and delete buttons -->
@@ -42,7 +42,12 @@
                 <a class="btn btn-small btn-success" href="{{ URL::to('venue/' . $value->ID) }}">Show this Venue</a>
 
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
-                <a class="btn btn-small btn-info" href="{{ URL::to('venue/' . $value->ID . '/edit') }}">Edit this Nerd</a>
+                <a class="btn btn-small btn-info" href="{{ URL::to('venue/' . $value->ID . '/edit') }}">Edit this Venue</a>
+
+                <button class="btn btn-small btn-info" onclick="$('{{$value->ID}}').toggle();">Show/Hide</button>
+                <div id="{{$value->ID}}" style="display:none">  
+                    Hide show.....
+                </div>
 
             </td>
         </tr>

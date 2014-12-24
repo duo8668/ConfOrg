@@ -22,6 +22,7 @@
       <label class="col-md-4 control-label" for="submission_title">Submission Type</label>  
       <div class="col-md-4">
       <input id="submission_title" name="submission_title" type="text" placeholder="Title" class="form-control input-md" required="">
+        
       </div>
     </div>
 
