@@ -6,7 +6,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Welcome to Conference Organizer, Chairman!</a>
+                <a class="navbar-brand" href="#">Welcome to Conference Organizer, Chairman!</a>
             </div>
             <!-- /.navbar-header -->
 
