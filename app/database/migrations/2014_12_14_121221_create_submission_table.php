@@ -12,17 +12,18 @@ class CreateSubmissionTable extends Migration {
 	 */
 	public function up()
 	{
+		//TODO: Put foreign Key for Conference & User Table
 		Schema::create('submissions', function(Blueprint $table)
 		{
-			$table->increments('subId');
-			$table->integer('userID');
-			$table->integer('subType');
-			$table->string('subTitle', 220)->unique();
-			$table->text('subAbstract');
-			$table->string('subKeywords', 220);
-			$table->string('subFilePath', 220);
-			$table->text('subRemarks');
-			$table->boolean('isAccepted');
+			$table->increments('Sub_id');
+			$table->integer('User_id');
+			$table->integer('Conf_id')->references('ConfId')->on('conference');
+			$table->integer('SubType');
+			$table->string('SubTitle', 220)->unique();
+			$table->text('SubAbstract');
+			$table->string('AttachmentPath', 220);
+			$table->text('SubRemarks');
+			$table->boolean('IsAccepted');
 			$table->timestamps();
 		});
 	}
