@@ -10,3 +10,4 @@ Route::get('/dashboard', function()
 });
 
 Route::resource('submission', 'SubmissionController');
+Route::resource('review', 'ReviewController');

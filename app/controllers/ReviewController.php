@@ -1,6 +1,6 @@
 <?php
 
-class SubmissionController extends \BaseController {
+class ReviewController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
@@ -9,9 +9,9 @@ class SubmissionController extends \BaseController {
 	 */
 	public function index()
 	{
-		//TODO: get all submission submitted by current user
+		//TODO: Get all submissions based on preferred topic of current user
 		$submission = Submission::all();
-		return View::make('submission.index')->with('submissions', $submission);
+		return View::make('reviews.index')->with('submissions', $submission);
 	}
 
 
@@ -22,7 +22,7 @@ class SubmissionController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('submission.addnew');
+		return "enter/edit reviews for " . $subid;
 	}
 
 
