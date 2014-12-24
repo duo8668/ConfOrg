@@ -18,7 +18,7 @@ class ConferenceController extends BaseController {
 		//dd(DB::getQueryLog());
 		//dd($confs);
 
-		$view = View::make('conference.management.index',array('confs'=>$confs)); 
+		$view = View::make('conference.index',array('confs'=>$confs)); 
 
 		return $view;
 	}
@@ -34,30 +34,44 @@ class ConferenceController extends BaseController {
 		return $view;
 	}
 
-	public function register($confId)
+	public function register()
 	{
-		
+		/*
 		$confs=Conference::where('IsEnabled','=','1')
 		->where(DB::raw('beginDate > curdate()'))
 		->get();
 
 		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
+*/
+		return '';
+	}
+
+	public function theConf()
+	{
+		$selectedConfId = $this->ValidateConference();
+
+		$conf=Conference::where('confId','=',$selectedConfId) 
+		->first();
+
+		$view = View::make('conference.confview',array('selectedConfId'=>$selectedConfId,'conf'=>$conf)); 
 
 		return $view;
 	}
 
-	public function ValidateConference($divId){
+	public function ValidateConference(){
 		//conf_id_col_\d+$
 
-		$subject = "abcdef";
-		$pattern = '^conf_id_col_\d+$';
+		$subject = Input::get('subject');
+		$pattern = '/'.'^conf_id_col_(?P<confId>\d+)$'.'/';
 
-		$matching = preg_match($pattern, $divId, $output_array);
+		$matching = preg_match($pattern, $subject, $output_array);
 
 		if($matching){
 
+			return intval($output_array["confId"]);
+
 		}else{
-			
+			return -9999;
 		}
 	}
 

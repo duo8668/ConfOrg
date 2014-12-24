@@ -126,10 +126,7 @@ function callback(eventData){
 	$('#myCalendar').html('');
 }
 
-function blockUI(){
 
-	$.blockUI({ message: "<h1><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h1>" }); 
-}
 
 </script>
 <!-- include('../../utils/customcalendar') -->

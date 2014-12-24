@@ -1,7 +1,7 @@
 @extends('layouts.dashboard.master')
 
 @section('page-header')
-Hello world
+All Conferences
 @stop
 
 <!-- extraScripts Section -->
@@ -44,16 +44,36 @@ Hello world
 </style>
 
 <script type="text/javascript">
+	$(document).ajaxStop($.unblockUI); 
 	
 	$(document).ready(function(){
 
 		$('.confClass').on('click',function(evt){
-			alert($(this).attr('id'));
+			$(this).attr('id')
+			blockUI();
+			$.ajax({
+				type: "GET",
+				url : "conference/confParticular",
+				data : {subject:$(this).attr('id')}
+			})
+			.done(function(data) {
+				alert(data);
+			})
+			.fail(function(xhr,stat,msg) {
+				alert(xhr.responseText);
+			})
+			.always(function(data) {
+
+			});
 
 		});
 
 	});
+	
+	function blockUI(){
 
+		$.blockUI({ message: "<h1><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h1>" }); 
+	}
 </script>
 
 
@@ -61,6 +81,7 @@ Hello world
 
 @section('content')
 
+<div class="col-md-12 ">Search : </div>
 <div class="container">
 	<div class="row">
 

@@ -56,19 +56,10 @@ protected $hidden = array('password', 'remember_token');
     public static function IsInRole($name,$confId){
     	$userid = Session::get('userid');
 		//$confid = '1';
+		//Auth::user()->user_id
 		$user = User::find($userid);
 
 		return $user->hasRole($name);
     }
 
-<<<<<<< .mine
  }
-=======
-		return $roles;
-	}
-
-	public function Roles(){
-		return $this->hasManyThrough('Role','UserRole','roleid','roleid');
-	}
-}
->>>>>>> .r17
