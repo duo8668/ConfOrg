@@ -1,20 +1,14 @@
 <html>
 <head>	
-	<title>Conference Venue</title>
 	<?php echo $map['js']; ?>
 	<!-- Bootstrap Core CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 </head>
-<body>	
-	<center>
-		<h1>Welcome, {{ $randomText }} to the venue site - {{ $error }}</h1>
-		
-		{{ Form::open(array('route' => 'venue', 'method'=>'post')) }}	
-			
-			{{ Form::text('randomText','',array('id'=>'randomText','class'=>'', 'placeholder' => '')) }}
-			{{ Form::submit('Click')	}}
+<body>
 
-		{{ Form::close() }}
+	<center>
+		<h1>Welcome to the venue site</h1>
+
 		<div style="max-width:900px">
 			<?php echo $map['html']; ?>	
 		</div>

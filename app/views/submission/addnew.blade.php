@@ -1,95 +1,72 @@
 @extends('layouts.dashboard.master')
 @section('content')
- {{ Form::open(array('route' => 'submission.store', 'class' => 'form-horizontal')) }}
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="page-header">Add New Submission</h2>
+  </div>
+</div>
+ {{ Form::open(array('route' => 'submission.store', 'class' => 'form-horizontal', 'files' => true)) }}
     <fieldset>
-    <!-- Form Name -->
-    <legend>Add New Submission</legend>
-
-    <!-- Submission Type -->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submission_type">Submission Type</label>
-      <div class="col-md-4">
-        <select id="submission_type" name="submission_type" class="form-control">
-          <option value="abstract">Abstract</option>
-          <option value="fullpaper">Full Paper</option>
-          <option value="poster">Poster</option>
-        </select>
+      
+      <!-- Submission Type -->
+      <div class="form-group">
+        {{ Form::label('submission_type', 'Submission Type', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">
+          {{ Form::select('submission_type', array('1' => 'Abstract', '2' => 'Full Paper', '3' => 'Poster'), '1', array('class' => 'form-control')) }}
+        </div>
       </div>
-    </div>
 
-    <!-- Submission Type-->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submission_title">Submission Type</label>  
-      <div class="col-md-4">
-      <input id="submission_title" name="submission_title" type="text" placeholder="Title" class="form-control input-md" required="">
+      <!-- Submission Type-->
+      <div class="form-group">
+        {{ Form::label('submission_title', 'Submission Title', array('class' => 'col-md-4 control-label')) }}        
+        <div class="col-md-4">
+        {{ Form::text('submission_title', '', array('class' => 'form-control input-md')) }}
+        </div>
         
       </div>
-    </div>
 
-    <!-- Abstract -->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submission_abstract">Abstract</label>
-      <div class="col-md-4">                     
-        <textarea class="form-control" id="submission_abstract" name="submission_abstract">Abstract</textarea>
+      <!-- Abstract -->
+      <div class="form-group">
+        {{ Form::label('submission_abstract', 'Abstract', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">   
+          {{ Form::textarea('submission_title', '', array('class' => 'form-control')) }}                  
+        </div>
       </div>
-    </div>
 
-    <!-- Topics -->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submission_topics">Topics</label>
-      <div class="col-md-4">
-      <div class="checkbox">
-        <label for="submission_topics-0">
-          <input type="checkbox" name="submission_topics" id="submission_topics-0" value="1">
-          Physiology
-        </label>
+      <!-- Topics -->
+      <div class="form-group">
+        {{ Form::label('submission_topics', 'Topics', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">
+        <div class="checkbox">
+          {{ Form::checkbox('submission_topics', '1') }} Physiology
+        </div>
+        <div class="checkbox">
+          {{ Form::checkbox('submission_topics', '2') }} Psychology
+        </div>
+        <div class="checkbox">
+          {{ Form::checkbox('submission_topics', '3') }} Psychiatry        
+        </div>
+        <div class="checkbox">
+          {{ Form::checkbox('submission_topics', '4') }} Neurology
+        </div>
+        </div>
       </div>
-      <div class="checkbox">
-        <label for="submission_topics-1">
-          <input type="checkbox" name="submission_topics" id="submission_topics-1" value="2">
-          Psychology
-        </label>
-      </div>
-      <div class="checkbox">
-        <label for="submission_topics-2">
-          <input type="checkbox" name="submission_topics" id="submission_topics-2" value="3">
-          Psychiatry
-        </label>
-      </div>
-      <div class="checkbox">
-        <label for="submission_topics-3">
-          <input type="checkbox" name="submission_topics" id="submission_topics-3" value="4">
-          Neurology
-        </label>
-      </div>
-      </div>
-    </div>
 
-    <!-- Keywords-->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submission_keywords">Keywords</label>  
-      <div class="col-md-4">
-      <input id="submission_keywords" name="submission_keywords" type="text" placeholder="e.g. autism, schizoprenia, etc." class="form-control input-md">
-        
+      <!-- Upload --> 
+      <div class="form-group">
+        {{ Form::label('submission_filepath', 'Upload your file', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">
+          {{ Form::file('submission_filepath', array('class' => 'input-file')) }}
+        </div>
       </div>
-    </div>
 
-    <!-- Upload --> 
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submission_filepath">Upload Your File</label>
-      <div class="col-md-4">
-        <input id="submission_filepath" name="submission_filepath" class="input-file" type="file">
+      <!-- Button -->
+      <div class="form-group">
+        {{ Form::label('submit', '', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">
+          {{ Form::submit('Add Submission', array('class' => 'btn btn-primary')) }}
+        </div>
       </div>
-    </div>
-
-    <!-- Button -->
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submit"></label>
-      <div class="col-md-4">
-        <button id="submit" name="submit" class="btn btn-primary">Add Submission</button>
-      </div>
-    </div>
     </fieldset>
     {{ Form::close() }}
-
 @stop
