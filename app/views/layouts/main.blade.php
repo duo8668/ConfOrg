@@ -32,7 +32,7 @@
 </head>
 
 <body>
-
+    <div id="top"></div>
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
@@ -50,14 +50,8 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
+                        <a href="#about-section">About</a>
+                    </li>                
 					<li>
                         <a href="#">Sign in</a>
                     </li>
@@ -115,10 +109,10 @@
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><span class="network-name"><i class="fa fa-user fa-fw"></i> Sign in</span></a>
+                            <a href="#" class="btn btn-default btn-lg"><span class="network-name"><i class="fa fa-user fa-fw"></i> Sign in</span></a>
                         </li>
                         <li>
-                            <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-info btn-lg"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Sign up</span></a>
+                            <a href="#" class="btn btn-info btn-lg"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Sign up</span></a>
                         </li>                
                     </ul>
                 </div>
@@ -137,20 +131,12 @@
                 <div class="col-lg-12">
                     <ul class="list-inline">
                         <li>
-                            <a href="#home">Home</a>
+                            <a href="#top">Home</a>
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#about">About</a>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                            <a href="#services">Services</a>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                            <a href="#contact">Contact</a>
-                        </li>
+                            <a href="#about-section">About</a>
+                        </li>   
                     </ul>
                     <p class="copyright text-muted small">&copy; IT14/4A 2014. All Rights Reserved</p>
                 </div>
