@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('content')
+    <div id="about-section"></div>
 	<div class="content-section-a">
 
         <div class="container">
@@ -9,7 +10,7 @@
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
                     <h2 class="section-heading">Collaborative Organizer</h2>
-                    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p class="lead">Work together with your program committee! Conference Organizer provides easy management of conference organization, including paper submission, review process, and venue bookings.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
                     <img class="img-responsive" src="img/collaborative-2.jpg" alt="">
@@ -30,8 +31,8 @@
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">On the Cloud, 24/7</h2>
-                    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <h2 class="section-heading">Access to your content 24/7</h2>
+                    <p class="lead">Access all of your conferences' submissions, reviews, venues, participants and all other details online, anytime.</p>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
                     <img class="img-responsive" src="img/onthecloud.jpg" alt="">
@@ -53,7 +54,7 @@
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
                     <h2 class="section-heading">Mobile-friendly design</h2>
-                    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p class="lead">Get mobile! Easily access your content from any device, anywhere.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
                     <img class="img-responsive" src="img/mobile-friendly.jpg" alt="">
@@ -65,4 +66,6 @@
 
     </div>
     <!-- /.content-section-a -->
+
+     
 @stop
