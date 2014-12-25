@@ -21,3 +21,8 @@ include('customroutes/submissionRoutes.php');
 include('customroutes/thomasRoutes.php');
 //pohjun's route
 include('customroutes/pohjunRoutes.php');
+
+Route::get('/', function()
+{
+    return View::make('hello');
+});
