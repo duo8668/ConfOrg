@@ -7,25 +7,25 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-protected $table = 'users';
-protected $primaryKey = 'user_id';
+	protected $table = 'users';
+	protected $primaryKey = 'user_id';
 
-protected $fillable = ['title','firstname','lastname','email','password','remember_token'];
+	protected $fillable = ['title','firstname','lastname','email','password','remember_token'];
 
-protected $guarded = array('user_id');
+	protected $guarded = array('user_id');
 
-public $timestamps = false;
+	public $timestamps = false;
 
-use UserTrait, RemindableTrait;
-public $errors;
-protected $hidden = array('password', 'remember_token');
+	use UserTrait, RemindableTrait;
+	public $errors;
+	protected $hidden = array('password', 'remember_token');
 
 
 
 	public static $rules = 
 	[
-		'Email' => 'required',
-		'Password' => 'required'
+	'Email' => 'required',
+	'Password' => 'required'
 	];
 
 	
@@ -38,28 +38,28 @@ protected $hidden = array('password', 'remember_token');
 		$this->errors = $validation->messages();
 		return false;
 	}
- 
+	
 	public function roles()
 	{
 		return $this->belongsToMany('Role', 'ConfUserRole');
 	}
 
 	public function hasRole($name)
-    {
-        foreach ($this->roles as $role)
-        {
-            if ($role->rolename == $name) return true;
-        }
-        return false;
-    }
+	{
+		foreach ($this->roles as $role)
+		{
+			if ($role->rolename == $name) return true;
+		}
+		return false;
+	}
 
-    public static function IsInRole($name,$confId){
-    	$userid = Session::get('userid');
+	public static function IsInRole($name,$confId){
+		$userid = Session::get('userid');
 		//$confid = '1';
 		//Auth::user()->user_id
 		$user = Auth::user();
 
 		return $user->hasRole($name);
-    }
+	}
 
- }
+}

@@ -1,11 +1,11 @@
 @extends('layouts.ajaxSectionPanel')
- 
+
 @section('content')
 
 <script type="text/javascript">
 	
 	$(document).ready(function(){
- 
+		
 		$('#page-header').html('Conference Title : {{ $conf->Title }}');
 		
 		$('.confClass').on('click',function(evt){
@@ -22,6 +22,10 @@
 
 		$('#btnViewReceipt').on('click',function(evt){
 
+		});
+
+		$('#btnGoBack').on('click',function(evt){
+			location.href= '{{ action('ConferenceController@index') }}';
 		});
 
 	});
@@ -46,9 +50,12 @@
 		});
 
 	}
-*/
+	*/
 </script>
- 
+
+<div id="">{{ Form::button('Go Back',array('name'=>'btnGoBack','id'=>'btnGoBack','class'=>'')) }}</div>
+<br/>
+<br/>
 <div class="container">
 	<div class="row">
 		<div id="conf_id_col_{{$conf->ConfId}}" class="col-lg-6 customBorder confClass">

@@ -14,32 +14,53 @@ class Conference extends Eloquent {
 		return $this->hasMany('ConferenceParticipant', 'ConfId', 'ConfId');
 	}
 
+	public function ConferenceUserRoles(){
+		return $this->hasMany('ConferenceUserRole', 'conf_id', 'confId');
+	}
+
 	public function ConferenceType(){
 		return $this->hasOne('ConferenceType', 'ConfTypeId', 'ConfTypeId');	
 	}
 	
+	public function registerInConference($roleId,$confId){
+
+		$participantId = $this
+		->ConferenceUserRoles()
+		->where('user_id','=',Auth::user()->user_id)
+		->first();
+
+		if($participantId == null){
+
+			try{
+				$confUserRole = ConferenceUserRole::create(array('role_id' => $roleId,'user_id'=> Auth::user()->user_id,'conf_id'=>$confId));
+			}catch(Exception $ex)
+			{
+				throw $ex;
+			}
+			return $confUserRole;
+		}else{
+			return 'Already Registered...';
+		}
+	}
+
 	public function getStatusInConference(){
- 
+
 		$user = User::where('user_id','=',1)->first();
 		Auth::login($user);
 		//dd(Auth::user()->user_id);
- 	
-		$participantId = $this
-		->ConferenceParticipants()
-		->where('UserId','=',Auth::user()->user_id)
+
+		$confUserRole = $this
+		->ConferenceUserRoles()
+		->where('user_id','=',Auth::user()->user_id)
 		->first();
 		
 		//dd(DB::getQueryLog());
-		if($participantId == null){
+		if($confUserRole == null){
 			// mean this person has not participant yet
-
 			return 'Not Participating';
 		}else{
-			return 'Participant';
+			return $confUserRole->Role->rolename;
 		}
-
-
-		return 'goodtoGO';
 	}
 
 	public function AllJsonConference($beginTime,$endTime){
