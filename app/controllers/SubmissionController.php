@@ -25,6 +25,16 @@ class SubmissionController extends \BaseController {
 		return View::make('submission.addnew');
 	}
 
+	/**
+	 * Show review results.
+	 *
+	 * @return Response
+	 */
+	public function results()
+	{
+		return View::make('submission.results');
+	}
+
 
 	/**
 	 * Store a newly created resource in storage.
