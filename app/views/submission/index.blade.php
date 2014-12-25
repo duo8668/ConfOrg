@@ -9,6 +9,7 @@
 			<td>Submission ID</td>
 			<td>Submission Title</td>
 			<td>Submission Type</td>
+			<td>Option</td>
 		</tr> 
 		@foreach ($submissions as $sub) 
 			<tr>
@@ -21,6 +22,7 @@
 				} else {
 					echo 'Abstract';
 				}?></td>
+				<td><a href="{{ url('submission/results') }}" class="btn btn-info btn-xs">Review Results</a></td>
 			</tr>
 		@endforeach
 	</table>

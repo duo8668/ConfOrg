@@ -6,7 +6,7 @@
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
-			<td>Review ID</td>
+			<td>Submission ID</td>
 			<td>Submission Title</td>
 			<td>Submission Type</td>
 			<td>Option</td>

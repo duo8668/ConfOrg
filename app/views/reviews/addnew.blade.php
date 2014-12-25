@@ -14,7 +14,7 @@
       <div class="form-group">
         <label class="col-md-4 control-label">Submission Type</label>
         <div class="col-md-4">
-          Full Paper
+          Abstract
         </div>
       </div>
 

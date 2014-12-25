@@ -44,18 +44,68 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Conference Management<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-calendar fa-fw"></i> Conference Management<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"><i class="fa fa-calendar fa-fw"></i> Conference Schedule</a>
+                                    <a href="#"> Conference Schedule</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-group fa-fw"></i> Conference Participants</a>
+                                    <a href="#"> Conference Participants</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-info fa-fw"></i> Conference Info</a>
+                                    <a href="#"> Conference Info</a>
                                 </li>
                             </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-building fa-fw"></i> Venue Management<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#"></i> Equipments <span class="fa arrow"></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="#">Add New Equipments</a>
+                                        </li>   
+                                        <li>
+                                            <a href="#">View All Equipments</a>
+                                        </li>                                      
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#"></i> Category <span class="fa arrow"></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="#">Add New Category</a>
+                                        </li>    
+                                        <li>
+                                            <a href="#">View All Category</a>
+                                        </li>                                     
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#"></i> Venue <span class="fa arrow"></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="#">Add New Venue</a>
+                                        </li>     
+                                        <li>
+                                            <a href="#">View All Venue</a>
+                                        </li>                                    
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#"> Room <span class="fa arrow"></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="#">Add New Room</a>
+                                        </li>   
+                                        <li>
+                                            <a href="#">View All Room</a>
+                                        </li>                                      
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
