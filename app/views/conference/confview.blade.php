@@ -1,66 +1,54 @@
-@extends('layouts.dashboard.master')
-
-@section('page-header')
-Conference Title : {{ $selectedConfId }}
-@stop
-
-<!-- extraScripts Section -->
-@section('extraScripts')
-
-<link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
-
-<script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
-
-<script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
-
-<style>
-
-	body {
-		margin: 40px 10px;
-		padding: 0;
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		font-size: 14px;
-	}
-
-	#calendar {
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	.customBorder{
-		border: blue thin solid;
-		margin-left: 10px;
-		margin-right: 10px;
-	}
-
-	.customBorder:hover{
-		border: green thin solid;
-		cursor: pointer;
-	}
-
-	.boldText{
-		font-weight: bolder;
-	}
-</style>
+@extends('layouts.ajaxSectionPanel')
+ 
+@section('content')
 
 <script type="text/javascript">
 	
 	$(document).ready(function(){
-
+ 
+		$('#page-header').html('Conference Title : {{ $conf->Title }}');
+		
 		$('.confClass').on('click',function(evt){
 
 		});
 
+		$('#btnParticipate').on('click',function(evt){
+			alert(evt);
+		});
+
+		$('#btnAddReview').on('click',function(evt){
+
+		});
+
+		$('#btnViewReceipt').on('click',function(evt){
+
+		});
+
 	});
+/*
+	function submitAjax(source){
+		$(source).attr('id')
+		blockUI();
+		$.ajax({
+			type: "GET",
+			url : "conference/confParticular",
+			data : {subject:$(this).attr('id')}
+		})
+		.done(function(data) {
+			//alert(data);
+			$('#displayChannel').html(data);
+		})
+		.fail(function(xhr,stat,msg) {
+			alert(xhr.responseText);
+		})
+		.always(function(data) {
 
+		});
+
+	}
+*/
 </script>
-
-
-@stop
-
-@section('content')
-
-<div class="col-md-12 boldText">Title : {{ $conf->Title }}</div>
+ 
 <div class="container">
 	<div class="row">
 		<div id="conf_id_col_{{$conf->ConfId}}" class="col-lg-6 customBorder confClass">
@@ -72,9 +60,9 @@ Conference Title : {{ $selectedConfId }}
 				<div class="col-md-12 ">Begin : {{ $conf->BeginDate }}</div>
 				<div class="col-md-12 ">End : {{ $conf->EndDate }}</div>
 
-				{{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'')) }}
-				{{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'')) }}
-				{{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'')) }}
+				@if(User::IsInRole('participant',$conf->ConfId )){{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'')) }} @endif
+				@if(User::IsInRole('review',$conf->ConfId )){{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'')) }} @endif
+				@if(User::IsInRole('fin-view',$conf->ConfId )){{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'')) }} @endif
 			</div>
 		</div>
 	</div>

@@ -56,8 +56,8 @@ All Conferences
 				url : "conference/confParticular",
 				data : {subject:$(this).attr('id')}
 			})
-			.done(function(data) {
-				alert(data);
+			.done(function(data) {				 
+				$('#displayChannel').html(data);
 			})
 			.fail(function(xhr,stat,msg) {
 				alert(xhr.responseText);
@@ -81,9 +81,16 @@ All Conferences
 
 @section('content')
 
-<div class="col-md-12 ">Search : </div>
+<div class="input-group  col-md-4">
+	<span class="input-group-btn">
+		<button class="btn btn-default" type="submit">Search</button>
+	</span>
+	<input type="text" class="form-control search-query input-flat">
+</div>
+<br/>
+<br/>
 <div class="container">
-	<div class="row">
+	<div class="row gallery effect-1">
 
 		@foreach ($confs as $conf)
 

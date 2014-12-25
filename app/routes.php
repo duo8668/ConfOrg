@@ -12,7 +12,7 @@
 */
 
 //mousheng's route
-//include('customroutes/confManagementRoutes.php');
+include('customroutes/confManagementRoutes.php');
 include('customroutes/utilsRoutes.php');
 
 //bella's route

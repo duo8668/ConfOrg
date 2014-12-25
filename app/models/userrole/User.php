@@ -57,7 +57,7 @@ protected $hidden = array('password', 'remember_token');
     	$userid = Session::get('userid');
 		//$confid = '1';
 		//Auth::user()->user_id
-		$user = User::find($userid);
+		$user = Auth::user();
 
 		return $user->hasRole($name);
     }
