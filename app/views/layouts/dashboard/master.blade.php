@@ -3,7 +3,7 @@
 
 <head>
   @include('layouts.dashboard.headerdash')
- 
+  @yield('head-content')
 </head>
 
 <body>
