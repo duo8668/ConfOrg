@@ -2,39 +2,42 @@
 <html lang="en">
 
 <head>
-    @include('layouts.dashboard.headerdash')
+  @include('layouts.dashboard.headerdash')
+ 
 </head>
 
 <body>
-    <div id="wrapper">
+  <div id="wrapper">
 
-        <!-- Navigation -->
-        @include('layouts.dashboard.nav')
+    <!-- Navigation -->
+    @include('layouts.dashboard.nav')
 
-        
-        <!-- Sidebar -->
-        @include('layouts.dashboard.sidebar')
-        
-        <div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">
-                        @yield('page-header')
-                    </h1>
 
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            <!-- /.row -->
-            @yield('content')
-            
+    <!-- Sidebar -->
+    @include('layouts.dashboard.sidebar')
+
+    <div id="page-wrapper">
+      <div class="row">
+        <div class="col-lg-12">
+          <h1 id="page-header" class="page-header">
+            @yield('page-header')
+          </h1>
+
         </div>
-        <!-- /#page-wrapper -->
+        <!-- /.col-lg-12 -->
+      </div>
+      <!-- /.row -->
+      <div id="displayChannel">
+       @yield('content')
+     </div>        
 
-    </div>
-    <!-- /#wrapper -->
+   </div>
+   <!-- /#page-wrapper -->
 
-    <!-- @include('layouts.dashboard.footerdash') -->
+ </div>
+ <!-- /#wrapper -->
+
+ <!-- @include('layouts.dashboard.footerdash') -->
 
 </body>
 
