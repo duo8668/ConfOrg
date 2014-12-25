@@ -22,7 +22,7 @@ class ReviewController extends \BaseController {
 	 */
 	public function create()
 	{
-		return "enter/edit reviews for " . $subid;
+		return View::make('reviews.addnew');
 	}
 
 
