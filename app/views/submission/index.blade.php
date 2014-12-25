@@ -1,10 +1,8 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+	All Submissions
+@stop
 @section('content')
-<div class="row">
-  <div class="col-lg-12">
-    <h2 class="page-header">All Submissions</h2>
-  </div>
-</div>
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
@@ -14,9 +12,15 @@
 		</tr> 
 		@foreach ($submissions as $sub) 
 			<tr>
-				<td>{{{ $sub->subId }}}</td>
-				<td>{{{ $sub->subTitle }}}</td>
-				<td>{{{ $sub->subType }}}</td>
+				<td>{{{ $sub->Sub_id }}}</td>
+				<td>{{{ $sub->SubTitle }}}</td>
+				<td><?php if ($sub->SubType >= 3) {
+					echo 'Poster';
+				} else if ($sub->subType >= 2) {
+					echo 'Full Paper';
+				} else {
+					echo 'Abstract';
+				}?></td>
 			</tr>
 		@endforeach
 	</table>

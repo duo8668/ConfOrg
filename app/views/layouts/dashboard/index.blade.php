@@ -1,4 +1,7 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+  Welcome to Dashboard!
+@stop
 @section('content')
-  <h2> Welcome to the Dashboard! </h2>
+  
 @stop

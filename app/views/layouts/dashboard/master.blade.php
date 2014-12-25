@@ -7,7 +7,8 @@
 </head>
 
 <body>
-  <div id="wrapper">
+
+    <div id="wrapper">
 
     <!-- Navigation -->
     @include('layouts.dashboard.nav')
