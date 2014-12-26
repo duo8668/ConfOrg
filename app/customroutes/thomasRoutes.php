@@ -14,6 +14,7 @@
 Route::resource('venue', 'ThomasController');
 Route::resource('category', 'CategoryController');
 Route::resource('equipment', 'EquipmentController');
+Route::resource('room', 'RoomController');
 
 
 //Route::get('foo/bar', 'FooController@about');
