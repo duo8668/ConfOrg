@@ -56,7 +56,7 @@ class CategoryController extends \BaseController {
 	            $category->save();            
 
 	            // redirect
-	            Session::flash('message', 'category Successfully Created!');
+	            Session::flash('message', 'Category Successfully Created!');
 	            return Redirect::to('category');
 	        } 
 	}
@@ -90,7 +90,6 @@ class CategoryController extends \BaseController {
 		//
 		$category = Category::find($id);
 
-
         // show the edit form and pass the category
         return View::make('category.edit')
             ->with('category', $category);
@@ -108,7 +107,7 @@ class CategoryController extends \BaseController {
 		//
 	    $rules = array(
             'categoryName'       => 'required',
-            'categoryRemark'      => 'required',            
+            'categoryRemarks'      => 'required',            
         );
         $validator = Validator::make(Input::all(), $rules);
 
@@ -120,13 +119,13 @@ class CategoryController extends \BaseController {
         }         
         else {
             // store
-            $category = category::find($id);        		                  
+        	$category = Category::find($id);        		                  
             $category->name = Input::get('categoryName');
-            $category->remark = Input::get('categoryRemark');            
+            $category->remarks = Input::get('categoryRemarks');	                                  
             $category->save();       
 
             // redirect
-            Session::flash('message', 'category Successfully Updated!');
+            Session::flash('message', 'Category Successfully Updated!');
             return Redirect::to('category');
         } 
 }
@@ -141,6 +140,11 @@ class CategoryController extends \BaseController {
 	public function destroy($id)
 	{
 		//
+		$category = category::find($id);
+		$category->delete();       
+        // redirect
+        Session::flash('message', 'Successfully deleted the Category!');
+        return Redirect::to('category');
 	}
 
 
