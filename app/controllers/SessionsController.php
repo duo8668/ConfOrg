@@ -19,7 +19,7 @@ public function store()
 	if (Auth::attempt(Input::only('email', 'password')))
 	{
 		
-		return View::make('welcome');	
+		return Redirect::action('ConferenceController@index');	
 	}
 
 	return Redirect::to('/login')->withInput();
