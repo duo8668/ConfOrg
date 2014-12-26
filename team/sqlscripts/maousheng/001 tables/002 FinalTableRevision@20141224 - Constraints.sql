@@ -177,6 +177,11 @@ ALTER TABLE `submission_keyword` ADD CONSTRAINT `submission_keyword_ibfk_1` FORE
 ALTER TABLE `submission_topic` ADD CONSTRAINT `submission_topic_ibfk_1` FOREIGN KEY (`Sub_id`) REFERENCES `submissions` (`Sub_id`);
 
 -- ----------------------------
+--  Table structure for `submission_author`
+-- ----------------------------
+ALTER TABLE `submission_author` ADD CONSTRAINT `submission_author_ibfk_1` FOREIGN KEY (`Sub_id`) REFERENCES `submissions` (`Sub_id`);
+
+-- ----------------------------
 --  Table structure for `venueroom`
 -- ----------------------------
 ALTER TABLE `venueroom` ADD CONSTRAINT `fk_VenueRoom_RoomID` FOREIGN KEY (`RoomID`) REFERENCES `room` (`RoomID`),
