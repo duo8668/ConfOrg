@@ -53,7 +53,7 @@
                         <a href="#about-section">About</a>
                     </li>                
 					<li>
-                        <a href="#">Sign in</a>
+                        <a href="{{ url('login') }}">Sign in</a>
                     </li>
                 </ul>
             </div>
@@ -109,7 +109,7 @@
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            <a href="#" class="btn btn-default btn-lg"><span class="network-name"><i class="fa fa-user fa-fw"></i> Sign in</span></a>
+                            <a href="{{ url('login') }}" class="btn btn-default btn-lg"><span class="network-name"><i class="fa fa-user fa-fw"></i> Sign in</span></a>
                         </li>
                         <li>
                             <a href="#" class="btn btn-info btn-lg"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Sign up</span></a>
