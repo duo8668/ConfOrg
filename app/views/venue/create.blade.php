@@ -50,22 +50,5 @@ Add New Venue
           <?php echo Session::get('map')['html']; ?> 
       </div>
     </center>
-    @endif
-
-              <table>
-                    <tr><td><button class="btn btn-small btn-info" onclick="$('#1').toggle();">Show/Hide</button></td></tr>
-                    <tr><td><div id="1" style="display: none">
-                    Hide show.....
-                </div></td></tr>
-                <tr><td><button class="btn btn-small btn-info" onclick="$('#2').toggle();">Show/Hide</button></td></tr>
-                    <tr><td><div id="2" style="display: none">
-                    Hide show.....
-                </div></td></tr>
-                
-                
-                </table>
-    <!-- jQuery -->
-    <script src="{{ asset('js/jquery.js') }}"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    @endif    
 @stop
