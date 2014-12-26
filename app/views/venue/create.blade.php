@@ -6,9 +6,10 @@
       </div>    
     @endif
 @stop
+@section('page-header')
+Add New Venue
+@stop
 @section('content')
-<center><legend><h1>Create Venue</h1></legend></center>
-
     @if (Session::has('message'))
         <div class="alert alert-danger">{{ Session::get('message') }}</div>
     @endif

@@ -7,11 +7,11 @@
 @stop
 
 @extends('layouts.dashboard.master')
+@section('page-header')
+Showing {{ $venue->Name }}
+@stop
 @section('content')
-
 <div class="container">
-<h1>Showing {{ $venue->Name }}</h1>
-
     <div class="jumbotron text-center">
         <h2>{{ $venue->Name }}</h2>
         <p>

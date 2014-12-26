@@ -1,7 +1,7 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+Showing {{ $equipment->EquipmentName }}@stop
 @section('content')
-<h1>Showing {{ $equipment->EquipmentName }}</h1>
-
     <div class="jumbotron text-center">
         <h2>{{ $equipment->EquipmentName }}</h2>
         <p>

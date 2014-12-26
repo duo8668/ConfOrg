@@ -7,8 +7,10 @@
       </div>    
     @endif
 @stop
+@section('page-header')
+Edit {{ $venue->Name }}
+@stop
 @section('content')
-<center><legend><h1>Edit {{ $venue->Name }}</h1></legend></center>
 
 <!-- if there are creation errors, they will show here -->
 {{ HTML::ul($errors->all()) }}

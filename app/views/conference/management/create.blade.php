@@ -1,7 +1,7 @@
 @extends('layouts.dashboard.master')
 
 @section('page-header')
-Create a conference
+Add New Conference
 @stop
 
 <!-- extraScripts Section -->
@@ -133,18 +133,60 @@ function callback(eventData){
 
 @if (!Auth::Id())
 <div id='divFormBody'>
+	{{ Form::open(array('url' => 'conference/management/submitCreateConf','method'=>'POST','id'=>'frmCreateConf', 'class' => 'form-horizontal')) }}
+    <fieldset>
+      
+      <div class="form-group">
+      	{{ Form::label('lblConfTitle', 'Title', array('class' => 'col-md-4 control-label')) }}       
+        <div class="col-md-4">
+          {{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle', 'class' => 'form-control input-md'))}}
+        </div>
+      </div>
 
-	{{ Form::open(array('url' => 'conference/management/submitCreateConf','method'=>'POST','id'=>'frmCreateConf')) }}
+      <div class="form-group">
+        {{ Form::label('lblConfType', 'Conference Type', array('class' => 'col-md-4 control-label')) }}
+        <div class="col-md-4">
+        {{ Form::select('confType',$confTypes,null,array('name'=>'confType','id'=>'confType')) }} </br>
+        </div>
+      </div>
 
-	{{ Form::label('lblConfTitle', 'Title :') }} {{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle'))}} </br>
-	{{ Form::label('lblConfType', 'Type :') }} {{ Form::select('confType',$confTypes,null,array('name'=>'confType','id'=>'confType')) }} </br>
-	{{ Form::label('dtConference', 'Date Range :') }} {{ Form::button('Select Date!',array('name'=>'dtConference','id'=>'dtConference')) }} <div id='showCalendar'><div id="myCalendar"></div></div></div></br>
-	{{ Form::label('beginDate', 'Begin :') }} {{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly')) }}
-	{{ Form::label('endDate', 'End :') }}	{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly')) }}</br>
-	{{ Form::label('isFree', 'IsFree? :') }} {{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }} </br>
+      
+      <div class="form-group">
+        {{ Form::label('dtConference', 'Date Range', array('class' => 'col-md-4 control-label')) }}
+        <div class="col-md-4">   
+          {{ Form::button('Select Date!',array('name'=>'dtConference','id'=>'dtConference')) }} <div id='showCalendar'><div id="myCalendar"></div></div>            
+        </div>
+      </div>
 
-	{{ Form::submit('Click Me!')}}
+      <div class="form-group">
+        {{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  
+        <div class="col-md-4">   
+          {{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control input-md')) }}                 
+        </div>
+      </div>
 
+      <div class="form-group">
+        {{ Form::label('endDate', 'End', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">   
+          {{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control input-md')) }}                 
+        </div>
+      </div>
+
+      <div class="form-group">
+        {{ Form::label('isFree', 'Is this Conference Free?', array('class' => 'col-md-4 control-label')) }} 
+        <div class="col-md-4">   
+          {{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }} Yes                 
+        </div>
+      </div>
+	
+      <!-- Submit Button -->
+      <div class="form-group">
+        <label class="col-md-4 control-label"></label>
+        <div class="col-md-4">
+          {{ Form::submit('Add New Conference', array('class' => 'btn btn-primary btn-lg')) }}
+        </div>
+      </div>
+	</fieldset>
 	{{ Form::close() }}
 
 

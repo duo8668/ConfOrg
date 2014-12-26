@@ -75,10 +75,10 @@
                                     <a href="#"></i> Category <span class="fa arrow"></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="#">Add New Category</a>
+                                            <a href="{{ url('category/create') }}">Add New Category</a>
                                         </li>    
                                         <li>
-                                            <a href="#">View All Category</a>
+                                            <a href="{{ url('category') }}">View All Category</a>
                                         </li>                                     
                                     </ul>
                                 </li>
@@ -86,10 +86,10 @@
                                     <a href="#"></i> Venue <span class="fa arrow"></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="#">Add New Venue</a>
+                                            <a href="{{ url('venue/create') }}">Add New Venue</a>
                                         </li>     
                                         <li>
-                                            <a href="#">View All Venue</a>
+                                            <a href="{{ url('venue') }}">View All Venue</a>
                                         </li>                                    
                                     </ul>
                                 </li>

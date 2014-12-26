@@ -1,4 +1,7 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+Add New Equipment
+@stop
 @section('content')
 <center><legend><h1>Create Equipment</h1></legend></center>
 

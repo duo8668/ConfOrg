@@ -1,8 +1,8 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+All Venues
+@stop
 @section('content')
-
-<h1>All the Venues</h1>
-
 <!-- will be used to show any messages -->
 @if (Session::has('message'))
     <div class="alert alert-success">{{ Session::get('message') }}</div>

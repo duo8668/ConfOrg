@@ -1,6 +1,8 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+All Equipments
+@stop
 @section('content')
-<h1>All the Equipments</h1>
 
 <!-- will be used to show any messages -->
 @if (Session::has('message'))

@@ -1,6 +1,8 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+All Categories
+@stop
 @section('content')
-<h1>All the Category</h1>
 
 <!-- will be used to show any messages -->
 @if (Session::has('message'))

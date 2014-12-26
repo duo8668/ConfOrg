@@ -1,7 +1,8 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+  Create Category
+@stop
 @section('content')
-<center><legend><h1>Create Category</h1></legend></center>
-
     @if (Session::has('message'))
         <div class="alert alert-danger">{{ Session::get('message') }}</div>
     @endif

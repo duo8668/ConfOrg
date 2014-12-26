@@ -1,7 +1,8 @@
 @extends('layouts.dashboard.master')
+@section('page-header')
+Edit {{ $equipment->EquipmentName }}
+@stop
 @section('content')
-
-<center><legend><h1>Edit {{ $equipment->EquipmentName }}</h1></legend></center>
 {{ Form::model($equipment, array('route' => array('equipment.update', $equipment->ID), 'method' => 'PUT', 'class' => 'form-horizontal')) }}
     <fieldset>
     <div class="form-group @if ($errors->has('equipmentName')) has-error @endif">
