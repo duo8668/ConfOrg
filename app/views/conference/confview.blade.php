@@ -5,7 +5,8 @@
 <script type="text/javascript">
 	
 	$(document).ready(function(){
-		
+		$(document).ajaxStop($.unblockUI); 
+
 		$('#page-header').html('Conference Title : {{ $conf->Title }}');
 		
 		$('.confClass').on('click',function(evt){
@@ -13,7 +14,7 @@
 		});
 
 		$('#btnParticipate').on('click',function(evt){
-			participate($(this).parent().parent().attr('id'));
+			participate($(this).parent().parent());
 		});
 
 		$('#btnAddReview').on('click',function(evt){
@@ -32,18 +33,18 @@
 
 
 	});
- 
+
 	function participate(source){
-		$(source).attr('id')
+
 		blockUI();
 		$.ajax({
 			type: "GET",
-			url : "conference/confParticular",
-			data : {subject:$(this).attr('id')}
+			url : "conference/management/participate",
+			data : {subject:$(source).attr('id')}
 		})
 		.done(function(data) {
-			//alert(data);
-			$('#displayChannel').html(data);
+			alert(data);
+			//$('#displayChannel').html(data);
 		})
 		.fail(function(xhr,stat,msg) {
 			alert(xhr.responseText);
@@ -65,12 +66,13 @@
 			<div id="conf_id_col_{{$conf->ConfId}}" class="col-lg-6 customBorder confClass">
 				<div id="buttonContainer" class="col-md-12 ">
 					<div class="col-md-12 boldText">Status : {{ $conf->getStatusInConference() }}</div>
-					<div class="col-md-12 ">Title : {{ $conf->Title }}</div>
-					<div class="col-md-12 ">Description : {{ $conf->Description }}</div>
-					<div class="col-md-12 ">ConferenceType : {{ $conf->ConferenceType->ConferenceType }}</div>
-					<div class="col-md-12 ">Begin : {{ $conf->BeginDate }}</div>
-					<div class="col-md-12 ">End : {{ $conf->EndDate }}</div>
-
+					<div class="conferenceDescription">
+						<h2>{{ $conf->Title }}</h2>
+						<p>{{ $conf->ConferenceType->ConferenceType }}</p>
+						<p>{{ $conf->Description }}</p>
+						<p>{{ $conf->BeginDate }} to {{ $conf->EndDate }}</p>
+					</div>
+					 
 					@if(User::IsInRole('participant',$conf->ConfId )){{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'')) }} @endif
 					@if(User::IsInRole('review',$conf->ConfId )){{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'')) }} @endif
 					@if(User::IsInRole('fin-view',$conf->ConfId )){{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'')) }} @endif

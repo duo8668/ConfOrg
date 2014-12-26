@@ -74,10 +74,10 @@ All Conferences
 </div>
 <br/>
 <br/>
-<div class="container">
+<div class="">
 	<div class="row">
 		@foreach ($confs as $conf)
-		<div id="conf_id_col_{{$conf->ConfId}}" class="col-md-3 confClass customBorder">
+		<div id="conf_id_col_{{$conf->ConfId}}" class="col-md-4 confClass customBorder">
 			<div class="panel panel-primary  has-ribbon" data-text="{{ $conf->getStatusInConference() }}">
 				<div class="panel-heading"><strong><br/></strong></div>
 				<div class="panel-body">

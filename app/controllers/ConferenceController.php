@@ -28,8 +28,6 @@ class ConferenceController extends BaseController {
 		$user = User::where('user_id','=',1)->first();
 		Auth::login($user);
 
-
-
 		$confTypes=ConferenceType::where('IsEnabled','=','1')
 		->lists('ConferenceType', 'ConfTypeId');
 
@@ -40,14 +38,33 @@ class ConferenceController extends BaseController {
 
 	public function register()
 	{
-		/*
-		$confs=Conference::where('IsEnabled','=','1')
-		->where(DB::raw('beginDate > curdate()'))
-		->get();
+		//
+		$selectedConfId = $this->ValidateConference();
 
-		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
-*/
-		return '';
+		if($selectedConfId == -9999){
+			return 'NOT OK';
+		}else{
+			$conf=Conference::where('confId','=',$selectedConfId) 
+			->first();
+
+			if($conf == null){
+				return 'NOT OK';
+			}else{
+
+				// confId isvalid, check if the person already participated
+				if(User::IsInRole('',$selectedConfId)){
+					return 'NOT OK';
+				}else{
+
+					// the user has not been participated
+
+				}
+			}
+
+			return $selectedConfId;
+		}
+
+		return 'OK';
 	}
 
 	public function theConf()
@@ -66,6 +83,7 @@ class ConferenceController extends BaseController {
 		//conf_id_col_\d+$
 
 		$subject = Input::get('subject');
+
 		$pattern = '/'.'^conf_id_col_(?P<confId>\d+)$'.'/';
 
 		$matching = preg_match($pattern, $subject, $output_array);
@@ -90,8 +108,10 @@ class ConferenceController extends BaseController {
 
 	public function createConference()
 	{
+		$conf= null;
+		
 		if(Auth::check()){
-			$conf= null;
+			
 			$confTitle = Input::get('conferenceTitle');
 			$confType = Input::get('confType'); 
 			$confDesc = Input::get('confDesc');
@@ -121,9 +141,9 @@ class ConferenceController extends BaseController {
 
 				throw $ex;
 			}
-	 
-		}else{
 
+		}else{
+			return 'Not LoggedIn';
 		}
 
 		return $conf;
@@ -135,7 +155,11 @@ class ConferenceController extends BaseController {
 
 		$conf = Conference::where('Title','=',$confTitle)->first();
 
-		return ($conf==null)? 'true':'false';
+		if($conf==null){
+			return 'true';
+		}else{
+			return 'The Conference Title exists in database !';
+		}
 	}
 
 	function checkConfType($vale){

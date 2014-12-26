@@ -33,6 +33,11 @@ Add New Conference
 		margin: 0 auto;
 	}
 
+	#frmCreateConf .form-group .col-md-4 .form-control-feedback{
+		top: 8px;
+		right: 15px;	
+	}
+
 </style>
 
 
@@ -42,8 +47,7 @@ Add New Conference
 <!-- Content Section -->
 @section('content')
 <script>
-	$(document).ajaxStop($.unblockUI); 
-	
+	//$(document).ajaxStop($.unblockUI); 	
 	
 	var eventData;
 	$(document).ready(function(){
@@ -77,7 +81,7 @@ Add New Conference
 							alert(xhr.responseText);
 						})
 						.always(function(data) {
-
+							$.unblockUI();
 						});
 					},
 					buttons: {
@@ -98,20 +102,36 @@ Add New Conference
 
 $('#conferenceTitle').on('change',function(event){
 
-	$.ajax({
-		type: "POST",
-		url : "checkConfTitle",
-		data : {confTitle:$("input#conferenceTitle").val().trim() }
-	})
-	.done(function(data) {
-		 
-	})
-	.fail(function(xhr,stat,msg) {
-		alert(xhr.responseText);
-	})
-	.always(function(data) {
+	if($(this).val().trim().length > 6){
+		var str = $(this).val();
+		if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
+			swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
+		}else{
+			$.ajax({
+				type: "POST",
+				url : "checkConfTitle",
+				data : {confTitle:$("input#conferenceTitle").val().trim() }
+			})
+			.done(function(data) {
+				if(data != 'true'){				
+					swapStatus('conferenceTitle','NOTOK',data);
+				}else if(data == 'true'){
+					swapStatus('conferenceTitle','OK','');
+				}
+			})
+			.fail(function(xhr,stat,msg) {
+				alert(xhr.responseText);
+			})
+			.always(function(data) {
+				$.unblockUI();
+			});
+		}
 
-	});
+	}else{
+
+		swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
+	}
+
 });
 
 $("#frmCreateConf").submit(function(e){
@@ -130,12 +150,23 @@ $("#frmCreateConf").submit(function(e){
 		data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,beginDate:beginDate,endDate:endDate,isFree:isFree}
 	})
 	.done(function(data) {
-		alert(data);
-	})
-	.fail(function(xhr,stat,msg) {
+		if(data.id != undefined){
+			// mean it is sucessfully created 
+			$.unblockUI();	
+			$.blockUI({ 
+				message: "<h3><img src='{{ asset('img/jqueryui/check_sign_icon_green.png') }}' /> Your Conference : " + data.Title +" has been created sucessfully ! </h3>"  
+			});
+			setTimeout(function() { 
+				$.unblockUI({ 
+					onUnblock: function(){window.location.href='{{ action("ConferenceController@index") }}';}			
+				}); 
+			}, 1500); 
+
+		}
+	}).fail(function(xhr,stat,msg) {
 		alert(xhr.responseText);
-	})
-	.always(function(data) {
+		$.unblockUI();
+	}).always(function(data) {
 
 	});
 });
@@ -152,10 +183,26 @@ function callback(eventData){
 }
 
 function blockUI(){
-
-	$.blockUI({ message: "<h1><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h1>" }); 
+	$.blockUI({ message: "<h2><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h2>" }); 
 }
 
+function swapStatus(_id,_status,_msg){
+	_class= $('#'+_id).parent();
+	$(_class).parent().attr('class','form-group');
+	$(_class).find('i').removeClass('fa-asterisk fa-check fa-times');
+
+	if(_status =='OK'){
+		$(_class).parent().addClass('has-feedback has-success');
+		$(_class).find('i').addClass('fa-check');
+	}else if (_status == 'NOTOK'){
+		$(_class).parent().addClass('has-feedback has-error');
+		$(_class).find('i').addClass('fa-times');
+	}else{
+		$(_class).find('i').addClass('fa-asterisk');
+	}
+
+	$(_class).find('small').text(_msg);
+}
 </script>
 <!-- include('../../utils/customcalendar') -->
 
@@ -169,7 +216,8 @@ function blockUI(){
 			{{ Form::label('lblConfTitle', 'Title', array('class' => 'col-md-4 control-label')) }}       
 			<div class="col-md-4">
 				{{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle', 'class' => 'form-control input-md'))}}
-				<span id="error">X</span>
+				<i class="form-control-feedback fa-asterisk fa" data-bv-icon-for="name" style="display: block;"></i>
+				<small class="help-block" style=""></small>
 			</div>
 		</div>
 
@@ -226,6 +274,27 @@ function blockUI(){
 	{{ Form::close() }}
 
 
+</div>
+<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="exampleModalLabel">New message</h4>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label class="control-label"></label>
+						<label class="control-label">Recipient:</label>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
 @endif
 
