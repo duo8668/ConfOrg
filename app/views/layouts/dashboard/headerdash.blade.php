@@ -10,6 +10,8 @@
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
+    <link href="{{ asset('css/custom.bootstrap.css') }}" rel="stylesheet">
+
     <!-- MetisMenu CSS -->
     <link href="{{ asset('css/metisMenu.min.css') }}" rel="stylesheet">
 
@@ -36,6 +38,9 @@
     <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
 
     <script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
+
+    <script src="{{ asset('js/dropper.input.js') }}"></script>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

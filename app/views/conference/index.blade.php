@@ -20,14 +20,8 @@ All Conferences
 		margin: 0 auto;
 	}
 
-	.customBorder{
-		border: green thick solid;
-		margin-left: 10px;
-		margin-right: 10px;
-	}
 
-	.customBorder:hover{
-		border: yellow thick solid;
+	.customBorder:hover{ 
 		cursor: pointer;
 	}
 
@@ -83,17 +77,17 @@ All Conferences
 <div class="container">
 	<div class="row">
 		@foreach ($confs as $conf)
-			<div id="conf_id_col_{{$conf->ConfId}}" class="col-md-3 confClass">
-				<div class="panel panel-warning">
-				  	<div class="panel-heading"><strong>Status : {{ $conf->getStatusInConference() }}</strong></div>
-					<div class="panel-body">
-					    Title : {{ $conf->Title }}<br />
-						ConferenceType : {{ $conf->ConferenceType->ConferenceType }}<br />
-						Begin : {{ $conf->BeginDate }}<br />
-						End : {{ $conf->EndDate }}<br />
-				  	</div>
+		<div id="conf_id_col_{{$conf->ConfId}}" class="col-md-3 confClass customBorder">
+			<div class="panel panel-primary  has-ribbon" data-text="{{ $conf->getStatusInConference() }}">
+				<div class="panel-heading"><strong><br/></strong></div>
+				<div class="panel-body">
+					Title : {{ $conf->Title }}<br />
+					ConferenceType : {{ $conf->ConferenceType->ConferenceType }}<br />
+					Begin : {{ $conf->BeginDate }}<br />
+					End : {{ $conf->EndDate }}<br />
 				</div>
 			</div>
+		</div>
 		@endforeach
 	</div>
 
