@@ -4,14 +4,10 @@
 All Conferences
 @stop
 
-<!-- extraScripts Section -->
-@section('extraScripts')
+@section('content')
 
-<link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
 
-<script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
 
-<script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
 
 <style>
 
@@ -76,10 +72,6 @@ All Conferences
 	}
 </script>
 
-
-@stop
-
-@section('content')
 
 <div class="input-group  col-md-4">
 	<span class="input-group-btn">
