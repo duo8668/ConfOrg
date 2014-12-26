@@ -24,7 +24,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'conforg2',
+			'database'  => 'conforg_db',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',

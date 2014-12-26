@@ -53,7 +53,7 @@
                                     <a href="#"> Conference Participants</a>
                                 </li>
                                 <li>
-                                    <a href="#"> Conference Info</a>
+                                    <a href="{{ url('conference') }}">View Conferences</a>
                                 </li>
                             </ul>
                         </li>
@@ -64,10 +64,10 @@
                                     <a href="#"></i> Equipments <span class="fa arrow"></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="#">Add New Equipments</a>
+                                            <a href="{{ url('equipment/create') }}">Add New Equipments</a>
                                         </li>   
                                         <li>
-                                            <a href="#">View All Equipments</a>
+                                            <a href="{{ url('equipment') }}">View All Equipments</a>
                                         </li>                                      
                                     </ul>
                                 </li>
@@ -97,10 +97,10 @@
                                     <a href="#"> Room <span class="fa arrow"></a>
                                     <ul class="nav nav-third-level">
                                         <li>
-                                            <a href="#">Add New Room</a>
+                                            <a href="{{ url('room/create') }}">Add New Room</a>
                                         </li>   
                                         <li>
-                                            <a href="#">View All Room</a>
+                                            <a href="{{ url('room') }}">View All Room</a>
                                         </li>                                      
                                     </ul>
                                 </li>

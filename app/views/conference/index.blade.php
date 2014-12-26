@@ -37,6 +37,8 @@ All Conferences
 
 		$(document).ajaxStop($.unblockUI); 
 		
+		 
+
 		$('.confClass').on('click',function(evt){
 			$(this).attr('id')
 			blockUI();

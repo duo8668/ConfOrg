@@ -6,7 +6,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Welcome to Conference Organizer, Chairman!</a>
+                <a id="navbar-brand" class="navbar-brand" href="#">Welcome to Conference Organizer, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -29,7 +29,7 @@
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="{{ url('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
