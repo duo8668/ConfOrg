@@ -13,8 +13,7 @@ class Equipment extends Eloquent {
 		return $this->belongsTo('Category');
 	}
 
-	public function equipmentCategory()
-	{
-
+	public function rooms(){
+		return $this->belongsToMany('Room', 'Rooms_Equipment', 'equipment_id', 'room_id');
 	}
 }
