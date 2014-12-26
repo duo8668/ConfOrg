@@ -25,7 +25,11 @@ class ConferenceController extends BaseController {
 
 	public function create()
 	{
-		
+		$user = User::where('user_id','=',1)->first();
+		Auth::login($user);
+
+
+
 		$confTypes=ConferenceType::where('IsEnabled','=','1')
 		->lists('ConferenceType', 'ConfTypeId');
 
@@ -86,29 +90,67 @@ class ConferenceController extends BaseController {
 
 	public function createConference()
 	{
-		try
-		{
-			//$duplicateTitle  =Conference::where('','','');
-			
-			$conf = Conference::create(array('Title' => Input::get('conferenceTitle')
-				,'ConfTypeId' => Input::get('confType')
-				,'Description' => Input::get('conferenceTitle')
-				,'BeginDate' => date("Y-m-d", strtotime(Input::get('beginDate'))) 
-				,'BeginTime' => date("Y-m-d", strtotime(Input::get('beginDate'))) 
-				,'EndDate' => date("Y-m-d", strtotime(Input::get('endDate'))) 
-				,'EndTime' => date("Y-m-d", strtotime(Input::get('endDate'))) 
-				,'IsFree' => Input::get('isFree')
-				,'Speaker' => -1
-				,'CreatedBy' => 0 ));
-		}
-		catch(Exception $ex)
-		{
-			dd($ex);
+		if(Auth::check()){
+			$conf= null;
+			$confTitle = Input::get('conferenceTitle');
+			$confType = Input::get('confType'); 
+			$confDesc = Input::get('confDesc');
+			$isFree = Input::get('isFree') === 'true'? true: false;
+			$beginDate = Input::get('beginDate');
+			$endDate = Input::get('endDate'); 
 
-			throw $ex;
+			try
+			{ 
+				if(strlen($confTitle)>6 &&$this->checkConfType($confType) && strlen($confDesc)>0 && $this->checkIsAValidDate($beginDate) && $this->checkIsAValidDate($endDate) && is_bool($isFree)){
+
+					$conf = Conference::create(array('Title' => $confTitle
+						,'ConfTypeId' => intval($confType)
+						,'Description' => $confDesc
+						,'BeginDate' => date("Y-m-d", strtotime($beginDate)) 
+						,'BeginTime' => date("Y-m-d", strtotime($beginDate)) 
+						,'EndDate' => date("Y-m-d", strtotime($endDate)) 
+						,'EndTime' => date("Y-m-d", strtotime($endDate)) 
+						,'IsFree' => $isFree
+						,'Speaker' => -1
+						,'CreatedBy' => Auth::user()->user_id));
+				}
+			}
+			catch(Exception $ex)
+			{
+				dd($ex);
+
+				throw $ex;
+			}
+	 
+		}else{
+
 		}
 
 		return $conf;
+	}
+
+	public function checkConferenceTitle(){
+
+		$confTitle = trim(Input::get('confTitle'));
+
+		$conf = Conference::where('Title','=',$confTitle)->first();
+
+		return ($conf==null)? 'true':'false';
+	}
+
+	function checkConfType($vale){
+
+		if(is_numeric($vale)){
+			if(intval($vale)>0){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	function checkIsAValidDate($myDateString){
+		return (bool)strtotime($myDateString);
 	}
 
 }

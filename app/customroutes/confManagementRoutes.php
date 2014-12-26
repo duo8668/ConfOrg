@@ -18,4 +18,5 @@ Route::get('conference/management/conferenceevents/{beginTime}/{endTime}', 'Conf
 
 Route::post('conference/checkUserInConf', 'ConferenceController@ValidateConference');
 Route::post('conference/management/submitCreateConf', 'ConferenceController@createConference');
+Route::post('conference/management/checkConfTitle', 'ConferenceController@checkConferenceTitle');
 

@@ -13,7 +13,7 @@
 		});
 
 		$('#btnParticipate').on('click',function(evt){
-			alert(evt);
+			participate($(this).parent().parent().attr('id'));
 		});
 
 		$('#btnAddReview').on('click',function(evt){
@@ -27,13 +27,13 @@
 		$( "#btnGoBackConf" )
 		.button()
 		.click(function( event ) {
-			 
+
 		});
 
 
 	});
-/*
-	function submitAjax(source){
+ 
+	function participate(source){
 		$(source).attr('id')
 		blockUI();
 		$.ajax({
@@ -53,30 +53,30 @@
 		});
 
 	}
-	*/
+
 </script>
 
-<div id=""><a href="{{ action('ConferenceController@index') }}" id="btnGoBackConf">Back to Conferences</a></div>
-<br/>
-<br/>
-<div class="container">
-	<div class="row">
-		<div id="conf_id_col_{{$conf->ConfId}}" class="col-md-6 confClass">
-			<div class="panel panel-info">
-				<div class="panel-heading"><strong>Status : {{ $conf->getStatusInConference() }}</strong></div>
-				<div class="panel-body">
-					Title : {{ $conf->Title }}<br />
-					Description : {{ $conf->Description }}<br />
-					ConferenceType : {{ $conf->ConferenceType->ConferenceType }}<br />
-					Begin : {{ $conf->BeginDate }}<br />
-					End : {{ $conf->EndDate }}<br />
+<div id="">
+	<a href="{{ action('ConferenceController@index') }}" id="btnGoBackConf">Back Conferences</a> 
+	<br/>
+	<br/>
+	<div class="container">
+		<div class="row">
+			<div id="conf_id_col_{{$conf->ConfId}}" class="col-lg-6 customBorder confClass">
+				<div id="buttonContainer" class="col-md-12 ">
+					<div class="col-md-12 boldText">Status : {{ $conf->getStatusInConference() }}</div>
+					<div class="col-md-12 ">Title : {{ $conf->Title }}</div>
+					<div class="col-md-12 ">Description : {{ $conf->Description }}</div>
+					<div class="col-md-12 ">ConferenceType : {{ $conf->ConferenceType->ConferenceType }}</div>
+					<div class="col-md-12 ">Begin : {{ $conf->BeginDate }}</div>
+					<div class="col-md-12 ">End : {{ $conf->EndDate }}</div>
 
-					@if(User::IsInRole('participant',$conf->ConfId )){{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'btn btn-default')) }} @endif
-					@if(User::IsInRole('review',$conf->ConfId )){{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'btn btn-default')) }} @endif
-					@if(User::IsInRole('fin-view',$conf->ConfId )){{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'btn btn-default')) }} @endif
-				 </div>
+					@if(User::IsInRole('participant',$conf->ConfId )){{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'')) }} @endif
+					@if(User::IsInRole('review',$conf->ConfId )){{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'')) }} @endif
+					@if(User::IsInRole('fin-view',$conf->ConfId )){{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'')) }} @endif
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-@stop
+
+	@stop
