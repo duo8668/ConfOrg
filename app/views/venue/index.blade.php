@@ -1,12 +1,5 @@
-  <!-- app/views/venue/index.blade.php -->
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Look! I'm CRUDding</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">    
-</head>
-<body>
+@extends('layouts.dashboard.master')
+@section('content')
 
 <h1>All the Venues</h1>
 
@@ -44,7 +37,7 @@
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
                 <a class="btn btn-small btn-info" href="{{ URL::to('venue/' . $value->ID . '/edit') }}">Edit this Venue</a>
 
-                <button class="btn btn-small btn-info" onclick="$('{{$value->ID}}').toggle();">Show/Hide</button>
+                <button class="btn btn-small btn-info" onclick="$('#{{$value->ID}}').toggle();">Show/Hide</button>
                 <div id="{{$value->ID}}" style="display:none">  
                     Hide show.....
                 </div>
@@ -52,10 +45,4 @@
             </td>
         </tr>
     @endforeach
-    </tbody>
-</table>
-
-</div>
-</body>
-</html>
-</html>
+@stop

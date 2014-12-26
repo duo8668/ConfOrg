@@ -1,22 +1,15 @@
-<!-- app/views/nerds/show.blade.php -->
-
-<!DOCTYPE html>
-<html>
-<head>    
-    <title>Venue - Conference organizer</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">      
-      
-    @if($map!='')
+@section('head-content')
+  @if($map!='')
         <div>
             <?php echo $map['js']; ?>
         </div>
     @endif
-</head>
-<body>
-<div class="container">
+@stop
 
+@extends('layouts.dashboard.master')
+@section('content')
+
+<div class="container">
 <h1>Showing {{ $venue->Name }}</h1>
 
     <div class="jumbotron text-center">
@@ -35,5 +28,4 @@
     @endif
     
 </div>
-</body>
-</html>
+@stop

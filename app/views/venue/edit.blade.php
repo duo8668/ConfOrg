@@ -1,20 +1,13 @@
 <!-- app/views/nerds/edit.blade.php -->
-
-<!DOCTYPE html>
-<html>
-<head>    
-    <title>Venue - Conference organizer</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">      
-    @if(Session::has('map'))    
+@extends('layouts.dashboard.master')
+@section('head-content')
+  @if(Session::has('map'))    
       <div>
         <?php echo Session::get('map')['js']; ?>
       </div>    
     @endif
-</head>
-<body>
-
+@stop
+@section('content')
 <center><legend><h1>Edit {{ $venue->Name }}</h1></legend></center>
 
 <!-- if there are creation errors, they will show here -->
@@ -57,5 +50,5 @@
   @endif
     
 </div>
-</body>
-</html>
+@stop
+

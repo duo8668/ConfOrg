@@ -1,26 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   
-    <title>Venue - Conference organizer</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">  
-
-    @if(Session::has('map'))    
+@extends('layouts.dashboard.master')
+@section('head-content')
+  @if(Session::has('map'))    
       <div>
         <?php echo Session::get('map')['js']; ?>
       </div>    
     @endif
-    
-
-</head>
-
-<body>
+@stop
+@section('content')
 <center><legend><h1>Create Venue</h1></legend></center>
 
     @if (Session::has('message'))
@@ -81,8 +67,4 @@
     <script src="{{ asset('js/jquery.js') }}"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-</body>
-
-</html>
-
-
+@stop
