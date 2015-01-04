@@ -16,6 +16,18 @@ class ConferenceParticipant extends Eloquent {
 
 
 	}
+
+	public function BillComponents(){
+		return $this->hasManyThrough('BillComponent','ConferenceBill','confId','BillId');
+	}
+
+	public function CashPayments(){
+		return $this>ConferenceBill()->hasMany('PaymentCash','BillId');
+	}
+
+	public function CreditCardPayments(){
+		return $this->ConferenceBill()->hasMany('PaymentCreditCard','BillId');
+	}
  
 	public function Conference(){
 

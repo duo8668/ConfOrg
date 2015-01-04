@@ -26,15 +26,15 @@ DROP TABLE
 IF EXISTS `bill_component`;
 
 CREATE TABLE `bill_component` (
-	`ComponentId` INT (11) NOT NULL AUTO_INCREMENT,
+	`BillComponentId` INT (11) NOT NULL AUTO_INCREMENT,
 	`BillId` INT (11) NOT NULL,
-	`ComponentTypeId` INT (11) NOT NULL,
-	`ComponentDescription` VARCHAR (255) COLLATE utf8_unicode_ci NOT NULL,
+	`BillComponentTypeId` INT (11) NOT NULL,
+	`ComponentDescription` VARCHAR (100) COLLATE utf8_unicode_ci NOT NULL,
 	`Amount` DECIMAL (7, 2) NOT NULL,
 	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`ComponentId`),
+	PRIMARY KEY (`BillComponentId`),
 	KEY `FK_BillComp_01` (`BillId`),
-	KEY `ComponentType` (`ComponentTypeId`)
+	KEY `BillComponentType` (`BillComponentTypeId`)
 
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
@@ -44,28 +44,34 @@ CREATE TABLE `bill_component` (
 DROP TABLE
 IF EXISTS `category`;
 
-CREATE TABLE `category` (
-	`ID` INT (11) NOT NULL AUTO_INCREMENT,
+DROP TABLE
+IF EXISTS `interest_field`;
+
+CREATE TABLE `interest_field` (
+	`FieldId` INT (11) NOT NULL AUTO_INCREMENT,
 	`Name` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Remarks` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
+	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	PRIMARY KEY (`ID`)
+	PRIMARY KEY (`FieldId`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
---  Table structure for `componenttype`
+--  Table structure for `bill_component_type`
 -- ----------------------------
 DROP TABLE
 IF EXISTS `componenttype`;
 
-CREATE TABLE `componenttype` (
-	`ComponentTypeId` INT (11) NOT NULL AUTO_INCREMENT,
-	`ComponentType` VARCHAR (100) COLLATE utf8_unicode_ci NOT NULL,
+DROP TABLE
+IF EXISTS `bill_component_type`;
+
+CREATE TABLE `bill_component_type` (
+	`BillComponentTypeId` INT (11) NOT NULL AUTO_INCREMENT,
+	`Description` VARCHAR (100) COLLATE utf8_unicode_ci NOT NULL,
 	`IsEnabled` bit (1) NOT NULL DEFAULT 1,
 	`CreatedBy` INT (11) NOT NULL,
 	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`ComponentTypeId`)
+	PRIMARY KEY (`BillComponentTypeId`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
@@ -76,23 +82,18 @@ IF EXISTS `conference`;
 
 CREATE TABLE `conference` (
 	`ConfId` INT (11) NOT NULL AUTO_INCREMENT,
-	`Title` VARCHAR (100) CHARACTER
-SET latin1 NOT NULL,
- `ConfTypeId` INT (11) NOT NULL,
- `Description` VARCHAR (255) CHARACTER
-SET latin1 NOT NULL,
- `BeginDate` date NOT NULL,
- `BeginTime` datetime NOT NULL,
- `EndDate` date NOT NULL,
- `EndTime` datetime NOT NULL,
- `IsFree` bit (1) NOT NULL DEFAULT 0,
- `Speaker` INT (11) DEFAULT NULL,
- `CreatedBy` INT (11) NOT NULL,
- `DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
- PRIMARY KEY (`ConfId`),
- UNIQUE KEY `Title` (`Title`),
- KEY `ConferenceType` (`ConfTypeId`)
-
+	`Title` VARCHAR (100) NOT NULL,
+	`Description` VARCHAR (255) NOT NULL,
+	`BeginDate` date NOT NULL,
+	`BeginTime` datetime NOT NULL,
+	`EndDate` date NOT NULL,
+	`EndTime` datetime NOT NULL,
+	`IsFree` bit (1) NOT NULL DEFAULT 0,
+	`Speaker` INT (11) DEFAULT NULL,
+	`CreatedBy` INT (11) NOT NULL,
+	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`ConfId`),
+	UNIQUE KEY `Title` (`Title`)
 ) ENGINE = INNODB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
@@ -100,24 +101,20 @@ SET latin1 NOT NULL,
 -- ----------------------------
 DROP TABLE
 IF EXISTS `conferenceentertainment`;
+DROP TABLE
+IF EXISTS `conference_entertainment`;
 
-CREATE TABLE `conferenceentertainment` (
-	`ConferenceEntertainmentID` INT (11) NOT NULL,
-	`ConferenceID` INT (11) DEFAULT NULL,
-	`EntertainmentID` INT (11) DEFAULT NULL,
-	`ConferenceVenueRoomScheduleID` INT (11) DEFAULT NULL,
+CREATE TABLE `conference_entertainment` (
+	`ConferenceEntertainmentID` INT (11) NOT NULL AUTO_INCREMENT,
+	`ConfId` INT (11) NOT NULL,
+	`EntertainmentID` INT (11) NOT NULL,
+	`ConferenceVenueRoomScheduleID` INT (11) NOT NULL,
 	`Remarks` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
-	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci  NOT NULL,
 	PRIMARY KEY (
 		`ConferenceEntertainmentID`
-	),
-	KEY `ConferenceID_idx` (`ConferenceID`),
-	KEY `EntertainementID_idx` (`EntertainmentID`),
-	KEY `ConferenceVenueRoomScheduleID_idx` (
-		`ConferenceVenueRoomScheduleID`
 	)
-
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
@@ -126,22 +123,21 @@ CREATE TABLE `conferenceentertainment` (
 DROP TABLE
 IF EXISTS `conferenceequipementrequest`;
 
-CREATE TABLE `conferenceequipementrequest` (
-	`ConferenceEquipementRequestID` INT (11) NOT NULL,
-	`ConferenceID` INT (11) DEFAULT NULL,
+DROP TABLE
+IF EXISTS `conference_equipment_request`;
+
+CREATE TABLE `conference_equipment_request` (
+	`ConferenceEquipementRequestID` INT (11) NOT NULL AUTO_INCREMENT,
+	`ConfID` INT (11) DEFAULT NULL,
 	`UserID` INT (11) DEFAULT NULL,
 	`CategoryID` INT (11) DEFAULT NULL,
 	`EquipementID` INT (11) DEFAULT NULL,
 	`Quantity` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (
 		`ConferenceEquipementRequestID`
-	),
-	KEY `ConferenceID_idx` (`ConferenceID`),
-	KEY `UserID_idx` (`UserID`),
-	KEY `CategoryID_idx` (`CategoryID`),
-	KEY `EquipementID_idx` (`EquipementID`)
+	)
 
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
@@ -150,18 +146,20 @@ CREATE TABLE `conferenceequipementrequest` (
 -- ----------------------------
 DROP TABLE
 IF EXISTS `conferencefood`;
+DROP TABLE
+IF EXISTS `conference_food`;
 
-CREATE TABLE `conferencefood` (
+CREATE TABLE `conference_food` (
 	`ConferenceFoodID` INT (11) NOT NULL,
-	`ConferenceID` INT (11) DEFAULT NULL,
+	`ConfId` INT (11) DEFAULT NULL,
 	`FoodID` INT (11) DEFAULT NULL,
 	`FoodPriceID` INT (11) DEFAULT NULL,
 	`Quantity` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Delivery Date & Time` datetime DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (`ConferenceFoodID`),
-	KEY `ConferenceID_idx` (`ConferenceID`),
+	KEY `ConferenceID_idx` (`ConfId`),
 	KEY `FoodID_idx` (`FoodID`),
 	KEY `FoodPriceID_idx` (`FoodPriceID`)
 
@@ -173,62 +171,43 @@ CREATE TABLE `conferencefood` (
 DROP TABLE
 IF EXISTS `conferencetype`;
 
-CREATE TABLE `conferencetype` (
-	`ConfTypeId` INT (11) NOT NULL AUTO_INCREMENT,
-	`ConferenceType` VARCHAR (100) COLLATE utf8_unicode_ci NOT NULL,
-	`IsEnabled` bit (1) NOT NULL DEFAULT 1,
+DROP TABLE
+IF EXISTS `conference_field`;
+CREATE TABLE `conference_field` (
+	`ConfFieldId` INT (11) NOT NULL AUTO_INCREMENT,
+	`InterestFieldId` INT (11) NOT NULL,
 	`CreatedBy` INT (11) NOT NULL,
 	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`ConfTypeId`)
-) ENGINE = INNODB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
-
--- ----------------------------
---  Table structure for `conferencevenueroomcost`
--- ----------------------------
-DROP TABLE
-IF EXISTS `conferencevenueroomcost`;
-
-CREATE TABLE `conferencevenueroomcost` (
-	`ConferenceVenueRoomCostID` INT (11) NOT NULL,
-	`ConferenceID` INT (11) DEFAULT NULL,
-	`VenueID` INT (11) DEFAULT NULL,
-	`RoomID` INT (11) DEFAULT NULL,
-	`SeatTypeID` INT (11) DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
-	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	PRIMARY KEY (
-		`ConferenceVenueRoomCostID`
-	),
-	KEY `ConferenceID_idx` (`ConferenceID`),
-	KEY `VenueID_idx` (`VenueID`),
-	KEY `RoomID_idx` (`RoomID`),
-	KEY `SeatTypeID_idx` (`SeatTypeID`)
-
+	PRIMARY KEY (`ConfFieldId`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
+
 
 -- ----------------------------
 --  Table structure for `conferencevenueroomschedule`
 -- ----------------------------
 DROP TABLE
 IF EXISTS `conferencevenueroomschedule`;
+DROP TABLE
+IF EXISTS `conference_venue_room_schedule`;
 
-CREATE TABLE `conferencevenueroomschedule` (
+CREATE TABLE `conference_venue_room_schedule` (
 	`ConferenceVenueRoomScheduleID` INT (11) NOT NULL,
-	`ConferenceID` INT (11) DEFAULT NULL,
+	`ConfId` INT (11) DEFAULT NULL,
 	`VenueID` INT (11) DEFAULT NULL,
 	`RoomID` INT (11) DEFAULT NULL,
 	`Description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateStart` datetime DEFAULT NULL,
-	`DateEnd` datetime DEFAULT NULL,
-	`BeginTime` time DEFAULT NULL,
-	`EndTime` time DEFAULT NULL,
+	`DateStart` date DEFAULT NULL,
+	`DateEnd` date DEFAULT NULL,
+	`BeginTime` datetime DEFAULT NULL,
+	`EndTime` datetime DEFAULT NULL,
 	`Remarks` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (
 		`ConferenceVenueRoomScheduleID`
 	),
-	KEY `ConferenceID_idx` (`ConferenceID`),
+	KEY `ConferenceID_idx` (`ConfId`),
 	KEY `VenueID_idx` (`VenueID`),
 	KEY `RoomID_idx` (`RoomID`)
 
@@ -240,14 +219,14 @@ CREATE TABLE `conferencevenueroomschedule` (
 DROP TABLE
 IF EXISTS `conference_bill`;
 
-CREATE TABLE `conference_bill` (
+DROP TABLE
+IF EXISTS `user_bill`;
+
+CREATE TABLE `user_bill` (
 	`BillId` INT (11) NOT NULL AUTO_INCREMENT,
-	`ConfId` INT (11) NOT NULL,
 	`UserId` INT (11) NOT NULL,
 	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (`BillId`),
-	UNIQUE KEY `idx_BillId` (`BillId`) USING BTREE,
-	KEY `ConfId` (`ConfId`)
+	PRIMARY KEY (`BillId`)
 
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
@@ -284,7 +263,7 @@ CREATE TABLE `conference_participant` (
 	`ConfId` INT (11) NOT NULL,
 	`UserId` INT (11) NOT NULL,
 	`CreatedBy` INT (11) NOT NULL,
-	`DateCreated` datetime DEFAULT CURRENT_TIMESTAMP,
+	`DateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`ConfUserId`),
 	KEY `ConfId` (`ConfId`, `UserId`),
 	KEY `FK_ConfParti_02` (`UserId`)
@@ -385,7 +364,7 @@ IF EXISTS `cuisine`;
 CREATE TABLE `cuisine` (
 	`CusineID` INT (11) NOT NULL,
 	`Description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (`CusineID`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
@@ -405,7 +384,7 @@ CREATE TABLE `entertainment` (
 	`PointOfContact` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`POC description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`EntertainmentID`),
 	KEY `TypeID_idx` (`TypeID`)
 
@@ -423,11 +402,10 @@ CREATE TABLE `equipment` (
   `EquipmentName` varchar(45) DEFAULT NULL,
   `EquipmentRemarks` varchar(45) DEFAULT NULL,
   `RentalCost` varchar(45) DEFAULT NULL,
-  `DateCreated` datetime DEFAULT NULL,
+  `DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `CreatedBy` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ID`,`Category_ID`),
-  ) 
- ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`ID`,`Category_ID`)
+  )  ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 --  Table structure for `food`
@@ -440,7 +418,7 @@ CREATE TABLE `food` (
 	`Oragnaization` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`CuisnieID` INT (11) DEFAULT NULL,
 	`Remarks` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`PointOfContact` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`POC description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -454,13 +432,15 @@ CREATE TABLE `food` (
 -- ----------------------------
 DROP TABLE
 IF EXISTS `foodprice`;
+DROP TABLE
+IF EXISTS `food_price`;
 
-CREATE TABLE `foodprice` (
+CREATE TABLE `food_price` (
 	`FoodPriceID` INT (11) NOT NULL,
 	`FoodID` INT (11) DEFAULT NULL,
 	`Description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Price` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`MealType` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (`FoodPriceID`),
@@ -473,12 +453,14 @@ CREATE TABLE `foodprice` (
 -- ----------------------------
 DROP TABLE
 IF EXISTS `menuitems`;
+DROP TABLE
+IF EXISTS `menu_items`;
 
-CREATE TABLE `menuitems` (
+CREATE TABLE `menu_items` (
 	`MenuItemsID` INT (11) NOT NULL,
 	`FoodPriceID` INT (11) DEFAULT NULL,
 	`Description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (`MenuItemsID`),
 	KEY `FoodPriceID_idx` (`FoodPriceID`)
@@ -489,9 +471,9 @@ CREATE TABLE `menuitems` (
 --  Table structure for `paymenttype`
 -- ----------------------------
 DROP TABLE
-IF EXISTS `paymenttype`;
+IF EXISTS `payment_type`;
 
-CREATE TABLE `paymenttype` (
+CREATE TABLE `payment_type` (
 	`PaymentId` INT (11) NOT NULL AUTO_INCREMENT,
 	`PaymentType` VARCHAR (100) COLLATE utf8_unicode_ci NOT NULL,
 	`IsEnabled` bit (1) NOT NULL DEFAULT 1,
@@ -592,12 +574,12 @@ IF EXISTS `room`;
 
 CREATE TABLE `room` (
 	`ID` INT (11) NOT NULL,
+	`Venue_ID` INT (11) NOT NULL,
 	`RoomName` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Capacity` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`RentalCost` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`Venue_ID` INT (11) NOT NULL,
-	PRIMARY KEY (`RoomID`, `Venue_ID`),
-	KEY `fk_Room_Venue_idx` (`Venue_VenueID`)
+	PRIMARY KEY (`ID`, `Venue_ID`),
+	KEY `fk_Room_Venue_idx` (`Venue_ID`)
 
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
@@ -607,13 +589,16 @@ CREATE TABLE `room` (
 DROP TABLE
 IF EXISTS `roomequipment`;
 
-CREATE TABLE `roomequipment` (
+DROP TABLE
+IF EXISTS `room_equipment`;
+
+CREATE TABLE `room_equipment` (
 	`RoomEquipmentID` INT (11) NOT NULL,
 	`RoomID` INT (11) DEFAULT NULL,
 	`EquipmentID` INT (11) DEFAULT NULL,
 	`Quantity` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Remarks` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (`RoomEquipmentID`),
 	KEY `RoomID_idx` (`RoomID`),
@@ -622,16 +607,18 @@ CREATE TABLE `roomequipment` (
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
---  Table structure for `seattype`
+--  Table structure for `seat_type`
 -- ----------------------------
 DROP TABLE
 IF EXISTS `seattype`;
+DROP TABLE
+IF EXISTS `seat_type`;
 
-CREATE TABLE `seattype` (
+CREATE TABLE `seat_type` (
 	`SeatTypeID` INT (11) NOT NULL,
 	`Name` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Price` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	PRIMARY KEY (`SeatTypeID`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
@@ -730,17 +717,17 @@ CREATE TABLE `topics` (
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
---  Table structure for `type`
+--  Table structure for `entertainment_type`
 -- ----------------------------
 DROP TABLE
 IF EXISTS `type`;
 
-CREATE TABLE `type` (
-	`TypeID` INT (11) NOT NULL,
+CREATE TABLE `entertainment_type` (
+	`EntertainmentTypeID` INT (11) NOT NULL,
 	`Description` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	PRIMARY KEY (`TypeID`)
+	PRIMARY KEY (`EntertainmentTypeID`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
@@ -773,7 +760,7 @@ CREATE TABLE `venue` (
 	`Address` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Latitude` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Longitude` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	PRIMARY KEY (`VenueID`)
+	PRIMARY KEY (`ID`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
 -- ----------------------------
@@ -781,17 +768,24 @@ CREATE TABLE `venue` (
 -- ----------------------------
 DROP TABLE
 IF EXISTS `venueroom`;
+DROP TABLE
+IF EXISTS `venue_room`;
 
-CREATE TABLE `venueroom` (
-	`VenueRoomID` INT (11) NOT NULL,
-	`VenueID` INT (11) DEFAULT NULL,
+-- ----------------------------
+--  Table structure for `conferencevenueroomcost`
+-- ----------------------------
+DROP TABLE
+IF EXISTS `conferencevenueroomcost`;
+DROP TABLE
+IF EXISTS `venue_room_cost`;
+DROP TABLE
+IF EXISTS `room_cost`;
+
+CREATE TABLE `room_cost` (
+	`RoomCostID` INT (11) NOT NULL,
 	`RoomID` INT (11) DEFAULT NULL,
-	`Remarks` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	`DateCreated` datetime DEFAULT NULL,
+	`SeatTypeID` INT (11) DEFAULT NULL,
+	`DateCreated` datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`CreatedBy` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
-	PRIMARY KEY (`VenueRoomID`),
-	KEY `VenueID_idx` (`VenueID`),
-	KEY `RoomID_idx` (`RoomID`)
-
+	PRIMARY KEY (`RoomCostID`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
-
