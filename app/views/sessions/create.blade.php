@@ -31,6 +31,20 @@
             </div>
         </div>
     </div>
+    <!-- testing by pohjun -->
+ 
+@if($errors->has())
+    @foreach ($errors->all() as $message) 
+    {
+      {{$message}}
+    }
+    @endforeach
+@endif
+
+@if(Session::has('failure'))
+    {{Session::get('failure')}} 
+@endif
+ 
  <!-- /#wrapper -->
 @include('layouts.dashboard.footerdash')
 </body>
