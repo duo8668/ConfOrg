@@ -1,10 +1,9 @@
 <?php
 Route::resource('users', 'UsersController');
-
 Route::resource('sessions', 'SessionsController');
+
 Route::get('/login','SessionsController@create');
 Route::get('/logout','SessionsController@destroy');
-Route::get('/welcome','SessionsController@welcome')->before('auth');
 
 Route::get('/sessions/create', function()
 {
@@ -30,14 +29,4 @@ Route::get('/createUser', function()
 	// 		'begindate' => '221214','begintime' => '0000','enddate' => '231214','endtime' => '0000',
 	// 		'isfree' => 'free','speaker' => 'xbox']);
 
-});
-
-Route::get('/conf1', function()
-{
-	return View::make('/conf1');
-});
-
-Route::get('/conf2', function()
-{
-	return View::make('/conf2');
 });
