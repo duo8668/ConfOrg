@@ -44,6 +44,16 @@ CREATE TABLE `bill_component` (
 DROP TABLE
 IF EXISTS `category`;
 
+CREATE TABLE `category` (
+  `category_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `Remarks` varchar(45) DEFAULT NULL,
+  `DateCreated` varchar(45) DEFAULT NULL,
+  `CreatedBy` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 DROP TABLE
 IF EXISTS `interest_field`;
 
@@ -101,6 +111,7 @@ CREATE TABLE `conference` (
 -- ----------------------------
 DROP TABLE
 IF EXISTS `conferenceentertainment`;
+
 DROP TABLE
 IF EXISTS `conference_entertainment`;
 
@@ -397,7 +408,7 @@ DROP TABLE
 IF EXISTS `equipment`;
 
 CREATE TABLE `equipment` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `equipment_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Category_ID` int(11) NOT NULL DEFAULT '0',
   `EquipmentName` varchar(45) DEFAULT NULL,
   `EquipmentRemarks` varchar(45) DEFAULT NULL,
@@ -573,7 +584,7 @@ DROP TABLE
 IF EXISTS `room`;
 
 CREATE TABLE `room` (
-	`ID` INT (11) NOT NULL,
+	`room_ID` INT (11) NOT NULL,
 	`Venue_ID` INT (11) NOT NULL,
 	`RoomName` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Capacity` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -755,7 +766,7 @@ DROP TABLE
 IF EXISTS `venue`;
 
 CREATE TABLE `venue` (
-	`ID` INT (11) NOT NULL,
+	`venue_ID` INT (11) NOT NULL,
 	`Name` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Address` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
 	`Latitude` VARCHAR (45) COLLATE utf8_unicode_ci DEFAULT NULL,
