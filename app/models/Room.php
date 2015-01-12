@@ -4,7 +4,7 @@ class Room extends Eloquent {
 
 	public $timestamps = false;	
 
-	protected $primaryKey = 'ID';
+	protected $primaryKey = 'room_id';
 	protected $table = 'room';
 
 	protected $fillable = array('RoomName', 'Capacity', 'Venue_ID');

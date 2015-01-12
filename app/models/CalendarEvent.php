@@ -36,7 +36,7 @@ class CalendarEvent extends Eloquent {
 		else {
 			// Guess allDay based off of ISO8601 date strings
 			$this->allDay = preg_match(self::ALL_DAY_REGEX, $array['start']) &&
-				(!isset($array['end']) || preg_match(self::ALL_DAY_REGEX, $array['end']));
+			(!isset($array['end']) || preg_match(self::ALL_DAY_REGEX, $array['end']));
 		}
 
 		if ($this->allDay) {
@@ -45,8 +45,8 @@ class CalendarEvent extends Eloquent {
 		}
 
 		// Parse dates
-		$this->start = parseDateTime($array['start'], $timezone);
-		$this->end = isset($array['end']) ? parseDateTime($array['end'], $timezone) : null;
+		$this->start = DateUtility::parseDateTime($array['start'], $timezone);
+		$this->end = isset($array['end']) ? DateUtility::parseDateTime($array['end'], $timezone) : null;
 
 		// Record misc properties
 		foreach ($array as $name => $value) {
@@ -62,8 +62,8 @@ class CalendarEvent extends Eloquent {
 	public function isWithinDayRange($rangeStart, $rangeEnd) {
 
 		// Normalize our event's dates for comparison with the all-day range.
-		$eventStart = stripTime($this->start);
-		$eventEnd = isset($this->end) ? stripTime($this->end) : null;
+		$eventStart = DateUtility::stripTime($this->start);
+		$eventEnd = isset($this->end) ? DateUtility::stripTime($this->end) : null;
 
 		if (!$eventEnd) {
 			// No end time? Only check if the start is within range.
@@ -81,7 +81,7 @@ class CalendarEvent extends Eloquent {
 
 		// Start with the misc properties (don't worry, PHP won't affect the original array)
 		$array = $this->properties;
- 
+
 		$array['title'] = $this->title;
 
 		// Figure out the date format. This essentially encodes allDay into the date string.
@@ -109,25 +109,26 @@ class CalendarEvent extends Eloquent {
 // Date Utilities
 //----------------------------------------------------------------------------------------------
 
-
+class DateUtility extends Eloquent{
 // Parses a string into a DateTime object, optionally forced into the given timezone.
-function parseDateTime($string, $timezone=null) {
-	$date = new DateTime(
-		$string,
-		$timezone ? $timezone : new DateTimeZone('UTC')
+	public static function parseDateTime($string, $timezone=null) {
+		$date = new DateTime(
+			$string,
+			$timezone ? $timezone : new DateTimeZone('UTC')
 			// Used only when the string is ambiguous.
 			// Ignored if string has a timezone offset in it.
-	);
-	if ($timezone) {
+			);
+		if ($timezone) {
 		// If our timezone was ignored above, force it.
-		$date->setTimezone($timezone);
+			$date->setTimezone($timezone);
+		}
+		return $date;
 	}
-	return $date;
-}
 
 
 // Takes the year/month/date values of the given DateTime and converts them to a new DateTime,
 // but in UTC.
-function stripTime($datetime) {
-	return new DateTime($datetime->format('Y-m-d'));
-}
+	public static function stripTime($datetime) {
+		return new DateTime($datetime->format('Y-m-d'));
+	}
+} 

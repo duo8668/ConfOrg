@@ -7,17 +7,22 @@ Add New Conference
 <!-- extraScripts Section -->
 @section('extraScripts')
 
-<link href="{{ asset('css/fullcalendar/fullcalendar.min.css') }}" rel="stylesheet" type="text/css">
+<!-- <link href="{{ asset('css/fullcalendar/fullcalendar.min.css') }}" rel="stylesheet" type="text/css"> -->
 
 <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
 
+<link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
+
+
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/fullcalendar/fullcalendar.min.js') }}"></script>
+<!-- <script src="{{ asset('js/fullcalendar/fullcalendar.min.js') }}"></script> -->
 
 <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
 
 <script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
+
+<script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
 
 <style>
 
@@ -52,11 +57,38 @@ Add New Conference
 	var eventData;
 	$(document).ready(function(){
 
+		$.ajax({
+			type: "GET",
+			url : "/conference/management/roomSchedules",
+			data:{ roomId:1 }
+		})
+		.done(function(data) {
+			alert(data);
+		})
+		.fail(function(xhr,stat,msg) {
+			alert(xhr.responseText);
+		})
+		.always(function(data) {
+			$.unblockUI();
+		});
+
+		$('#datetimepickerBegin').datetimepicker(
+		{
+			useCurrent: false,
+			pickTime: false,
+			disabledDates: [moment("01/26/2015"),
+			new Date(2015, 1-1,21),
+			"01/22/2015 00:53"
+			,"01/23/2015 00:55"]
+		});
+
+		$('#datetimepickerEnd').datetimepicker();
+
 		$('#dtConference').on('click',function(){
 			var myTitle = $('#conferenceTitle').val();
 
 			if(myTitle.length > 0){
-				$('#showCalendar').attr('title','Create Conference for : '+myTitle);
+				$('#showCalendar').attr('title','Create Conference for : ' + myTitle);
 
 				$('#showCalendar').dialog({
 					autoOpen: true,
@@ -224,7 +256,7 @@ function swapStatus(_id,_status,_msg){
 		<div class="form-group">
 			{{ Form::label('lblConfType', 'Conference Type', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::select('confType',$confTypes,null,array('name'=>'confType','id'=>'confType')) }} </br>
+				{{ Form::select('confType',$fields,null,array('name'=>'Name','id'=>'FieldId')) }} </br>
 			</div>
 		</div>
 
@@ -244,15 +276,28 @@ function swapStatus(_id,_status,_msg){
 
 		<div class="form-group">
 			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  
-			<div class="col-md-4">   
-				{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control input-md')) }}                 
+			<div class="col-md-4">
+				<div class="input-group date" id="datetimepickerBegin">
+					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control', 'data-date-format'=>'YYYY/MMM/DD')) }}
+					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
+				</div>
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('endDate', 'End', array('class' => 'col-md-4 control-label')) }} 
-			<div class="col-md-4">   
-				{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control input-md')) }}                 
+			<div class="col-md-4">
+				<div class="input-group date" id="datetimepickerEnd">
+					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control', 'data-date-format'=>'YYYY/MMM/DD')) }}
+					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-4 control-label')) }}
+			<div class="col-md-4">
+				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats')) }} </br>
 			</div>
 		</div>
 

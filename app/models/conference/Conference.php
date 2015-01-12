@@ -4,49 +4,28 @@ class Conference extends Eloquent {
 
 	protected $table = 'conference';
 
-	protected $fillable = array('Title', 'ConfTypeId', 'Description','BeginDate','BeginTime','EndDate','EndTime','IsFree','Speaker','CreatedBy');
+	protected $fillable = array('Title', 'Description','BeginDate','BeginTime','EndDate','EndTime','IsFree','Speaker','CreatedBy');
 
-	protected $guarded = array('ConfId','DateCreated');
+	protected $guarded = array('conf_id','DateCreated');
 	
 	public $timestamps = false;
 
 	public function ConferenceParticipants(){
-		return $this->hasMany('ConferenceParticipant', 'ConfId', 'ConfId');
+		return $this->hasMany('ConferenceParticipant', 'ConfId', 'conf_id');
 	}
 
 	public function ConferenceUserRoles(){
-		return $this->hasMany('ConferenceUserRole', 'conf_id', 'confId');
-	}
-
-	public function ConferenceType(){
-		return $this->hasOne('ConferenceType', 'ConfTypeId', 'ConfTypeId');	
+		return $this->hasMany('ConferenceUserRole', 'conf_id', 'conf_id');
 	}
 	
-	public function registerInConference($roleId,$confId){
-
-		$participantId = $this
-		->ConferenceUserRoles()
-		->where('user_id','=',Auth::user()->user_id)
-		->first();
-
-		if($participantId == null){
-
-			try{
-				$confUserRole = ConferenceUserRole::create(array('role_id' => $roleId,'user_id'=> Auth::user()->user_id,'conf_id'=>$confId));
-			}catch(Exception $ex)
-			{
-				throw $ex;
-			}
-			return $confUserRole;
-		}else{
-			return 'Already Registered...';
-		}
+	public function ConferenceRoomSchedule(){
+		return $this->hasOne('ConferenceRoomSchedule', 'conf_id', 'conf_id');
 	}
-
+	
 	public function getStatusInConference(){
 
-		$user = User::where('user_id','=',1)->first();
-		Auth::login($user);
+		//$user = User::where('user_id','=',1)->first();
+		//Auth::login($user);
 		//dd(Auth::user()->user_id);
 
 		$confUserRole = $this
@@ -62,55 +41,5 @@ class Conference extends Eloquent {
 			return $confUserRole->Role->rolename;
 		}
 	}
-
-	public function AllJsonConference($beginTime,$endTime){
-
-		//$five = date("Y-m-d",strtotime("-5 minutes",strtotime($thestime)));
-
-		$confs = Conference::where('BeginTime','>=',  $beginTime)
-		->where('EndTime','<=',  $endTime)
-		//->get()
-		->select(DB::raw('ConfId as id ,title as title ,DATE_FORMAT(BeginTime, "%Y-%m-%d") as start ,DATE_FORMAT(EndTime,"%Y-%m-%d") as end'))
-		->get();
-
-		//dd($confs);
-		//dd(DB::getQueryLog());
-
-		$output_arrays = array();
-		$timezone = new DateTimeZone('UTC');
-		$range_start = Conference::parseDateTime($beginTime);
-		$range_end =  Conference::parseDateTime($endTime);
-
-		foreach ($confs as $array) {
-
-			// Convert the input array into a useful Event object
-			$event = new CalendarEvent($array, $timezone);
-
-			// If the event is in-bounds, add it to the output
-			if ($event->isWithinDayRange($range_start, $range_end)) {
-				$event->editable = false;
-				$event->end = $event->end->add(new DateInterval('P1D'));
-				$output_arrays[] = $event->toArray();
-			}
-		}
-
-
-		return $output_arrays;
-	}
-
-	// Parses a string into a DateTime object, optionally forced into the given timezone.
-	public function parseDateTime($string, $timezone=null) {
-		$date = new DateTime(
-			$string,
-			$timezone ? $timezone : new DateTimeZone('UTC')
-			// Used only when the string is ambiguous.
-			// Ignored if string has a timezone offset in it.
-			);
-		if ($timezone) {
-		// If our timezone was ignored above, force it.
-			$date->setTimezone($timezone);
-		}
-		return $date;
-	}
-
+	
 }

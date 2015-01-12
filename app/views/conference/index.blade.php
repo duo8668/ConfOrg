@@ -84,7 +84,7 @@ All Conferences
 				<div class="panel-heading"><strong><br/></strong></div>
 				<div class="panel-body">
 					Title : {{ $conf->Title }}<br />
-					ConferenceType : {{ $conf->ConferenceType->ConferenceType }}<br />
+					ConferenceType : <br />
 					Begin : {{ $conf->BeginDate }}<br />
 					End : {{ $conf->EndDate }}<br />
 				</div>

@@ -15,9 +15,6 @@ class ConferenceController extends BaseController {
 		$confs = Conference::where('beginDate','>',DB::raw('curdate()'))
 		->get();
 
-		//dd(DB::getQueryLog());
-		//dd($confs);
-
 		$view = View::make('conference.index',array('confs'=>$confs)); 
 
 		return $view;
@@ -28,10 +25,9 @@ class ConferenceController extends BaseController {
 		$user = User::where('user_id','=',1)->first();
 		Auth::login($user);
 
-		$confTypes=ConferenceType::where('IsEnabled','=','1')
-		->lists('ConferenceType', 'ConfTypeId');
+		$fields=InterestField::lists('Name', 'FieldId');
 
-		$view = View::make('conference.management.create',array('confTypes'=>$confTypes)); 
+		$view = View::make('conference.management.create',array('fields'=>$fields)); 
 
 		return $view;
 	}
@@ -57,7 +53,13 @@ class ConferenceController extends BaseController {
 				}else{
 
 					// the user has not been participated
-
+					try{
+						$confUserRole = ConferenceUserRole::create(array('role_id' => $roleId,'user_id'=> Auth::user()->user_id,'conf_id'=>$confId));
+					}catch(Exception $ex)
+					{
+						throw $ex;
+					}
+					return $confUserRole;
 				}
 			}
 
@@ -99,11 +101,42 @@ class ConferenceController extends BaseController {
 
 	public function conferenceEvents($begin,$end)
 	{
-		$conf = new Conference();
+		$confs = Conference::where('BeginTime','>=',  $begin)
+		->where('EndTime','<=',  $end)
+		//->get()
+		->select(DB::raw('conf_id as id ,title as title ,DATE_FORMAT(BeginTime, "%Y-%m-%d") as start ,DATE_FORMAT(EndTime,"%Y-%m-%d") as end'))
+		->get();
 
-		$confsCal = $conf->AllJsonConference($begin,$end);
+		//dd($confs[1]);
+		//dd(DB::getQueryLog());
 
-		return $confsCal;
+		$output_arrays = array();
+		$timezone = new DateTimeZone('UTC');
+		$range_start = DateUtility::parseDateTime($begin);
+		$range_end =  DateUtility::parseDateTime($end);
+
+		foreach ($confs as $array) {
+
+			// Convert the input array into a useful Event object
+			$event = new CalendarEvent($array, $timezone);
+
+			// If the event is in-bounds, add it to the output
+			if ($event->isWithinDayRange($range_start, $range_end)) {
+				$event->editable = false;
+				$event->end = $event->end->add(new DateInterval('P1D'));
+				$output_arrays[] = $event->toArray();
+			}
+		}
+
+		return $output_arrays;
+	}
+
+	public function allRoomSchedules(){
+		$confRoomSchedule = ConferenceRoomSchedule::where('room_id','=',Input::get('roomId'))
+		->select(DB::raw('DATE_FORMAT(BeginTime, "%Y-%m-%d") as start ,DATE_FORMAT(EndTime,"%Y-%m-%d") as end'))
+		->get();
+
+		return $confRoomSchedule;
 	}
 
 	public function createConference()
@@ -121,10 +154,9 @@ class ConferenceController extends BaseController {
 
 			try
 			{ 
-				if(strlen($confTitle)>6 &&$this->checkConfType($confType) && strlen($confDesc)>0 && $this->checkIsAValidDate($beginDate) && $this->checkIsAValidDate($endDate) && is_bool($isFree)){
+				if(strlen($confTitle)>6 && Utility::checkPositiveInteger($confType) && strlen($confDesc)>0 && Utility::checkIsAValidDate($beginDate) && Utility::checkIsAValidDate($endDate) && is_bool($isFree)){
 
 					$conf = Conference::create(array('Title' => $confTitle
-						,'ConfTypeId' => intval($confType)
 						,'Description' => $confDesc
 						,'BeginDate' => date("Y-m-d", strtotime($beginDate)) 
 						,'BeginTime' => date("Y-m-d", strtotime($beginDate)) 
@@ -162,19 +194,6 @@ class ConferenceController extends BaseController {
 		}
 	}
 
-	function checkConfType($vale){
 
-		if(is_numeric($vale)){
-			if(intval($vale)>0){
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	function checkIsAValidDate($myDateString){
-		return (bool)strtotime($myDateString);
-	}
 
 }
