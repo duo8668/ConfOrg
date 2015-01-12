@@ -6,7 +6,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a id="navbar-brand" class="navbar-brand" href="#">Welcome to Conference Organizer, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!</a>
+                <a id="navbar-brand" class="navbar-brand" href="#">Welcome to Conference Organizer!</a>
             </div>
             <!-- /.navbar-header -->
 

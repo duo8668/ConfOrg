@@ -41,6 +41,8 @@
 
     <script src="{{ asset('js/dropper.input.js') }}"></script>
 
+     {{ HTML::script('js/app.js') }}
+
     @yield('extraScripts')
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

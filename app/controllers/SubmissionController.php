@@ -3,6 +3,14 @@
 class SubmissionController extends \BaseController {
 
 	/**
+	 * Laravel's built in CRSF protection
+	 */
+	public function __construct()
+	{
+		$this->beforeFilter('csrf', array('on' => ['post', 'put', 'delete']));
+	}
+
+	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
@@ -35,7 +43,6 @@ class SubmissionController extends \BaseController {
 		return View::make('submission.results');
 	}
 
-
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -43,7 +50,24 @@ class SubmissionController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		// define rules
+		$rules = array(
+				'title' => array('required')
+			);
+
+		// pass input to validator
+		$validator = Validator::make(Input::all(), $rules);
+
+		// test if input fails
+		if ($validator->fails()) {
+			return Redirect::route('submissions.create')->withErrors($validator)->withInput();
+		}
+
+		$name = Input::get('title');
+		$submission = new Submission();
+		$submission->name = $name;
+		$submission->save();
+		return Redirect::route('submissions.index')->withMessage('Thank you! Your Contribution has been Submitted');
 	}
 
 
@@ -67,7 +91,8 @@ class SubmissionController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		$submission = TodoList::findOrFail($id);
+		return View::make('submissions.edit')->withAuthor($submission);
 	}
 
 
@@ -79,7 +104,24 @@ class SubmissionController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		// define rules
+		$rules = array(
+				'title' => array('required')
+			);
+
+		// pass input to validator
+		$validator = Validator::make(Input::all(), $rules);
+
+		// test if input fails
+		if ($validator->fails()) {
+			return Redirect::route('submissions.create')->withErrors($validator)->withInput();
+		}
+
+		$name = Input::get('title');
+		$submission = TodoList::findOrFail($id);
+		$submission->name = $name;
+		$submission->update();
+		return Redirect::route('submissions.index')->withMessage('Thank you! Your Contribution has been Updated');
 	}
 
 
