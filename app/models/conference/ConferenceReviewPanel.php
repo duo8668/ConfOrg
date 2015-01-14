@@ -4,10 +4,12 @@ class ConferenceReviewPanel extends Eloquent {
 
 	protected $table = 'conference_reviewpanel';
 	
-	protected $fillable = array('ConfId','UserId','CreatedBy');
+	protected $fillable = array('conf_id','user_id','created_by','modified_by');
 
-	protected $guarded = array('CC_Id','DateCreated');
+	protected $guarded = array('conferencereviewpanel_id');
 	
-	public $timestamps = false;
+	public $timestamps = true;
+
+	
 	
 }

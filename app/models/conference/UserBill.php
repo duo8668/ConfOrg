@@ -1,14 +1,14 @@
-<?php namespace ConfOrg\Model\Conference;
- 
-class ConferenceBill extends Eloquent {
+<?php 
 
-	protected $table = 'conference_bill';
+class UserBill extends Eloquent {
 
-	protected $fillable = array('ConfId','UserId','BillId');
+	protected $table = 'user_bill';
 
-	protected $guarded = array('DateCreated');
+	protected $fillable = array('user_id','created_by','modified_by');
+
+	protected $guarded = array('bill_id');
 	
-	public $timestamps = false;
+	public $timestamps = true;
 
 
 	public function BillAmount(){

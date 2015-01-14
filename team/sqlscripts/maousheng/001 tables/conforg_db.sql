@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : conforg
+Source Server         : WorkPC
 Source Server Version : 50617
 Source Host           : localhost:3306
 Source Database       : conforg_db
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2015-01-13 07:40:21
+Date: 2015-01-14 17:47:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -26,9 +26,9 @@ CREATE TABLE `bill_component` (
   `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `amount` decimal(7,2) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`billcomponent_id`),
   KEY `FK_BillComp_01` (`bill_id`),
   KEY `BillComponentType` (`billcomponenttype_id`)
@@ -44,12 +44,12 @@ CREATE TABLE `bill_component` (
 DROP TABLE IF EXISTS `bill_component_type`;
 CREATE TABLE `bill_component_type` (
   `billcomponenttype_id` int(11) NOT NULL AUTO_INCREMENT,
-  `Description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
+  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `is_enabled` bit(1) NOT NULL DEFAULT b'1',
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`billcomponenttype_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -71,11 +71,11 @@ CREATE TABLE `conference` (
   `end_time` datetime NOT NULL,
   `is_free` bit(1) NOT NULL DEFAULT b'0',
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conf_id`),
-  UNIQUE KEY `Title` (`Title`)
+  UNIQUE KEY `Title` (`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
@@ -92,9 +92,9 @@ CREATE TABLE `conference_entertainment` (
   `entertainment_id` int(11) NOT NULL,
   `remarks` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conference_entertainment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -114,16 +114,15 @@ CREATE TABLE `conference_equipmentrequest` (
   `equipment_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conferenceequipmentrequest_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of conference_equipmentrequest
 -- ----------------------------
-
 
 -- ----------------------------
 -- Table structure for conference_field
@@ -134,9 +133,9 @@ CREATE TABLE `conference_field` (
   `conf_id` int(11) NOT NULL,
   `interestfield_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conferencefield_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -156,9 +155,9 @@ CREATE TABLE `conference_food` (
   `quantity` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `delivery_datetime` datetime DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conferencefood_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -175,9 +174,9 @@ CREATE TABLE `conference_paymenttransaction` (
   `bill_id` int(11) NOT NULL,
   `paymenttype_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`transaction_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -194,9 +193,9 @@ CREATE TABLE `conference_reviewpanel` (
   `conf_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conferencereviewpanel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -219,9 +218,9 @@ CREATE TABLE `conference_room_schedule` (
   `end_time` datetime DEFAULT NULL,
   `remarks` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`confroomschedule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -239,9 +238,9 @@ CREATE TABLE `confuserrole` (
   `user_id` int(10) NOT NULL,
   `conf_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`confuserrole_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -257,9 +256,9 @@ CREATE TABLE `cuisine` (
   `cusine_id` int(11) NOT NULL,
   `description` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`cusine_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -280,9 +279,9 @@ CREATE TABLE `entertainment` (
   `point_of_contact` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `poc_description` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`entertainment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -298,9 +297,9 @@ CREATE TABLE `entertainment_type` (
   `entertainmenteype_id` int(11) NOT NULL,
   `description` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`entertainmenteype_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -319,9 +318,9 @@ CREATE TABLE `equipment` (
   `equipment_remarks` varchar(45) DEFAULT NULL,
   `rental_cost` varchar(45) DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`equipment_id`,`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -341,9 +340,9 @@ CREATE TABLE `food` (
   `point_of_contact` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `poc_description` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`food_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -362,9 +361,9 @@ CREATE TABLE `food_price` (
   `price` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `meal_type` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`foodprice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -381,15 +380,23 @@ CREATE TABLE `interest_field` (
   `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `remarks` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`interestfield_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of interest_field
 -- ----------------------------
+INSERT INTO `interest_field` VALUES ('1', 'Solar', null, '0', null, '2015-01-14 14:48:26', null);
+INSERT INTO `interest_field` VALUES ('2', 'Physics', null, '0', null, '2015-01-14 14:48:35', null);
+INSERT INTO `interest_field` VALUES ('3', 'Heliosphere', null, '0', null, '2015-01-14 14:48:45', null);
+INSERT INTO `interest_field` VALUES ('4', 'Space', null, '0', null, '2015-01-14 14:48:57', null);
+INSERT INTO `interest_field` VALUES ('5', 'Climate', null, '0', null, '2015-01-14 14:49:03', null);
+INSERT INTO `interest_field` VALUES ('6', 'Game', null, '0', null, '2015-01-14 14:49:08', null);
+INSERT INTO `interest_field` VALUES ('7', 'Ionosphere', null, '0', null, '2015-01-14 14:49:28', null);
+INSERT INTO `interest_field` VALUES ('8', 'Academy', null, '0', null, '2015-01-14 14:49:38', null);
 
 -- ----------------------------
 -- Table structure for menu_items
@@ -400,9 +407,9 @@ CREATE TABLE `menu_items` (
   `foodprice_id` int(11) DEFAULT NULL,
   `description` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`menuitem_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -421,9 +428,9 @@ CREATE TABLE `payment_cash` (
   `amount_paid` double(7,2) NOT NULL,
   `date_paid` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`transaction_id`,`user_id`,`bill_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -443,9 +450,9 @@ CREATE TABLE `payment_creditcard` (
   `amount_paid` double(7,2) NOT NULL,
   `date_paid` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`transaction_id`,`user_id`,`bill_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -462,15 +469,51 @@ CREATE TABLE `payment_type` (
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `is_enabled` bit(1) NOT NULL DEFAULT b'1',
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`paymenttype_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of payment_type
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for permissions
+-- ----------------------------
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE `permissions` (
+  `permission_Id` int(11) NOT NULL,
+  `permission_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `permission_remarks` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`permission_Id`),
+  UNIQUE KEY `permission_name_UNIQUE` (`permission_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of permissions
+-- ----------------------------
+INSERT INTO `permissions` VALUES ('0', '', '');
+INSERT INTO `permissions` VALUES ('1', 'do something', 'do something');
+INSERT INTO `permissions` VALUES ('2', 'do 2', 'do 2');
+
+-- ----------------------------
+-- Table structure for primary_role
+-- ----------------------------
+DROP TABLE IF EXISTS `primary_role`;
+CREATE TABLE `primary_role` (
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `role_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `primary_role_fk_role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of primary_role
+-- ----------------------------
+INSERT INTO `primary_role` VALUES ('2', '3');
+INSERT INTO `primary_role` VALUES ('1', '4');
 
 -- ----------------------------
 -- Table structure for reviews
@@ -490,9 +533,9 @@ CREATE TABLE `reviews` (
   `recommendation` int(11) NOT NULL,
   `reviewer_familiarity` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`review_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -520,6 +563,23 @@ INSERT INTO `roles` VALUES ('2', 'participant', 'participant');
 INSERT INTO `roles` VALUES ('3', 'author', 'author');
 
 -- ----------------------------
+-- Table structure for role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `role_permission`;
+CREATE TABLE `role_permission` (
+  `role_id` int(11) NOT NULL DEFAULT '0',
+  `permission_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`permission_id`,`role_id`),
+  KEY `role_permission_fk_role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of role_permission
+-- ----------------------------
+INSERT INTO `role_permission` VALUES ('3', '1');
+INSERT INTO `role_permission` VALUES ('4', '2');
+
+-- ----------------------------
 -- Table structure for room
 -- ----------------------------
 DROP TABLE IF EXISTS `room`;
@@ -530,9 +590,9 @@ CREATE TABLE `room` (
   `capacity` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rental_cost` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`room_id`,`venue_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -549,9 +609,9 @@ CREATE TABLE `room_cost` (
   `room_id` int(11) DEFAULT NULL,
   `seattype_id` int(11) DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`roomcost_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -570,9 +630,9 @@ CREATE TABLE `room_equipment` (
   `quantity` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `remarks` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`roomequipment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -589,9 +649,9 @@ CREATE TABLE `seat_type` (
   `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `price` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`seattype_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -614,9 +674,9 @@ CREATE TABLE `submissions` (
   `sub_remarks` text COLLATE utf8_unicode_ci NOT NULL,
   `is_accepted` tinyint(1) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`sub_id`),
   UNIQUE KEY `submissions_subtitle_unique` (`sub_title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -639,9 +699,9 @@ CREATE TABLE `submission_author` (
   `short_bio` varchar(220) COLLATE utf8_unicode_ci NOT NULL,
   `is_presenting` tinyint(1) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`sub_id`,`email`),
   UNIQUE KEY `submission_author_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -658,9 +718,9 @@ CREATE TABLE `submission_keyword` (
   `keyword_id` int(11) NOT NULL,
   `sub_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`keyword_id`,`sub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -676,9 +736,9 @@ CREATE TABLE `submission_topic` (
   `topic_id` int(11) NOT NULL,
   `sub_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`topic_id`,`sub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -695,9 +755,9 @@ CREATE TABLE `topics` (
   `conf_id` int(11) NOT NULL,
   `topic_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`topic_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -735,9 +795,9 @@ CREATE TABLE `user_bill` (
   `bill_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`bill_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -756,9 +816,9 @@ CREATE TABLE `venue` (
   `latitude` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `longitude` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
+  `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`venue_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

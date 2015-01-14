@@ -44,8 +44,8 @@ CREATE TABLE `bill_component` (
 DROP TABLE IF EXISTS `bill_component_type`;
 CREATE TABLE `bill_component_type` (
   `billcomponenttype_id` int(11) NOT NULL AUTO_INCREMENT,
-  `Description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `IsEnabled` bit(1) NOT NULL DEFAULT b'1',
+  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `is_enabled` bit(1) NOT NULL DEFAULT b'1',
   `created_by` int(11) NOT NULL,
   `modified_by` int(11) NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -12,7 +12,7 @@ class ConferenceController extends BaseController {
 
 	public function index()
 	{
-		$confs = Conference::where('beginDate','>',DB::raw('curdate()'))
+		$confs = Conference::where('begin_date','>',DB::raw('curdate()'))
 		->get();
 
 		$view = View::make('conference.index',array('confs'=>$confs)); 
@@ -25,9 +25,19 @@ class ConferenceController extends BaseController {
 		$user = User::where('user_id','=',1)->first();
 		Auth::login($user);
 
-		$fields=InterestField::lists('Name', 'FieldId');
+		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
+		->get();
+		/*
+		$arrayField ="";
 
-		$view = View::make('conference.management.create',array('fields'=>$fields)); 
+		foreach ($fields as &$field) {
+			dd(json_encode($fields));
+			$arrayField += json_encode($field)+",";
+		}
+
+		$arrayField = "["+rtrim($arrayField,',') + "]";
+ */
+		$view = View::make('conference.management.create',array('fields'=>$fields,'fields'=>$fields)); 
 
 		return $view;
 	}

@@ -4,15 +4,21 @@ class ConferenceRoomSchedule extends Eloquent {
 
 	protected $table = 'conference_room_schedule';
 	
-	protected $fillable = array('conf_id','room_id','Description','DateStart','DateEnd','BeginTime','EndTime','Remarks','CreatedBy');
+	protected $fillable = array('conf_id','room_id','description','date_start','date_end','begin_time','end_time','remarks','created_by','modified_by');
 
-	protected $guarded = array('conf_room_schedule_id','DateCreated');
+	protected $guarded = array('confroomschedule_id');
 	
-	public $timestamps = false;
+	public $timestamps = true;
 
 	
 	public  function Room()
 	{
 		return $this->hasOne('Room', 'room_id', 'room_id');
 	}
+
+	public  function Room()
+	{
+		return $this->hasOne('Conference', 'conf_id', 'conf_id');
+	}
+
 }

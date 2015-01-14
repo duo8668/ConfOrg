@@ -16,4 +16,10 @@ class Utility extends Eloquent{
 	public static function checkIsAValidDate($myDateString){
 		return (bool)strtotime($myDateString);
 	}
+
+	public static function js_array($array)
+	{
+		$temp = array_map('js_str', $array);
+		return '[' . implode(',', $temp) . ']';
+	}
 }

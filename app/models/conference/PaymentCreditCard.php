@@ -4,10 +4,10 @@ class PaymentCreditCard extends Eloquent {
 
 	protected $table = 'payment_creditcard';
 	
-	protected $fillable = array('UserId','BillId','CardNumber','AmountPaid');
+	protected $fillable = array('user_id','bill_id','amount_paid','created_by','modified_by');
 
-	protected $guarded = array('TransactionId','DatePaid');
+	protected $guarded = array('transaction_id','date_paid');
 	
-	public $timestamps = false;
+	public $timestamps = true;
 	
 }

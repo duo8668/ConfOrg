@@ -13,6 +13,7 @@ Add New Conference
 
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
 
+<link href="{{ asset('css/multiselect/bootstrap-dropdown-checkbox.css') }}" rel="stylesheet" type="text/css">
 
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
 
@@ -23,6 +24,8 @@ Add New Conference
 <script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
 
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
+
+<script src="{{ asset('js/multiselect/bootstrap-dropdown-checkbox.js') }}"></script>
 
 <style>
 
@@ -55,6 +58,9 @@ Add New Conference
 	//$(document).ajaxStop($.unblockUI); 	
 	
 	var eventData;
+
+
+
 	$(document).ready(function(){
 
 		$.ajax({
@@ -83,6 +89,13 @@ Add New Conference
 		});
 
 		$('#datetimepickerEnd').datetimepicker();
+
+		$("#confType").dropdownCheckbox({
+			data: {{$fields}},
+			title: "Category",
+			showNbSelected:true,
+			templateButton:'<button class="dropdown-checkbox-toggle btn btn-default" data-toggle="dropdown" href="#">Category <span class="dropdown-checkbox-nbselected"></span> <b class="caret"></b> </button>'
+		});
 
 		$('#dtConference').on('click',function(){
 			var myTitle = $('#conferenceTitle').val();
@@ -179,6 +192,7 @@ $("#frmCreateConf").submit(function(e){
 	$.ajax({
 		type: "POST",
 		url : "submitCreateConf",
+		showNbSelected: true,
 		data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,beginDate:beginDate,endDate:endDate,isFree:isFree}
 	})
 	.done(function(data) {
@@ -254,9 +268,12 @@ function swapStatus(_id,_status,_msg){
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('lblConfType', 'Conference Type', array('class' => 'col-md-4 control-label')) }}
+			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::select('confType',$fields,null,array('name'=>'Name','id'=>'FieldId')) }} </br>
+				<div id="confType" class="dropdown-checkbox dropdown">
+					<span class="dropdown-checkbox-nbselected"></span>
+				</div>
+				
 			</div>
 		</div>
 
@@ -298,6 +315,13 @@ function swapStatus(_id,_status,_msg){
 			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
 				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats')) }} </br>
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-4 control-label')) }}
+			<div class="col-md-4">
+				{{ Form::select('venue',$fields,null,array('name'=>'Name','id'=>'FieldId')) }} </br>
 			</div>
 		</div>
 

@@ -4,11 +4,11 @@ class BillComponent extends Eloquent {
 
 	protected $table = 'bill_component';
 
-	protected $fillable = array('BillId', 'ComponentTypeId', 'ComponentDescription', 'Amount');
+	protected $fillable = array('bill_id', 'billcomponenttype_id', 'description', 'amount');
 
-	protected $guarded = array('ComponentId', 'DateCreated');
+	protected $guarded = array('billcomponent_id');
 
-	public $timestamps = false;
+	public $timestamps = true;
 
 
 }

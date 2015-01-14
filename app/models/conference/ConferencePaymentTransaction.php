@@ -4,15 +4,15 @@ class ConferencePaymentTransaction extends Eloquent {
 
 	protected $table = 'conference_paymenttransaction';
 	
-	protected $fillable = array('PaymentTypeId','BillId','CreatedBy');
+	protected $fillable = array('bill_id','paymenttype_id','created_by','modified_by');
 
-	protected $guarded = array('TransactionId','DateCreated');
+	protected $guarded = array('transaction_id');
 	
-	public $timestamps = false;
+	public $timestamps = true;
 
-	public function ConferenceBill()
+	public function UserBill()
 	{
-		return $this->belongsTo('ConferenceBill','BillId','BillId');
+		return $this->belongsTo('UserBill','bill_id','bill_id');
 	}
 
 	public function PaymentCash()

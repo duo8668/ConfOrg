@@ -4,11 +4,11 @@ class Conference extends Eloquent {
 
 	protected $table = 'conference';
 
-	protected $fillable = array('Title', 'Description','BeginDate','BeginTime','EndDate','EndTime','IsFree','Speaker','CreatedBy');
+	protected $fillable = array('title', 'description','begin_date','begin_time','end_date','end_time','is_free','created_by','modified_by');
 
-	protected $guarded = array('conf_id','DateCreated');
+	protected $guarded = array('conf_id');
 	
-	public $timestamps = false;
+	public $timestamps = true;
 
 	public function ConferenceParticipants(){
 		return $this->hasMany('ConferenceParticipant', 'ConfId', 'conf_id');
