@@ -118,7 +118,7 @@ class SubmissionController extends \BaseController {
 		}
 
 		$name = Input::get('title');
-		$submission = TodoList::findOrFail($id);
+		$submission = Submission::findOrFail($id);
 		$submission->name = $name;
 		$submission->update();
 		return Redirect::route('submissions.index')->withMessage('Thank you! Your Contribution has been Updated');

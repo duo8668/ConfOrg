@@ -6,6 +6,9 @@
 
 body {
     background-color: #f8f8f8;
+	
+font-family: 'Roboto',Arial,sans-serif;
+font-size: 14px;
 }
 
 #wrapper {
@@ -125,6 +128,10 @@ body {
 
 .sidebar .nav-third-level li a {
     padding-left: 52px;
+}
+
+.small-12px {
+	font-size: 12px;
 }
 
 @media(min-width:768px) {
