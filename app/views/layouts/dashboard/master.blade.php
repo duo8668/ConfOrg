@@ -37,8 +37,7 @@
       <!-- Main Content -->
       <div id="displayChannel">
         @yield('content')
-      </div>        
-
+      </div>
    </div><!-- /#page-wrapper -->
  </div><!-- /#wrapper -->
 
