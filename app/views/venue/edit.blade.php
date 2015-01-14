@@ -8,19 +8,19 @@
     @endif
 @stop
 @section('page-header')
-Edit {{ $venue->Name }}
+Edit {{ $venue->venue_name }}
 @stop
 @section('content')
 
 <!-- if there are creation errors, they will show here -->
 {{ HTML::ul($errors->all()) }}
 
-{{ Form::model($venue, array('route' => array('venue.update', $venue->ID), 'method' => 'PUT', 'class' => 'form-horizontal')) }}
+{{ Form::model($venue, array('route' => array('venue.update', $venue->venue_id), 'method' => 'PUT', 'class' => 'form-horizontal')) }}
     <fieldset>
     <div class="form-group @if ($errors->has('venueName')) has-error @endif">
       <label class="col-md-4 control-label" for="venueName">Venue Name</label>  
       <div class="col-md-4">                      
-        {{ Form::text('venueName', $venue->Name, array('class' => 'form-control input-md')) }} 
+        {{ Form::text('venueName', $venue->venue_name, array('class' => 'form-control input-md')) }} 
         @if ($errors->has('venueName')) <p class="help-block">{{ $errors->first('venueName') }}</p> @endif        
       </div>    
     </div>
@@ -28,7 +28,7 @@ Edit {{ $venue->Name }}
     <div class="form-group  @if ($errors->has('venueAddress')) has-error @endif">
       <label class="col-md-4 control-label" for="venueAddress">Venue Address</label>
       <div class="col-md-4">                     
-        {{ Form::text('venueAddress', $venue->Address, array('class' => 'form-control input-md')) }}
+        {{ Form::text('venueAddress', $venue->venue_address, array('class' => 'form-control input-md')) }}
          @if ($errors->has('venueAddress')) <p class="help-block">{{ $errors->first('venueAddress') }}</p> @endif
       </div>
     </div>

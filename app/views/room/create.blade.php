@@ -1,3 +1,9 @@
+@section('head-content')    
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+    <link rel="stylesheet" type="text/css" href="../src/bootstrap-duallistbox.css">    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.min.js"></script>
+    <script src="../src/jquery.bootstrap-duallistbox.js"></script>
+@stop
 @extends('layouts.dashboard.master')
 @section('page-header')
 Add New Room
@@ -9,7 +15,7 @@ Add New Room
         <div class="alert alert-danger">{{ Session::get('message') }}</div>
     @endif
     
-    {{ Form::open(array('url' => 'room', 'class' => 'form-horizontal')) }}
+    {{ Form::open(array('url' => 'room', 'class' => 'form-horizontal','id' => 'formCR')) }}
     <fieldset>  
 
     <div class="form-group @if ($errors->has('venue')) has-error @endif">
@@ -40,22 +46,57 @@ Add New Room
       </div>
     </div>
 
-    <div class="form-group @if ($errors->has('equipment')) has-error @endif">
-      <label class="col-md-4 control-label" for="venue">Equipments</label>  
-      <div class="col-md-4">        
-      {{ Form::select('equipment', $equipments, null, array('class'=>'form-control input-md')) }}            
-      @if ($errors->has('equipment')) <p class="help-block">{{ $errors->first('equipment') }}</p> 
-      @elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
-      @endif
-      </div>
+    <div>
+      
     </div>
+
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="venue">Equipments</label>  
+      <div class="col-md-4">              
+        {{Form::select('duallistbox_demo2[]',$equipments,Input::old('duallistbox_demo2[]'),['multiple'],array('class' => 'form-control','id'=>'duallistbox_demo2','size' =>'4')) }}              
+      </div>
+    </div>     
+
     <div class="form-group">
       <label class="col-md-4 control-label" for="submit"></label>
-      <div class="col-md-4">           
-        {{ Form::submit('Add Equipment!', array('name'=>'Add','class' => 'btn btn-primary')) }}      
+      <div class="col-md-4">                   
       {{ Form::submit('Create Room!', array('name'=>'Create','class' => 'btn btn-primary')) }}      
       </div>
     </div>
     </fieldset>
-    {{ Form::close() }}
-@stop
+    {{ Form::close() }} 
+
+    <script>
+      var demo2 = $('select[name="duallistbox_demo2[]"]').bootstrapDualListbox();
+      $("#formCR").submit(function() {
+        
+        var venue = $('#venue').val();
+
+        var options = $('#duallistbox_demo2 option:selected');
+
+        var values = $.map(optionsz ,function(option) {
+            return option.value;
+        }); 
+        alert($('select[name="duallistbox_demo2[]"]').val());
+          e.preventDefault();
+       
+            $.ajax({
+              type: "POST",
+              url : "room",
+              data : {selectedvalues:values, name:venue}               
+            })
+            .done(function(data) {
+              alert(data);
+            }).fail(function(xhr,stat,msg) {
+              alert(xhr.responseText);
+           
+            }).always(function(data) {
+
+            });
+     
+      });    
+    </script>
+
+
+    @stop
+

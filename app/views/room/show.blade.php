@@ -7,14 +7,14 @@
     @endif
 @stop
 @section('page-header')
-Showing {{ $room->RoomName }}@stop
+Showing {{ $room->room_name }}@stop
 @section('content')
     <div class="jumbotron text-center">
-        <h2>{{ $room->RoomName }}</h2>
+        <h2>{{ $room->room_name }}</h2>
         <p>
-        	<strong>Venue:</strong> {{ $venue->Name }}<br>
-            <strong>Room Name:</strong> {{ $room->RoomName }}<br>
-            <strong>Room Capacity:</strong> {{ $room->Capacity }}    
+        	<strong>Venue:</strong> {{ $venue->venue_name }}<br>
+            <strong>Room Name:</strong> {{ $room->room_name }}<br>
+            <strong>Room Capacity:</strong> {{ $room->capacity }}    
         </p>
 
     @if($map!='')
