@@ -1,5 +1,5 @@
 <?php
-class Author extends Eloquent {
+class Submission_Author extends Eloquent {
 
 	public function submissions()
     {
