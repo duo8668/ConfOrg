@@ -7,14 +7,13 @@
 // Route::get('/venue2', 'ThomasController@venue2');
 // Route::post('/venue2', array('as' => 'venue2', 'uses'=>'ThomasController@venue2'));
 // Route::get('/venue2/test', 'ThomasController@test');
-//Route::post('/about', 'NewQuoteController@ ');
-//Route::put('/newquote', 'NewQuoteController@quoteUpdate');
 
-// Route::get('/about', array('as' => 'about', 'uses' => 'ThomasController@about'));
+Route::get('/about', array('as' => 'about', 'uses' => 'ThomasController@about'));
 Route::resource('venue', 'ThomasController');
-Route::resource('category', 'CategoryController');
+Route::resource('equipmentcategory', 'EquipmentCategoryController');
 Route::resource('equipment', 'EquipmentController');
 Route::resource('room', 'RoomController');
+
 
 
 //Route::get('foo/bar', 'FooController@about');
