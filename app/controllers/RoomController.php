@@ -9,10 +9,14 @@ class RoomController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		
 		$data = DB::table('Room')
-    	->join('venue', 'venue.ID', '=', 'room.venue_ID')
-    	->get(array('room.ID','room.RoomName', 'room.Capacity', 'venue.Name'));	
+    	->join('venue', 'venue.venue_id', '=', 'room.venue_id')
+    	->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name'));	
+
+    	// $data = DB::table('Room')
+    	// ->Where('room.Venue_ID', 'venue.ID')
+    	// ->get();`
 
     	return View::make('Room.index')->with('data',$data);
 	}
@@ -24,15 +28,16 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function create()
-	{
-		//
-		$venues = ['' => ''] + Venue::select('ID', DB::raw('CONCAT(Name, " - ", Address) AS full_name'))->lists('full_name', 'ID');
-		$equipments = ['' => ''] + Equipment::select('ID', DB::raw('CONCAT(equipmentName, " - ", equipmentRemarks) AS full_name'))->lists('full_name', 'ID');
+	{		
+		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');					
+		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+	    ->join('equipmentcategory', 'equipment.equipmentcategory_id', '=', 'equipmentcategory.equipmentcategory_id')
+	    ->lists('full_name', 'id');
+
 		return View::make('room.create')
 	    ->with('venues', $venues)
-	    ->with('equipments', $equipments);	   
+	    ->with('equipments', $equipments);	    
 	}
-
 
 	/**
 	 * Store a newly created resource in storage.
@@ -41,8 +46,13 @@ class RoomController extends \BaseController {
 	 */
 	public function store()
 	{
-		//	    
-        if(Input::get('Create')) {		 	
+		
+		//dd(Input::get('duallistbox_demo2'));	
+		// foreach ($accounttypes as $accounttype) {
+  		//DB::insert('INSERT INTO tb_accounts (accounttype,client) VALUES (?,?)', array($selectedvalue,1);}
+			
+		//dd(Input::all());
+         	
             $rules = array(
             'roomName'       => 'required',
             'roomCapacity'      => 'required|Integer',			                      
@@ -59,37 +69,28 @@ class RoomController extends \BaseController {
 	        else {
 	            // store	           
 	        	$room = new room;
-	            $room->RoomName = Input::get('roomName');
-	            $room->Capacity = Input::get('roomCapacity');	            
-	            $room->Venue_ID = Input::get('venue');
+	            $room->room_name = Input::get('roomName');
+	            $room->capacity = Input::get('roomCapacity');	            
+	            $room->venue_id = Input::get('venue');
 	            $room->save();            
+
+	            //$LastInsertId = $room->id;
+            	$selectedValues = Input::get('duallistbox_demo2');
+
+				foreach($selectedValues as $selectedvalue)
+				{					
+					$equipment = Equipment::find($selectedvalue);					
+					$room->equipments()->attach($equipment->equipment_ID);
+				}
 
 	            // redirect
 	            Session::flash('message', 'room Successfully Created!');
 	            return Redirect::to('room');
-	        }
 
-        } elseif(Input::get('Add')) {
-	           // validate
-	        // read more on validation at http://laravel.com/docs/validation
-	        $rules = array(
-	            'equipment'       => 'required',	            
-	        );
-	        $validator = Validator::make(Input::all(), $rules);
-
-	        // process the login
-	        if ($validator->fails()) {
-	            return Redirect::to('room/create')
-	                ->withErrors($validator)
-	                ->withInput(Input::all());
-	        } 
-	        else{
-	        	//store it!
-	        }
-	        //return Redirect::to('room') with the list of equipment with a ID;
-	    }
-
+	        }                    
+	        //return Redirect::to('room') with the list of equipment with an ID;	    
 	}
+	
 
 
 	/**
@@ -102,9 +103,9 @@ class RoomController extends \BaseController {
 	{
 		//
 		$room = Room::find($id);
-    	$venue = venue::find($room->Venue_ID);    	    	
+    	$venue = venue::find($room->venue_id);    	    	
 
-    	$geoLocation = $venue->Latitude.' , '.$venue->Longitude;        
+    	$geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
   //       list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));		
 		// $geoLocation = ((string) $lat).' , '.((string) $lng);
@@ -131,7 +132,7 @@ class RoomController extends \BaseController {
 	{
 		//
 		$room = Room::find($id);
-		$venues = ['' => ''] + Venue::select('ID', DB::raw('CONCAT(Name, " - ", Address) AS full_name'))->lists('full_name', 'ID');
+		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');
         // show the edit form and pass the room
         return View::make('room.edit')
             ->with('room', $room)
@@ -164,9 +165,9 @@ class RoomController extends \BaseController {
         else {
             // store	           
         	$room = Room::find($id);
-            $room->RoomName = Input::get('roomName');
-            $room->Capacity = Input::get('roomCapacity');	            
-            $room->Venue_ID = Input::get('venue');
+            $room->room_name = Input::get('roomName');
+            $room->capacity = Input::get('roomCapacity');	            
+            $room->venue_ID = Input::get('venue');
             $room->save();            
 
             // redirect

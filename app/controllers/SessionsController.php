@@ -8,12 +8,14 @@ class SessionsController extends BaseController {
 public function create()
 {
 	if (Auth::check()) 
-		{
-			return Redirect::action('ConferenceController@index');			
-		}
+		  {
+   return Redirect::action('ConferenceController@index');   
+  }
 
-	return View::make('sessions.create');
+ return View::make('sessions.create');
 }
+
+
 
 //authenticate user
 public function store()
@@ -33,8 +35,10 @@ public function store()
 
  	if($validator->passes())
  	{
+	 
 		if (Auth::attempt($credentials))
 		{
+		
 			return Redirect::action('ConferenceController@index');	
 		}
 

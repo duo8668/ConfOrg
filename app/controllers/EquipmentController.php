@@ -11,8 +11,8 @@ class EquipmentController extends \BaseController {
 	{
 
 		$data = DB::table('equipment')
-    	->join('category', 'category.ID', '=', 'equipment.category_ID')
-    	->get(array('equipment.ID','equipment.equipmentName', 'equipmentRemarks', 'category.Remarks', 'category.Name'));	
+    	->join('equipmentcategory', 'equipmentcategory.equipmentcategory_id', '=', 'equipment.equipmentcategory_id')
+    	->get(array('equipment.equipment_ID','equipment.equipmentName', 'equipmentRemarks', 'equipmentcategory.Remarks', 'equipmentcategory.Name'));	
 
     	return View::make('Equipment.index')->with('data',$data);
 	}
@@ -26,7 +26,7 @@ class EquipmentController extends \BaseController {
 	public function create()
 	{
 		//
-		$categories = ['' => ''] + Category::select('ID', DB::raw('CONCAT(Name, " - ", Remarks) AS full_name'))->lists('full_name', 'ID');
+		$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(Name, " - ", Remarks) AS full_name'))->lists('full_name', 'equipmentcategory_id');
 		return View::make('equipment.create')
 	    ->with('categories', $categories);	    
 	}
@@ -43,7 +43,7 @@ class EquipmentController extends \BaseController {
 	        $rules = array(
             'equipmentName'       => 'required',
             'equipmentRemarks'      => 'required',            
-            'category' 				=>'required',
+            'equipmentcategory' 				=>'required',
         );
         $validator = Validator::make(Input::all(), $rules);
 
@@ -56,9 +56,9 @@ class EquipmentController extends \BaseController {
         else {
             // store	           
         	$equipment = new equipment;
-            $equipment->equipmentName = Input::get('equipmentName');
-            $equipment->equipmentRemarks = Input::get('equipmentRemarks');	            
-            $equipment->category_ID = Input::get('category');
+            $equipment->equipment_name = Input::get('equipmentName');
+            $equipment->equipment_remark = Input::get('equipmentRemarks');	            
+            $equipment->equipmentcategory_id = Input::get('equipmentcategory');
             $equipment->save();            
 
             // redirect
@@ -78,16 +78,16 @@ class EquipmentController extends \BaseController {
 	public function show($id)
 	{
 		// $data = DB::table('equipment')
-  //       ->join('category', function($join) use($id)
+  //       ->join('equipmentcategory', function($join) use($id)
   //       {
-  //           $join->on('category.ID', '=', 'equipment.category_ID')
+  //           $join->on('equipmentcategory.ID', '=', 'equipment.equipmentcategory_id')
   //                ->where('equipment.ID', '=', $id);
   //       })
-  //       ->get(array('category.Remarks', 'category.Name'));  
+  //       ->get(array('equipmentcategory.Remarks', 'equipmentcategory.Name'));  
     	//dd($equipment2);
     	$equipment = Equipment::find($id);
-    	$category = Category::find($equipment->Category_ID);
-    	$cat = $category->Name .' - '. $category->Remarks;
+    	$equipmentcategory = EquipmentCategory::find($equipment->equipmentCategory_id);
+    	$cat = $equipmentcategory->Name .' - '. $equipmentcategory->Remarks;
     	
         return View::make('equipment.show')->with('equipment', $equipment)->with('cat',$cat);
 
@@ -105,7 +105,7 @@ class EquipmentController extends \BaseController {
 	{
 		//
 		$equipment = Equipment::find($id);
-		$categories = ['' => ''] + Category::select('ID', DB::raw('CONCAT(Name, " - ", Remarks) AS full_name'))->lists('full_name', 'ID');
+		$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(Name, " - ", Remarks) AS full_name'))->lists('full_name', 'equipmentcategory_id');
         // show the edit form and pass the equipment
         return View::make('equipment.edit')
             ->with('equipment', $equipment)
@@ -124,7 +124,7 @@ class EquipmentController extends \BaseController {
 		$rules = array(
             'equipmentName'       => 'required',
             'equipmentRemarks'      => 'required',            
-            'category' 				=>'required',
+            'equipmentcategory' 				=>'required',
         );
         $validator = Validator::make(Input::all(), $rules);
 
@@ -137,13 +137,13 @@ class EquipmentController extends \BaseController {
         else {
             // store	           
         	$equipment = Equipment::find($id);
-            $equipment->equipmentName = Input::get('equipmentName');
-            $equipment->equipmentRemarks = Input::get('equipmentRemarks');	            
-            $equipment->category_ID = Input::get('category');
+            $equipment->equipment_name = Input::get('equipmentName');
+            $equipment->equipment_remark = Input::get('equipmentRemarks');	            
+            $equipment->equipmentcategory_id = Input::get('equipmentcategory');
             $equipment->save();            
 
             // redirect
-            Session::flash('message', 'Equipment Successfully Created!');
+            Session::flash('message', 'Equipment Successfully Edited!');
             return Redirect::to('equipment');
         } 
 
