@@ -3,13 +3,13 @@
 class Category extends Eloquent {	
 
 	public $timestamps = false;	
-	protected $primaryKey = 'ID';
+	protected $primaryKey = 'category_id';
 	protected $table = 'category';
 
-	protected $fillable = array('Name', 'Remarks');
+	protected $fillable = array('category_name', 'category_remark');
 
-	public function equipment(){
-		return $this->hasMany('Equipment');
+	public function equipments(){
+		return $this->hasmany('Equipment', 'category_id','category_id');
 	}
 
 	// public function category(){
