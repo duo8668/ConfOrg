@@ -46,6 +46,14 @@ Add New Conference
 		right: 15px;	
 	}
 
+	.input-group.date span{
+		cursor: pointer; 
+	}
+
+	.checkbox{
+		margin-left:20px;
+	}
+
 </style>
 
 
@@ -78,125 +86,91 @@ Add New Conference
 			$.unblockUI();
 		});
 
-		$('#datetimepickerBegin').datetimepicker(
-		{
-			useCurrent: false,
-			pickTime: false,
-			disabledDates: [moment("01/26/2015"),
-			new Date(2015, 1-1,21),
-			"01/22/2015 00:53"
-			,"01/23/2015 00:55"]
-		});
-
-		$('#datetimepickerEnd').datetimepicker();
+		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	});
+		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false});
 
 		$("#confType").dropdownCheckbox({
 			data: {{$fields}},
 			title: "Category",
 			showNbSelected:true,
+			autosearch:true,
+			hideHeader:false,
 			templateButton:'<button class="dropdown-checkbox-toggle btn btn-default" data-toggle="dropdown" href="#">Category <span class="dropdown-checkbox-nbselected"></span> <b class="caret"></b> </button>'
 		});
+		var count = 0;
 
-		$('#dtConference').on('click',function(){
-			var myTitle = $('#conferenceTitle').val();
+		$("#datetimepickerBegin").on("dp.hide",function (e) {
+			console.log ( '#datetimepickerBegin dp.hide:'+count );
+			count++;
 
-			if(myTitle.length > 0){
-				$('#showCalendar').attr('title','Create Conference for : ' + myTitle);
+			$('#datetimepickerEnd').data("DateTimePicker").setMinDate(e.date);
+		});
 
-				$('#showCalendar').dialog({
-					autoOpen: true,
-					minHeight: 768,
-					width: 1024,
-					modal: true,
-					closeOnEscape: false,
-					draggable: false,
-					resizable: false,
-					open: function (event, ui) {
-						$('.ui-dialog').css('z-index',9999);
-						$('.ui-widget-overlay').css('z-index',9998);
-						blockUI();
-						$.ajax({
-							type: "post",
-							url: "../../utils/customcalendar",
-							data: { 'title': myTitle}
-						}).done(function(data) {
-							$('#myCalendar').html(data);
-						})
-						.fail(function(xhr,stat,msg) {
-							alert(xhr.responseText);
-						})
-						.always(function(data) {
-							$.unblockUI();
-						});
-					},
-					buttons: {
-						'Yes': function(){
-							$(this).dialog('close');
-							callback(eventData);
-						},
-						'No': function(){
-							$(this).dialog('close');
-						}			
-					}
-				});
+		$("#datetimepickerBegin").on("dp.show",function (e) {
+			$('#datetimepickerBegin').data("DateTimePicker").disable();
+			var disabledDates = [moment("01/26/2015"),new Date(2015, 1-1,21),"01/22/2015 00:53","01/23/2015 00:55"];
+
+			$('#datetimepickerBegin').data("DateTimePicker").setDisabledDates(disabledDates);
+
+			setTimeout(function(){
+$('#datetimepickerBegin').data("DateTimePicker").enable();
+
+			},2000);
+			
+		});
+
+		$('#conferenceTitle').on('change',function(event){
+
+			if($(this).val().trim().length > 6){
+				var str = $(this).val();
+				if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
+					swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
+				}else{
+					$.ajax({
+						type: "POST",
+						url : "checkConfTitle",
+						data : {confTitle:$("input#conferenceTitle").val().trim() }
+					})
+					.done(function(data) {
+						if(data != 'true'){				
+							swapStatus('conferenceTitle','NOTOK',data);
+						}else if(data == 'true'){
+							swapStatus('conferenceTitle','OK','');
+						}
+					})
+					.fail(function(xhr,stat,msg) {
+						alert(xhr.responseText);
+					})
+					.always(function(data) {
+						$.unblockUI();
+					});
+				}
+
 			}else{
-				alert('Title field cannot be blank !!!');
+
+				swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
 			}
 
 		});
 
-$('#conferenceTitle').on('change',function(event){
+		$("#frmCreateConf").submit(function(e){
+			e.preventDefault();
+			var conferenceTitle = $("input#conferenceTitle").val().trim();
+			var confType =  $("#confType option:selected").val();
+			var confDesc =  $("textarea#confDesc").val().trim();
+			var beginDate =  $("#beginDate").val();
+			var endDate =  $("#endDate").val();
+			var isFree =  $("#chkIsFree").is(':checked');
 
-	if($(this).val().trim().length > 6){
-		var str = $(this).val();
-		if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
-			swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
-		}else{
+			blockUI();
 			$.ajax({
 				type: "POST",
-				url : "checkConfTitle",
-				data : {confTitle:$("input#conferenceTitle").val().trim() }
+				url : "submitCreateConf",
+				showNbSelected: true,
+				data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,beginDate:beginDate,endDate:endDate,isFree:isFree}
 			})
 			.done(function(data) {
-				if(data != 'true'){				
-					swapStatus('conferenceTitle','NOTOK',data);
-				}else if(data == 'true'){
-					swapStatus('conferenceTitle','OK','');
-				}
-			})
-			.fail(function(xhr,stat,msg) {
-				alert(xhr.responseText);
-			})
-			.always(function(data) {
-				$.unblockUI();
-			});
-		}
-
-	}else{
-
-		swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
-	}
-
-});
-
-$("#frmCreateConf").submit(function(e){
-	e.preventDefault();
-	var conferenceTitle = $("input#conferenceTitle").val().trim();
-	var confType =  $("#confType option:selected").val();
-	var confDesc =  $("textarea#confDesc").val().trim();
-	var beginDate =  $("#beginDate").val();
-	var endDate =  $("#endDate").val();
-	var isFree =  $("#chkIsFree").is(':checked');
-
-	blockUI();
-	$.ajax({
-		type: "POST",
-		url : "submitCreateConf",
-		showNbSelected: true,
-		data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,beginDate:beginDate,endDate:endDate,isFree:isFree}
-	})
-	.done(function(data) {
-		if(data.id != undefined){
+				if(data.id != undefined){
 			// mean it is sucessfully created 
 			$.unblockUI();	
 			$.blockUI({ 
@@ -280,14 +254,7 @@ function swapStatus(_id,_status,_msg){
 		<div class="form-group">
 			{{ Form::label('lblConfDesc', 'Conference Description', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::textarea('confDesc',isset($value)?$value:'',array('name'=>'confDesc','id'=>'confDesc','rows'=>3,'cols'=>50)) }} </br>
-			</div>
-		</div>
-
-		<div class="form-group">
-			{{ Form::label('dtConference', 'Date Range', array('class' => 'col-md-4 control-label')) }}
-			<div class="col-md-4">   
-				{{ Form::button('Select Date!',array('name'=>'dtConference','id'=>'dtConference')) }} <div id='showCalendar'><div id="myCalendar"></div></div>            
+				{{ Form::textarea('confDesc',isset($value)?$value:'',array('name'=>'confDesc','id'=>'confDesc','class' => 'form-control','rows'=>3,'cols'=>50)) }} </br>
 			</div>
 		</div>
 
@@ -314,21 +281,23 @@ function swapStatus(_id,_status,_msg){
 		<div class="form-group">
 			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats')) }} </br>
+				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats','class' => 'form-control',"maxlength"=>"6")) }} </br>
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::select('venue',$fields,null,array('name'=>'Name','id'=>'FieldId')) }} </br>
+				{{ Form::select('venue',$fields,null,array('name'=>'Name','id'=>'FieldId','class' => 'form-control')) }} </br>
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('isFree', 'Is this Conference Free?', array('class' => 'col-md-4 control-label')) }} 
-			<div class="col-md-4">   
-				{{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }} Yes                 
+			<div class="col-sm-5"> 
+				<div class="checkbox">
+					{{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }}    Yes                 
+				</div>  				
 			</div>
 		</div>
 

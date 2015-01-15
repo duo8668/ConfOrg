@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2015-01-14 11:05:50
+Date: 2015-01-15 11:41:09
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,4 +28,16 @@ CREATE TABLE `interest_field` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`interestfield_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Records of interest_field
+-- ----------------------------
+INSERT INTO `interest_field` VALUES ('1', 'Solar', null, '0', null, '2015-01-14 14:48:26', null);
+INSERT INTO `interest_field` VALUES ('2', 'Physics', null, '0', null, '2015-01-14 14:48:35', null);
+INSERT INTO `interest_field` VALUES ('3', 'Heliosphere', null, '0', null, '2015-01-14 14:48:45', null);
+INSERT INTO `interest_field` VALUES ('4', 'Space', null, '0', null, '2015-01-14 14:48:57', null);
+INSERT INTO `interest_field` VALUES ('5', 'Climate', null, '0', null, '2015-01-14 14:49:03', null);
+INSERT INTO `interest_field` VALUES ('6', 'Game', null, '0', null, '2015-01-14 14:49:08', null);
+INSERT INTO `interest_field` VALUES ('7', 'Ionosphere', null, '0', null, '2015-01-14 14:49:28', null);
+INSERT INTO `interest_field` VALUES ('8', 'Academy', null, '0', null, '2015-01-14 14:49:38', null);
