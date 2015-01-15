@@ -13,6 +13,7 @@
                             </div>
                             <!-- /input-group -->
                         </li>
+                        <li class="sidebar-divider"></li>
 
                         <!-- USER COMMON SETTINGS -->
                         <li><a href="{{ url('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Main Dashboard</a></li>
@@ -28,8 +29,8 @@
 
 
                         <!-- SUBMISSION LINKS, appear when viewing conference currently calling for papers -->
-                        <li><a href="{{ url('submission') }}"><i class="fa fa-file fa-fw"></i> All Submission</a></li>
-                        <li><a href="{{ url('submission/create') }}"><i class="fa fa-plus fa-fw"></i> Add New Submission</a></li>
+                        <li><a href="{{ url('submission') }}"><i class="fa fa-file fa-fw"></i> Your Submissions</a></li>
+                        <li><a href="{{ url('submission/create') }}"><i class="fa fa-plus fa-fw"></i> New Submission</a></li>
                         <li class="sidebar-divider"></li>
 
 
