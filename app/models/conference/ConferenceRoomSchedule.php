@@ -13,12 +13,12 @@ class ConferenceRoomSchedule extends Eloquent {
 	
 	public  function Room()
 	{
-		return $this->hasOne('Room', 'room_id', 'room_id');
+		return $this->belongsTo('Room', 'room_id', 'room_id');
 	}
 
-	public  function Room()
+	public  function Conference()
 	{
-		return $this->hasOne('Conference', 'conf_id', 'conf_id');
+		return $this->belongsTo('Conference', 'conf_id', 'conf_id');
 	}
 
 }

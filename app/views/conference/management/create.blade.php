@@ -41,6 +41,10 @@ Add New Conference
 		margin: 0 auto;
 	}
 
+	.date {
+		background-color: white;
+	}
+
 	#frmCreateConf .form-group .col-md-4 .form-control-feedback{
 		top: 8px;
 		right: 15px;	
@@ -71,21 +75,6 @@ Add New Conference
 
 	$(document).ready(function(){
 
-		$.ajax({
-			type: "GET",
-			url : "/conference/management/roomSchedules",
-			data:{ roomId:1 }
-		})
-		.done(function(data) {
-			alert(data);
-		})
-		.fail(function(xhr,stat,msg) {
-			alert(xhr.responseText);
-		})
-		.always(function(data) {
-			$.unblockUI();
-		});
-
 		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	});
 		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false});
 
@@ -97,26 +86,38 @@ Add New Conference
 			hideHeader:false,
 			templateButton:'<button class="dropdown-checkbox-toggle btn btn-default" data-toggle="dropdown" href="#">Category <span class="dropdown-checkbox-nbselected"></span> <b class="caret"></b> </button>'
 		});
-		var count = 0;
 
 		$("#datetimepickerBegin").on("dp.hide",function (e) {
-			console.log ( '#datetimepickerBegin dp.hide:'+count );
-			count++;
 
 			$('#datetimepickerEnd').data("DateTimePicker").setMinDate(e.date);
 		});
 
+		$("#datetimepickerEnd").on("dp.change",function (e) {
+               $('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
+            });
+		
 		$("#datetimepickerBegin").on("dp.show",function (e) {
-			$('#datetimepickerBegin').data("DateTimePicker").disable();
-			var disabledDates = [moment("01/26/2015"),new Date(2015, 1-1,21),"01/22/2015 00:53","01/23/2015 00:55"];
-
-			$('#datetimepickerBegin').data("DateTimePicker").setDisabledDates(disabledDates);
-
-			setTimeout(function(){
-$('#datetimepickerBegin').data("DateTimePicker").enable();
-
-			},2000);
-			
+			$.ajax({
+				type: "GET",
+				url : "/conference/roomSchedule/unavailabledates"
+			})
+			.done(function(data) {
+				var dates=[];
+				var daysOfYear = [];
+				for(var i=0;i<data.length;i++){
+					dates[i]= { k: moment(data[i].start)};
+					for (var d = new Date(data[i].start); d <= new Date(data[i].end); d.setDate(d.getDate() + 1)) {
+						daysOfYear.push(new moment(d));
+					}
+				}
+				$('#datetimepickerBegin').data("DateTimePicker").setDisabledDates(daysOfYear);
+			})
+			.fail(function(xhr,stat,msg) {
+				alert(xhr.responseText);
+			})
+			.always(function(data) {
+				$.unblockUI();
+			});
 		});
 
 		$('#conferenceTitle').on('change',function(event){
@@ -153,6 +154,31 @@ $('#datetimepickerBegin').data("DateTimePicker").enable();
 
 		});
 
+		//$('#ddlVenue').prop("disabled", true);
+
+		$('#ddlVenue').on('click',function(){
+			$.ajax({
+				type: "GET",
+				url : "/conference/roomSchedule/availableRooms"
+			})
+			.done(function(data) {
+				$("#ddlVenue").empty();
+
+				$.each(data, function (key, value) {
+					$("#ddlVenue").append($("<option></option>").val
+						(value.room_id).html(value.room_name));
+				});
+			})
+			.fail(function(xhr,stat,msg) {
+				alert(xhr.responseText);
+			})
+			.always(function(data) {
+				$.unblockUI();
+			});
+
+			
+		});
+
 		$("#frmCreateConf").submit(function(e){
 			e.preventDefault();
 			var conferenceTitle = $("input#conferenceTitle").val().trim();
@@ -180,16 +206,15 @@ $('#datetimepickerBegin').data("DateTimePicker").enable();
 				$.unblockUI({ 
 					onUnblock: function(){window.location.href='{{ action("ConferenceController@index") }}';}			
 				}); 
-			}, 1500); 
+			}, 1500); 	}
 
-		}
-	}).fail(function(xhr,stat,msg) {
-		alert(xhr.responseText);
-		$.unblockUI();
-	}).always(function(data) {
+		}).fail(function(xhr,stat,msg) {
+			alert(xhr.responseText);
+			$.unblockUI();
+		}).always(function(data) {
 
+		});
 	});
-});
 });
 
 function callback(eventData){
@@ -288,7 +313,7 @@ function swapStatus(_id,_status,_msg){
 		<div class="form-group">
 			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::select('venue',$fields,null,array('name'=>'Name','id'=>'FieldId','class' => 'form-control')) }} </br>
+				{{ Form::select('venue',[null=>''],null,array('name'=>'ddlVenue','id'=>'ddlVenue','class' => 'form-control')) }} </br>
 			</div>
 		</div>
 

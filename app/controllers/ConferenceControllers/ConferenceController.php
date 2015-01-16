@@ -139,15 +139,7 @@ class ConferenceController extends BaseController {
 		}
 
 		return $output_arrays;
-	}
-
-	public function allRoomSchedules(){
-		$confRoomSchedule = ConferenceRoomSchedule::where('room_id','=',Input::get('roomId'))
-		->select(DB::raw('DATE_FORMAT(BeginTime, "%Y-%m-%d") as start ,DATE_FORMAT(EndTime,"%Y-%m-%d") as end'))
-		->get();
-
-		return $confRoomSchedule;
-	}
+	} 
 
 	public function createConference()
 	{

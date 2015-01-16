@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2015-01-14 17:47:48
+Date: 2015-01-16 17:48:26
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -76,11 +76,12 @@ CREATE TABLE `conference` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conf_id`),
   UNIQUE KEY `Title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of conference
 -- ----------------------------
+INSERT INTO `conference` VALUES ('4', 'Conf 01', 'My cute conf', '2015-02-02', '2015-02-02 08:00:00', '2015-02-04', '2015-02-04 20:00:00', '\0', '1', null, '2015-01-16 14:58:44', null);
 
 -- ----------------------------
 -- Table structure for conference_entertainment
@@ -222,11 +223,12 @@ CREATE TABLE `conference_room_schedule` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`confroomschedule_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of conference_room_schedule
 -- ----------------------------
+INSERT INTO `conference_room_schedule` VALUES ('1', '4', '1', 'Test ConfRoomSchedule', '2015-02-02', '2015-02-04', '2015-02-02 08:00:00', '2015-02-04 20:00:00', null, '1', null, '2015-01-16 15:00:09', null);
 
 -- ----------------------------
 -- Table structure for confuserrole
@@ -599,6 +601,9 @@ CREATE TABLE `room` (
 -- ----------------------------
 -- Records of room
 -- ----------------------------
+INSERT INTO `room` VALUES ('1', '1', 'Room V1 R1', '500', '500', '1', null, '2015-01-16 16:23:07', null);
+INSERT INTO `room` VALUES ('2', '1', 'Room V1 R2', '450', '550', '1', null, '2015-01-16 16:23:22', null);
+INSERT INTO `room` VALUES ('3', '1', 'Room V1 R3', '550', '600', '1', null, '2015-01-16 16:23:36', null);
 
 -- ----------------------------
 -- Table structure for room_cost
