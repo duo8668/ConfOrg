@@ -52,8 +52,8 @@
                         <!-- VENUE MANAGEMENT LINKS, appear if user == Provider/Facilitator -->
                         <li><a href="{{ url('equipment/create') }}">Add Equipments</a></li>   
                         <li><a href="{{ url('equipment') }}">All Equipments</a></li>
-                        <li><a href="{{ url('category/create') }}">Add Category</a></li>    
-                        <li><a href="{{ url('category') }}">All Category</a></li>
+                        <li><a href="{{ url('equipmentcategory/create') }}">Add Category</a></li>    
+                        <li><a href="{{ url('equipmentcategory') }}">All Category</a></li>
                         <li><a href="{{ url('venue/create') }}">Add Venue</a></li>     
                         <li><a href="{{ url('venue') }}">All Venue</a></li>                       
                         <li><a href="{{ url('room/create') }}">Add Room</a></li>   
