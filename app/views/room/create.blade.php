@@ -9,8 +9,6 @@
 Add New Room
 @stop
 @section('content')
-<center><legend><h1>Create Room</h1></legend></center>
-
     @if (Session::has('message'))
         <div class="alert alert-danger">{{ Session::get('message') }}</div>
     @endif
@@ -44,10 +42,6 @@ Add New Room
          @elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
          @endif
       </div>
-    </div>
-
-    <div>
-      
     </div>
 
     <div class="form-group">
