@@ -31,7 +31,7 @@ class RoomController extends \BaseController {
 	{		
 		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');					
 		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
-	    ->join('equipmentcategory', 'equipment.equipmentcategory_id', '=', 'equipmentcategory.equipmentcategory_id')
+	    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
 	    ->lists('full_name', 'id');
 
 		return View::make('room.create')

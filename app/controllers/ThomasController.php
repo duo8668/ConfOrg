@@ -107,7 +107,7 @@ class ThomasController extends \BaseController {
 	{
 		 // get the venue
         $venue = Venue::find($id);
-        $geoLocation = $venue->Latitude.' , '.$venue->Longitude;        
+        $geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
   //       list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));		
 		// $geoLocation = ((string) $lat).' , '.((string) $lng);
@@ -206,8 +206,8 @@ class ThomasController extends \BaseController {
 	            // store
 	            $venue = Venue::find($id);        		        
 	            list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));			        	
-	            $venue->name = Input::get('venueName');
-	            $venue->address = Input::get('venueAddress');
+	            $venue->venue_name = Input::get('venueName');
+	            $venue->venue_address = Input::get('venueAddress');
 	            $venue->latitude = $lat;
 	            $venue->longitude = $lng;          
 	            $venue->save();       
