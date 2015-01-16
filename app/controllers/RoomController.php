@@ -77,10 +77,13 @@ class RoomController extends \BaseController {
 	            //$LastInsertId = $room->id;
             	$selectedValues = Input::get('duallistbox_demo2');
 
-				foreach($selectedValues as $selectedvalue)
-				{					
-					$equipment = Equipment::find($selectedvalue);					
-					$room->equipments()->attach($equipment->equipment_ID);
+            	if(!empty($selectedValues))
+            	{
+					foreach($selectedValues as $selectedvalue)
+					{					
+						$equipment = Equipment::find($selectedvalue);					
+						$room->equipments()->attach($equipment->equipment_id);
+					}
 				}
 
 	            // redirect
@@ -129,15 +132,33 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function edit($id)
-	{
-		//
-		$room = Room::find($id);
-		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');
+	{		
+		// // get the picnics that Cerms goes to ------------------------
+  //   	$cerms = Bear::where('name', '=', 'Cerms')->first();
+
+  //   	// get the picnics and their names and taste levels
+  //   	foreach ($cerms->picnics as $picnic) 
+  //       echo $picnic->name . ' ' . $picnic->taste_level;
+		// //$business_in_category = Category::find($id)->company;		
+
+		
+		// foreach($room->equipments as $equipment)
+		// echo $equipment->equipment_name .' '.$equipment->equipment_id;
+		
         // show the edit form and pass the room
-        return View::make('room.edit')
-            ->with('room', $room)
-            ->with('venues', $venues);
-	}
+
+        $room = Room::find($id);
+        $selectedEquipment = $room->equipments;
+        $venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');
+        $equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+	    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+	    ->lists('full_name', 'id');
+
+		return View::make('room.edit')
+	    ->with('venues', $venues)
+	    ->with('equipments', $equipments)
+	   	->with('room',$room);
+	}	
 
 
 	/**
