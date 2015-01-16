@@ -29,11 +29,11 @@ Add New Equipment
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="category">Category</label>  
+    <div class="form-group @if ($errors->has('equipmentcategory')) has-error @elseif (Session::has('message')) has-error @endif">
+      <label class="col-md-4 control-label" for="equipmentcategory">Category</label>  
       <div class="col-md-4">        
-      {{ Form::select('category', $categories, null, array('class'=>'form-control input-md')) }}      
-      @if ($errors->has('category')) <p class="help-block">{{ $errors->first('category') }}</p> 
+      {{ Form::select('equipmentcategory', $categories, null, array('class'=>'form-control input-md')) }}      
+      @if ($errors->has('equipmentcategory')) <p class="help-block">{{ $errors->first('equipmentcategory') }}</p> 
       @elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
       @endif
       </div>

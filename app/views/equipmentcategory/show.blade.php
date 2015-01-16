@@ -1,13 +1,13 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-Showing {{ $category->category_name }}
+Showing {{ $equipmentcategory->equipmentcategory_name }}
 @stop
 @section('content')
     <div class="jumbotron text-center">
-        <h2>{{ $category->category_name }}</h2>
+        <h2>{{ $equipmentcategory->equipmentcategory_name }}</h2>
         <p>
-            <strong>Name:</strong> {{ $category->category_name }}<br>
-            <strong>Remarks:</strong> {{ $category->category_remark }}
+            <strong>Name:</strong> {{ $equipmentcategory->equipmentcategory_name }}<br>
+            <strong>Remarks:</strong> {{ $equipmentcategory->equipmentcategory_remark }}
         </p>
     </div>
 @stop

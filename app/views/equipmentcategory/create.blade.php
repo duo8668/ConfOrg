@@ -7,7 +7,7 @@
         <div class="alert alert-danger">{{ Session::get('message') }}</div>
     @endif
     
-    {{ Form::open(array('url' => 'category', 'class' => 'form-horizontal')) }}
+    {{ Form::open(array('url' => 'equipmentcategory', 'class' => 'form-horizontal')) }}
     <fieldset>  
     <div class="form-group @if ($errors->has('categoryName')) has-error @endif">
       <label class="col-md-4 control-label" for="categoryName">Category Name</label>  

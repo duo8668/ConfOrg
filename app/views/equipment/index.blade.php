@@ -4,10 +4,10 @@ All Equipments
 @stop
 @section('content')
 
-<!-- will be used to show any messages -->
+<!-- will be used to show any messages 
 @if (Session::has('message'))
     <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif
+@endif-->
 
 <table class="table table-striped table-bordered">
     <thead>
@@ -20,7 +20,7 @@ All Equipments
     @foreach($data as $key => $value)
         <tr>
             <td>{{ $value->equipment_name .' - '. $value->equipment_remark }}</td> 
-            <td>{{ $value->category_name .' - '. $value->category_remark}}</td>                        
+            <td>{{ $value->equipmentcategory_name .' - '. $value->equipmentcategory_remark}}</td>                        
             <!-- we will also add show, edit, and delete buttons -->
             <td>
 

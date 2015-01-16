@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,8 +10,6 @@
     <meta name="author" content="">
 
     <title>Dashboard - Conference organizer</title>
-
-    <!-- Bootstrap Core CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
 </head>
@@ -37,7 +35,7 @@
       </ul>
    </li>
    <li><a href="#">PHP</a></li>
-</ul>#wrapper -->
+</ul>
 
 <div id="wrapthis">
 <div class="alert alert-success" style="max-width:500px;" role="alert" span3>..wagwagawgwagagwagw.</div>
@@ -46,10 +44,58 @@
 <div class="alert alert-danger" role="alert">...</div>
 </div>
 
-    <!-- jQuery -->
     <script src="{{ asset('js/jquery.js') }}"></script>
-    <!-- Bootstrap Core JavaScript -->
+
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 </body>
 
+</html> -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bootstrap Dual Listbox</title>
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/src/bootstrap-duallistbox.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    // <script src="/public/main.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.min.js"></script>
+    <script src="../public/src/jquery.bootstrap-duallistbox.js"></script>
+  </head>
+  <body class="container">
+  {{ Form::open(['data-remote'],array('url' => 'room', 'class' => 'form-horizontal')) }}
+    <fieldset>  
+    <div>
+      <select multiple="multiple" size="10" name="duallistbox_demo2[]">
+        <option value="category 1">category 1</option>
+        <option value="option2">category 2</option>
+        <option value="option3">category 3</option>
+        <option value="option4">audio 4</option>
+        <option value="option5">audio 5</option>
+        <option value="option6">audio 6</option>
+        <option value="option7">video 7</option>
+        <option value="option8">video 8</option>
+        <option value="option9">Others 9</option>
+        <option value="option0">Others 10</option>
+      </select>  
+    </div>
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="submit"></label>
+      <div class="col-md-4">           
+        
+      {{ Form::submit('Create Room!', array('name'=>'Create','class' => 'btn btn-primary')) }}      
+      </div>
+    </div>
+    </fieldset>
+    {{ Form::close() }}
+
+  <script>
+    var demo2 = $('select[name="duallistbox_demo2[]"]').bootstrapDualListbox();
+    $("#demoform").submit(function() {
+      alert($('[name="duallistbox_demo2[]"]').val());
+      return false;
+    });    
+  </script>
+</body>
 </html>

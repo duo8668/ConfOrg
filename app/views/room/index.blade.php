@@ -4,10 +4,10 @@ All Rooms
 @stop
 @section('content')
 
-<!-- will be used to show any messages -->
+<!-- will be used to show any messages
 @if (Session::has('message'))
     <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif
+@endif-->
 
 <table class="table table-striped table-bordered">
     <thead>
@@ -19,8 +19,8 @@ All Rooms
     <tbody>
     @foreach($data as $key => $value)
         <tr>
-            <td>{{ $value->Name}}</td>                        
-            <td>{{ $value->RoomName .' (Capacity:'. $value->capacity .' )' }}</td>             
+            <td>{{ $value->venue_name}}</td>                        
+            <td>{{ $value->room_name .' (Capacity:'. $value->capacity .' )' }}</td>             
             <!-- we will also add show, edit, and delete buttons -->
             <td>
 
