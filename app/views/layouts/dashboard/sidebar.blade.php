@@ -35,7 +35,7 @@
 
 
                         <!-- REVIEW LINKS, appear if user == reviewers -->
-                        <li><a href="{{ url('review') }}"><i class="fa fa-comment fa-fw"></i> Enter/Edit Reviews</a>
+                        <li><a href="{{ url('reviews') }}"><i class="fa fa-comment fa-fw"></i> Enter/Edit Reviews</a>
                         </li>
                         <li class="sidebar-divider"></li>
 

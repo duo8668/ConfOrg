@@ -30,17 +30,7 @@ class SubmissionController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('submission.addnew');
-	}
-
-	/**
-	 * Show review results.
-	 *
-	 * @return Response
-	 */
-	public function results()
-	{
-		return View::make('submission.results');
+		return View::make('submission.create');
 	}
 
 	/**
@@ -52,7 +42,7 @@ class SubmissionController extends \BaseController {
 	{
 		// define rules
 		$rules = array(
-				'title' => array('required')
+				'sub_title' => array('required')
 			);
 
 		// pass input to validator
@@ -70,19 +60,6 @@ class SubmissionController extends \BaseController {
 		return Redirect::route('submissions.index')->withMessage('Thank you! Your Contribution has been Submitted');
 	}
 
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
 	/**
 	 * Show the form for editing the specified resource.
 	 *
@@ -91,8 +68,8 @@ class SubmissionController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$submission = TodoList::findOrFail($id);
-		return View::make('submissions.edit')->withAuthor($submission);
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		return View::make('submission.edit')->withSubmission($submission);
 	}
 
 
@@ -102,11 +79,11 @@ class SubmissionController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($sub_id)
 	{
 		// define rules
 		$rules = array(
-				'title' => array('required')
+				'sub_title' => array('required')
 			);
 
 		// pass input to validator
@@ -114,14 +91,14 @@ class SubmissionController extends \BaseController {
 
 		// test if input fails
 		if ($validator->fails()) {
-			return Redirect::route('submissions.create')->withErrors($validator)->withInput();
+			return Redirect::route('submission.edit')->withErrors($validator)->withInput();
 		}
 
-		$name = Input::get('title');
-		$submission = Submission::findOrFail($id);
-		$submission->name = $name;
+		$sub_title = Input::get('sub_title');
+		$submission = Submission::where('sub_id' , '=', $sub_id);
+		$submission->sub_title = $name;
 		$submission->update();
-		return Redirect::route('submissions.index')->withMessage('Thank you! Your Contribution has been Updated');
+		return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Updated');
 	}
 
 
@@ -133,7 +110,33 @@ class SubmissionController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$submission = Submission::where('sub_id' , '=', $id)->delete();
+		return Redirect::route('submission.index')->withMessage('Submission withdrawn!');
+	}
+
+
+	/**
+	 * Show review results.
+	 *
+	 * @return Response
+	 */
+	public function reviews($id)
+	{
+		$sub = Submission::where('sub_id' , '=', $id)->get()->first();
+		$reviews = $sub->reviews()->get();
+		return View::make('submission.reviews')->withSubmission($sub)->withReviews($reviews);
+	}
+
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id){
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		return View::make('submission.show')->withSubmission($submission);
 	}
 
 

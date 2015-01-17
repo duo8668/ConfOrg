@@ -11,18 +11,18 @@ class ReviewController extends \BaseController {
 	{
 		//TODO: Get all submissions based on preferred topic of current user
 		$submission = Submission::all();
-		return View::make('reviews.index')->with('submissions', $submission);
+		return View::make('reviews.index')->withSubmission($submission);
 	}
-
+	
 
 	/**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function add($id)
 	{
-		return View::make('reviews.addnew');
+		return View::make('reviews.create');
 	}
 
 
@@ -85,4 +85,6 @@ class ReviewController extends \BaseController {
 	}
 
 
+	
+	public function create(){return View::make('reviews.create');}
 }

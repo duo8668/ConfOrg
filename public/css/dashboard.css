@@ -358,3 +358,7 @@ table.dataTable thead .sorting:after {
 .sidebar-divider {
     border-bottom: 3px solid #cfcfcf !important;
 }
+
+.inline {
+    display: inline;
+}

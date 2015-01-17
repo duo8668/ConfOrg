@@ -6,25 +6,27 @@
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
-			<td>Submission ID</td>
-			<td>Submission Title</td>
-			<td>Submission Type</td>
+			<td>ID</td>
+			<td>Title</td>
+			<td>Type</td>
+			<td>Topics</td>
 			<td>Option</td>
 		</tr> 
-		@foreach ($submissions as $sub) 
+		@foreach ($submission as $sub) 
 			<tr>
-				<td>{{{ $sub->Sub_id }}}</td>
-				<td>{{{ $sub->SubTitle }}}</td>
+				<td>{{{ $sub->sub_id }}}</td>
+				<td>{{{ $sub->sub_title }}}</td>
 				<td>
-					@if ($sub->SubType === 3)
+					@if ($sub->sub_type === 3)
 					    Poster
-					@elseif ($sub->SubType === 2)
+					@elseif ($sub->sub_type === 2)
 					    Full Paper
 					@else
 					    Abstract
 					@endif
 				</td>
-				<td><a href="{{ url('review/create') }}" class="btn btn-info btn-xs">Enter/Edit Review</a></td>
+				<td>Topics Here</td>
+				<td>{{ link_to_route('reviews.add', 'Enter Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}</td>
 			</tr>
 		@endforeach
 	</table>

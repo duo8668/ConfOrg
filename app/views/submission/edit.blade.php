@@ -1,28 +1,29 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-  New Submission
+  Edit Submission: {{{ $submission->sub_title }}}
+  {{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
 <div class="row">
-  {{ Form::open(array('route' => 'submission.store', 'files' => true)) }}
+  {{ Form::model($submission, array('route' => ['submission.update', $submission->sub_id], 'method' => 'PUT') ) }}
     <div class="col-lg-6">
         <legend>Basic Information</legend>
         <!-- Submission Type -->
         <div class="form-group">
-          {{ Form::label('submission_type', 'Submission Type') }} 
-          {{ Form::select('submission_type', array('1' => 'Abstract', '2' => 'Full Paper', '3' => 'Poster'), '1', array('class' => 'form-control')) }}
+          {{ Form::label('sub_type', 'Submission Type') }} 
+          {{ Form::select('sub_type', array('1' => 'Abstract', '2' => 'Full Paper', '3' => 'Poster'), '1', array('class' => 'form-control')) }}
         </div>
 
         <!-- Submission Title-->
         <div class="form-group">
-          {{ Form::label('submission_title', 'Submission Title') }}        
-          {{ Form::text('submission_title', '', array('class' => 'form-control')) }}
+          {{ Form::label('sub_title', 'Submission Title') }}        
+          {{ Form::text('sub_title', '', array('class' => 'form-control')) }}
         </div>
 
         <!-- Abstract -->
         <div class="form-group">
-          {{ Form::label('submission_abstract', 'Abstract') }}    
-          {{ Form::textarea('submission_title', '', array('class' => 'form-control')) }} 
+          {{ Form::label('sub_abstract', 'Abstract') }}    
+          {{ Form::textarea('sub_abstract', '', array('class' => 'form-control')) }} 
         </div>
 
 
@@ -44,8 +45,8 @@
 
         <!-- Upload --> 
         <div class="form-group">
-          {{ Form::label('submission_filepath', 'Upload your file') }} 
-          {{ Form::file('submission_filepath', array('class' => 'input-file')) }}
+          {{ Form::label('attachment_path', 'Upload your file') }} 
+          {{ Form::file('attachment_path', array('class' => 'input-file')) }}
           <p class="help-block">Please ensure your file DOES NOT contain authors name (anonymous). Failure to do so may result in paper rejection</p>
         </div>
     </div>
@@ -74,7 +75,7 @@
           <!-- Country -->
           <div class="form-group">
             {{ Form::label('author_email', 'Email') }}     
-            {{ Form::text('author_country', '', array('class' => 'form-control')) }}
+            {{ Form::text('author_email', '', array('class' => 'form-control')) }}
             </div>
           </div>
 
@@ -97,7 +98,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <!-- Button -->        
-            {{ Form::submit('Add Submission', array('class' => 'btn btn-primary btn-lg btn-block')) }}
+            {{ Form::submit('Update Submission', array('class' => 'btn btn-primary btn-lg btn-block')) }}
           </div>
         </div>
       </div>
