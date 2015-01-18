@@ -13,8 +13,12 @@ File Encoding         : 65001
 Date: 2015-01-16 17:48:26
 */
 
-SET FOREIGN_KEY_CHECKS=0;
 
+DROP DATABASE if EXISTS `conforg_db`;
+
+create DATABASE `conforg_db`;
+USE `conforg_db`;
+SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for bill_component
 -- ----------------------------

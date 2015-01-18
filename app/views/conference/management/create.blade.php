@@ -67,7 +67,7 @@ Add New Conference
 <!-- Content Section -->
 @section('content')
 <script>
-	//$(document).ajaxStop($.unblockUI); 	
+	$(document).ajaxStop($.unblockUI); 	
 	
 	var eventData;
 
@@ -75,8 +75,9 @@ Add New Conference
 
 	$(document).ready(function(){
 
-		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	});
-		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false});
+		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false , pickDate:true });
+
+		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	 , pickDate:true});
 
 		$("#confType").dropdownCheckbox({
 			data: {{$fields}},
@@ -93,9 +94,9 @@ Add New Conference
 		});
 
 		$("#datetimepickerEnd").on("dp.change",function (e) {
-               $('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
-            });
-		
+			$('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
+		});
+		/*
 		$("#datetimepickerBegin").on("dp.show",function (e) {
 			$.ajax({
 				type: "GET",
@@ -119,55 +120,70 @@ Add New Conference
 				$.unblockUI();
 			});
 		});
+*/
+$('#conferenceTitle').on('change',function(event){
 
-		$('#conferenceTitle').on('change',function(event){
-
-			if($(this).val().trim().length > 6){
-				var str = $(this).val();
-				if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
-					swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
-				}else{
-					$.ajax({
-						type: "POST",
-						url : "checkConfTitle",
-						data : {confTitle:$("input#conferenceTitle").val().trim() }
-					})
-					.done(function(data) {
-						if(data != 'true'){				
-							swapStatus('conferenceTitle','NOTOK',data);
-						}else if(data == 'true'){
-							swapStatus('conferenceTitle','OK','');
-						}
-					})
-					.fail(function(xhr,stat,msg) {
-						alert(xhr.responseText);
-					})
-					.always(function(data) {
-						$.unblockUI();
-					});
+	if($(this).val().trim().length > 6){
+		var str = $(this).val();
+		if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
+			swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
+		}else{
+			$.ajax({
+				type: "POST",
+				url : "checkConfTitle",
+				data : {confTitle:$("input#conferenceTitle").val().trim() }
+			})
+			.done(function(data) {
+				if(data != 'true'){				
+					swapStatus('conferenceTitle','NOTOK',data);
+				}else if(data == 'true'){
+					swapStatus('conferenceTitle','OK','');
 				}
+			})
+			.fail(function(xhr,stat,msg) {
+				alert(xhr.responseText);
+			})
+			.always(function(data) {
+				$.unblockUI();
+			});
+		}
 
-			}else{
+	}else{
 
-				swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
-			}
+		swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
+	}
 
-		});
+});
 
 		//$('#ddlVenue').prop("disabled", true);
 
+		var loadedJson ;
 		$('#ddlVenue').on('click',function(){
+			var beginDate = $("#datetimepickerBegin").data("DateTimePicker").getDate().format('DD-MM-YYYY');
+			var endDate =  $("#datetimepickerEnd").data("DateTimePicker").getDate().format('DD-MM-YYYY');
 			$.ajax({
 				type: "GET",
-				url : "/conference/roomSchedule/availableRooms"
+				url : "/conference/roomSchedule/availableRooms" ,
+				data : {date_start:beginDate,date_end:endDate}
 			})
 			.done(function(data) {
-				$("#ddlVenue").empty();
+				var canload = false ;
+				if(loadedJson ==undefined){
+					canload = true;
+				}else{
+					canload =(JSON.stringify(loadedJson) != JSON.stringify(data));
+				}
+				if(canload){
+					loadedJson = data;
 
-				$.each(data, function (key, value) {
-					$("#ddlVenue").append($("<option></option>").val
-						(value.room_id).html(value.room_name));
-				});
+					$("#ddlVenue").empty();
+
+					$.each(data, function (key, value) {
+						$("#ddlVenue").append($("<option></option>").val
+							(value.room_id).html(value.room_name));
+					});
+				}
+
 			})
 			.fail(function(xhr,stat,msg) {
 				alert(xhr.responseText);
@@ -176,16 +192,16 @@ Add New Conference
 				$.unblockUI();
 			});
 
-			
+
 		});
 
 		$("#frmCreateConf").submit(function(e){
 			e.preventDefault();
 			var conferenceTitle = $("input#conferenceTitle").val().trim();
-			var confType =  $("#confType option:selected").val();
+			var confType =  $("#confType").dropdownCheckbox("checked");
 			var confDesc =  $("textarea#confDesc").val().trim();
-			var beginDate =  $("#beginDate").val();
-			var endDate =  $("#endDate").val();
+			var beginDate = $("#datetimepickerBegin").data("DateTimePicker").getDate();
+			var endDate =  $("#datetimepickerEnd").data("DateTimePicker").getDate();
 			var isFree =  $("#chkIsFree").is(':checked');
 
 			blockUI();
@@ -193,7 +209,7 @@ Add New Conference
 				type: "POST",
 				url : "submitCreateConf",
 				showNbSelected: true,
-				data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,beginDate:beginDate,endDate:endDate,isFree:isFree}
+				data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,date_start:beginDate,date_end:endDate,isFree:isFree}
 			})
 			.done(function(data) {
 				if(data.id != undefined){
@@ -248,6 +264,8 @@ function swapStatus(_id,_status,_msg){
 
 	$(_class).find('small').text(_msg);
 }
+
+
 </script>
 <!-- include('../../utils/customcalendar') -->
 
@@ -287,7 +305,7 @@ function swapStatus(_id,_status,_msg){
 			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  
 			<div class="col-md-4">
 				<div class="input-group date" id="datetimepickerBegin">
-					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control', 'data-date-format'=>'YYYY/MMM/DD')) }}
+					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
 				</div>
 			</div>
@@ -297,7 +315,7 @@ function swapStatus(_id,_status,_msg){
 			{{ Form::label('endDate', 'End', array('class' => 'col-md-4 control-label')) }} 
 			<div class="col-md-4">
 				<div class="input-group date" id="datetimepickerEnd">
-					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control', 'data-date-format'=>'YYYY/MMM/DD')) }}
+					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
 				</div>
 			</div>

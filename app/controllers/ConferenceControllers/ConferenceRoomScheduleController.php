@@ -46,18 +46,26 @@ class ConferenceRoomScheduleController extends BaseController {
 	where date_start < '2015-02-06' And date_end > '2015-02-01'
 	*/
 	public function availableRooms(){
-	
+
 		//select(DB::raw('DATE_FORMAT(date_start, "%Y-%m-%d") as start ,DATE_FORMAT(date_end,"%Y-%m-%d") as end'))
 
 		if(Utility::checkIsAValidDate(Input::get('date_start')) && Utility::checkIsAValidDate(Input::get('date_end'))){
 
-			$used = ConferenceRoomSchedule::where('date_start','<',Input::get('date_end'))
-				->where('date_end','>',Input::get('date_start'))
-				->lists(DB::raw('room_id'));
- 
-			$available = Room::whereNotIn('room_id',$used)
-			->lists('room_id', 'room_name');
+			$used = ConferenceRoomSchedule::where('date_start','<',date ('Y-m-d',strtotime(Input::get('date_end'))))
+			->where('date_end','>',date ('Y-m-d',strtotime(Input::get('date_start'))))
+			->lists(DB::raw('room_id'));
 
+			if(count($used) > 0 ){
+				$available = Room::whereNotIn('room_id',$used)
+				->select('room_id', 'room_name')
+				->get();
+			}else{
+				$available = Room::select('room_id', 'room_name')
+				->get();
+			}
+
+
+// dd(DB::getQueryLog());
 			return $available;
 		}
 
