@@ -7,7 +7,7 @@
 @section('content')
 <div class="row">
   {{ Form::open(array('route' => 'submission.store', 'files' => true)) }}
-    <div class="col-lg-6">
+    <div class="col-md-8 col-md-offset-2">
         <legend>Basic Information</legend>
         <!-- Submission Type -->
         <div class="form-group">
@@ -43,55 +43,42 @@
           {{ Form::label('submission_keywords', 'Keywords') }}     
           {{ Form::text('submission_keywords', 'Separated by commas, e.g. apples,oranges,grapes', array('class' => 'form-control')) }}
         </div>
-
+        <hr>
+        <legend>Authors</legend>
+        <!-- Authors -->
+        <div class="form-group" id="author_row">
+          <div class="row">
+            {{ Form::label('author_fname', 'First Name', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('author_lname', 'Last Name', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('author_org', 'Organization', ['class' => 'col-sm-3 text-center']) }} 
+            {{ Form::label('author_email', 'Email', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('author_ispresenting', 'Presenting?', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('author_btn', 'More', ['class' => 'col-sm-1 text-center']) }} 
+          </div>
+          <div class="row">
+            <input class="col-sm-2" name="author_lname" type="text" value="" id="author_lname">
+            <input class="col-sm-2" name="author_fname" type="text" value="" id="author_fname">
+            <input class="col-sm-3" name="author_org" type="text" value="" id="author_org"> 
+            <input class="col-sm-2" name="author_email" type="text" value="" id="author_email">
+            <div class="radio-inline col-sm-2 text-center"><input name="author_ispresenting" type="checkbox" value="1" id="author_ispresenting"> Yes</div>
+            <a class="btn btn-default btn-xs col-sm-1" id="addauthors" name="addauthors" role="button" onclick="addRow(this.form);">Add More</a>
+          </div>
+        </div>
+        <hr>
+        <legend>File Upload</legend>
         <!-- Upload --> 
         <div class="form-group">
           {{ Form::label('submission_filepath', 'Upload your file') }} 
           {{ Form::file('submission_filepath', array('class' => 'input-file')) }}
           <p class="help-block">Please ensure your file DOES NOT contain authors name (anonymous). Failure to do so may result in paper rejection</p>
         </div>
-    </div>
-    <div class="col-lg-6">
-        <legend>Authors</legend>
-        <!-- Authors -->
-        <div id="authors-group-1">
-          <!-- First Name -->
-          <div class="form-group">
-            {{ Form::label('author_fname', 'First Name') }}     
-            {{ Form::text('author_fname', '', array('class' => 'form-control')) }}
-          </div>
 
-          <!-- Last Name -->
-          <div class="form-group">
-            {{ Form::label('author_lname', 'Last Name') }} 
-            {{ Form::text('author_lname', '', array('class' => 'form-control')) }}
-          </div>
+        <!-- Additional Remarks -->
+        <div class="form-group">
+          {{ Form::label('submission_remarks', 'Additional Remarks') }}    
+          {{ Form::textarea('submission_remarks', '', array('class' => 'form-control')) }} 
+        </div>
 
-          <!-- Organization -->
-          <div class="form-group">
-            {{ Form::label('author_org', 'Organization') }}     
-            {{ Form::text('author_org', '', array('class' => 'form-control')) }}
-          </div>
-
-          <!-- Country -->
-          <div class="form-group">
-            {{ Form::label('author_email', 'Email') }}     
-            {{ Form::text('author_country', '', array('class' => 'form-control')) }}
-            </div>
-          </div>
-
-          <!-- Presenting? -->
-          <div class="form-group">
-            {{ Form::label('author_ispresenting', 'Presenting the paper?') }}     
-              <div class="radio-inline">{{ Form::radio('author_ispresenting', '1') }} Yes</div>
-              <div class="radio-inline">{{ Form::radio('author_ispresenting', '0') }} No</div>
-          </div>
-        
-
-        <!-- Add authors button -->
-        <div class="form-group">          
-            <a class="btn btn-default" id="addauthors" name="addauthors" href="#" role="button">Add More Authors</a>
-        </div>     
     </div>
 
     <div class="row">  
