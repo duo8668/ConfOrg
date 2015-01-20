@@ -23,5 +23,5 @@ Route::get('conference/roomSchedule/availableRooms', 'ConferenceRoomScheduleCont
 
 Route::post('conference/checkUserInConf', 'ConferenceController@ValidateConference');
 Route::post('conference/management/submitCreateConf', 'ConferenceController@createConference');
-Route::post('conference/management/checkConfTitle', 'ConferenceController@checkConferenceTitle');
+Route::post('conference/management/validateConference', 'ConferenceController@validateCreateConference');
 

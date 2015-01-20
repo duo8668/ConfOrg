@@ -22,7 +22,7 @@
     <!-- Custom Fonts -->
     <link href="{{ asset('font-awesome-4.2.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
-    <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+    <!-- <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css"> -->
 
     <!-- jQuery -->
     <script src="{{ asset('js/jquery.js') }}"></script>
@@ -36,7 +36,7 @@
     <!-- Custom Theme JavaScript -->
     <script src="{{ asset('js/dashboard.js') }}"></script>
 
-    <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
+    <!-- <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script> -->
 
     <script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
 

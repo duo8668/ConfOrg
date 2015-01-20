@@ -36,8 +36,8 @@ class ConferenceController extends BaseController {
 		}
 
 		$arrayField = "["+rtrim($arrayField,',') + "]";
- */
-		$view = View::make('conference.management.create',array('fields'=>$fields,'fields'=>$fields)); 
+ */ 
+		$view = View::make('conference.management.create',array('fields'=>$fields)); 
 
 		return $view;
 	}
@@ -183,17 +183,14 @@ class ConferenceController extends BaseController {
 		return $conf;
 	}
 
-	public function checkConferenceTitle(){
+	public function validateCreateConference(){
 
-		$confTitle = trim(Input::get('confTitle'));
+		$confTitle = trim(Input::get('conferenceTitle'));
 
 		$conf = Conference::where('Title','=',$confTitle)->first();
 
-		if($conf==null){
-			return 'true';
-		}else{
-			return 'The Conference Title exists in database !';
-		}
+		return	json_encode(array('valid' => ($conf==null)));
+
 	}
 
 

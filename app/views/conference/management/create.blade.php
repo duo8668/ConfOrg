@@ -7,25 +7,29 @@ Add New Conference
 <!-- extraScripts Section -->
 @section('extraScripts')
 
-<!-- <link href="{{ asset('css/fullcalendar/fullcalendar.min.css') }}" rel="stylesheet" type="text/css"> -->
-
-<link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+<!-- <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css"> -->
 
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
 
-<link href="{{ asset('css/multiselect/bootstrap-dropdown-checkbox.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('css/icheck/square/green.css') }}" rel="stylesheet" type="text/css">
+
+<link href="{{ asset('css/formvalidation/formValidation.css') }}" rel="stylesheet" type="text/css">
 
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
 
-<!-- <script src="{{ asset('js/fullcalendar/fullcalendar.min.js') }}"></script> -->
-
-<script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script>
+<!-- <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script> -->
 
 <script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
 
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
 
-<script src="{{ asset('js/multiselect/bootstrap-dropdown-checkbox.js') }}"></script>
+<script src="{{ asset('js/icheck/icheck.js') }}"></script>
+
+<script src="{{ asset('js/formvalidation/formValidation.js') }}"></script>
+
+<script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
+
+<script src="{{ asset('js/conferencecontroller.js') }}"></script>
 
 <style>
 
@@ -44,23 +48,18 @@ Add New Conference
 	.date {
 		background-color: white;
 	}
+	
 
-	#frmCreateConf .form-group .col-md-4 .form-control-feedback{
-		top: 8px;
-		right: 15px;	
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
-
-	.input-group.date span{
-		cursor: pointer; 
+	.list li {
+		position: relative;
+		padding-bottom: 10px;
 	}
-
-	.checkbox{
-		margin-left:20px;
-	}
-
 </style>
-
-
 
 @stop
 
@@ -71,22 +70,11 @@ Add New Conference
 	
 	var eventData;
 
-
-
 	$(document).ready(function(){
 
 		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false , pickDate:true });
 
 		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	 , pickDate:true});
-
-		$("#confType").dropdownCheckbox({
-			data: {{$fields}},
-			title: "Category",
-			showNbSelected:true,
-			autosearch:true,
-			hideHeader:false,
-			templateButton:'<button class="dropdown-checkbox-toggle btn btn-default" data-toggle="dropdown" href="#">Category <span class="dropdown-checkbox-nbselected"></span> <b class="caret"></b> </button>'
-		});
 
 		$("#datetimepickerBegin").on("dp.hide",function (e) {
 
@@ -96,64 +84,63 @@ Add New Conference
 		$("#datetimepickerEnd").on("dp.change",function (e) {
 			$('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
 		});
-		/*
-		$("#datetimepickerBegin").on("dp.show",function (e) {
-			$.ajax({
-				type: "GET",
-				url : "/conference/roomSchedule/unavailabledates"
-			})
-			.done(function(data) {
-				var dates=[];
-				var daysOfYear = [];
-				for(var i=0;i<data.length;i++){
-					dates[i]= { k: moment(data[i].start)};
-					for (var d = new Date(data[i].start); d <= new Date(data[i].end); d.setDate(d.getDate() + 1)) {
-						daysOfYear.push(new moment(d));
-					}
-				}
-				$('#datetimepickerBegin').data("DateTimePicker").setDisabledDates(daysOfYear);
-			})
-			.fail(function(xhr,stat,msg) {
-				alert(xhr.responseText);
-			})
-			.always(function(data) {
-				$.unblockUI();
-			});
+
+		$(".necessary").on('change',function(e){
+			if(this.value.trim().length == 0){
+				swapStatus(this.id,'NOTOK','Field cannot be blank !');
+
+			}else{
+				swapStatus(this.id,'OK','');
+			}
 		});
-*/
-$('#conferenceTitle').on('change',function(event){
 
-	if($(this).val().trim().length > 6){
-		var str = $(this).val();
-		if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
-			swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
-		}else{
-			$.ajax({
-				type: "POST",
-				url : "checkConfTitle",
-				data : {confTitle:$("input#conferenceTitle").val().trim() }
-			})
-			.done(function(data) {
-				if(data != 'true'){				
-					swapStatus('conferenceTitle','NOTOK',data);
-				}else if(data == 'true'){
-					swapStatus('conferenceTitle','OK','');
-				}
-			})
-			.fail(function(xhr,stat,msg) {
-				alert(xhr.responseText);
-			})
-			.always(function(data) {
-				$.unblockUI();
+		$('.field_list input').iCheck({ 
+			checkboxClass: 'icheckbox_square-green',
+			increaseArea: '20%'  
+		});
+
+		$('.field_list input').on('ifChecked', function(event){
+			 //alert(this.value);
+			 $('#'+this.value).prop( "checked", true );
 			});
-		}
 
-	}else{
+		$('.field_list input').on('ifUnchecked', function(event){
+			$('#'+this.value).prop( "checked", false );
+		});
 
-		swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
-	}
+		$('#conferenceTitle').on('change',function(event){
 
-});
+			if($(this).val().trim().length > 6){
+				var str = $(this).val();
+				if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
+					//swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
+				}else{
+					$.ajax({
+						type: "POST",
+						url : "checkConfTitle",
+						data : {confTitle:$("input#conferenceTitle").val().trim() }
+					})
+					.done(function(data) {
+						if(data != 'true'){				
+							//swapStatus('conferenceTitle','NOTOK',data);
+						}else if(data == 'true'){
+							//swapStatus('conferenceTitle','OK','');
+						}
+					})
+					.fail(function(xhr,stat,msg) {
+						alert(xhr.responseText);
+					})
+					.always(function(data) {
+						$.unblockUI();
+					});
+				}
+
+			}else{
+
+				//swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
+			}
+
+		});
 
 		//$('#ddlVenue').prop("disabled", true);
 
@@ -195,8 +182,55 @@ $('#conferenceTitle').on('change',function(event){
 
 		});
 
+		$('#frmCreateConf').formValidation({
+			err: {
+				container: 'tooltip'
+			}, 
+			icon: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				conferenceTitle: {
+					validators: {
+						notEmpty: {
+							message: 'The Conference Title is required'
+						},
+						stringLength: {
+							min: 6,
+							message: 'The Conference Title must be more than 5 characters long'
+						},
+						remote: {
+							message: 'The Conference Title is not available',
+							url: 'validateConference',
+							type: 'POST'
+						}
+					} 
+				}
+			}
+		}).on('success.form.fv', function(e) {
+            // Prevent form submission
+            e.preventDefault();
+
+            // Get the form instance
+            var $form = $(e.target);
+
+            // Get the FormValidation instance
+            var bv = $form.data('formValidation');
+
+            // Use Ajax to submit form data
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                // ... Process the result ...
+
+            }, 'json');
+        });
+		/*
 		$("#frmCreateConf").submit(function(e){
 			e.preventDefault();
+
+			checkAllForm();
+			return false;
 			var conferenceTitle = $("input#conferenceTitle").val().trim();
 			var confType =  $("#confType").dropdownCheckbox("checked");
 			var confDesc =  $("textarea#confDesc").val().trim();
@@ -212,59 +246,45 @@ $('#conferenceTitle').on('change',function(event){
 				data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,date_start:beginDate,date_end:endDate,isFree:isFree}
 			})
 			.done(function(data) {
-				if(data.id != undefined){
-			// mean it is sucessfully created 
-			$.unblockUI();	
-			$.blockUI({ 
-				message: "<h3><img src='{{ asset('img/jqueryui/check_sign_icon_green.png') }}' /> Your Conference : " + data.Title +" has been created sucessfully ! </h3>"  
+				if(data.id != undefined){ 
+					$.unblockUI();	
+					$.blockUI({ 
+						message: "<h3><img src='{{ asset('img/jqueryui/check_sign_icon_green.png') }}' /> Your Conference : " + data.Title +" has been created sucessfully ! </h3>"  
+					});
+					setTimeout(function() { 
+						$.unblockUI({ 
+							onUnblock: function(){window.location.href='{{ action("ConferenceController@index") }}';}			
+						}); 
+					}, 1500); 	}
+
+				}).fail(function(xhr,stat,msg) {
+					alert(xhr.responseText);
+					$.unblockUI();
+				}).always(function(data) {
+
+				});
 			});
-			setTimeout(function() { 
-				$.unblockUI({ 
-					onUnblock: function(){window.location.href='{{ action("ConferenceController@index") }}';}			
-				}); 
-			}, 1500); 	}
-
-		}).fail(function(xhr,stat,msg) {
-			alert(xhr.responseText);
-			$.unblockUI();
-		}).always(function(data) {
-
-		});
-	});
+*/
 });
 
-function callback(eventData){
 
-	if(eventData != undefined){
-		$('#beginDate').val(eventData.start.format('DD-MMM-YYYY'));
-		$('#endDate').val(eventData.end.subtract(1,'days').format('DD-MMM-YYYY'));
-		eventData.end.add(1,'days');
-	}
-	$('#myCalendar').html('');
-}
+function checkAllForm(){
 
-function blockUI(){
-	$.blockUI({ message: "<h2><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h2>" }); 
-}
-
-function swapStatus(_id,_status,_msg){
-	_class= $('#'+_id).parent();
-	$(_class).parent().attr('class','form-group');
-	$(_class).find('i').removeClass('fa-asterisk fa-check fa-times');
-
-	if(_status =='OK'){
-		$(_class).parent().addClass('has-feedback has-success');
-		$(_class).find('i').addClass('fa-check');
-	}else if (_status == 'NOTOK'){
-		$(_class).parent().addClass('has-feedback has-error');
-		$(_class).find('i').addClass('fa-times');
-	}else{
-		$(_class).find('i').addClass('fa-asterisk');
+	if($("input[name=chkField]:checked").length == 0){
+		return false;
 	}
 
-	$(_class).find('small').text(_msg);
-}
 
+	$(".necessary").each(function(key,element){
+		if(element.value.trim().length == 0){
+			//swapStatus(element.id,'NOTOK','Field cannot be blank !');
+			return false;
+		}else{
+
+		}
+	}); 
+
+}
 
 </script>
 <!-- include('../../utils/customcalendar') -->
@@ -278,34 +298,40 @@ function swapStatus(_id,_status,_msg){
 		<div class="form-group">
 			{{ Form::label('lblConfTitle', 'Title', array('class' => 'col-md-4 control-label')) }}       
 			<div class="col-md-4">
-				{{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle', 'class' => 'form-control input-md'))}}
-				<i class="form-control-feedback fa-asterisk fa" data-bv-icon-for="name" style="display: block;"></i>
-				<small class="help-block" style=""></small>
+				{{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle', 'class' => 'form-control necessary'))}}
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				<div id="confType" class="dropdown-checkbox dropdown">
-					<span class="dropdown-checkbox-nbselected"></span>
-				</div>
-				
+
+				<ul class="list field_list">
+
+					@foreach ($fields as $field)
+					<li>
+						{{Form::checkbox('chkField', 'chkField_'. $field->id,false ,array('id' => 'chkField_'. $field->id ))}}
+						{{Form::label('chkField_'. $field->id, $field->label)}}
+					</li>
+					@endforeach
+
+				</ul>
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('lblConfDesc', 'Conference Description', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::textarea('confDesc',isset($value)?$value:'',array('name'=>'confDesc','id'=>'confDesc','class' => 'form-control','rows'=>3,'cols'=>50)) }} </br>
+				{{ Form::textarea('confDesc',isset($value)?$value:'',array('name'=>'confDesc','id'=>'confDesc','class' => 'form-control','rows'=>3,'cols'=>50)) }}		
 			</div>
+
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  
 			<div class="col-md-4">
 				<div class="input-group date" id="datetimepickerBegin">
-					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control', 'data-date-format'=>'DD-MM-YYYY')) }}
+					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
 				</div>
 			</div>
@@ -315,7 +341,7 @@ function swapStatus(_id,_status,_msg){
 			{{ Form::label('endDate', 'End', array('class' => 'col-md-4 control-label')) }} 
 			<div class="col-md-4">
 				<div class="input-group date" id="datetimepickerEnd">
-					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control', 'data-date-format'=>'DD-MM-YYYY')) }}
+					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
 				</div>
 			</div>
@@ -324,23 +350,23 @@ function swapStatus(_id,_status,_msg){
 		<div class="form-group">
 			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats','class' => 'form-control',"maxlength"=>"6")) }} </br>
+				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats','class' => 'form-control',"maxlength"=>"6")) }}
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-4 control-label')) }}
 			<div class="col-md-4">
-				{{ Form::select('venue',[null=>''],null,array('name'=>'ddlVenue','id'=>'ddlVenue','class' => 'form-control')) }} </br>
+				{{ Form::select('venue',[null=>''],null,array('name'=>'ddlVenue','id'=>'ddlVenue','class' => 'form-control necessary')) }}
 			</div>
 		</div>
 
 		<div class="form-group">
 			{{ Form::label('isFree', 'Is this Conference Free?', array('class' => 'col-md-4 control-label')) }} 
-			<div class="col-sm-5"> 
+			<div class="col-md-1"> 
 				<div class="checkbox">
 					{{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }}    Yes                 
-				</div>  				
+				</div>			
 			</div>
 		</div>
 
