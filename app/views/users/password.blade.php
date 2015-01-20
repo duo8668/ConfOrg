@@ -1,3 +1,10 @@
+@extends('layouts.dashboard.master')
+
+@section('page-header')
+Change Password
+@stop
+
+@section('content')
 <form action = "{{URL::route('users-change-password-post')}}" method = "post">
  	<div class = "field">
  	Old Password: <input type ="password" name = "old_password">
@@ -21,6 +28,7 @@
  	{{ Form::token() }}
  </form>
  
-@if(Session::has('global'))
-    {{Session::get('global')}} 
+@if(Session::has('message'))
+    {{Session::get('message')}} 
 @endif
+@stop

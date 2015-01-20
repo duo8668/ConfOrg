@@ -21,9 +21,9 @@
                             <input type="submit" value="Sign In">
                             {{ Form::token() }}                       
                         </form>
-         
-@if(Session::has('global'))
-    {{Session::get('global')}} 
+            <a href="{{ URL::route('users-forget-password') }}">Forget Password?</a></li>
+@if(Session::has('message'))
+    {{Session::get('message')}} 
 @endif
 </body>
 

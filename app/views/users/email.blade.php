@@ -1,3 +1,10 @@
+@extends('layouts.dashboard.master')
+
+@section('page-header')
+Change Email
+@stop
+
+@section('content')
  <form action = "{{URL::route('users-request-email-post')}}" method = "post">
  	<div class = "field">
  	Old Email: {{ Auth::user()->email}}
@@ -13,6 +20,8 @@
  	{{ Form::token() }}
  </form>
  
-@if(Session::has('global'))
-    {{Session::get('global')}} 
+@if(Session::has('message'))
+    {{Session::get('message')}} 
 @endif
+
+@stop
