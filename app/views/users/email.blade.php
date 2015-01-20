@@ -20,8 +20,5 @@ Change Email
  	{{ Form::token() }}
  </form>
  
-@if(Session::has('message'))
-    {{Session::get('message')}} 
-@endif
 
 @stop
