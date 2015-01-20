@@ -58,8 +58,8 @@ public function getHome(){
  					});
 
  				//change the home to our homepage
- 				return Redirect::to('home')
- 					->with('global', 'Your account has been created! we have sent you an email to activate your account');
+ 				return Redirect::route('users-create')
+ 					->with('message', 'Your account has been created! we have sent you an email to activate your account');
  			}
 
 		}
@@ -79,11 +79,11 @@ public function getHome(){
 
 			if($user->save()){
 				return Redirect::to('/users/sign-in')
-					->with('global', 'Account activated! You can now login.');
+					->with('message', 'Account activated! You can now login.');
 			}
 		}
 		return Redirect::to('/users/sign-in')
-			->with('global', 'We could not activate your account. Please contact the admin it144a@gmail.com');
+			->with('message', 'We could not activate your account. Please contact the admin it144a@gmail.com');
 	} 	
 
 	public function getSignIn(){
@@ -92,7 +92,7 @@ public function getHome(){
 
 	public function getSignOut(){
 		Auth::logout();
-		return Redirect::to('home');
+		return Redirect::to('/');
 	}
 
 	public function postSignIn(){
@@ -123,15 +123,15 @@ public function getHome(){
 
 		 		if($auth){
 		 				//redirect to intended page
-		 			return Redirect::intended('/home');
+		 			return Redirect::to('/dashboard');
 		 		} 
 		 		else{
 		 			return Redirect::route('users-sign-in')
-		 					->with('global','Email/password wrong, Or account not activated');
+		 					->with('message','Email/password wrong, Or account not activated');
 		 		}
 		 	}
 		 	return Redirect::route('users-sign-in')
-		 		->with('global','There was a problem signing you in. Please contact admin it144a@gmail.com');
+		 		->with('message','There was a problem signing you in. Please contact admin it144a@gmail.com');
 
  	}
 	
@@ -163,18 +163,18 @@ public function getHome(){
  				$user->password = Hash::make($password);
 
  				if($user->save()){
- 					return Redirect::to('home')
- 						->with('global', 'Your password has been changed');
+ 					return Redirect::route('users-change-password')
+ 						->with('message', 'Your password has been changed');
  				}
  			}
  			else{
  				return Redirect::route('users-change-password')
- 				->with('global','Your old password is incorrect.');
+ 				->with('message','Your old password is incorrect.');
  			}
 
  		}
  		return Redirect::route('users-change-password')
- 		->with('global','Your password could not be changed. Please contact admin it144a@gmail.com');
+ 		->with('message','Your password could not be changed. Please contact admin it144a@gmail.com');
  	}
 
  	public function getForgetPassword(){
@@ -212,13 +212,13 @@ public function getHome(){
  					$message->to($user->email, $user->firstname, $user->lastname) ->subject('ORAFER Password Reset Request');
  					});
 
- 					return Redirect::to('home')
- 					->with('global','We had sent you an new password by email.');
+ 					return Redirect::route('users-forget-password')
+ 					->with('message','We had sent you an new password by email.');
  				}
  			}
  		}
  		return Redirect::route('users-forget-password')
- 		->with('global','Could not request new password. Please contact admin it144a@gmail.com');
+ 		->with('message','Could not request new password. Please contact admin it144a@gmail.com');
  	}
 
  	public function getRecover($code){
@@ -232,14 +232,14 @@ public function getHome(){
 
  			if($user->save())
  			{
-				return Redirect::to('home')
-	 				->with('global','Your account has been recovered. You can now sign in with your new password');
+				return Redirect::to('/users/sign-in')
+	 				->with('message','Your account has been recovered. You can now sign in with your new password');
  			}
 
  		}
  		
- 		return Redirect::to('home')
- 			->with('global','Could not recover your account. Please contact admin it144a@gmail.com');
+ 		return Redirect::route('users-forget-password')
+ 			->with('message','Could not recover your account. Please contact admin it144a@gmail.com');
  	}
 
 	public function getRequestEmail(){
@@ -280,11 +280,11 @@ public function getHome(){
  						'old_email' => $old_email), 
  					function($message) use ($user) 
  					{
- 					$message->to($user->email, $user->firstname, $user->lastname) ->subject('ORAFER Change of Email Confirmation Required');
+ 					$message->to($user->email_temp, $user->firstname, $user->lastname) ->subject('ORAFER Change of Email Confirmation Required');
  					});
 
- 					return Redirect::to('/home')
- 					->with('global','We had sent you an email to your old email for confirmation.');
+ 					return Redirect::to('/dashboard')
+ 					->with('message','We had sent you an email to your new email for confirmation.');
  			}
  			
  		}
@@ -302,14 +302,14 @@ public function getHome(){
 
  			if($user->save())
  			{
-				return Redirect::to('/home')
-	 				->with('global','Your Email has been changed. You can now sign in with your new email');
+				return Redirect::to('/dashboard')
+	 				->with('message','Your Email has been changed. You can now sign in with your new email');
  			}
 
  		}
  		
- 		return Redirect::to('/home')
- 			->with('global','Could not change your email. Please contact admin it144a@gmail.com');
+ 		return Redirect::to('/dashboard')
+ 			->with('message','Could not change your email. Please contact admin it144a@gmail.com');
  	}
 
 
@@ -350,8 +350,8 @@ public function getHome(){
  					$message->to($friend_email, $friend_firstname, $friend_lastname) ->cc($user->email) ->subject('You are invited to join ORAFER!');
  					});
 
- 					return Redirect::to('/home')
- 					->with('global','We had sent you an invite to your friend.');
+ 					return Redirect::to('/dashboard')
+ 					->with('message','We had sent you an invite to your friend.');
 
  		}
  	}
