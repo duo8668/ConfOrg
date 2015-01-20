@@ -28,7 +28,5 @@ Change Password
  	{{ Form::token() }}
  </form>
  
-@if(Session::has('message'))
-    {{Session::get('message')}} 
-@endif
+
 @stop
