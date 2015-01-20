@@ -9,8 +9,8 @@
 |
 */
 
-Route::get('conference/', 'ConferenceController@index')->before('auth');
-Route::get('conference/index', 'ConferenceController@index')->before('auth');
+Route::get('conference/', 'ConferenceController@index');
+Route::get('conference/index', 'ConferenceController@index');
 Route::get('conference/confParticular', 'ConferenceController@theConf');
 Route::get('conference/management/create', 'ConferenceController@create');
 Route::get('conference/management/participate', 'ConferenceController@register');
