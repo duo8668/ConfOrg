@@ -8,6 +8,8 @@ class Conference extends Eloquent {
 
 	protected $guarded = array('conf_id');
 	
+	protected $primaryKey = 'conf_id';
+	
 	public $timestamps = true;
 
 	public function ConferenceParticipants(){

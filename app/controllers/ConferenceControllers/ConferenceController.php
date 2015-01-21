@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\MessageBag;
+
 class ConferenceController extends BaseController {
 
 	/*
@@ -145,39 +147,51 @@ class ConferenceController extends BaseController {
 	{
 		$conf= null;
 		
+		$data = [
+		'conferenceTitle' => Input::get('conferenceTitle'),
+		'chkField' => Input::get('chkField'),
+		'beginDate' => Input::get('beginDate'),
+		'endDate' => Input::get('endDate'),
+		'maxSeats' => Input::get('maxSeats'),
+		'ddlVenue' => Input::get('ddlVenue'),
+		'chkIsFree' => Input::get('chkIsFree')
+		];
+
+		$rules = [
+		'conferenceTitle' => 'required|unique:conference,title|min:6',
+		'chkField'=>'required|array',
+		'beginDate'=>'required|date|before:endDate',
+		'endDate'=>'required|date|after:beginDate',
+		'maxSeats'=>'required|numeric',
+		'ddlVenue'=>'required|numeric',
+		'chkIsFree'=>'boolean'
+		];
+
+		$validator = Validator::make($data, $rules);
+ 
 		if(Auth::check()){
-			
-			$confTitle = Input::get('conferenceTitle');
-			$confType = Input::get('confType'); 
-			$confDesc = Input::get('confDesc');
-			$isFree = Input::get('isFree') === 'true'? true: false;
-			$beginDate = Input::get('beginDate');
-			$endDate = Input::get('endDate'); 
+			if($validator->fails()){
 
-			try
-			{ 
-				if(strlen($confTitle)>6 && Utility::checkPositiveInteger($confType) && strlen($confDesc)>0 && Utility::checkIsAValidDate($beginDate) && Utility::checkIsAValidDate($endDate) && is_bool($isFree)){
+				return $validator->errors(); 
 
-					$conf = Conference::create(array('Title' => $confTitle
-						,'Description' => $confDesc
-						,'BeginDate' => date("Y-m-d", strtotime($beginDate)) 
-						,'BeginTime' => date("Y-m-d", strtotime($beginDate)) 
-						,'EndDate' => date("Y-m-d", strtotime($endDate)) 
-						,'EndTime' => date("Y-m-d", strtotime($endDate)) 
-						,'IsFree' => $isFree
-						,'Speaker' => -1
-						,'CreatedBy' => Auth::user()->user_id));
+			}else{
+				$isFree = $data['chkIsFree'] === 'true'? true: false;		 
+
+				try
+				{  
+					$conf = Conference::create(array('title' => $data['title']
+						,'description' => Input::get('confDesc')
+						,'begin_date' => date("Y-m-d", strtotime($data['beginDate']))
+						,'end_date' => date("Y-m-d", strtotime($data['endDate'])) 
+						,'is_free' => $isFree
+						,'created_by' => Auth::user()->user_id));
+
+				}
+				catch(Exception $ex)
+				{					 
+					throw $ex;
 				}
 			}
-			catch(Exception $ex)
-			{
-				dd($ex);
-
-				throw $ex;
-			}
-
-		}else{
-			return 'Not LoggedIn';
 		}
 
 		return $conf;

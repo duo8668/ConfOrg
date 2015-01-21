@@ -21,7 +21,7 @@ Route::get('conference/roomSchedule/unavailabledates', 'ConferenceRoomScheduleCo
 Route::get('conference/roomSchedule/availableRooms', 'ConferenceRoomScheduleController@availableRooms');
 
 
-Route::post('conference/checkUserInConf', 'ConferenceController@ValidateConference');
-Route::post('conference/management/submitCreateConf', 'ConferenceController@createConference');
-Route::post('conference/management/validateConference', 'ConferenceController@validateCreateConference');
+Route::any('conference/checkUserInConf', 'ConferenceController@ValidateConference');
+Route::any('conference/management/submitCreateConf', 'ConferenceController@createConference');
+Route::any('conference/management/validateConference', 'ConferenceController@validateCreateConference');
 

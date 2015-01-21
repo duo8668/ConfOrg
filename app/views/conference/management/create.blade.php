@@ -40,11 +40,6 @@ Add New Conference
 		font-size: 14px;
 	}
 
-	#calendar {
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
 	.date {
 		background-color: white;
 	}
@@ -55,9 +50,24 @@ Add New Conference
 		padding: 0;
 		list-style: none;
 	}
+
 	.list li {
 		position: relative;
 		padding-bottom: 10px;
+	}
+
+	#frmCreateConf .checkbox label {
+		padding-left: 0;
+	}
+
+	#frmCreateConf .dateContainer .form-control-feedback {
+		top: 0;
+		right: -15px;
+	}
+
+	#frmCreateConf .venueContainer .form-control-feedback {
+		top: 0;
+		right: -15px;
 	}
 </style>
 
@@ -85,67 +95,11 @@ Add New Conference
 			$('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
 		});
 
-		$(".necessary").on('change',function(e){
-			if(this.value.trim().length == 0){
-				swapStatus(this.id,'NOTOK','Field cannot be blank !');
-
-			}else{
-				swapStatus(this.id,'OK','');
-			}
-		});
-
-		$('.field_list input').iCheck({ 
-			checkboxClass: 'icheckbox_square-green',
-			increaseArea: '20%'  
-		});
-
-		$('.field_list input').on('ifChecked', function(event){
-			 //alert(this.value);
-			 $('#'+this.value).prop( "checked", true );
-			});
-
-		$('.field_list input').on('ifUnchecked', function(event){
-			$('#'+this.value).prop( "checked", false );
-		});
-
-		$('#conferenceTitle').on('change',function(event){
-
-			if($(this).val().trim().length > 6){
-				var str = $(this).val();
-				if(/^[a-zA-Z0-9- ]*$/.test(str) == false) {
-					//swapStatus('conferenceTitle','NOTOK','Your title contains illegal characters...');
-				}else{
-					$.ajax({
-						type: "POST",
-						url : "checkConfTitle",
-						data : {confTitle:$("input#conferenceTitle").val().trim() }
-					})
-					.done(function(data) {
-						if(data != 'true'){				
-							//swapStatus('conferenceTitle','NOTOK',data);
-						}else if(data == 'true'){
-							//swapStatus('conferenceTitle','OK','');
-						}
-					})
-					.fail(function(xhr,stat,msg) {
-						alert(xhr.responseText);
-					})
-					.always(function(data) {
-						$.unblockUI();
-					});
-				}
-
-			}else{
-
-				//swapStatus('conferenceTitle','NOTOK','The length of title must more than 6 !');
-			}
-
-		});
-
 		//$('#ddlVenue').prop("disabled", true);
 
 		var loadedJson ;
-		$('#ddlVenue').on('click',function(){
+		$('#ddlVenue').hover(function(event){
+
 			var beginDate = $("#datetimepickerBegin").data("DateTimePicker").getDate().format('DD-MM-YYYY');
 			var endDate =  $("#datetimepickerEnd").data("DateTimePicker").getDate().format('DD-MM-YYYY');
 			$.ajax({
@@ -199,7 +153,12 @@ Add New Conference
 						},
 						stringLength: {
 							min: 6,
-							message: 'The Conference Title must be more than 5 characters long'
+							max: 30,
+							message: 'The Conference Title must be more than 6 and less than 30 characters long'
+						},
+						regexp: {
+							regexp: /^[a-zA-Z0-9 ]+$/,
+							message: 'The Conference Title can only consist of alphabetical, number, and space'
 						},
 						remote: {
 							message: 'The Conference Title is not available',
@@ -207,10 +166,62 @@ Add New Conference
 							type: 'POST'
 						}
 					} 
+				},
+				'chkField[]': {
+					validators: {
+						choice: {
+							min: 2,
+							max: 4,
+							message: 'Please choose 2 - 4 interest field'
+						}
+					}
+				},
+				beginDate: {
+					validators: {
+						notEmpty: {
+							message: 'The Begin Date is required'
+						},date: {
+							format: 'DD-MM-YYYY',
+							message: 'The value is not a valid date'
+						}
+					} 
+				},
+				endDate: {
+					validators: {
+						notEmpty: {
+							message: 'The End Date is required'
+						},date: {
+							format: 'DD-MM-YYYY',
+							message: 'The value is not a valid date'
+						}
+					} 
+				},
+				maxSeats: {
+					validators: {
+						notEmpty: {
+							message: 'The Max Seats is required'
+						},integer: {
+							message: 'This value must be integer'
+						}
+					} 
+				},
+				venue: {
+					validators: {
+						notEmpty: {
+							message: 'Please select one venue'
+						}
+					} 
 				}
+			}
+		}).on('err.field.fv', function(e, data) {
+			if (data.fv.getSubmitButton()) {
+				data.fv.disableSubmitButtons(false);
 			}
 		}).on('success.form.fv', function(e) {
             // Prevent form submission
+            if (data.fv.getSubmitButton()) {
+            	data.fv.disableSubmitButtons(false);
+            }
             e.preventDefault();
 
             // Get the form instance
@@ -224,67 +235,19 @@ Add New Conference
                 // ... Process the result ...
 
             }, 'json');
-        });
-		/*
-		$("#frmCreateConf").submit(function(e){
-			e.preventDefault();
+        }).find('input[name="chkField[]"]')
+            // Init iCheck elements
+            .iCheck({
+            	checkboxClass: 'icheckbox_square-green'
+            })
+            // Called when the radios/checkboxes are changed
+            .on('ifChanged', function(e) {
+                // Get the field name
+                var field = $(this).attr('name');
+                $('#frmCreateConf').formValidation('revalidateField', field);
+            });
 
-			checkAllForm();
-			return false;
-			var conferenceTitle = $("input#conferenceTitle").val().trim();
-			var confType =  $("#confType").dropdownCheckbox("checked");
-			var confDesc =  $("textarea#confDesc").val().trim();
-			var beginDate = $("#datetimepickerBegin").data("DateTimePicker").getDate();
-			var endDate =  $("#datetimepickerEnd").data("DateTimePicker").getDate();
-			var isFree =  $("#chkIsFree").is(':checked');
-
-			blockUI();
-			$.ajax({
-				type: "POST",
-				url : "submitCreateConf",
-				showNbSelected: true,
-				data : {conferenceTitle:conferenceTitle,confType:confType,confDesc:confDesc,date_start:beginDate,date_end:endDate,isFree:isFree}
-			})
-			.done(function(data) {
-				if(data.id != undefined){ 
-					$.unblockUI();	
-					$.blockUI({ 
-						message: "<h3><img src='{{ asset('img/jqueryui/check_sign_icon_green.png') }}' /> Your Conference : " + data.Title +" has been created sucessfully ! </h3>"  
-					});
-					setTimeout(function() { 
-						$.unblockUI({ 
-							onUnblock: function(){window.location.href='{{ action("ConferenceController@index") }}';}			
-						}); 
-					}, 1500); 	}
-
-				}).fail(function(xhr,stat,msg) {
-					alert(xhr.responseText);
-					$.unblockUI();
-				}).always(function(data) {
-
-				});
-			});
-*/
-});
-
-
-function checkAllForm(){
-
-	if($("input[name=chkField]:checked").length == 0){
-		return false;
-	}
-
-
-	$(".necessary").each(function(key,element){
-		if(element.value.trim().length == 0){
-			//swapStatus(element.id,'NOTOK','Field cannot be blank !');
-			return false;
-		}else{
-
-		}
-	}); 
-
-}
+        }); 
 
 </script>
 <!-- include('../../utils/customcalendar') -->
@@ -304,18 +267,19 @@ function checkAllForm(){
 
 		<div class="form-group">
 			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-4 control-label')) }}
-			<div class="col-md-4">
 
-				<ul class="list field_list">
 
-					@foreach ($fields as $field)
-					<li>
-						{{Form::checkbox('chkField', 'chkField_'. $field->id,false ,array('id' => 'chkField_'. $field->id ))}}
+			<div class="col-xs-4">
+
+				@foreach ($fields as $field)
+				<div class="checkbox">
+					<label> 
+						{{Form::checkbox('chkField[]', 'chkField_'. $field->id,false ,array('id' => 'chkField_'. $field->id ))}}
 						{{Form::label('chkField_'. $field->id, $field->label)}}
-					</li>
-					@endforeach
+					</label>
+				</div>
+				@endforeach
 
-				</ul>
 			</div>
 		</div>
 
@@ -329,7 +293,7 @@ function checkAllForm(){
 
 		<div class="form-group">
 			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  
-			<div class="col-md-4">
+			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerBegin">
 					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
@@ -339,7 +303,7 @@ function checkAllForm(){
 
 		<div class="form-group">
 			{{ Form::label('endDate', 'End', array('class' => 'col-md-4 control-label')) }} 
-			<div class="col-md-4">
+			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerEnd">
 					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
@@ -356,8 +320,8 @@ function checkAllForm(){
 
 		<div class="form-group">
 			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-4 control-label')) }}
-			<div class="col-md-4">
-				{{ Form::select('venue',[null=>''],null,array('name'=>'ddlVenue','id'=>'ddlVenue','class' => 'form-control necessary')) }}
+			<div class="col-md-4 venueContainer">
+				{{ Form::select('venue',[null=>''],null,array('id'=>'ddlVenue','class' => 'form-control necessary')) }}
 			</div>
 		</div>
 
