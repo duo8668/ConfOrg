@@ -23,8 +23,12 @@ include('customroutes/thomasRoutes.php');
 include('customroutes/pohjunRoutes.php');
 
 
+Route::group(array('before' => 'guest'),function(){
+
 Route::get('/', function()
 {
     return View::make('hello');
+});
+
 });
 
