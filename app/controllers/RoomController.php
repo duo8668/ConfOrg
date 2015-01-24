@@ -14,15 +14,18 @@ class RoomController extends \BaseController {
 		->join('venue', 'venue.venue_id', '=', 'room.venue_id')
 		->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name'));		
 
-		
-		
 		if (Session::has('edit'))
 		{			
 			session::forget('edit');
 			Session::flash('message', 'Room Successfully Updated!');
 			return Redirect::to('room');
 		}
-
+		else if (Session::has('create'))
+		{
+			session::forget('create');
+			Session::flash('message', 'Room Successfully Created!');
+			return Redirect::to('room');	
+		}
 		else
 		{
 			return View::make('Room.index')->with('data',$data);
@@ -55,45 +58,90 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function store()
-	{
+	{		
 		$rules = array(
 			'roomName'       => 'required',
 			'roomCapacity'      => 'required|Integer',			                      
+			'roomCost'      => 'required|Integer',	
 			'venue' 				=>'required',
 			);
-		$validator = Validator::make(Input::all(), $rules);
 
-	        // process the login
-		if ($validator->fails()) {
-			return Redirect::to('room/create')
-			->withErrors($validator)
-			->withInput(Input::all());
-		} 	        
-		else {
-	            // store	           
+        //run validation rules        
+		$validation = Validator::make(Input::all(), $rules);
+
+		if ( ! $validation->passes()) {
+			$response_values = array(
+				'validation_failed' => 1,
+				'errors' => $validation->errors()->toArray());
+			return Response::json($response_values);
+
+		} 
+		else {            
+
+			$data['success'] = true;
+			$data['redirect']  = '/laravel/public/room';			
+			
+			Session::put('create', 'create');
+
 			$room = new room;
 			$room->room_name = Input::get('roomName');
 			$room->capacity = Input::get('roomCapacity');	            
 			$room->venue_id = Input::get('venue');
+			$room->rental_cost = Input::get('roomCost');
 			$room->save();            
-
-	            //$LastInsertId = $room->id;
-			$SelectedValues = Input::get('duallistbox_demo2');
+			
+			$SelectedValues = Input::get('SelectedValues');			
 
 			if(!empty($SelectedValues))
 			{
-				foreach($SelectedValues as $Selectedvalue)
-				{					
-					$equipment = Equipment::find($Selectedvalue);					
-					$room->equipments()->attach($equipment->equipment_id);
+				foreach($SelectedValues as $SelectedValue)
+				{												
+					$breakDown = explode("-", $SelectedValue);								
+					$eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();					
+					$room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
 				}
 			}
+			echo json_encode($data);
+		}        
 
-	        // redirect
-			Session::flash('message', 'room Successfully Created!');
-			return Redirect::to('room');
+		// $rules = array(
+		// 	'roomName'       => 'required',
+		// 	'roomCapacity'      => 'required|Integer',			                      
+		// 	'venue' 				=>'required',
+		// 	);
+		// $validator = Validator::make(Input::all(), $rules);
 
-		}                    
+	 //        // process the login
+		// if ($validator->fails()) {
+		// 	return Redirect::to('room/create')
+		// 	->withErrors($validator)
+		// 	->withInput(Input::all());
+		// } 	        
+		// else {
+	 //            // store	           
+		// 	$room = new room;
+		// 	$room->room_name = Input::get('roomName');
+		// 	$room->capacity = Input::get('roomCapacity');	            
+		// 	$room->venue_id = Input::get('venue');
+		// 	$room->save();            
+
+	 //            //$LastInsertId = $room->id;
+		// 	$SelectedValues = Input::get('duallistbox_demo2');
+
+		// 	if(!empty($SelectedValues))
+		// 	{
+		// 		foreach($SelectedValues as $Selectedvalue)
+		// 		{					
+		// 			$equipment = Equipment::find($Selectedvalue);					
+		// 			$room->equipments()->attach($equipment->equipment_id);
+		// 		}
+		// 	}
+
+	 //        // redirect
+		// 	Session::flash('message', 'room Successfully Created!');
+		// 	return Redirect::to('room');
+
+		// }                    
 	        //return Redirect::to('room') with the list of equipment with an ID;	    
 	}
 	
@@ -165,9 +213,7 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function update($id)
-	{
-
-		 //set validation rules
+	{		 
 		$rules = array(
 			'roomName'       => 'required',
 			'roomCapacity'      => 'required|Integer',			                      
@@ -175,56 +221,45 @@ class RoomController extends \BaseController {
 			'venue' 				=>'required',
 			);
 
-        //run validation rules
-        $data           = array();      // array to pass back data
-        $validation = Validator::make(Input::all(), $rules);
+        //run validation rules        
+		$validation = Validator::make(Input::all(), $rules);
 
-        //check it validation failed
-        if ( ! $validation->passes())
-        {
-            //return errors json encoded
+		if ( ! $validation->passes()) {
+			$response_values = array(
+				'validation_failed' => 1,
+				'errors' => $validation->errors()->toArray());
+			return Response::json($response_values);
 
-        	return Response::json(array(
-        		'validation_failed' => true,
-        		'errors'            => $validation->errors()->toArray())
-        	);            
-        	var_dump($validation->errors()->toArray());
-        } else //validation passed
-        {
-            //try logging in the user
+		} 
+		else {            
 
-        	$data['success'] = true;
-        	$data['redirect']  = '/laravel/public/room';			
-			//do session store here
-			//Session::put('message',$message);
-        	Session::put('edit', 'edit');
+			$data['success'] = true;
+			$data['redirect']  = '/laravel/public/room';			
+			
+			Session::put('edit', 'edit');
 
-        	$room = Room::find($id);
-        	$room->room_name = Input::get('roomName');
-        	$room->capacity = Input::get('roomCapacity');	            
-        	$room->venue_id = Input::get('venue');
-        	$room->rental_cost = Input::get('roomCost');
-        	$room->save();            
+			$room = Room::find($id);
+			$room->room_name = Input::get('roomName');
+			$room->capacity = Input::get('roomCapacity');	            
+			$room->venue_id = Input::get('venue');
+			$room->rental_cost = Input::get('roomCost');
+			$room->save();            
 
-        	$room->equipments()->detach();
-	            //$LastInsertId = $room->id;
-        	$SelectedValues = Input::get('SelectedValues');
+			$room->equipments()->detach();
+			$SelectedValues = Input::get('SelectedValues');			
 
-			//dd(Equipment::where('equipment_name' , '=', 'Speaker')->select('equipment_id')->first());			
-
-        	if(!empty($SelectedValues))
-        	{
-        		foreach($SelectedValues as $SelectedValue)
-        		{												
-        			$breakDown = explode("-", $SelectedValue);								
-        			$eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();					
-        			$room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
-        		}
-        	}
-        	echo json_encode($data);
-        }        
-
-    }
+			if(!empty($SelectedValues))
+			{
+				foreach($SelectedValues as $SelectedValue)
+				{												
+					$breakDown = explode("-", $SelectedValue);								
+					$eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();					
+					$room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
+				}
+			}
+			echo json_encode($data);
+		}        
+	}
 
 
 	/**
