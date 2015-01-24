@@ -3,10 +3,9 @@
 All Venues
 @stop
 @section('content')
-<!-- will be used to show any messages 
 @if (Session::has('message'))
     <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif-->
+@endif
 
 <table class="table table-striped table-bordered">
     <thead>
