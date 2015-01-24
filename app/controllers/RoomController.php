@@ -143,10 +143,18 @@ class RoomController extends \BaseController {
 		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
 		->lists('full_name', 'id');
 
+		$eqfullname = Room::join('room_equipment', 'room.room_id', '=', 'room_equipment.room_id')
+		->join('equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
+		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+		->where('room.room_id', "=", $id)
+		->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
+		->lists('fullname');
+
 		return View::make('room.edit')
 		->with('venues', $venues)
 		->with('equipments', $equipments)
-		->with('room',$room);
+		->with('room',$room)
+		->with('eqfullname', $eqfullname);	
 	}	
 
 
@@ -159,131 +167,64 @@ class RoomController extends \BaseController {
 	public function update($id)
 	{
 
-		// dd(Input::all()); 
-		// //
-		// $rules = array(
-		// 	'roomName'       => 'required',
-		// 	'roomCapacity'      => 'required|Integer',			                      
-		// 	'venue' 				=>'required',
-		// 	);
-		// $validator = Validator::make(Input::all(), $rules);
+		 //set validation rules
+		$rules = array(
+			'roomName'       => 'required',
+			'roomCapacity'      => 'required|Integer',			                      
+			'roomCost'      => 'required|Integer',	
+			'venue' 				=>'required',
+			);
 
-  //       // process the login
-		// if ($validator->fails()) {
-		// 	return Redirect::to('room/' .$id. '/edit')
-		// 	->withErrors($validator)
-		// 	->withInput(Input::all());
-		// } 	        
-		// else {
-		// 	// $customer->drinks()->detach($drink_id);
-  //           // store	           
-		// 	$room = Room::find($id);
-		// 	$room->room_name = Input::get('roomName');
-		// 	$room->capacity = Input::get('roomCapacity');	            
-		// 	$room->venue_ID = Input::get('venue');
-		// 	$room->save();            
+        //run validation rules
+        $data           = array();      // array to pass back data
+        $validation = Validator::make(Input::all(), $rules);
 
-		// 	// $room->equipments()->detach();
-	 //  //           //$LastInsertId = $room->id;
-		// 	// $selectedValues = Input::get('duallistbox_demo2');
+        //check it validation failed
+        if ( ! $validation->passes())
+        {
+            //return errors json encoded
 
-		// 	// if(!empty($selectedValues))
-		// 	// {
-		// 	// 	foreach($selectedValues as $selectedvalue)
-		// 	// 	{					
-		// 	// 		$equipment = Equipment::find($selectedvalue);					
-		// 	// 		$room->equipments()->attach($equipment->equipment_id);
-		// 	// 	}
-		// 	// }
+        	return Response::json(array(
+        		'validation_failed' => true,
+        		'errors'            => $validation->errors()->toArray())
+        	);            
+        	var_dump($validation->errors()->toArray());
+        } else //validation passed
+        {
+            //try logging in the user
 
-		
-		// }         
-		//get saved info from fan profile
-	    $errors         = array();      // array to hold validation errors
-		$data           = array();      // array to pass back data
-
-		// validate the variables ======================================================
-		    // if any of these variables don't exist, add an error to our $errors array
-
-		if (empty(Input::get('roomName')))
-			$errors['roomName'] = 'Room Name is required';
-
-		if (empty(Input::get('roomCapacity')))
-			$errors['roomCapacity'] = 'Missing Capacity';
-
-		if (empty(Input::get('venue')))
-			$errors['venue'] = 'Venue is required';
-
-		if (empty(Input::get('roomCost')))
-			$errors['roomCost'] = 'Missing Room Cost';
-
-		// return a response ===========================================================
-
-		    // if there are any errors in our errors array, return a success boolean of false
-		if ( ! empty($errors)) {
-
-		        // if there are items in our errors array, return those errors
-			$data['success'] = false;
-			$data['errors']  = $errors;
-
-
-		} else {
-
-			$data['success'] = true;
-			$data['redirect']  = '/laravel/public/room';			
+        	$data['success'] = true;
+        	$data['redirect']  = '/laravel/public/room';			
 			//do session store here
 			//Session::put('message',$message);
-			Session::put('edit', 'edit');
+        	Session::put('edit', 'edit');
 
-			$room = Room::find($id);
-			$room->room_name = Input::get('roomName');
-			$room->capacity = Input::get('roomCapacity');	            
-			$room->venue_id = Input::get('venue');
-			$room->rental_cost = Input::get('roomCost');
-			$room->save();            
+        	$room = Room::find($id);
+        	$room->room_name = Input::get('roomName');
+        	$room->capacity = Input::get('roomCapacity');	            
+        	$room->venue_id = Input::get('venue');
+        	$room->rental_cost = Input::get('roomCost');
+        	$room->save();            
 
-			//$room->equipments()->detach();
+        	$room->equipments()->detach();
 	            //$LastInsertId = $room->id;
-			$SelectedValues = Input::get('SelectedValues');
+        	$SelectedValues = Input::get('SelectedValues');
 
 			//dd(Equipment::where('equipment_name' , '=', 'Speaker')->select('equipment_id')->first());			
-			// $pizza  = "piece1 piece2 piece3 piece4 piece5 piece6";
-			// $pieces = explode(" ", $pizza);
-			// echo $pieces[0]; // piece1
-			// echo $pieces[1]; // piece2
 
-			$room2 = Room::find(4);
+        	if(!empty($SelectedValues))
+        	{
+        		foreach($SelectedValues as $SelectedValue)
+        		{												
+        			$breakDown = explode("-", $SelectedValue);								
+        			$eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();					
+        			$room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
+        		}
+        	}
+        	echo json_encode($data);
+        }        
 
-			foreach ($room2->equipments as $eq)
-			{
-				// var_dump($eq->pivot->quantity);
-				// var_dump($eq->equipment_name);
-				$eqCatName = EquipmentCategory::where('equipmentcategory_id' , '=', $eq->equipmentcategory_id)->Select('equipmentcategory_name')->first();				
-				$fullName = $eqCatName->equipmentcategory_name." - ".$eq->equipment_name." - ".$eq->pivot->quantity;
-				var_dump($fullName);
-			}
-			// if(!empty($SelectedValues))
-			// {
-			// 	foreach($SelectedValues as $SelectedValue)
-			// 	{												
-			// 		$breakDown = explode("-", $SelectedValue);			
-
-			// 		$eName = trim($breakDown[1]);									
-			// 		$eID = Equipment::where('equipment_name' , '=', $eName)->select('equipment_id')->first();
-			// 		$eQty = $breakDown[2];						
-			// 	    //echo $eQty;
-			// 		//$room->equipments()->attach($eID);
-			// 		// dd($equipment = Equipment::find($eID));					
-			// 		$room->equipments()->attach($eID, array('quantity' => $eQty));
-			// 	}
-			// }
-
-		}
-		echo json_encode($data);
-
-		    // return all our data to an AJAX call
-		
-	}
+    }
 
 
 	/**
