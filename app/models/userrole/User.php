@@ -14,23 +14,51 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $fillable = ['firstname','lastname','email','email_temp','password','password_temp','remember_token','code','active','created_at','updated_at'];
 	protected $guarded = array('user_id');
 
-public function isInRole($confid,$roleid)
+public function isInRole($confid,$rolename)
  {
+  $role_id = DB::table('roles')
+  ->where('rolename','=',$rolename)
+  ->lists('role_id');
 
   $userid= Auth::user()->user_id;
 
   $role = DB::table('confuserrole')
   ->where('conf_id','=',$confid)
   ->where('user_id','=',$userid)
-  ->get();
+  ->where('role_id','=',$role_id)
+  ->first();
 
-  foreach ($role as $role)
+  return ($role != null);
+
+
+ }
+ public function hasPermission($confid,$permissionname){
+    $permission_id = DB::table('permissions')
+    ->where('permission_name','=',$permissionname)
+    ->lists('permission_id');
+
+    $list_of_role_that_has_permission =  
+    DB::table('role_permission')
+    ->where('permission_id','=',$permission_id)
+    ->first();
+
+    $userid= Auth::user()->user_id;
+
+   $lists_of_role_user_is = 
+   DB::table('confuserrole')
+    ->where('conf_id','=',$confid)
+    ->where('user_id','=',$userid)
+    ->get();
+
+  foreach ($lists_of_role_user_is as $lists_of_role_user_is)
   {
    
-      if($role->role_id ==$roleid)
+      if($lists_of_role_user_is->role_id == $list_of_role_that_has_permission->role_id)
        return true;
   }
   
    return false;
  }
+
+ 
 }
