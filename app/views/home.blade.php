@@ -39,6 +39,12 @@ PohJun private home
 	<li><a href="{{ URL::route('users-invite-friend') }}">Invite a friend!</a></li>
 	<p>Hello, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}.</p>
 	<a href="{{ URL::route('users-sign-out') }}">Sign out</a>
+
+@if(Auth::user()->iSInRole('1','4'))  
+U HAVE THAT ROLE
+@else
+YOU DONT HAVE
+@endif
 @else
 	<li> <a href="{{ URL::route('users-sign-in') }}">Sign In</a></li>
 	<li> <a href="{{ URL::route('users-create') }}">Create An Account</a></li>
@@ -52,5 +58,7 @@ PohJun private home
 @if(Session::has('global'))
     {{Session::get('global')}} 
 @endif
+
+
 
 @stop
