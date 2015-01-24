@@ -29,16 +29,7 @@ class ConferenceController extends BaseController {
 
 		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
 		->get();
-		/*
-		$arrayField ="";
 
-		foreach ($fields as &$field) {
-			dd(json_encode($fields));
-			$arrayField += json_encode($field)+",";
-		}
-
-		$arrayField = "["+rtrim($arrayField,',') + "]";
- */ 
 		$view = View::make('conference.management.create',array('fields'=>$fields)); 
 
 		return $view;
@@ -84,10 +75,10 @@ class ConferenceController extends BaseController {
 	public function theConf()
 	{
 		$selectedConfId = $this->ValidateConference();
-
-		$conf=Conference::where('confId','=',$selectedConfId) 
+ 
+		$conf=Conference::where('conf_id','=',$selectedConfId) 
 		->first();
-
+		
 		$view = View::make('conference.confview',array('selectedConfId'=>$selectedConfId,'conf'=>$conf)); 
 
 		return $view;
@@ -150,11 +141,11 @@ class ConferenceController extends BaseController {
 		$data = [
 		'conferenceTitle' => Input::get('conferenceTitle'),
 		'chkField' => Input::get('chkField'),
-		'beginDate' => Input::get('beginDate'),
-		'endDate' => Input::get('endDate'),
+		'beginDate' => date("Y-m-d", strtotime(Input::get('beginDate'))),
+		'endDate' => date("Y-m-d", strtotime(Input::get('endDate'))),
 		'maxSeats' => Input::get('maxSeats'),
-		'ddlVenue' => Input::get('ddlVenue'),
-		'chkIsFree' => Input::get('chkIsFree')
+		'venue' => Input::get('venue'),
+		'chkIsFree' => Input::get('chkIsFree') === 'true'? true: false
 		];
 
 		$rules = [
@@ -163,28 +154,41 @@ class ConferenceController extends BaseController {
 		'beginDate'=>'required|date|before:endDate',
 		'endDate'=>'required|date|after:beginDate',
 		'maxSeats'=>'required|numeric',
-		'ddlVenue'=>'required|numeric',
+		'venue'=>'required|numeric',
 		'chkIsFree'=>'boolean'
 		];
 
 		$validator = Validator::make($data, $rules);
- 
+
 		if(Auth::check()){
 			if($validator->fails()){
 
-				return $validator->errors(); 
+				return array('invalidFields'=>$validator->errors()); 
 
 			}else{
-				$isFree = $data['chkIsFree'] === 'true'? true: false;		 
+				//$isFree = $data['chkIsFree'] === 'true'? true: false;		 
 
 				try
 				{  
-					$conf = Conference::create(array('title' => $data['title']
-						,'description' => Input::get('confDesc')
-						,'begin_date' => date("Y-m-d", strtotime($data['beginDate']))
-						,'end_date' => date("Y-m-d", strtotime($data['endDate'])) 
-						,'is_free' => $isFree
-						,'created_by' => Auth::user()->user_id));
+					$result = DB::transaction(function() use ($data)
+					{ 
+						$createdConf = Conference::create(array('title' => $data['conferenceTitle']
+							,'description' => Input::get('confDesc')
+							,'begin_date' => $data['beginDate']
+							,'end_date' => $data['endDate']
+							,'is_free' => $data['chkIsFree']
+							,'created_by' => Auth::user()->user_id));
+
+						$confRoom = ConferenceRoomSchedule::create(
+							array('conf_id' => $createdConf->conf_id
+								,'room_id' => $data['venue']
+								,'date_start' => $data['beginDate']
+								,'date_end' => $data['endDate']
+								,'created_by' => Auth::user()->user_id)
+							);
+
+						return array('createdConf'=>$createdConf,'confRoom'=>$confRoom);
+					});					
 
 				}
 				catch(Exception $ex)
@@ -194,7 +198,7 @@ class ConferenceController extends BaseController {
 			}
 		}
 
-		return $conf;
+		return array('success'=>$result);
 	}
 
 	public function validateCreateConference(){

@@ -7,8 +7,6 @@ Add New Conference
 <!-- extraScripts Section -->
 @section('extraScripts')
 
-<!-- <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css"> -->
-
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
 
 <link href="{{ asset('css/icheck/square/green.css') }}" rel="stylesheet" type="text/css">
@@ -16,10 +14,6 @@ Add New Conference
 <link href="{{ asset('css/formvalidation/formValidation.css') }}" rel="stylesheet" type="text/css">
 
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
-
-<!-- <script src="{{ asset('js/jqueryui/jquery-ui.min.js') }}"></script> -->
-
-<script src="{{ asset('js/jqueryui/jquery.blockUI.js') }}"></script>
 
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
 
@@ -76,10 +70,7 @@ Add New Conference
 <!-- Content Section -->
 @section('content')
 <script>
-	$(document).ajaxStop($.unblockUI); 	
 	
-	var eventData;
-
 	$(document).ready(function(){
 
 		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false , pickDate:true });
@@ -95,45 +86,43 @@ Add New Conference
 			$('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
 		});
 
-		//$('#ddlVenue').prop("disabled", true);
-
 		var loadedJson ;
 		$('#ddlVenue').hover(function(event){
 
 			var beginDate = $("#datetimepickerBegin").data("DateTimePicker").getDate().format('DD-MM-YYYY');
 			var endDate =  $("#datetimepickerEnd").data("DateTimePicker").getDate().format('DD-MM-YYYY');
-			$.ajax({
-				type: "GET",
-				url : "/conference/roomSchedule/availableRooms" ,
-				data : {date_start:beginDate,date_end:endDate}
-			})
-			.done(function(data) {
-				var canload = false ;
-				if(loadedJson ==undefined){
-					canload = true;
-				}else{
-					canload =(JSON.stringify(loadedJson) != JSON.stringify(data));
-				}
-				if(canload){
-					loadedJson = data;
+			if(beginDate != undefined && endDate != undefined){
+				$.ajax({
+					type: "GET",
+					url : "/conference/roomSchedule/availableRooms" ,
+					data : {date_start:beginDate,date_end:endDate}
+				})
+				.done(function(data) {
+					var canload = false ;
+					if(loadedJson ==undefined){
+						canload = true;
+					}else{
+						canload =(JSON.stringify(loadedJson) != JSON.stringify(data));
+					}
+					if(canload){
+						loadedJson = data;
 
-					$("#ddlVenue").empty();
+						$("#ddlVenue").empty();
 
-					$.each(data, function (key, value) {
-						$("#ddlVenue").append($("<option></option>").val
-							(value.room_id).html(value.room_name));
-					});
-				}
+						$.each(data, function (key, value) {
+							$("#ddlVenue").append($("<option></option>").val
+								(value.room_id).html(value.room_name));
+						});
+					}
 
-			})
-			.fail(function(xhr,stat,msg) {
-				alert(xhr.responseText);
-			})
-			.always(function(data) {
-				$.unblockUI();
-			});
+				})
+				.fail(function(xhr,stat,msg) {
+					alert(xhr.responseText);
+				})
+				.always(function(data) {
 
-
+				});
+			}
 		});
 
 		$('#frmCreateConf').formValidation({
@@ -213,15 +202,19 @@ Add New Conference
 					} 
 				}
 			}
-		}).on('err.field.fv', function(e, data) {
+		}).on('err.field.fv err.validator.fv success.validator.fv', function(e, data) {
 			if (data.fv.getSubmitButton()) {
 				data.fv.disableSubmitButtons(false);
 			}
-		}).on('success.form.fv', function(e) {
-            // Prevent form submission
-            if (data.fv.getSubmitButton()) {
-            	data.fv.disableSubmitButtons(false);
-            }
+		}).on('success.field.fv', function(e, data) {
+			if (data.fv.getSubmitButton()) {
+				data.fv.disableSubmitButtons(false);
+			}
+            //if (data.fv.getInvalidFields().length > 0) {    // There is invalid field
+            //	data.fv.disableSubmitButtons(true);
+            //}
+        }).on('success.form.fv', function(e,data) {
+            // Prevent form submission         
             e.preventDefault();
 
             // Get the form instance
@@ -229,11 +222,25 @@ Add New Conference
 
             // Get the FormValidation instance
             var bv = $form.data('formValidation');
-
+            $('#resultModal').modal({
+            	keyboard: false
+            	,backdrop:'static' });   
             // Use Ajax to submit form data
             $.post($form.attr('action'), $form.serialize(), function(result) {
                 // ... Process the result ...
-
+                var message = '';
+                if(result.success != undefined){
+                	message += 'Conference created. You may view your conference at ...';
+                }else if (result.invalidFields!= undefined){
+                	$.each(result.invalidFields,function(key,value){
+                		message += '<p>' + key + ':' + value + '</p>';
+                	});
+                	
+                }else{
+                	message = 'Unknown error occurred. Please contact System Administrator.'
+                }
+                $('#modalMessage').html(message);
+                setTimeout(function(){$('#resultModal').modal('hide');},1000);
             }, 'json');
         }).find('input[name="chkField[]"]')
             // Init iCheck elements
@@ -267,7 +274,6 @@ Add New Conference
 
 		<div class="form-group">
 			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-4 control-label')) }}
-
 
 			<div class="col-xs-4">
 
@@ -349,20 +355,16 @@ Add New Conference
 <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="exampleModalLabel">New message</h4>
+			<div class="modal-header">			 
+				<h4 class="modal-title" id="exampleModalLabel"></h4>
 			</div>
-			<div class="modal-body">
-				<form>
-					<div class="form-group">
-						<label class="control-label"></label>
-						<label class="control-label">Recipient:</label>
-					</div>
-				</form>
+			<div class="modal-body">				
+				<div class="form-group pager">
+					<label class="control-label"><img src="../../img/jqueryui/ajax-loader.gif"></label>
+					<label class="control-label" id="modalMessage"></label>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>

@@ -2,13 +2,14 @@
 
 class Venue extends Eloquent {	
 
-	public $timestamps = false;	
-	protected $primaryKey = 'venue_id';
+	 
 	protected $table = 'venue';
+	protected $fillable = array('venue_id','name', 'venue_address', 'latitude', 'longtitude');
+	
 
-	public function room(){
+	public function Rooms(){
 		return $this->hasMany('Room');
 	}
 
-	protected $fillable = array('venue_name', 'venue_address', 'latitude', 'longtitude');
+	
 }

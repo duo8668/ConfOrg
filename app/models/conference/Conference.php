@@ -23,12 +23,16 @@ class Conference extends Eloquent {
 	public function ConferenceRoomSchedule(){
 		return $this->hasOne('ConferenceRoomSchedule', 'conf_id', 'conf_id');
 	}
-	
-	public function getStatusInConference(){
 
-		//$user = User::where('user_id','=',1)->first();
-		//Auth::login($user);
-		//dd(Auth::user()->user_id);
+	public function Room(){
+		$roomSchedule = ConferenceRoomSchedule::where('conf_id' ,'=', $this->conf_id)->first();
+
+		$room = Room::where('room_id','=',$roomSchedule->room_id)->first();
+
+		return $room;
+	}
+	
+	public function getStatusInConference(){ 
 
 		$confUserRole = $this
 		->ConferenceUserRoles()

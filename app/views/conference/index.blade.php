@@ -35,13 +35,10 @@ All Conferences
 	
 	$(document).ready(function(){
 
-		$(document).ajaxStop($.unblockUI); 
-		
-		 
+
 
 		$('.confClass').on('click',function(evt){
-			$(this).attr('id')
-			blockUI();
+			 
 			$.ajax({
 				type: "GET",
 				url : "conference/confParticular",
@@ -60,11 +57,7 @@ All Conferences
 		});
 
 	});
-	
-	function blockUI(){
 
-		$.blockUI({ message: "<h1><img src='{{ asset('img/jqueryui/ajax-loader.gif') }}' /> Just a moment...</h1>" }); 
-	}
 </script>
 
 
@@ -79,14 +72,15 @@ All Conferences
 <div class="">
 	<div class="row">
 		@foreach ($confs as $conf)
-		<div id="conf_id_col_{{$conf->ConfId}}" class="col-md-4 confClass customBorder">
+		<div id="conf_id_col_{{$conf->conf_id}}" class="col-md-4 confClass customBorder">
 			<div class="panel panel-primary  has-ribbon" data-text="{{ $conf->getStatusInConference() }}">
 				<div class="panel-heading"><strong><br/></strong></div>
 				<div class="panel-body">
-					Title : {{ $conf->Title }}<br />
-					ConferenceType : <br />
-					Begin : {{ $conf->BeginDate }}<br />
-					End : {{ $conf->EndDate }}<br />
+					<h5> Title : <small> {{ $conf->title }} </small></h5>
+					<h5> Venue : <small> {{ $conf->Room()->Venue()->name }} </small></h5>
+					<h5> Room : <small> {{ $conf->Room()->room_name }} </small></h5>
+					<h5> Begin : <small> {{ $conf->begin_date }}  </small></h5>
+					<h5> End : <small> {{ $conf->end_date }}  </small></h5>
 				</div>
 			</div>
 		</div>

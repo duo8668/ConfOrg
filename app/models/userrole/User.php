@@ -51,13 +51,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	// 	return false;
 	// }
 
-	// public static function IsInRole($name,$confId){
-	// 	$userid = Session::get('userid');
-	// 	//$confid = '1';
-	// 	//Auth::user()->user_id
-	// 	$user = Auth::user();
+	 public static function IsInRole($name,$confId){
+	 	$userid = Session::get('userid');
+	 	//$confid = '1';
+	 	//Auth::user()->user_id
+	 	$user = Auth::user();
 
-	// 	return $user->hasRole($name);
-	// }
+	 	return true;
+	 }
 
 }
