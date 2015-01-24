@@ -18,6 +18,24 @@ Edit {{ $room->room_name }}
     </div>
   </div>
 
+   <div class="form-group @if ($errors->has('venue')) has-error @endif">
+      <label class="col-md-4 control-label" for="venue">Venue</label>  
+      <div class="col-md-4">          
+      {{ Form::select('venue', $venues, $room->venue_id, array('class'=>'form-control input-md')) }}      
+      @if ($errors->has('venue')) <p class="help-block">{{ $errors->first('venue') }}</p> 
+      @elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
+      @endif
+      </div>
+    </div>
+
+      <div class="form-group @if ($errors->has('roomName')) has-error @endif">
+      <label class="col-md-4 control-label" for="roomName">Room Name</label>  
+      <div class="col-md-4">        
+        {{ Form::text('roomName', Input::old('roomName'), array('class' => 'form-control input-md')) }} 
+        @if ($errors->has('roomName')) <p class="help-block">{{ $errors->first('roomName') }}</p> @endif        
+      </div>    
+    </div>
+
   <div id="roomName-group" class="form-group">
     <label class="col-md-4 control-label" for="roomName">Room Name</label>  
     <div class="col-md-4">                      
@@ -253,11 +271,11 @@ $('#Edit').click( function() {
               $('#venue-group').addClass('has-error'); // add the error class to show red input
               $('#venue-group div.col-md-4').append('<div class="help-block">' + data.errors.venue + '</div>'); // add the actual error message under our input                                                
             }
-            // handle errors for roomName 
-            if (data.errors.roomName) {
-                $('#roomName-group').addClass('has-error'); // add the error class to show red input
-                $('#roomName-group div.col-md-4').append('<div class="help-block">' + data.errors.roomName + '</div>'); // add the actual error message under our input                                                
-              }
+            // // handle errors for roomName 
+            // if (data.errors.roomName) {
+            //     $('#roomName-group').addClass('has-error'); // add the error class to show red input
+            //     $('#roomName-group div.col-md-4').append('<div class="help-block">' + data.errors.roomName + '</div>'); // add the actual error message under our input                                                
+            //   }
               if (data.errors.roomCapacity) {
               $('#capacity-group').addClass('has-error'); // add the error class to show red input
               $('#capacity-group div.col-md-1').append('<div class="help-block">' + data.errors.roomCapacity + '</div>'); // add the actual error message under our input                                                
@@ -270,7 +288,7 @@ $('#Edit').click( function() {
             else
             {          
               if( data.success)
-               window.location.href = '/laravel/public/room';                    
+               window.location.href = '/laravel/public/room';                   
            }
          });
 event.preventDefault();    
