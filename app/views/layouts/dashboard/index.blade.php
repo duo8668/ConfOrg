@@ -3,7 +3,9 @@
   Main Dashboard
 @stop
 @section('content')
-<div class="row">
+<div class="panel panel-default">
+  <div class="panel-heading"><h4><strong>Your Conferences</strong> <small>(Grouped by your role in the conference)</small></h4></div>
+</div>
     <div class="col-lg-3 col-md-6">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -12,13 +14,19 @@
                         <i class="fa fa-ticket fa-4x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div>Participant</div>
+                        <h3>Participant</h3>
                     </div>
                 </div>
             </div>
+            <table class="table table-striped">                                    
+                <tbody>
+                    <tr><td>ALIA Conference 2015</td></tr>
+                    <tr><td>27th Humanities and Social Science Symposium</td></tr>
+                </tbody>
+            </table> 
             <a href="#">
                 <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
+                    <span class="pull-left">View More</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                     <div class="clearfix"></div>
                 </div>
@@ -33,13 +41,19 @@
                         <i class="fa fa-graduation-cap fa-4x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div>Reviewer</div>
+                        <h3>Reviewer</h3>
                     </div>
                 </div>
             </div>
+            <table class="table table-striped">                                    
+                <tbody>
+                    <tr><td>International Conference on Artificial Intelligence and Applications (AIFU 2015)</td>
+                        </tr>
+                </tbody>
+            </table> 
             <a href="#">
                 <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
+                    <span class="pull-left">View More</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                     <div class="clearfix"></div>
                 </div>
@@ -54,13 +68,18 @@
                         <i class="fa fa-users fa-4x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div>Staff</div>
+                        <h3>Staff</h3>
                     </div>
                 </div>
             </div>
+            <table class="table table-striped">                                    
+                <tbody>
+                    <tr><td>International Conference on Data Mining (DTMN 2015)</td>
+                </tbody>
+            </table> 
             <a href="#">
                 <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
+                    <span class="pull-left">View More</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                     <div class="clearfix"></div>
                 </div>
@@ -75,26 +94,30 @@
                         <i class="fa fa-star fa-4x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div>Chairman</div>
+                        <h3>Chairman</h3>
                     </div>
                 </div>
             </div>
+            <table class="table table-striped">                                    
+                <tbody>                    
+                    <tr><td>International Conference on Networks Communications (NCOM - 2015)</td>
+                </tbody>
+            </table> 
             <a href="#">
                 <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
+                    <span class="pull-left">View More</span>
                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                     <div class="clearfix"></div>
                 </div>
             </a>
         </div>
     </div>
+
 </div>
 <div class="row">
-	<div class="col-lg-8">
+	<div class="col-md-12">
 		<div class="panel panel-info">
-            <div class="panel-heading">
-            	<strong>All Conferences</strong>
-            </div>
+            <div class="panel-heading"><h4><strong>All Conferences</strong></h4></div>
             <table class="table table-striped">                                    
                 <tbody>
                     <tr>
@@ -141,9 +164,7 @@
         </div>
 
         <div class="panel panel-success">
-            <div class="panel-heading">
-            	Newly Added Venues
-            </div>
+            <div class="panel-heading"><h4><strong>New Venues</strong></h4></div>
              <table class="table table-striped">                                    
                 <tbody>
                     <tr><td>Marina Bay Sands</td></tr>
@@ -160,70 +181,5 @@
         </div>
 	</div><!-- /.col-lg-6 (nested) -->
 
-	<div class="col-lg-4">
-		<div class="panel panel-primary">
-            <div class="panel-heading">
-            	Conferences in which you are a <strong>Participant</strong> 
-            </div>
-            <table class="table table-striped">                                    
-                <tbody>
-                    <tr><td>ALIA Conference 2015</td></tr>
-                    <tr><td>27th Humanities and Social Science Symposium</td></tr>
-                </tbody>
-            </table>   
-            <div class="panel-footer">
-                <span class="pull-right">View More  <i class="fa fa-arrow-circle-right"></i></span>    
-                <div class="clearfix"></div>        
-            </div>
-        </div>
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-            	Conferences in which you are a <strong>Reviewer</strong> 
-            </div>
-            <table class="table table-striped">                                    
-                <tbody>
-                    <tr><td style="width:75%;">International Conference on Artificial Intelligence and Applications (AIFU 2015)</td>
-                        <td class="small-12px">Go to Dashboard</td></tr>
-                </tbody>
-            </table>   
-            <div class="panel-footer">
-                <span class="pull-right">View More  <i class="fa fa-arrow-circle-right"></i></span>    
-                <div class="clearfix"></div>        
-            </div>
-        </div>
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-            	Conferences in which you are a <strong>Chair</strong> 
-            </div>
-            <table class="table table-striped">                                    
-                <tbody>
-                    <tr><td style="width:75%;">International Conference on Data Mining (DTMN 2015)</td>
-                        <td class="small-12px">Go to Dashboard</td></tr>
-                </tbody>
-            </table>   
-            <div class="panel-footer">
-                <span class="pull-right">View More  <i class="fa fa-arrow-circle-right"></i></span>    
-                <div class="clearfix"></div>        
-            </div>
-        </div>
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-            	Conferences in which you are a <strong>Staff</strong> 
-            </div>
-            <table class="table table-striped">                                    
-                <tbody>                    
-                    <tr><td style="width:75%;">International Conference on Networks Communications (NCOM - 2015)</td>
-                        <td class="small-12px">Go to Dashboard</td></tr>              
-                </tbody>
-            </table>   
-            <div class="panel-footer">
-                <span class="pull-right">View More  <i class="fa fa-arrow-circle-right"></i></span>    
-                <div class="clearfix"></div>        
-            </div>
-        </div>
-	</div><!-- /.col-lg-6 (nested) -->
 </div>
 @stop
