@@ -7,41 +7,41 @@
 @section('content')
 <div class="row">
   {{ Form::open(array('route' => 'submission.store', 'files' => true)) }}
-    <div class="col-md-8 col-md-offset-2">
+   <div class="col-md-8 col-md-offset-2">
         <legend>Basic Information</legend>
         <!-- Submission Type -->
         <div class="form-group">
-          {{ Form::label('submission_type', 'Submission Type') }} 
-          {{ Form::select('submission_type', array('1' => 'Abstract', '2' => 'Full Paper', '3' => 'Poster'), '1', array('class' => 'form-control')) }}
+          {{ Form::label('sub_type', 'Submission Type') }} 
+          {{ Form::select('sub_type', array('1' => 'Abstract', '2' => 'Full Paper', '3' => 'Poster'), '1', array('class' => 'form-control')) }}
         </div>
 
         <!-- Submission Title-->
         <div class="form-group">
-          {{ Form::label('submission_title', 'Submission Title') }}        
-          {{ Form::text('submission_title', '', array('class' => 'form-control')) }}
+          {{ Form::label('sub_title', 'Submission Title') }}        
+          {{ Form::text('sub_title', '', array('class' => 'form-control')) }}
         </div>
 
         <!-- Abstract -->
         <div class="form-group">
-          {{ Form::label('submission_abstract', 'Abstract') }}    
-          {{ Form::textarea('submission_title', '', array('class' => 'form-control')) }} 
+          {{ Form::label('sub_abstract', 'Abstract') }}    
+          {{ Form::textarea('sub_abstract', '', array('class' => 'form-control')) }} 
         </div>
 
 
         <!-- Topics -->
         <div class="form-group">
-            {{ Form::label('submission_topics', 'Topics') }} 
-            <div class="checkbox"><label>{{ Form::checkbox('submission_topics', '1') }} Physiology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('submission_topics', '2') }} Psychology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('submission_topics', '3') }} Psychiatry</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('submission_topics', '4') }} Neurology</label></div>
+            {{ Form::label('sub_topics', 'Topics') }} 
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '1') }} Physiology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '2') }} Psychology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '3') }} Psychiatry</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '4') }} Neurology</label></div>
         </div>
 
 
         <!-- Keywords -->
         <div class="form-group">
-          {{ Form::label('submission_keywords', 'Keywords') }}     
-          {{ Form::text('submission_keywords', 'Separated by commas, e.g. apples,oranges,grapes', array('class' => 'form-control')) }}
+          {{ Form::label('sub_keywords', 'Keywords') }}     
+          {{ Form::text('sub_keywords', 'Separated by commas, e.g. apples,oranges,grapes', array('class' => 'form-control')) }}
         </div>
         <hr>
         <legend>Authors</legend>
@@ -68,15 +68,15 @@
         <legend>File Upload</legend>
         <!-- Upload --> 
         <div class="form-group">
-          {{ Form::label('submission_filepath', 'Upload your file') }} 
-          {{ Form::file('submission_filepath', array('class' => 'input-file')) }}
+          {{ Form::label('attachment_path', 'Upload your file') }} 
+          {{ Form::file('attachment_path', array('class' => 'input-file')) }}
           <p class="help-block">Please ensure your file DOES NOT contain authors name (anonymous). Failure to do so may result in paper rejection</p>
         </div>
 
         <!-- Additional Remarks -->
         <div class="form-group">
-          {{ Form::label('submission_remarks', 'Additional Remarks') }}    
-          {{ Form::textarea('submission_remarks', '', array('class' => 'form-control')) }} 
+          {{ Form::label('sub_remarks', 'Additional Remarks') }}    
+          {{ Form::textarea('sub_remarks', '', array('class' => 'form-control')) }} 
         </div>
 
     </div>
