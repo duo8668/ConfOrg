@@ -4,7 +4,7 @@
 -- ----------------------------
 DROP TABLE IF EXISTS `entertainment_type`;
 CREATE TABLE `entertainment_type` (
-  `entertainmenteype_id` int(11) NOT NULL,
+  `entertainmentype_id` int(11) NOT NULL AUTO_INCREMENT,
   `entertainment_type_description` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by` int(11) NOT NULL,
   `modified_by` int(11) NULL,
