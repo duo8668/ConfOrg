@@ -45,7 +45,7 @@ Add New Room
     </div>
 
     <div class="form-group">
-      <label class="col-md-4 control-label" for="venue">Equipments</label>  
+      <label class="col-md-4 control-label">Equipments</label>  
       <div class="col-md-4">              
         {{Form::select('duallistbox_demo2[]',$equipments,Input::old('duallistbox_demo2[]'),['multiple'],array('class' => 'form-control','id'=>'duallistbox_demo2','size' =>'4')) }}              
       </div>
@@ -61,34 +61,7 @@ Add New Room
     {{ Form::close() }} 
 
     <script>
-      var demo2 = $('select[name="duallistbox_demo2[]"]').bootstrapDualListbox();
-      $("#formCR").submit(function() {
-        
-        var venue = $('#venue').val();
-
-        var options = $('#duallistbox_demo2 option:selected');
-
-        var values = $.map(optionsz ,function(option) {
-            return option.value;
-        }); 
-        alert($('select[name="duallistbox_demo2[]"]').val());
-          e.preventDefault();
-       
-            $.ajax({
-              type: "POST",
-              url : "room",
-              data : {selectedvalues:values, name:venue}               
-            })
-            .done(function(data) {
-              alert(data);
-            }).fail(function(xhr,stat,msg) {
-              alert(xhr.responseText);
-           
-            }).always(function(data) {
-
-            });
-     
-      });    
+      var demo2 = $('select[name="duallistbox_demo2[]"]').bootstrapDualListbox();  
     </script>
 
 
