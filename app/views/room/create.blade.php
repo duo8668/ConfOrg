@@ -13,10 +13,10 @@ Add New Room
     </div>
   </div>
 
-  <div id="roomName-group" class="form-group">
-    <label class="col-md-4 control-label" for="roomName">Room Name</label>  
+  <div id="room_name-group" class="form-group">
+    <label class="col-md-4 control-label" for="room_name">Room Name</label>  
     <div class="col-md-4">                            
-      {{ Form::text('roomName', Input::old('roomName'), array('class' => 'form-control input-md')) }} 
+      {{ Form::text('room_name', Input::old('room_name'), array('class' => 'form-control input-md')) }} 
     </div>    
   </div>   
 
@@ -209,7 +209,7 @@ $("#SelectedValues").click(function() {
 $('#Edit').click( function() {         
 
   var values = [];
-  var roomName = $('input[name=roomName]').val();          
+  var room_name = $('input[name=room_name]').val();          
   var venue = $('select[name=venue]').val();
   var roomCapacity = $('input[name=roomCapacity]').val();
   var token = $('input[name=_token]').val();      
@@ -217,7 +217,7 @@ $('#Edit').click( function() {
     values.push($(this).text());
   });
   var formData = {
-   "roomName": $('input[name=roomName]').val(),
+   "room_name": $('input[name=room_name]').val(),
    "venue" : $('select[name=venue]').val(),
    "roomCapacity" : $('input[name=roomCapacity]').val(),
    "roomCost" : $('input[name=roomCost]').val(),
@@ -226,7 +226,7 @@ $('#Edit').click( function() {
 
  $.ajax({      
   type: 'post',
-  url: '/laravel/public/room/',
+  url: '/laravel/public/room',
   data : formData,        
   dataType: 'json',
   beforeSend: function()

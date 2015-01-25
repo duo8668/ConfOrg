@@ -14,10 +14,10 @@ Edit {{ $room->room_name }}
     </div>
   </div>
 
-  <div id="roomName-group" class="form-group">
-    <label class="col-md-4 control-label" for="roomName">Room Name</label>  
+  <div id="room_name-group" class="form-group">
+    <label class="col-md-4 control-label" for="room_name">Room Name</label>  
     <div class="col-md-4">                      
-      {{ Form::text('roomName', $room->room_name, array('class' => 'form-control input-md','id' => 'roomName')) }}       
+      {{ Form::text('room_name', $room->room_name, array('class' => 'form-control input-md','id' => 'room_name')) }}       
     </div>    
   </div>   
 
@@ -212,7 +212,7 @@ $("#SelectedValues").click(function() {
 $('#Edit').click( function() {         
 
   var values = [];
-  var roomName = $('input[name=roomName]').val();          
+  var room_name = $('input[name=room_name]').val();          
   var venue = $('select[name=venue]').val();
   var roomCapacity = $('input[name=roomCapacity]').val();
   var token = $('input[name=_token]').val();      
@@ -221,7 +221,7 @@ $('#Edit').click( function() {
     values.push($(this).text());
   });
   var formData = {
-   "roomName": $('input[name=roomName]').val(),
+   "room_name": $('input[name=room_name]').val(),
    "venue" : $('select[name=venue]').val(),
    "roomCapacity" : $('input[name=roomCapacity]').val(),
    "roomCost" : $('input[name=roomCost]').val(),
