@@ -60,7 +60,7 @@ class RoomController extends \BaseController {
 	public function store()
 	{		
 		$rules = array(
-			'roomName'       => 'required',
+			'room_name'       => 'required|unique:room',
 			'roomCapacity'      => 'required|Integer',			                      
 			'roomCost'      => 'required|Integer',	
 			'venue' 				=>'required',
@@ -84,7 +84,7 @@ class RoomController extends \BaseController {
 			Session::put('create', 'create');
 
 			$room = new room;
-			$room->room_name = Input::get('roomName');
+			$room->room_name = Input::get('room_name');
 			$room->capacity = Input::get('roomCapacity');	            
 			$room->venue_id = Input::get('venue');
 			$room->rental_cost = Input::get('roomCost');
@@ -215,7 +215,7 @@ class RoomController extends \BaseController {
 	public function update($id)
 	{		 
 		$rules = array(
-			'roomName'       => 'required',
+			'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',			
 			'roomCapacity'      => 'required|Integer',			                      
 			'roomCost'      => 'required|Integer',	
 			'venue' 				=>'required',
@@ -239,7 +239,7 @@ class RoomController extends \BaseController {
 			Session::put('edit', 'edit');
 
 			$room = Room::find($id);
-			$room->room_name = Input::get('roomName');
+			$room->room_name = Input::get('room_name');
 			$room->capacity = Input::get('roomCapacity');	            
 			$room->venue_id = Input::get('venue');
 			$room->rental_cost = Input::get('roomCost');
