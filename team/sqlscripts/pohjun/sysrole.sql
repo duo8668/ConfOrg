@@ -10,19 +10,18 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2015-01-25 12:32:16
+Date: 2015-01-25 12:32:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for permissions
+-- Table structure for sysrole
 -- ----------------------------
-DROP TABLE IF EXISTS `permissions`;
-CREATE TABLE `permissions` (
-  `permission_Id` int(11) NOT NULL,
-  `permission_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `permission_remarks` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`permission_Id`),
-  UNIQUE KEY `permission_name_UNIQUE` (`permission_name`)
+DROP TABLE IF EXISTS `sysrole`;
+CREATE TABLE `sysrole` (
+  `sysrole_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`sysrole_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

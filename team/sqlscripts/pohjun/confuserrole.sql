@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50617
 File Encoding         : 65001
 
-Date: 2015-01-06 14:09:46
+Date: 2015-01-25 12:32:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -31,10 +31,4 @@ CREATE TABLE `confuserrole` (
   CONSTRAINT `confuserrole_ibfk_1` FOREIGN KEY (`conf_id`) REFERENCES `conference` (`ConfId`),
   CONSTRAINT `confuserrole_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`),
   CONSTRAINT `confuserrole_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
--- Records of confuserrole
--- ----------------------------
-INSERT INTO `confuserrole` VALUES ('1', '4', '1', '1');
-INSERT INTO `confuserrole` VALUES ('2', '3', '2', '2');
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
