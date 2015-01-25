@@ -1,142 +1,156 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
   Add Review to Current Submission
+  {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
 <style>
 .form-horizontal .control-label { padding-top: 0px; }
 .narrower { width: 30%; }
 </style>
- {{ Form::open(array('route' => 'review.store', 'class' => 'form-horizontal')) }}
-    <fieldset>
-      <legend>Basic Information</legend>
+@if($errors->any())
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-danger">
+        <div class="panel-heading"><h3 class="panel-title">Error!</h3></div>
+        <div class="panel-body">
+          @foreach($errors->all() as $message)
+            <li>{{ $message }}</li>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+@endif
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <legend>Basic Information</legend>
       <!-- Submission Type -->
-      <div class="form-group">
-        <label class="col-md-4 control-label">Submission Type</label>
-        <div class="col-md-4">
-          Abstract
+      <div class="row">
+        <label class="col-md-3 control-label">Submission Type</label>
+        <div class="col-md-9">
+          @if ($submission->sub_type === 3)
+              Poster
+          @elseif ($submission->sub_type === 2)
+              Full Paper
+          @else
+              Abstract
+          @endif
         </div>
       </div>
 
       <!-- Submission Title-->
-      <div class="form-group">
-        <label class="col-md-4 control-label">Submission Title</label>       
-        <div class="col-md-4">
-        How I Met Your Mother
+      <div class="row">
+        <label class="col-md-3 control-label">Submission Title</label>       
+        <div class="col-md-9">
+        {{{ $submission->sub_title }}}
         </div>
       </div>
 
       <!-- Abstract -->
-      <div class="form-group">
-        <label class="col-md-4 control-label">Abstract</label>
-        <div class="col-md-4">   
-          Lorem Ipsum dolor sit amet                 
+      <div class="row">
+        <label class="col-md-3 control-label">Abstract</label>
+        <div class="col-md-9">   
+          {{{ $submission->sub_abstract }}}               
         </div>
       </div>
 
       <!-- Topics -->
-      <div class="form-group">
-        <label class="col-md-4 control-label">Topics</label> 
-        <div class="col-md-4">
-          Psychology, Physiology
+      <div class="row">
+        <label class="col-md-3 control-label">Topics</label> 
+        <div class="col-md-9">
+          [TOPICS HERE]
         </div>
       </div>
 
       <!-- Keywords -->
-      <div class="form-group">
-        <label class="col-md-4 control-label">Keywords</label>    
-        <div class="col-md-4">
-          Family, Friends
+      <div class="row">
+        <label class="col-md-3 control-label">Keywords</label>    
+        <div class="col-md-9">
+          [KEYWORDS HERE]
+        </div>
+      </div>
+
+      <!-- Remarks -->
+      <div class="row">
+        <label class="col-md-3 control-label">Remarks</label>    
+        <div class="col-md-9">
+          {{{ $submission->sub_remarks }}}
         </div>
       </div>
 
       <!-- Upload --> 
-      <div class="form-group">
-        <label class="col-md-4 control-label">File Upload</label> 
-        <div class="col-md-4">
+      <div class="row">
+        <label class="col-md-3 control-label">File Upload</label> 
+        <div class="col-md-9">
           No file is uploaded
         </div>
       </div>
-
+      <div style="margin-bottom:40px;"></div>
+    {{ Form::open(array('route' => 'review.store', 'class' => 'form-horizontal')) }}
+    <fieldset>
       <!-- Button -->
-      <legend>Add Your Review</legend>
+      <legend>Score and Comments</legend>
 
       <!-- Scores -->
       <div class="form-group">
-        {{ Form::label('quality_score', 'Quality', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('quality_score', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
+        <div class="row col-sm-offset-1" >
+          {{ Form::label('quality_score', 'Quality', ['class' => 'col-sm-2 text-center']) }} 
+          {{ Form::label('originality_score', 'Originality', ['class' => 'col-sm-2 text-center']) }} 
+          {{ Form::label('relevance_score', 'Relevance', ['class' => 'col-sm-2 text-center']) }} 
+          {{ Form::label('significance_score', 'Significance', ['class' => 'col-sm-2 text-center']) }} 
+          {{ Form::label('presentation_score', 'Presentation', ['class' => 'col-sm-2 text-center']) }} 
+        </div>
+        <div class="row col-sm-offset-1">
+          <div class="col-sm-2">
+            {{ Form::number('quality_score', '0', array('class' => 'input-lg text-center', 'min' => "0", 'max' => "10")) }}
+          </div>
+          <div class="col-sm-2">
+            {{ Form::number('originality_score', '0', array('class' => 'input-lg text-center', 'min' => "0", 'max' => "10")) }}
+          </div>
+          <div class="col-sm-2">
+            {{ Form::number('relevance_score', '0', array('class' => 'input-lg text-center', 'min' => "0", 'max' => "10")) }}
+          </div>            
+          <div class="col-sm-2">
+            {{ Form::number('significance_score', '0', array('class' => 'input-lg text-center', 'min' => "0", 'max' => "10")) }}
+          </div>
+          <div class="col-sm-2">
+            {{ Form::number('presentation_score', '0', array('class' => 'input-lg text-center', 'min' => "0", 'max' => "10")) }}
+          </div>
         </div>
       </div>
-
-      <div class="form-group">
-        {{ Form::label('originality_score', 'Originality', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('originality_score', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
-        </div>
-      </div>
-
-      <div class="form-group">
-        {{ Form::label('relevance_score', 'Relevance', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('relevance_score', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
-        </div>
-      </div>
-
-      <div class="form-group">
-        {{ Form::label('significance_score', 'Significance', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('significance_score', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
-        </div>
-      </div>
-
-      <div class="form-group">
-        {{ Form::label('presentation_score', 'Presentation', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('presentation_score', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
-        </div>
-      </div>
-
-      <!-- Recommendation -->
-      <div class="form-group">
-        {{ Form::label('recomm_score', 'Overall Recommendation', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('recomm_score', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
-        </div>
-      </div>
+      <div style="margin-bottom:40px;"></div>
 
       <!-- Reviewer Familiarity -->
       <div class="form-group">
-        {{ Form::label('reviewer_familiarity', 'How familiar are you with the topics?', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::number('reviewer_familiarity', '0', array('class' => 'form-control input-md narrower', 'min' => "0", 'max' => "10")) }}
-        </div>
+        {{ Form::label('reviewer_familiarity', 'How familiar are you with the topics?') }}     
+        {{ Form::number('reviewer_familiarity', '0', array('class' => 'form-control ', 'min' => "0", 'max' => "10")) }}
       </div>
 
       <!-- Comments -->
       <div class="form-group">
-        {{ Form::label('reviewer_comment', 'Comments', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::textarea('reviewer_comment', '', array('class' => 'form-control')) }}
-        </div>
+        {{ Form::label('reviewer_comment', 'Comments') }}     
+        {{ Form::textarea('reviewer_comment', '', array('class' => 'form-control')) }}
       </div>
 
       <!-- Internal Comments -->
       <div class="form-group">
-        {{ Form::label('reviewer_intcomment', 'Internal Comments', array('class' => 'col-md-4 control-label')) }}     
-        <div class="col-md-4">
-            {{ Form::textarea('reviewer_intcomment', 'This comment will not be visible to the authors', array('class' => 'form-control')) }}
-        </div>
+        {{ Form::label('reviewer_intcomment', 'Internal Comments (this comment will not be visible to the authors)') }}     
+        {{ Form::textarea('reviewer_intcomment', '', array('class' => 'form-control')) }}
       </div>
-
-      <!-- Submit Button -->
-      <div class="form-group">
-        <label class="col-md-4 control-label"></label>
-        <div class="col-md-4">
-          {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-lg')) }}
-        </div>
-      </div>
-
     </fieldset>
+
+    <!-- Submit Button -->
+    <div class="row">  
+      <div class="col-lg-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-lg btn-block')) }}
+          </div>
+        </div>
+      </div>
+    </div> 
     {{ Form::close() }}
+  </div>
+</div>
 @stop

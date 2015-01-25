@@ -5,42 +5,57 @@
 @stop
 @stop
 @section('content')
+@if($errors->any())
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-danger">
+        <div class="panel-heading"><h3 class="panel-title">Error!</h3></div>
+        <div class="panel-body">
+          @foreach($errors->all() as $message)
+            <li>{{ $message }}</li>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+@endif
 <div class="row">
   {{ Form::open(array('route' => 'submission.store', 'files' => true)) }}
    <div class="col-md-8 col-md-offset-2">
+        
         <legend>Basic Information</legend>
         <!-- Submission Type -->
         <div class="form-group">
-          {{ Form::label('sub_type', 'Submission Type') }} 
+          {{ Form::label('sub_type', 'Submission Type *') }} 
           {{ Form::select('sub_type', array('1' => 'Abstract', '2' => 'Full Paper', '3' => 'Poster'), '1', array('class' => 'form-control')) }}
         </div>
 
         <!-- Submission Title-->
         <div class="form-group">
-          {{ Form::label('sub_title', 'Submission Title') }}        
+          {{ Form::label('sub_title', 'Submission Title *') }}        
           {{ Form::text('sub_title', '', array('class' => 'form-control')) }}
         </div>
 
         <!-- Abstract -->
         <div class="form-group">
-          {{ Form::label('sub_abstract', 'Abstract') }}    
+          {{ Form::label('sub_abstract', 'Abstract *') }}    
           {{ Form::textarea('sub_abstract', '', array('class' => 'form-control')) }} 
         </div>
 
 
         <!-- Topics -->
         <div class="form-group">
-            {{ Form::label('sub_topics', 'Topics') }} 
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '1') }} Physiology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '2') }} Psychology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '3') }} Psychiatry</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '4') }} Neurology</label></div>
+            {{ Form::label('sub_topics', 'Topics *') }} 
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '1') }} Physiology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '2') }} Psychology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '3') }} Psychiatry</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '4') }} Neurology</label></div>
         </div>
 
 
         <!-- Keywords -->
         <div class="form-group">
-          {{ Form::label('sub_keywords', 'Keywords') }}     
+          {{ Form::label('sub_keywords', 'Keywords *') }}     
           {{ Form::text('sub_keywords', 'Separated by commas, e.g. apples,oranges,grapes', array('class' => 'form-control')) }}
         </div>
         <hr>
@@ -68,7 +83,7 @@
         <legend>File Upload</legend>
         <!-- Upload --> 
         <div class="form-group">
-          {{ Form::label('attachment_path', 'Upload your file') }} 
+          {{ Form::label('attachment_path', 'Upload your file *') }} 
           {{ Form::file('attachment_path', array('class' => 'input-file')) }}
           <p class="help-block">Please ensure your file DOES NOT contain authors name (anonymous). Failure to do so may result in paper rejection</p>
         </div>

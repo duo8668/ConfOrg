@@ -25,7 +25,7 @@
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   {{{ Session::get('message') }}}
               </div>
-          @endif
+          @endif          
 
           <h1 id="page-header" class="page-header">
             @yield('page-header')

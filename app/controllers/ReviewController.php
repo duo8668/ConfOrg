@@ -22,7 +22,8 @@ class ReviewController extends \BaseController {
 	 */
 	public function add($id)
 	{
-		return View::make('reviews.create');
+		$sub = Submission::where('sub_id' , '=', $id)->get()->first();
+		return View::make('reviews.create')->withSubmission($sub);
 	}
 
 

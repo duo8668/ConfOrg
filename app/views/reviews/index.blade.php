@@ -26,7 +26,9 @@
 					@endif
 				</td>
 				<td>Topics Here</td>
-				<td>{{ link_to_route('reviews.add', 'Enter Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}</td>
+				<td>{{ link_to_route('reviews.add', 'Enter Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}
+					{{ link_to_route('submission.reviews', 'See Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
+				</td>
 			</tr>
 		@endforeach
 	</table>

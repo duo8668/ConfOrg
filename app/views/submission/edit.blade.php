@@ -4,6 +4,20 @@
   {{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
+@if($errors->any())
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-danger">
+        <div class="panel-heading"><h3 class="panel-title">Error!</h3></div>
+        <div class="panel-body">
+          @foreach($errors->all() as $message)
+            <li>{{ $message }}</li>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+@endif
 <div class="row">
   {{ Form::model($submission, array('route' => ['submission.update', $submission->sub_id], 'method' => 'PUT') ) }}
     <div class="col-md-8 col-md-offset-2">
@@ -30,10 +44,10 @@
         <!-- Topics -->
         <div class="form-group">
             {{ Form::label('sub_topics', 'Topics') }} 
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '1') }} Physiology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '2') }} Psychology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '3') }} Psychiatry</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics', '4') }} Neurology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '1') }} Physiology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '2') }} Psychology</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '3') }} Psychiatry</label></div>
+            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '4') }} Neurology</label></div>
         </div>
 
 
