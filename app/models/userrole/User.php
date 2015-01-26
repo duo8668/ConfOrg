@@ -14,6 +14,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $fillable = ['firstname','lastname','email','email_temp','password','password_temp','remember_token','code','active','created_at','updated_at'];
 	protected $guarded = array('user_id');
 
+
+//1st arguement conference id
+//2nd arguement rolename
+//@if(Auth::user()->hasConfRole('1','reviewer'))  
 public function hasConfRole($confid,$rolename)
  {
   $role_id = DB::table('roles')
@@ -29,9 +33,11 @@ public function hasConfRole($confid,$rolename)
   ->first();
 
   return ($role != null);
-
-
  }
+
+ //1st arguement conference id
+//2nd arguement permissionname
+//@if(Auth::user()->hasConfRole('1','editConferenceDetail'))  
  public function hasConfPermission($confid,$permissionname){
     $permission_id = DB::table('permissions')
     ->where('permission_name','=',$permissionname)
@@ -60,6 +66,9 @@ public function hasConfRole($confid,$rolename)
    return false;
  }
 
+
+ //1st arguement role name
+//@if(Auth::user()->hasSysRole('Admin')) 
  public function hasSysRole($rolename){
   $role_id = DB::table('roles')
   ->where('rolename','=',$rolename)
@@ -76,6 +85,8 @@ public function hasConfRole($confid,$rolename)
 
  }
 
+//1st arguement permission name
+//@if(Auth::user()->hasSysPermission('ViewCredit')) 
  public function hasSysPermission($permissionname){
     $permission_id = DB::table('permissions')
     ->where('permission_name','=',$permissionname)
