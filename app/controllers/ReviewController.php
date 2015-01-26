@@ -40,12 +40,12 @@ class ReviewController extends \BaseController {
 				'relevance_score' => 'required|between:0,10',
 				'significance_score' => 'required|between:0,10',
 				'presentation_score' => 'required|between:0,10',
-				'reviewer_comment' => 'required'
+				'comment' => 'required'
 			);
 
 		$messages = array(
     		'between' => 'The assigned score must be between :min to :max.',
-    		'reviewer_comment.required' => 'Please input your <strong>comment</strong> about the current contribution.',
+    		'comment.required' => 'Please input your <strong>comment</strong> about the current contribution.',
 		);
 
 		// pass input to validator
@@ -55,6 +55,19 @@ class ReviewController extends \BaseController {
 		if ($validator->fails()) {
 			return Redirect::route('reviews.add', [Input::get('hidden_sub_id')])->withErrors($validator)->withInput();
 		}
+
+		$review = new Review();
+		$review->originality_score = Input::get('originality_score');
+		$review->quality_score = Input::get('quality_score');
+		$review->relevance_score = Input::get('relevance_score');
+		$review->significance_score = Input::get('significance_score');
+		$review->presentation_score = Input::get('presentation_score');
+		$review->comment = Input::get('comment');
+		$review->internal_comment = Input::get('internal_comment');
+
+		$submission = Submission::find(Input::get('hidden_sub_id'));
+
+		$review = $submission->reviews()->save($review);
 
 		return Redirect::route('reviews.index')->withMessage('Thank you! Your review for the contribution has been submitted!');
 	}

@@ -51,12 +51,12 @@
 				}
 			?>
 			@if ($count > 0)
-				<td><?php echo ( $qlty/$count ); ?></td>
-				<td><?php echo ( $ori/$count ); ?></td>
-				<td><?php echo ( $relv/$count ); ?></td>
-				<td><?php echo ( $sigf/$count ); ?></td>
-				<td><?php echo ( $pres/$count ); ?></td>
-				<td><strong><?php echo ( (($qlty + $ori + $relv + $sigf + $pres) / ($count * 50)) * 100 ); ?>%</strong></td>
+				<td><?php echo ( number_format($qlty/$count,2) ); ?></td>
+				<td><?php echo ( number_format($ori/$count,2) ); ?></td>
+				<td><?php echo ( number_format($relv/$count,2) ); ?></td>
+				<td><?php echo ( number_format($sigf/$count,2) ); ?></td>
+				<td><?php echo ( number_format($pres/$count,2) ); ?></td>
+				<td><strong><?php echo ( number_format((($qlty + $ori + $relv + $sigf + $pres) / ($count * 50)) * 100,2) ); ?>%</strong></td>
 			@else
 				<td>0</td>
 				<td>0</td>

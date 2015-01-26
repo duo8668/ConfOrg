@@ -123,16 +123,16 @@
 
       <!-- Comments -->
       <div class="form-group">
-        {{ Form::label('reviewer_comment', 'Your Comment *') }}     
+        {{ Form::label('comment', 'Your Comment *') }}     
         <p class="help-block">Please clearly and explain your evaluation and/or input in detail and in objective and constructive manner.</p>
-        {{ Form::textarea('reviewer_comment', '', array('class' => 'form-control')) }}
+        {{ Form::textarea('comment', '', array('class' => 'form-control')) }}
       </div>
 
       <!-- Internal Comments -->
       <div class="form-group">
-        {{ Form::label('reviewer_intcomment', 'Internal Comments') }}    
+        {{ Form::label('internal_comment', 'Internal Comments') }}    
         <p class="help-block">This comment will not be visible to the authors</p> 
-        {{ Form::textarea('reviewer_intcomment', '', array('class' => 'form-control')) }}
+        {{ Form::textarea('internal_comment', '', array('class' => 'form-control')) }}
       </div>
     </fieldset>
 
