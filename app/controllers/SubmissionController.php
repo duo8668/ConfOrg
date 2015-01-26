@@ -44,7 +44,7 @@ class SubmissionController extends \BaseController {
 		$rules = array(
 				'attachment_path' => 'required',
 				'sub_type' => 'required',
-				'sub_title' => 'required|alpha_dash',
+				'sub_title' => 'required|alpha_dash|unique:submissions,sub_title',
 				'sub_abstract' => 'required|alpha_dash',
 				'sub_topics' => 'required',
 				'sub_keywords' => 'required'
@@ -64,9 +64,9 @@ class SubmissionController extends \BaseController {
 		$validator = Validator::make(Input::all(), $rules, $messages);
 
 		// test if input fails
-		//if ($validator->fails()) {
-			//return Redirect::route('submission.create')->withErrors($validator)->withInput();
-		//}
+		if ($validator->fails()) {
+			return Redirect::route('submission.create')->withErrors($validator)->withInput();
+		}
 
 		$submission = Submission::create(
 			array('sub_type' => Input::get('sub_type'),

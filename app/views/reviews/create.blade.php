@@ -121,21 +121,17 @@
       </div>
       <div style="margin-bottom:40px;"></div>
 
-      <!-- Reviewer Familiarity -->
-      <div class="form-group">
-        {{ Form::label('reviewer_familiarity', 'How familiar are you with the topics?') }}     
-        {{ Form::number('reviewer_familiarity', '0', array('class' => 'form-control ', 'min' => "0", 'max' => "10")) }}
-      </div>
-
       <!-- Comments -->
       <div class="form-group">
-        {{ Form::label('reviewer_comment', 'Comments') }}     
+        {{ Form::label('reviewer_comment', 'Your Comment *') }}     
+        <p class="help-block">Please clearly and explain your evaluation and/or input in detail and in objective and constructive manner.</p>
         {{ Form::textarea('reviewer_comment', '', array('class' => 'form-control')) }}
       </div>
 
       <!-- Internal Comments -->
       <div class="form-group">
-        {{ Form::label('reviewer_intcomment', 'Internal Comments (this comment will not be visible to the authors)') }}     
+        {{ Form::label('reviewer_intcomment', 'Internal Comments') }}    
+        <p class="help-block">This comment will not be visible to the authors</p> 
         {{ Form::textarea('reviewer_intcomment', '', array('class' => 'form-control')) }}
       </div>
     </fieldset>
@@ -145,6 +141,7 @@
       <div class="col-lg-12">
         <div class="panel panel-default">
           <div class="panel-body">
+            {{ Form::hidden('hidden_sub_id', $submission->sub_id) }}
             {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-lg btn-block')) }}
           </div>
         </div>

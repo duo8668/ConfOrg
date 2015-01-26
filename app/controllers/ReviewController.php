@@ -34,7 +34,29 @@ class ReviewController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		$rules = array(
+				'quality_score' => 'required|between:0,10',
+				'originality_score' => 'required|between:0,10',
+				'relevance_score' => 'required|between:0,10',
+				'significance_score' => 'required|between:0,10',
+				'presentation_score' => 'required|between:0,10',
+				'reviewer_comment' => 'required'
+			);
+
+		$messages = array(
+    		'between' => 'The assigned score must be between :min to :max.',
+    		'reviewer_comment.required' => 'Please input your <strong>comment</strong> about the current contribution.',
+		);
+
+		// pass input to validator
+		$validator = Validator::make(Input::all(), $rules, $messages);
+
+		// test if input fails
+		if ($validator->fails()) {
+			return Redirect::route('reviews.add', [Input::get('hidden_sub_id')])->withErrors($validator)->withInput();
+		}
+
+		return Redirect::route('reviews.index')->withMessage('Thank you! Your review for the contribution has been submitted!');
 	}
 
 
