@@ -20,6 +20,25 @@
 		@endif
 	</div>
 </div>
+<div class="row">
+	  <div class="col-md-2"><strong>Abstract</strong></div>
+	  <div class="col-md-10">{{{ $submission->sub_abstract }}}</div>
+</div>
+<div class="row">
+	  <div class="col-md-2"><strong>Topics</strong></div>
+	  <div class="col-md-10">[TOPICS HERE]</div>
+</div>
+<div class="row">
+	  <div class="col-md-2"><strong>Keywords</strong></div>
+	  <div class="col-md-10">[KEYWORDS HERE]</div>
+</div>
+<div class="row">
+	  <div class="col-md-2"><strong>Remarks</strong></div>
+	  <div class="col-md-10">{{{ $submission->sub_remarks}}}</div>
+</div><div class="row">
+	  <div class="col-md-2"><strong>File</strong></div>
+	  <div class="col-md-10">[FILE UPLOAD HERE]</div>
+</div>
 <hr>
 	<div class="table-responsive">
 	  <table class="table">
