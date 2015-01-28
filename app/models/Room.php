@@ -14,7 +14,6 @@ class Room extends Eloquent {
 		return Venue::where('venue_id','=',$this->venue_id)->first();
 	}
 
-
 	public function Equipments(){
 		return $this->belongsToMany('Equipment', 'room_equipment', 'room_id', 'equipment_id')->withPivot('quantity','roomequipment_id');	
 	}
