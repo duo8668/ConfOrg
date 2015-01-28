@@ -191,12 +191,10 @@ class RoomController extends \BaseController {
 		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
 		->lists('full_name', 'id');
 
-		$eqfullname = Room::join('room_equipment', 'room.room_id', '=', 'room_equipment.room_id')
-		->join('equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
-		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-		->where('room.room_id', "=", $id)
-		->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
-		->lists('fullname');
+		$eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
+	    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
+	    ->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
+	    ->lists('fullname');
 
 		return View::make('room.edit')
 		->with('venues', $venues)
