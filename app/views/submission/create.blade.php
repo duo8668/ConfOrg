@@ -71,11 +71,11 @@
             {{ Form::label('author_btn', 'More', ['class' => 'col-sm-1 text-center']) }} 
           </div>
           <div class="row">
-            <input class="col-sm-2" name="author_lname" type="text" value="" id="author_lname">
-            <input class="col-sm-2" name="author_fname" type="text" value="" id="author_fname">
-            <input class="col-sm-3" name="author_org" type="text" value="" id="author_org"> 
-            <input class="col-sm-2" name="author_email" type="text" value="" id="author_email">
-            <div class="radio-inline col-sm-2 text-center"><input name="author_ispresenting" type="checkbox" value="1" id="author_ispresenting"> Yes</div>
+            <input class="col-sm-2" name="author_lname[]" type="text" value="" id="author_lname0">
+            <input class="col-sm-2" name="author_fname[]" type="text" value="" id="author_fname0">
+            <input class="col-sm-3" name="author_org[]" type="text" value="" id="author_org0"> 
+            <input class="col-sm-2" name="author_email[]" type="text" value="" id="author_email0">
+            <div class="radio-inline col-sm-2 text-center"><input name="author_ispresenting[]]" type="checkbox" value="1" id="author_ispresenting0"> Yes</div>
             <a class="btn btn-default btn-xs col-sm-1" id="addauthors" name="addauthors" role="button" onclick="addRow(this.form);">Add More</a>
           </div>
         </div>
