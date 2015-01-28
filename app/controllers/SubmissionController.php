@@ -42,10 +42,10 @@ class SubmissionController extends \BaseController {
 	{
 		// define rules
 		$rules = array(
-				'attachment_path' => 'required',
+				//'attachment_path' => 'required',
 				'sub_type' => 'required',
-				'sub_title' => 'required|alpha_dash|unique:submissions,sub_title',
-				'sub_abstract' => 'required|alpha_dash',
+				'sub_title' => 'required|unique:submissions,sub_title',
+				'sub_abstract' => 'required',
 				'sub_topics' => 'required',
 				'sub_keywords' => 'required'
 			);
@@ -55,7 +55,7 @@ class SubmissionController extends \BaseController {
     		'sub_abstract.required' => 'Please input the <strong>abstract</strong> of your contribution',
     		'sub_topics.required' => 'Please select the <strong>topics</strong> of your contribution',
     		'sub_keywords.required' => 'Please input the <strong>keywords</strong> of your contribution',
-    		'attachment_path.required' => 'Please upload the anonymous version of your contribution file (PDF only)',
+    		//attachment_path.required' => 'Please upload the anonymous version of your contribution file (PDF only)',
     		'sub_title.alpha_dash' => 'The <strong>title</strong> may only contain letters, numbers, and dashes.',
     		'sub_abstract.alpha_dash' => 'The <strong>abstract</strong> may only contain letters, numbers, and dashes.',
 		);
@@ -67,7 +67,7 @@ class SubmissionController extends \BaseController {
 		if ($validator->fails()) {
 			return Redirect::route('submission.create')->withErrors($validator)->withInput();
 		}
-
+		// TODO: Input submitting author id a.k.a USER ID
 		$submission = Submission::create(
 			array('sub_type' => Input::get('sub_type'),
 				'sub_title' => Input::get('sub_title'),
@@ -85,11 +85,27 @@ class SubmissionController extends \BaseController {
 		}
 
 		// inputting topics
-
+		
 		// inputting authors
+		$fname = Input::get('author_fname');
+		$lname = Input::get('author_lname');
+		$org = Input::get('author_org');
+		$email = Input::get('author_email');
+		$ispresenting = Input::get('author_ispresenting');
+
+		for ($i = 0; $i < (count($fname) - 1); $i++) {
+			$author = new Submission_Author();
+			$author->author_fname = $fname[$i];
+			$author->author_lname = $lname[$i];
+			$author->author_org = $org[$i];
+			$author->author_email = $email[$i];
+			$author->author_ispresenting = $ispresenting[$i];
+			$submission->authors()->save($author);
+		}
 
 
 		return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Submitted');
+		//return var_dump($authorname);
 	}
 
 	/**

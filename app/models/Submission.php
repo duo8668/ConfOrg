@@ -19,7 +19,7 @@ class Submission extends Eloquent {
 
 	public function authors()
     {
-        return $this->hasMany('Submission_Author');
+        return $this->hasMany('Submission_Author', 'sub_id', 'sub_id');
     }
 
     public function reviews()
