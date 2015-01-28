@@ -251,8 +251,8 @@ class RoomController extends \BaseController {
 				foreach($SelectedValues as $SelectedValue)
 				{												
 					$breakDown = explode("-", $SelectedValue);								
-					$eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();					
-					$room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
+					$eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();										
+					$room->equipments()->attach($eID, array('quantity' => trim($breakDown[2])));
 				}
 			}
 			echo json_encode($data);
