@@ -1,57 +1,75 @@
- <!-- app/views/nerds/index.blade.php -->
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Look! I'm CRUDding</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-</head>
-<body>
-
-<h1>All the Nerds</h1>
-
-<!-- will be used to show any messages -->
-@if (Session::has('message'))
-    <div class="alert alert-success">{{ Session::get('message') }}</div>
+@extends('layouts.dashboard.master')
+@section('head-content')
+@if(Session::has('map'))    
+<div>
+	<?php echo Session::get('map')['js']; ?>
+</div>    
 @endif
+@stop
+@section('page-header')
+Import/Export
+@stop
+@section('content')
+<div class="container">
+	{{ Form::open(array('url' => 'download', 'class' => 'form-horizontal')) }}
+	<fieldset>		
+		<div class="form-group">
+			<label class="col-md-4 control-label" for="submit"></label>
+			<div class="col-md-4">      
+				{{ Form::submit('Download Excel', array('name'=>'Download','class' => 'btn btn-primary')) }}
+			</div>
+		</div>
+	</fieldset>
+	{{Form::close()}}	
 
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <td>Name</td>
-            <td>Address</td>            
-        </tr>
-    </thead>
-    <tbody>
-    @foreach($venue as $key => $value)
-        <tr>
-            <td>{{ $value->Name }}</td>
-            <td>{{ $value->Address }}</td>            
+	{{ Form::open(array('url' => 'previewMap', 'class' => 'form-horizontal')) }}
+	<fieldset>
+		<div class="form-group @if ($errors->has('venueName')) has-error @endif">
+			<label class="col-md-4 control-label" for="venueName">Venue Name</label>  
+			<div class="col-md-4">        
+				{{ Form::text('venueName', Input::old('venueName'), array('class' => 'form-control input-md')) }} 
+				@if ($errors->has('venueName')) <p class="help-block">{{ $errors->first('venueName') }}</p> @endif        
+			</div>    
+		</div>
 
-            <!-- we will also add show, edit, and delete buttons -->
-            <td>
+		<div class="form-group  @if ($errors->has('venueAddress')) has-error @elseif (Session::has('message')) has-error @endif">
+			<label class="col-md-4 control-label" for="venueAddress">Venue Address</label>
+			<div class="col-md-4">                     
+				{{ Form::text('venueAddress', Input::old('venueAddress'), array('class' => 'form-control input-md')) }}
+				@if ($errors->has('venueAddress')) <p class="help-block">{{ $errors->first('venueAddress') }}</p> 
+				@elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
+				@endif
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-md-4 control-label" for="submit"></label>
+			<div class="col-md-4">      
+				{{ Form::submit('btnPreviewMap', array('name'=>'Preview Map','class' => 'btn btn-primary')) }}
+			</div>
+		</div>
+	</fieldset>
+	{{Form::close()}}	
 
-                <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->
-                <!-- we will add this later since its a little more complicated than the other two buttons -->
-                {{ Form::open(array('url' => 'venue/' . $value->ID, 'class' => 'pull-right')) }}
-                    {{ Form::hidden('_method', 'DELETE') }}
-                    {{ Form::submit('Delete this Venue', array('class' => 'btn btn-danger')) }}
-                {{ Form::close() }}
-
-                <!-- show the nerd (uses the show method found at GET /nerds/{id} -->
-                <a class="btn btn-small btn-success" href="{{ URL::to('venue/' . $value->ID) }}">Show this Venue</a>
-
-                <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
-                <a class="btn btn-small btn-info" href="{{ URL::to('venue/' . $value->ID . '/edit') }}">Edit this Nerd</a>
-
-            </td>
-        </tr>
-    @endforeach
-    </tbody>
-</table>
-
+	@if(Session::has('map'))      
+	<center>
+		<div style="max-width:900px">
+			<?php echo Session::get('map')['html']; ?> 
+		</div>
+		{{ Form::open(array('url' => 'import', 'class' => 'form-horizontal')) }}
+		<fieldset>		
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="submit"></label>
+				<div class="col-md-4">      
+					{{ Form::submit('Import Excel', array('name'=>'btnImportExcel','class' => 'btn btn-primary', 'style'=> 'margin-top:20px')) }}
+				</div>
+			</div>
+		</fieldset>
+		{{Form::close()}}	
+	</center>
+	@endif
 </div>
-</body>
+@stop
 </html>
 
 
