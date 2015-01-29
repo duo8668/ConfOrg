@@ -6,16 +6,14 @@
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
-			<td>ID</td>
-			<td>Title</td>
+			<td>Submission Title</td>
 			<td>Type</td>
 			<td>Date Submitted</td>
 			<td>Option</td>
 		</tr> 
 		@foreach ($submissions as $sub) 
 			<tr>
-				<td>{{{ $sub->sub_id }}}</td>
-				<td>{{{ $sub->sub_title }}}</td>
+				<td>{{ link_to_route('submission.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
 				<td>
 					@if ($sub->sub_type === 3)
 					    Poster

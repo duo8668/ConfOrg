@@ -46,10 +46,9 @@
         <!-- Topics -->
         <div class="form-group">
             {{ Form::label('sub_topics', 'Topics *') }} 
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '1') }} Physiology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '2') }} Psychology</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '3') }} Psychiatry</label></div>
-            <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', '4') }} Neurology</label></div>
+            @foreach ($topics as $topic) 
+              <div class="checkbox"><label>{{ Form::checkbox('sub_topics[]', $topic->topic_id) }} {{{ $topic->topic_name}}}</label></div>
+            @endforeach
         </div>
 
 

@@ -37,7 +37,7 @@
 	  <div class="col-md-10">{{{ $submission->sub_remarks}}}</div>
 </div><div class="row">
 	  <div class="col-md-2"><strong>File</strong></div>
-	  <div class="col-md-10">[FILE UPLOAD HERE]</div>
+	  <div class="col-md-10">{{ link_to_asset($submission->attachment_path, 'Click Here to view file', $attributes = array('target' => '_blank'), $secure = null) }}</div>
 </div>
 <hr>
 	<div class="table-responsive">

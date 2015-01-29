@@ -22,6 +22,19 @@ class SubmissionController extends \BaseController {
 		return View::make('submission.index')->with('submissions', $submission);
 	}
 
+	/**
+	 * Display the specified submission.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id){
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$keywords = $submission->keywords()->get();
+		$authors = $submission->authors()->get();
+		return View::make('submission.show')->withSubmission($submission)->with('sub_authors', $authors)->withKeyword($keywords);
+	}
+
 
 	/**
 	 * Show the form for creating a new resource.
@@ -30,7 +43,9 @@ class SubmissionController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('submission.create');
+		//TODO: get topics of current conference
+		$topics = ConferenceTopic::all();
+		return View::make('submission.create')->with('topics', $topics);
 	}
 
 	/**
@@ -42,7 +57,7 @@ class SubmissionController extends \BaseController {
 	{
 		// define rules
 		$rules = array(
-				//'attachment_path' => 'required',
+				'attachment_path' => 'required|mime:pdf',
 				'sub_type' => 'required',
 				'sub_title' => 'required|unique:submissions,sub_title',
 				'sub_abstract' => 'required',
@@ -55,9 +70,7 @@ class SubmissionController extends \BaseController {
     		'sub_abstract.required' => 'Please input the <strong>abstract</strong> of your contribution',
     		'sub_topics.required' => 'Please select the <strong>topics</strong> of your contribution',
     		'sub_keywords.required' => 'Please input the <strong>keywords</strong> of your contribution',
-    		//attachment_path.required' => 'Please upload the anonymous version of your contribution file (PDF only)',
-    		'sub_title.alpha_dash' => 'The <strong>title</strong> may only contain letters, numbers, and dashes.',
-    		'sub_abstract.alpha_dash' => 'The <strong>abstract</strong> may only contain letters, numbers, and dashes.',
+    		'attachment_path' => 'Please upload the anonymous version of your contribution file (PDF only)'
 		);
 
 		// pass input to validator
@@ -68,44 +81,54 @@ class SubmissionController extends \BaseController {
 			return Redirect::route('submission.create')->withErrors($validator)->withInput();
 		}
 		// TODO: Input submitting author id a.k.a USER ID
-		$submission = Submission::create(
+		if (Input::file('attachment_path')->isValid()) {
+		
+	      	$destinationPath = 'uploads'; // upload path
+	      	$extension = Input::file('attachment_path')->getClientOriginalExtension(); // getting image extension
+	      	$fileName = rand(111111,999999).'.'.$extension; // renaming image
+	      	Input::file('attachment_path')->move($destinationPath, $fileName); // uploading file to given path
+	     
+	     	$submission = Submission::create(
 			array('sub_type' => Input::get('sub_type'),
 				'sub_title' => Input::get('sub_title'),
 				'sub_abstract' => Input::get('sub_abstract'),
+				'attachment_path' => $destinationPath . '/' . $fileName
 				));
 		
 
-		// inputting keywords
-		$keywords  = Input::get('sub_keywords');
-		$keyword_array = explode(",", $keywords);
-		foreach ($keyword_array as $keyword) {
-			$sub_kw = new Keyword();
-			$sub_kw->keyword_name = $keyword;
-			$submission->keywords()->save($sub_kw);
-		}
+			// inputting keywords
+			$keywords  = Input::get('sub_keywords');
+			$keyword_array = explode(",", $keywords);
+			foreach ($keyword_array as $keyword) {
+				$sub_kw = new Keyword();
+				$sub_kw->keyword_name = $keyword;
+				$submission->keywords()->save($sub_kw);
+			}
 
-		// inputting topics
-		
-		// inputting authors
-		$fname = Input::get('author_fname');
-		$lname = Input::get('author_lname');
-		$org = Input::get('author_org');
-		$email = Input::get('author_email');
-		$ispresenting = Input::get('author_ispresenting');
+			// TODO: inputting topics
+			
+			// inputting authors
+			$fname = Input::get('author_fname');
+			$lname = Input::get('author_lname');
+			$org = Input::get('author_org');
+			$email = Input::get('author_email');
+			$ispresenting = Input::get('author_ispresenting');
 
-		for ($i = 0; $i < (count($fname) - 1); $i++) {
-			$author = new Submission_Author();
-			$author->author_fname = $fname[$i];
-			$author->author_lname = $lname[$i];
-			$author->author_org = $org[$i];
-			$author->author_email = $email[$i];
-			$author->author_ispresenting = $ispresenting[$i];
-			$submission->authors()->save($author);
-		}
+			for ($i = 0; $i < (count($fname) - 1); $i++) {
+				$author = new Submission_Author();
+				$author->first_name = $fname[$i];
+				$author->last_name = $lname[$i];
+				$author->organization = $org[$i];
+				$author->email = $email[$i];
+				$author->is_presenting = $ispresenting[$i];
+				$submission->authors()->save($author);
+			}
 
+			return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Submitted');
 
-		return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Submitted');
-		//return var_dump($authorname);
+		 } else {
+		 	return Redirect::route('submission.create')->withErrors($validator)->withInput()->withMessage('Your file is invalid. Please upload in PDF format!');
+		 }
 	}
 
 	/**
@@ -173,18 +196,6 @@ class SubmissionController extends \BaseController {
 		$sub = Submission::where('sub_id' , '=', $id)->get()->first();
 		$reviews = $sub->reviews()->get();
 		return View::make('submission.reviews')->withSubmission($sub)->withReviews($reviews);
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id){
-		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		return View::make('submission.show')->withSubmission($submission);
 	}
 
 

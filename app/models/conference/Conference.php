@@ -24,6 +24,10 @@ class Conference extends Eloquent {
 		return $this->hasOne('ConferenceRoomSchedule', 'conf_id', 'conf_id');
 	}
 
+	public function ConferenceTopic(){
+		return $this->hasMany('ConferenceTopic', 'conf_id', 'conf_id');
+	}
+
 	public function Room(){
 		$roomSchedule = ConferenceRoomSchedule::where('conf_id' ,'=', $this->conf_id)->first();
 
