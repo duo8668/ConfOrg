@@ -14,13 +14,7 @@ All Conferences
 		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
 		font-size: 14px;
 	}
-
-	#calendar {
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-
+ 
 	.customBorder:hover{ 
 		cursor: pointer;
 	}
@@ -35,8 +29,6 @@ All Conferences
 	
 	$(document).ready(function(){
 
-
-
 		$('.confClass').on('click',function(evt){
 			 
 			$.ajax({
@@ -46,6 +38,7 @@ All Conferences
 			})
 			.done(function(data) {				 
 				$('#displayChannel').html(data);
+				$('html,body').animate({scrollTop: $('body').offset().top}, 550);
 			})
 			.fail(function(xhr,stat,msg) {
 				alert(xhr.responseText);
@@ -77,7 +70,7 @@ All Conferences
 				<div class="panel-heading"><strong><br/></strong></div>
 				<div class="panel-body">
 					<h5> Title : <small> {{ $conf->title }} </small></h5>
-					<h5> Venue : <small> {{ $conf->Room()->Venue()->name }} </small></h5>
+					<h5> Venue : <small> {{ $conf->Room()->Venue()->venue_name }} </small></h5>
 					<h5> Room : <small> {{ $conf->Room()->room_name }} </small></h5>
 					<h5> Begin : <small> {{ $conf->begin_date }}  </small></h5>
 					<h5> End : <small> {{ $conf->end_date }}  </small></h5>

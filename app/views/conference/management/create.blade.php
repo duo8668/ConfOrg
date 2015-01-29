@@ -287,15 +287,7 @@ Add New Conference
 				@endforeach
 
 			</div>
-		</div>
-
-		<div class="form-group">
-			{{ Form::label('lblConfDesc', 'Conference Description', array('class' => 'col-md-4 control-label')) }}
-			<div class="col-md-4">
-				{{ Form::textarea('confDesc',isset($value)?$value:'',array('name'=>'confDesc','id'=>'confDesc','class' => 'form-control','rows'=>3,'cols'=>50)) }}		
-			</div>
-
-		</div>
+		</div> 
 
 		<div class="form-group">
 			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  

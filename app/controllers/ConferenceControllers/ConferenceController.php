@@ -35,6 +35,7 @@ class ConferenceController extends BaseController {
 		return $view;
 	}
 
+
 	public function register()
 	{
 		//
@@ -75,7 +76,7 @@ class ConferenceController extends BaseController {
 	public function theConf()
 	{
 		$selectedConfId = $this->ValidateConference();
- 
+
 		$conf=Conference::where('conf_id','=',$selectedConfId) 
 		->first();
 		
@@ -100,6 +101,21 @@ class ConferenceController extends BaseController {
 		}else{
 			return -9999;
 		}
+	}
+
+	public function manage()
+	{
+		$user = User::where('user_id','=',1)->first();
+		Auth::login($user);
+
+		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
+		->get();
+
+		$conf = Conference::where('conf_id','=',Input::get('conf_id'))->first();
+
+		$view = View::make('conference.management.manage',array('fields'=>$fields,'conf' =>$conf)); 
+
+		return $view;
 	}
 
 	public function conferenceEvents($begin,$end)
@@ -173,7 +189,6 @@ class ConferenceController extends BaseController {
 					$result = DB::transaction(function() use ($data)
 					{ 
 						$createdConf = Conference::create(array('title' => $data['conferenceTitle']
-							,'description' => Input::get('confDesc')
 							,'begin_date' => $data['beginDate']
 							,'end_date' => $data['endDate']
 							,'is_free' => $data['chkIsFree']

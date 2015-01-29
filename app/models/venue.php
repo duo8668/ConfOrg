@@ -4,7 +4,8 @@ class Venue extends Eloquent {
 
 	 
 	protected $table = 'venue';
-	protected $fillable = array('venue_id','name', 'venue_address', 'latitude', 'longtitude');
+	protected $primaryKey = 'venue_id';
+	protected $fillable = array('venue_id','venue_name', 'venue_address', 'latitude', 'longtitude');
 	
 
 	public function Rooms(){

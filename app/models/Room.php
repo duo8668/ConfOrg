@@ -10,7 +10,8 @@ class Room extends Eloquent {
 	protected $guarded = array('room_id');
 
 	public function Venue(){
- 
+
+		//return $this->belongsTo('Venue','venue_id','venue_id');
 		return Venue::where('venue_id','=',$this->venue_id)->first();
 	}
 
