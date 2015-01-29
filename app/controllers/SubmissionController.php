@@ -57,7 +57,7 @@ class SubmissionController extends \BaseController {
 	{
 		// define rules
 		$rules = array(
-				'attachment_path' => 'required|mime:pdf',
+				'attachment_path' => 'required|mimes:pdf',
 				'sub_type' => 'required',
 				'sub_title' => 'required|unique:submissions,sub_title',
 				'sub_abstract' => 'required',
@@ -95,7 +95,7 @@ class SubmissionController extends \BaseController {
 				'attachment_path' => $destinationPath . '/' . $fileName
 				));
 		
-
+		
 			// inputting keywords
 			$keywords  = Input::get('sub_keywords');
 			$keyword_array = explode(",", $keywords);
@@ -104,8 +104,14 @@ class SubmissionController extends \BaseController {
 				$sub_kw->keyword_name = $keyword;
 				$submission->keywords()->save($sub_kw);
 			}
-
-			// TODO: inputting topics
+		
+			// inputting topics
+			$sub_topics = Input::get('sub_topics');
+			foreach ($sub_topics as $sub_topic) {
+				$topic = new Submission_Topic();
+				$topic->topic_id = (int)$sub_topic;
+				$submission->topics()->save($topic);
+			}
 			
 			// inputting authors
 			$fname = Input::get('author_fname');
@@ -126,7 +132,7 @@ class SubmissionController extends \BaseController {
 
 			return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Submitted');
 
-		 } else {
+		} else {
 		 	return Redirect::route('submission.create')->withErrors($validator)->withInput()->withMessage('Your file is invalid. Please upload in PDF format!');
 		 }
 	}

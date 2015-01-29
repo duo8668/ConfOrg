@@ -34,7 +34,7 @@ class Submission extends Eloquent {
 
     public function topics()
     {
-        return $this->hasMany('Submission_Topic');
+        return $this->hasMany('Submission_Topic', 'sub_id', 'sub_id');
     }
 
     public function delete() {
