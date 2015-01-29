@@ -32,7 +32,12 @@ class SubmissionController extends \BaseController {
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
 		$keywords = $submission->keywords()->get();
 		$authors = $submission->authors()->get();
-		return View::make('submission.show')->withSubmission($submission)->with('sub_authors', $authors)->withKeyword($keywords);
+		$topics = $submission->topics()->get();
+
+		return View::make('submission.show')->withSubmission($submission)
+		->with('sub_authors', $authors)
+		->with('sub_topics', $topics)
+		->withKeyword($keywords);
 	}
 
 

@@ -4,10 +4,6 @@
   {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
-<style>
-.form-horizontal .control-label { padding-top: 0px; }
-.narrower { width: 30%; }
-</style>
 @if($errors->any())
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
