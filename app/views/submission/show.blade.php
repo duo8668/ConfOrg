@@ -74,6 +74,7 @@
       </div>
       <div style="margin-bottom:40px;"></div>
 
+      <legend>Authors</legend>
       {{ var_dump($sub_authors) }}
     </div>
   </div>
