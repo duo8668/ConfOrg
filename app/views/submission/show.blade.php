@@ -75,7 +75,9 @@
       <div style="margin-bottom:40px;"></div>
 
       <legend>Authors</legend>
-      {{ var_dump($sub_authors) }}
+      @foreach ($sub_authors as $author) 
+            {{{ $author->last_name }}}, {{{ $author->first_name }}}. {{{ $author->organization }}}. {{{ $author->email }}} <br />
+      @endforeach
     </div>
   </div>
 @stop

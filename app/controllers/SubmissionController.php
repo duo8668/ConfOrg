@@ -32,7 +32,9 @@ class SubmissionController extends \BaseController {
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
 		$keywords = $submission->keywords()->get();
 		$authors = $submission->authors()->get();
-		$topics = $submission->topics()->get();
+		$topics = DB::table('submission_topic')
+		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
 		return View::make('submission.show')->withSubmission($submission)
 		->with('sub_authors', $authors)

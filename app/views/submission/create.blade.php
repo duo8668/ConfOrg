@@ -62,18 +62,18 @@
         <!-- Authors -->
         <div class="form-group" id="author_row">
           <div class="row">
-            {{ Form::label('author_fname', 'First Name', ['class' => 'col-sm-2 text-center']) }} 
-            {{ Form::label('author_lname', 'Last Name', ['class' => 'col-sm-2 text-center']) }} 
-            {{ Form::label('author_org', 'Organization', ['class' => 'col-sm-3 text-center']) }} 
-            {{ Form::label('author_email', 'Email', ['class' => 'col-sm-2 text-center']) }} 
-            {{ Form::label('author_ispresenting', 'Presenting?', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('fname', 'First Name', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('lname', 'Last Name', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('org', 'Organization', ['class' => 'col-sm-3 text-center']) }} 
+            {{ Form::label('email', 'Email', ['class' => 'col-sm-2 text-center']) }} 
+            {{ Form::label('ispresenting', 'Presenting?', ['class' => 'col-sm-2 text-center']) }} 
             {{ Form::label('author_btn', 'More', ['class' => 'col-sm-1 text-center']) }} 
           </div>
           <div class="row">
-            <input class="col-sm-2" name="author_lname[]" type="text" value="" id="author_lname0">
-            <input class="col-sm-2" name="author_fname[]" type="text" value="" id="author_fname0">
-            <input class="col-sm-3" name="author_org[]" type="text" value="" id="author_org0"> 
-            <input class="col-sm-2" name="author_email[]" type="text" value="" id="author_email0">
+            <input class="col-sm-2" name="author_lname[]" type="text" value="" id="author_lname0" required>
+            <input class="col-sm-2" name="author_fname[]" type="text" value="" id="author_fname0" required>
+            <input class="col-sm-3" name="author_org[]" type="text" value="" id="author_org0" required> 
+            <input class="col-sm-2" name="author_email[]" type="email" value="" id="author_email0" required>
             <div class="radio-inline col-sm-2 text-center"><input name="author_ispresenting[]]" type="checkbox" value="1" id="author_ispresenting0"> Yes</div>
             <a class="btn btn-default btn-xs col-sm-1" id="addauthors" name="addauthors" role="button" onclick="addRow(this.form);">Add More</a>
           </div>
