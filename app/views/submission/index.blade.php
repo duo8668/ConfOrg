@@ -26,7 +26,7 @@
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 				<td>
 					{{ link_to_route('submission.reviews', 'Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}
-					{{ link_to_route('submission.edit', 'View/Edit', [$sub->sub_id], ['class' => 'btn btn-success btn-xs'])}}
+					{{ link_to_route('submission.show', 'View/Edit', [$sub->sub_id], ['class' => 'btn btn-success btn-xs'])}}
 					{{ Form::model($sub, ['route' => ['submission.destroy', $sub->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
 						{{ Form::button('Withdraw', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs'])}}
 					{{ Form::close() }}

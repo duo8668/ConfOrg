@@ -55,7 +55,7 @@
         <!-- Keywords -->
         <div class="form-group">
           {{ Form::label('sub_keywords', 'Keywords *') }}     
-          {{ Form::text('sub_keywords', 'Separated by commas, e.g. apples,oranges,grapes', array('class' => 'form-control')) }}
+          {{ Form::text('sub_keywords', '', array('class' => 'form-control', 'placeholder' => 'Separated by commas, e.g. apples,oranges,grapes')) }}
         </div>
         <hr>
         <legend>Authors</legend>
@@ -96,7 +96,7 @@
     </div>
 
     <div class="row">  
-      <div class="col-lg-12">
+      <div class="col-md-8 col-md-offset-2">
         <div class="panel panel-default">
           <div class="panel-body">
             <!-- Button -->        

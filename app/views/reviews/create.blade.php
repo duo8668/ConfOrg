@@ -39,7 +39,7 @@
       <div class="row">
         <label class="col-md-3 control-label">Submission Title</label>       
         <div class="col-md-9">
-        {{{ $submission->sub_title }}}
+          <strong>{{{ $submission->sub_title }}}</strong>
         </div>
       </div>
 
@@ -55,7 +55,9 @@
       <div class="row">
         <label class="col-md-3 control-label">Topics</label> 
         <div class="col-md-9">
-          [TOPICS HERE]
+          @foreach ($sub_topics as $topic) 
+            {{{ $topic->topic_name }}}
+          @endforeach
         </div>
       </div>
 
@@ -63,7 +65,9 @@
       <div class="row">
         <label class="col-md-3 control-label">Keywords</label>    
         <div class="col-md-9">
-          [KEYWORDS HERE]
+          @foreach ($keyword as $word) 
+            {{{ $word->keyword_name }}}
+          @endforeach
         </div>
       </div>
 
@@ -79,9 +83,10 @@
       <div class="row">
         <label class="col-md-3 control-label">File Upload</label> 
         <div class="col-md-9">
-          No file is uploaded
+          {{ link_to_asset($submission->attachment_path, 'View File', $attributes = array('target' => '_blank'), $secure = null) }}
         </div>
       </div>
+
       <div style="margin-bottom:40px;"></div>
     {{ Form::open(array('route' => 'review.store', 'class' => 'form-horizontal')) }}
     <fieldset>
@@ -133,16 +138,17 @@
     </fieldset>
 
     <!-- Submit Button -->
+    <div style="margin-bottom:20px;"></div>
     <div class="row">  
-      <div class="col-lg-12">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            {{ Form::hidden('hidden_sub_id', $submission->sub_id) }}
-            {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-lg btn-block')) }}
-          </div>
-        </div>
+      <div class="col-md-6">
+        {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-lg btn-block'])}}
+      </div>
+      <div class="col-md-6">
+        {{ Form::hidden('hidden_sub_id', $submission->sub_id) }}
+        {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-lg btn-block')) }}
       </div>
     </div> 
+    <div style="margin-bottom:40px;"></div>
     {{ Form::close() }}
   </div>
 </div>

@@ -28,17 +28,18 @@ class SubmissionController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id){
+	public function show($id) 
+	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
 		$keywords = $submission->keywords()->get();
 		$authors = $submission->authors()->get();
-		$topics = DB::table('submission_topic')
+		$sub_topics = DB::table('submission_topic')
 		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
 		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
 		return View::make('submission.show')->withSubmission($submission)
 		->with('sub_authors', $authors)
-		->with('sub_topics', $topics)
+		->with('sub_topics', $sub_topics)
 		->withKeyword($keywords);
 	}
 
@@ -76,8 +77,8 @@ class SubmissionController extends \BaseController {
     		'sub_title.required' => 'Please input the <strong>title</strong> of your contribution',
     		'sub_abstract.required' => 'Please input the <strong>abstract</strong> of your contribution',
     		'sub_topics.required' => 'Please select the <strong>topics</strong> of your contribution',
-    		'sub_keywords.required' => 'Please input the <strong>keywords</strong> of your contribution',
-    		'attachment_path' => 'Please upload the anonymous version of your contribution file (PDF only)'
+    		'attachment_path' => 'Please upload the anonymous version of your contribution file (PDF only)',
+    		'sub_keywords.required' => 'Please input the <strong>keywords</strong> of your contribution'
 		);
 
 		// pass input to validator
@@ -99,6 +100,7 @@ class SubmissionController extends \BaseController {
 			array('sub_type' => Input::get('sub_type'),
 				'sub_title' => Input::get('sub_title'),
 				'sub_abstract' => Input::get('sub_abstract'),
+				'sub_remarks' => Input::get('sub_remarks'),
 				'attachment_path' => $destinationPath . '/' . $fileName
 				));
 		
@@ -127,7 +129,7 @@ class SubmissionController extends \BaseController {
 			$email = Input::get('author_email');
 			$ispresenting = Input::get('author_ispresenting');
 
-			for ($i = 0; $i < (count($fname) - 1); $i++) {
+			for ($i = 0; $i < count($fname); $i++) {
 				$author = new Submission_Author();
 				$author->first_name = $fname[$i];
 				$author->last_name = $lname[$i];
@@ -153,9 +155,34 @@ class SubmissionController extends \BaseController {
 	public function edit($id)
 	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		return View::make('submission.edit')->withSubmission($submission);
+		$keywords = $submission->keywords()->get();
+
+		//TODO: get topics of current conference
+		$conf_topics = ConferenceTopic::all();
+		$topics = DB::table('submission_topic')
+		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+		->select('submission_topic.topic_id')->where('submission_topic.sub_id', '=', $id)->get();
+
+		//set just the topic ID of selected topic into array, for checking purpose
+		$selected_topic = array();
+		foreach ($topics as $topic) {
+			array_push($selected_topic, $topic->topic_id);
+		}
+
+		return View::make('submission.edit')->withSubmission($submission)
+		->with('sub_topics', $selected_topic)
+		->with('conf_topics', $conf_topics)
+		->withKeyword($keywords);
 	}
 
+	public function edit_authors($id)
+	{
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$authors = $submission->authors()->get();
+
+		return View::make('submission.edit_authors')->withSubmission($submission)
+		->with('authors', $authors);
+	}
 
 	/**
 	 * Update the specified resource in storage.
@@ -167,24 +194,97 @@ class SubmissionController extends \BaseController {
 	{
 		// define rules
 		$rules = array(
-				'sub_title' => array('required')
+				'sub_type' => 'required',
+				'sub_title' => 'required',
+				'sub_abstract' => 'required',
+				'sub_topics' => 'required'
 			);
 
+		$messages = array(
+    		'sub_title.required' => 'Please input the <strong>title</strong> of your contribution',
+    		'sub_abstract.required' => 'Please input the <strong>abstract</strong> of your contribution',
+    		'sub_topics.required' => 'Please select the <strong>topics</strong> of your contribution'
+		);
+
 		// pass input to validator
-		$validator = Validator::make(Input::all(), $rules);
+		$validator = Validator::make(Input::all(), $rules, $messages);
 
 		// test if input fails
 		if ($validator->fails()) {
-			return Redirect::route('submission.edit')->withErrors($validator)->withInput();
+			return Redirect::route('submission.edit', $sub_id)->withErrors($validator)->withInput();
 		}
 
-		$sub_title = Input::get('sub_title');
-		$submission = Submission::where('sub_id' , '=', $sub_id);
-		$submission->sub_title = $name;
-		$submission->update();
-		return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Updated');
+		//updating submission object
+		$submission = Submission::where('sub_id' , '=', $sub_id)->get()->first();
+		$submission->sub_type = Input::get('sub_type');
+		$submission->sub_title = Input::get('sub_title');
+		$submission->sub_abstract = Input::get('sub_abstract');
+		$submission->sub_remarks = Input::get('sub_remarks');
+		$submission->save();
+
+		// updating keywords
+		//delete existing keywords
+		$submission->keywords()->delete();
+		//add new keywords
+		$keywords  = Input::get('sub_keywords');
+		$keyword_array = explode(",", $keywords);
+		foreach ($keyword_array as $keyword) {
+			$sub_kw = new Keyword();
+			$sub_kw->keyword_name = $keyword;
+			$submission->keywords()->save($sub_kw);
+		}
+	
+		// updating topics
+		// delete existing topics
+		$submission->topics()->delete();
+		//add new topics
+		$sub_topics = Input::get('sub_topics');
+		foreach ($sub_topics as $sub_topic) {
+			$topic = new Submission_Topic();
+			$topic->topic_id = (int)$sub_topic;
+			$submission->topics()->save($topic);
+		}
+
+		//if a new file is uploaded
+		if (Input::hasFile('attachment_path')) {
+
+			$rules = array(
+				'attachment_path' => 'required|mimes:pdf'
+			);
+
+			$messages = array(
+	    		'attachment_path' => 'Please upload the anonymous version of your contribution file (PDF only)'
+			);
+
+			// pass input to validator
+			$validator = Validator::make(Input::only('attachment_path'), $rules, $messages);
+
+			// test if input fails
+			if ($validator->fails()) {
+				return Redirect::route('submission.edit', $sub_id)->withErrors($validator)->withInput();
+			}
+
+		    //upload new file
+			$destinationPath = 'uploads'; // upload path
+	      	$extension = Input::file('attachment_path')->getClientOriginalExtension(); // getting file extension
+	      	$fileName = rand(111111,999999).'.'.$extension; // renaming file
+	      	Input::file('attachment_path')->move($destinationPath, $fileName); // uploading file to given path
+
+		    //delete old file
+	      	File::delete($submission->attachment_path);
+
+		    //update database
+	      	$submission->attachment_path = $destinationPath . '/' . $fileName;
+	      	$submission->save();
+		}
+
+		return Redirect::route('submission.show', $sub_id)->withMessage('Thank you! Your Contribution Information has been Updated');
 	}
 
+	public function update_authors($sub_id)
+	{
+		dd('hello world');
+	}
 
 	/**
 	 * Remove the specified resource from storage.
@@ -194,7 +294,13 @@ class SubmissionController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		$submission = Submission::where('sub_id' , '=', $id)->delete();
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$submission->topics()->delete();
+		$submission->keywords()->delete();
+		$submission->authors()->delete();
+		File::delete($submission->attachment_path);
+		$submission->delete();
+
 		return Redirect::route('submission.index')->withMessage('Submission withdrawn!');
 	}
 

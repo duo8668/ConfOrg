@@ -3,7 +3,7 @@ class Submission extends Eloquent {
 
 	protected $table = 'submissions';
 	protected $primaryKey = 'sub_id';
-	protected $fillable = array('sub_type', 'sub_title', 'sub_abstract', 'attachment_path');
+	protected $fillable = array('sub_type', 'sub_title', 'sub_abstract', 'sub_remarks', 'attachment_path');
 
 
     /*public static function boot()
@@ -38,7 +38,7 @@ class Submission extends Eloquent {
     }
 
     public function delete() {
-	 
+	   
         foreach($this->keywords as $keyword)
         {
             $keyword->delete();
@@ -48,6 +48,7 @@ class Submission extends Eloquent {
         {
             $review->delete();
         }
+        echo 'submission_deleted';
         return parent::delete();
 	}
 
