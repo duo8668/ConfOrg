@@ -17,7 +17,8 @@ class SubmissionController extends \BaseController {
 	 */
 	public function index()
 	{
-		//TODO: get all submission submitted by current user
+		//TODO: get all submission submitted by current user for current conference
+
 		$submission = Submission::all();
 		return View::make('submission.index')->with('submissions', $submission);
 	}
@@ -30,6 +31,7 @@ class SubmissionController extends \BaseController {
 	 */
 	public function show($id) 
 	{
+		//TODO: only allows user to see their own submissions
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
 		$keywords = $submission->keywords()->get();
 		$authors = $submission->authors()->get();
@@ -135,7 +137,12 @@ class SubmissionController extends \BaseController {
 				$author->last_name = $lname[$i];
 				$author->organization = $org[$i];
 				$author->email = $email[$i];
-				$author->is_presenting = $ispresenting[$i];
+				if (!empty($ispresenting[$i])) {
+					$author->is_presenting = $ispresenting[$i];
+				} else {
+					$author->is_presenting = '0';
+				}
+				
 				$submission->authors()->save($author);
 			}
 
