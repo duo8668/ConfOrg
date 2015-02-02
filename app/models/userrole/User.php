@@ -14,9 +14,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $fillable = ['firstname','lastname','email','email_temp','password','password_temp','remember_token','code','active','created_at','updated_at'];
 	protected $guarded = array('user_id');
 
-public function profile(){
-  return $this->hasOne('Profile');
-}
+public function profile()
+    {
+        return $this->hasOne('Profile');
+    }
+
 //1st arguement conference id
 //2nd arguement rolename
 //@if(Auth::user()->hasConfRole('1','reviewer'))  
