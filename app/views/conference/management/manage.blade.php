@@ -14,6 +14,8 @@ Manage conference :
 
 <link href="{{ asset('css/summernote.css') }}" rel="stylesheet" type="text/css">
 
+<link href="{{ asset('css/bootstrap-tagsinput.css') }}" rel="stylesheet" type="text/css">
+
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
 
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
@@ -26,6 +28,10 @@ Manage conference :
 
 <script src="{{ asset('js/summernote.js') }}"></script>
 
+<script src="{{ asset('js/bootstrap3-typeahead.js') }}"></script>
+
+<script src="{{ asset('js/bootstrap-tagsinput.js') }}"></script>
+ 
 <script src="{{ asset('js/conferencecontroller.js') }}"></script>
 
 <style>
@@ -40,32 +46,11 @@ Manage conference :
 	.date {
 		background-color: white;
 	}
-	
 
-	ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
+	.bootstrap-tagsinput .tag{
+		font-size: 14px;
 	}
 
-	.list li {
-		position: relative;
-		padding-bottom: 10px;
-	}
-
-	#frmcreateconf .checkbox label {
-		padding-left: 0;
-	}
-
-	#frmcreateconf .datecontainer .form-control-feedback {
-		top: 0;
-		right: -15px;
-	}
-
-	#frmcreateconf .venuecontainer .form-control-feedback {
-		top: 0;
-		right: -15px;
-	}
 </style>
 
 @stop
@@ -73,9 +58,14 @@ Manage conference :
 
 <style>
 
-	.customborder:hover{ 
+	.customborder:hover, .delStaff:hover{ 
 		cursor: pointer;
 	}
+
+	.delStaff:active{ 
+		background-color: #780000 ;
+	}
+
 	.divider {
 		height: 2px;
 		margin: 9px 0;
@@ -83,7 +73,7 @@ Manage conference :
 		background-color: #e5e5e5;
 	}
 
-	.btnEditDesc{
+	.btnEdit{
 		padding: 1px 20px;
 	}
 	.panel-heading {
@@ -103,6 +93,9 @@ Manage conference :
 	}	
 	.conferencebody .date{
 		color:#FF7321;
+	}
+	.staffInfo{
+		padding:5px 5px;
 	}
 </style>
 
@@ -126,6 +119,29 @@ Manage conference :
 				,show:true }); 
 		});
 
+		$('#btnStaffEdit').on('click',function(e){
+			// raise ajax request here and set text
+
+			$('#staffEditor').modal({
+				keyboard: false
+				,backdrop:'static'
+				,show:true }); 
+		});
+
+
+		$('#staffEditor').modal({
+			keyboard: false
+			,backdrop:'static'
+			,show:true }); 
+
+		$('[name=staffName]').tagsinput({
+			typeahead: {                  
+				source: function(query) {
+					//alert(query);
+					return $.get('http://someservice.com');
+				}
+			}
+		});
 		$('#btnSaveDescription').on('click',function(e){
 			alert($('#descriptionEditor').code());
 		});
@@ -192,6 +208,7 @@ Manage conference :
 			</div>
 			<div class="divider"></div>
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+				<!-- Description  -->
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="tab" id="headingOne">
 						<h4 class="panel-title">
@@ -202,7 +219,7 @@ Manage conference :
 					</div>
 					<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-xs pull-right btnEditDesc','id'=>'btnEditDescription')) }}
+							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-xs pull-right btnEdit','id'=>'btnEditDescription')) }}
 							<br/>
 							<div id='descriptionContent'>
 								Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf  
@@ -210,47 +227,76 @@ Manage conference :
 						</div>
 					</div>
 				</div>
+				<!-- Staff List  -->
 				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" role="tab" id="headingTwo">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseStaff" aria-expanded="true" aria-controls="v" role="tab" id="headingStaff">
+						<h4 class="panel-title">
+							<a class="collapsed">
+								Staff List
+							</a>
+						</h4>
+					</div>
+					<div id="collapseStaff" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingStaff">
+						<div class="panel-body">
+							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-xs pull-right btnEdit','id'=>'btnStaffEdit')) }}
+							<br/>
+							<table class="table table-striped">
+								<tr>
+									<td class="">
+										<b>Staff :</b>
+									</td>
+									<td>
+										@foreach($allStaffs as $staff )
+										<span  class="staffInfo label label-info">
+											{{ $staff->firstname }},{{ $staff->lastname }}
+										</span>
+										@endforeach
+									</td>
+								</tr>
+							</table>						 
+						</div>
+					</div>
+				</div>
+				<!-- Review Panel List  -->
+				<div class="panel panel-default">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseReviewPanel" aria-expanded="true" aria-controls="collapseReviewPanel" role="tab" id="headingReviewPanel">
 						<h4 class="panel-title">
 							<a class="collapsed">
 								Review Panel List
 							</a>
 						</h4>
 					</div>
-					<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+					<div id="collapseReviewPanel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingReviewPanel">
 						<div class="panel-body">
-							Review Panel List
-
-							Review Panel List
-
-							Review Panel List
+							Current Review Panel List							 
 						</div>
 					</div>
 				</div>
+				<!-- Submission  -->
 				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="tab" id="headingThree">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseSubmission" aria-expanded="false" aria-controls="collapseSubmission" role="tab" id="headingSubmissione">
 						<h4 class="panel-title">
 							<a class="collapsed">
 								Submission List
 							</a>
 						</h4>
 					</div>
-					<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+					<div id="collapseSubmission" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSubmission">
 						<div class="panel-body">
 							Submission List
 						</div>
 					</div>
 				</div>
+				<!-- Participant  -->
 				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" role="tab" id="headingFour">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseParticipants" aria-expanded="false" aria-controls="collapseParticipants" role="tab" id="headingParticipants">
 						<h4 class="panel-title">
 							<a class="collapsed">
 								Participant List
 							</a>
 						</h4>
 					</div>
-					<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+					<div id="collapseParticipants" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingParticipants">
 						<div class="panel-body">
 							Participant List
 						</div>
@@ -261,6 +307,7 @@ Manage conference :
 	</div>
 
 </div>
+<!-- Description -->
 <div class="col-md-12 modal fade" id="descriptionEditor" tabindex="-1" role="dialog" aria-labelledby="descriptionEditor" aria-hidden="true">
 	<div class="col-md-12 modal-content">
 		<div class="modal-header">
@@ -276,6 +323,71 @@ Manage conference :
 		<div class="modal-footer">
 			{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
 			{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveDescription')) }}
+		</div>
+	</div>
+</div>
+<!-- Staff Panel -->
+<div class="col-md-12 modal fade" id="staffEditor" tabindex="-1" role="dialog" aria-labelledby="staffEditor" aria-hidden="true">
+	<div class="col-md-12 modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title"  id="staffEditor">Edit Staff for : </h4>
+		</div>
+		<div class="modal-body">
+			<fieldset>
+				<div class = 'form-horizontal'>
+					<div class="form-group">
+						{{ Form::label('lblStaff', 'Staff Name :', array('class' => 'col-md-4 control-label')) }}       
+						<div class="col-md-4">
+							{{ Form::text('staffName',isset($value)?$value:'',array('name'=>'staffName','id'=>'staffName', 'class' => 'form-control necessary',  'data-provide'=>'typeahead', 'autocomplete' =>'off'))}}
+						</div>
+					</div>
+					<div class="form-group">
+						{{ Form::label('lblCurrentStaff', 'Current List :', array('class' => 'col-md-4 control-label')) }} 
+						<div class="col-md-4">
+							<ul class="list-group">
+								@foreach($allStaffs as $staff )
+								<li class="list-group-item">
+									{{ $staff->firstname }},{{ $staff->lastname }}
+									<span class=" delStaff badge" style="background-color:red" id='btnDeleteStaff_{{ $staff->user_id }}'>
+										<span class="glyphicon glyphicon-remove">
+
+										</span>
+
+									</span>
+								</li>
+								@endforeach
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+
+			</fieldset>				
+			
+		</div>
+		<div class="modal-footer">
+			{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
+			{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveStaff')) }}
+		</div>
+	</div>
+</div>
+<!-- Review Panel -->
+<div class="col-md-12 modal fade" id="reviewPanelEditor" tabindex="-1" role="dialog" aria-labelledby="reviewPanelEditor" aria-hidden="true">
+	<div class="col-md-12 modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title"  id="reviewPanelEditor">Edit Review Panel for : </h4>
+		</div>
+		<div class="modal-body">				
+			<div class="form-group">
+				<textarea class="input-block-level" id="reviewpanel" name="content" rows="18">
+				</textarea>
+			</div>
+		</div>
+		<div class="modal-footer">
+			{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
+			{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveReviewPanel')) }}
 		</div>
 	</div>
 </div>

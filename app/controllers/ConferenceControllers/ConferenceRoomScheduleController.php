@@ -49,26 +49,27 @@ class ConferenceRoomScheduleController extends BaseController {
 
 		//select(DB::raw('DATE_FORMAT(date_start, "%Y-%m-%d") as start ,DATE_FORMAT(date_end,"%Y-%m-%d") as end'))
 
-		if(Utility::checkIsAValidDate(Input::get('date_start')) && Utility::checkIsAValidDate(Input::get('date_end'))){
+		if(Input::has('date_start') && Input::has('date_end'))
+			if(Utility::checkIsAValidDate(Input::get('date_start')) && Utility::checkIsAValidDate(Input::get('date_end'))){
 
-			$used = ConferenceRoomSchedule::where('date_start','<',date ('Y-m-d',strtotime(Input::get('date_end'))))
-			->where('date_end','>',date ('Y-m-d',strtotime(Input::get('date_start'))))
-			->lists(DB::raw('room_id'));
+				$used = ConferenceRoomSchedule::where('date_start','<',date ('Y-m-d',strtotime(Input::get('date_end'))))
+				->where('date_end','>',date ('Y-m-d',strtotime(Input::get('date_start'))))
+				->get();
 
-			if(count($used) > 0 ){
-				$available = Room::whereNotIn('room_id',$used)
-				->select('room_id', 'room_name')
-				->get();
-			}else{
-				$available = Room::select('room_id', 'room_name')
-				->get();
+				$listUsed = $used->lists(DB::raw('room_id'));
+
+
+				if(count($listUsed) > 0 ){
+					$available = Room::whereNotIn('room_id',$used)
+					->select('room_id', 'room_name')
+					->get();
+				}else{
+					$available = Room::select('room_id', 'room_name')
+					->get();
+				}
+				return $available;
 			}
 
-
-// dd(DB::getQueryLog());
-			return $available;
+			return NULL;
 		}
-
-		return NULL;
 	}
-}

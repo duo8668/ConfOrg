@@ -1,4 +1,5 @@
 <?php
+
 class ConferenceUserRole extends Eloquent {
 
 	protected $table = 'confuserrole';
@@ -12,10 +13,10 @@ class ConferenceUserRole extends Eloquent {
 		return $this->belongsTo('Role', 'role_id', 'role_id');
 	}
 
-	public function User(){
-		return $this->belongsTo('Role', 'user_id', 'user_id');
+	public function user(){
+		return $this->belongsTo('User', 'user_id', 'user_id');
 	}
-
+ 
 	public function Conference(){
 		return $this->belongsTo('Conference', 'conf_id', 'ConfId');
 	}

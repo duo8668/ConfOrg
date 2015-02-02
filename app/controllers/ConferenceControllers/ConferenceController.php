@@ -2,7 +2,7 @@
 
 use Illuminate\Support\MessageBag;
 
-class ConferenceController extends BaseController {
+class ConferenceController extends \BaseController {
 
 	/*
 	|--------------------------------------------------------------------------
@@ -23,10 +23,7 @@ class ConferenceController extends BaseController {
 	}
 
 	public function create()
-	{
-		$user = User::where('user_id','=',1)->first();
-		Auth::login($user);
-
+	{ 
 		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
 		->get();
 
@@ -104,16 +101,20 @@ class ConferenceController extends BaseController {
 	}
 
 	public function manage()
-	{
-		$user = User::where('user_id','=',1)->first();
-		Auth::login($user);
-
+	{ 
 		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
 		->get();
 
+		$confUsers = ConferenceUserRole::where('conf_id','=',Input::get('conf_id'))
+		->where('role_id','=',Role::where('rolename','=','conference_chair')->first()->role_id)
+		->select(DB::raw('user_id'))
+		->lists('user_id');
+
+		$allStaffs = User::whereIn('user_id',$confUsers)->get();
+	 
 		$conf = Conference::where('conf_id','=',Input::get('conf_id'))->first();
 
-		$view = View::make('conference.management.manage',array('fields'=>$fields,'conf' =>$conf)); 
+		$view = View::make('conference.management.manage',array('fields'=>$fields,'conf' =>$conf,'allStaffs'=>$allStaffs )); 
 
 		return $view;
 	}
@@ -182,25 +183,33 @@ class ConferenceController extends BaseController {
 				return array('invalidFields'=>$validator->errors()); 
 
 			}else{
-				//$isFree = $data['chkIsFree'] === 'true'? true: false;		 
 
 				try
 				{  
-					$result = DB::transaction(function() use ($data)
+					$user =Auth::user();
+
+					$result = DB::transaction(function() use ($data,$user)
 					{ 
+
+						$role_id = Role::where('rolename','=','conference_chair')->first()->role_id;
+
 						$createdConf = Conference::create(array('title' => $data['conferenceTitle']
 							,'begin_date' => $data['beginDate']
 							,'end_date' => $data['endDate']
 							,'is_free' => $data['chkIsFree']
-							,'created_by' => Auth::user()->user_id));
+							,'created_by' => $user->user_id));
 
 						$confRoom = ConferenceRoomSchedule::create(
 							array('conf_id' => $createdConf->conf_id
 								,'room_id' => $data['venue']
 								,'date_start' => $data['beginDate']
 								,'date_end' => $data['endDate']
-								,'created_by' => Auth::user()->user_id)
+								,'created_by' => $user->user_id)
 							);
+
+						$confUserRole = ConferenceUserRole::create(array('user_id' => $user->user_id
+							,'role_id' => $role_id
+							, 'conf_id' => $createdConf->conf_id ));
 
 						return array('createdConf'=>$createdConf,'confRoom'=>$confRoom);
 					});					

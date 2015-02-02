@@ -12,6 +12,10 @@ File Encoding         : 65001
 
 Date: 2015-01-13 07:40:21
 */
+DROP DATABASE if EXISTS `conforg_db`;
+
+create DATABASE `conforg_db`;
+USE `conforg_db`;
 
 SET FOREIGN_KEY_CHECKS=0;
 

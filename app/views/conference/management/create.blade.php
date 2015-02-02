@@ -38,7 +38,6 @@ Add New Conference
 		background-color: white;
 	}
 	
-
 	ul {
 		margin: 0;
 		padding: 0;
@@ -94,7 +93,7 @@ Add New Conference
 			if(beginDate != undefined && endDate != undefined){
 				$.ajax({
 					type: "GET",
-					url : "/conference/roomSchedule/availableRooms" ,
+					url : "/laravel/public/conference/roomSchedule/availableRooms" ,
 					data : {date_start:beginDate,date_end:endDate}
 				})
 				.done(function(data) {
@@ -241,7 +240,21 @@ Add New Conference
                 }
                 $('#modalMessage').html(message);
                 setTimeout(function(){$('#resultModal').modal('hide');},1000);
-            }, 'json');
+            }, 'json')
+            .fail(function(){
+
+            	var message = 'System fatal error, please contact your System Administrator ...';
+            	$('#resultModal').modal({
+            		keyboard: false
+            		,backdrop:'static' }); 
+
+            	$('#modalMessage').html(message);
+            	setTimeout(function(){$('#resultModal').modal('hide');},1000);
+            	
+            }).always(function(){
+
+            });
+
         }).find('input[name="chkField[]"]')
             // Init iCheck elements
             .iCheck({
