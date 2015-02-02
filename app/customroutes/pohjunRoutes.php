@@ -1,11 +1,4 @@
 <?php
-
-
-Route::get('/users/profile/{user_id}',array(
-	'as' =>	'users-profile',
-	'uses' => 'ProfileController@user'
-	));
-
 /*
 | testing homepage
 */
@@ -51,14 +44,13 @@ Route::group(array('before' => 'guest'),function(){
 	});
 
 		
-
+		/*
+		| Recover account (GET)
+		*/
 		Route::get('/users/recover/{code}',array(
 			'as' =>	'users-recover',
 			'uses' => 'UsersController@getRecover'
 			));
-
-		
-
 
 		/*
 		| Forget Password (GET)
@@ -85,13 +77,88 @@ Route::group(array('before' => 'guest'),function(){
 			'uses' => 'UsersController@getCreate'
 			));
 
-		//activate account
+		/*
+		| Activate account (GET)
+		*/
 		Route::get('/users/activate/{code}',array(
 			'as' => 'users-activate',
 			'uses' => 'UsersController@getActivate'
 			));
 
-});
+		/*
+		| Facebook login (GET)
+		*/
+		Route::get('login/fb', function() {
+    	$facebook = new Facebook(Config::get('facebook'));
+    	$params = array(
+        'redirect_uri' => url('/login/fb/callback'),
+        'scope' => 'email',
+    	);
+    	return Redirect::to($facebook->getLoginUrl($params));
+		});
+
+		/*
+		| Facebook login upon approval (GET)
+		*/
+		Route::get('login/fb/callback', function() {
+	    $code = Input::get('code');
+	    if (strlen($code) == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error communicating with Facebook');
+
+	    $facebook = new Facebook(Config::get('facebook'));
+	    $uid = $facebook->getUser();
+
+	    if ($uid == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error');
+
+	    $me = $facebook->api('/me');
+		$check_email_exist = DB::table('users')
+  			->where('email','=',$me['email'])
+ 			->first();
+
+ 		$profile = Profile::whereUid($uid)->first();
+
+ 		//check if account already created by normal way
+ 		if(empty($check_email_exist)){
+ 			//if it is not created
+		    if (empty($profile)) {
+
+	        $user = new User;
+	        $user->firstname = $me['first_name'];
+	        $user->lastname = $me['last_name'];
+	        $user->email = $me['email'];
+	        $user->active = '1';
+	        $user->save();
+
+	        $profile = new Profile();
+	        $profile->uid = $uid;
+	        $profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
+	        $profile->bio = 'Hi! Thanks for visiting';
+	        $profile->fb_email = $me['email'];
+	        $profile = $user->profile()->save($profile);
+	        $profile->access_token = $facebook->getAccessToken();
+    		$profile->save();
+
+	    	$user = $profile->user;
+	    	Auth::login($user);
+			return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
+	    	} 			
+ 		}
+ 		//if it is created
+ 		else{
+ 			$compare = $me['email'];
+	        $user = User::where('email','=',$compare)->first();
+	        $profile = Profile::where('user_id','=', $user->user_id)->first();
+	        $profile->uid = $uid;
+	        $profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
+	        $profile->bio = 'Hi! Thanks for visiting';
+	        $profile->fb_email = $me['email'];
+	        $profile->access_token = $facebook->getAccessToken();
+    		$profile->save(); 
+    		Auth::login($user);
+			return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
+ 				
+ 		}
+		});//Facebook login upon approval (GET)
+});//unath group
 
 /*
 | Authenticated group
@@ -99,7 +166,7 @@ Route::group(array('before' => 'guest'),function(){
 
 Route::group(array('before' => 'auth'),function(){
 	
-/*
+	/*
 	| CRSF Protection Group 
 	*/
 	Route::group(array('before' => 'crsf'),function(){
@@ -109,7 +176,15 @@ Route::group(array('before' => 'auth'),function(){
 		*/
 		Route::post('/users/change-password',array(
 			'as' => 'users-change-password-post',
-			'uses' => 'UsersController@postChangePassword'
+			'uses' => 'ProfilesController@postChangePassword'
+			));
+
+		/*
+		| Input Password (Post)
+		*/
+		Route::post('/users/input-password',array(
+			'as' => 'users-input-password-post',
+			'uses' => 'ProfilesController@postInputPassword'
 			));
 
 		/*
@@ -117,7 +192,7 @@ Route::group(array('before' => 'auth'),function(){
 		*/
 		Route::post('/users/request-email',array(
 			'as' => 'users-request-email-post',
-			'uses' => 'UsersController@postRequestEmail'
+			'uses' => 'ProfilesController@postRequestEmail'
 			));
 
 		/*
@@ -128,6 +203,53 @@ Route::group(array('before' => 'auth'),function(){
 			'uses' => 'UsersController@postInviteFriend'
 			));
 
+		/*
+		| Change location (Post)
+		*/
+		Route::post('/users/change-location',array(
+			'as' => 'users-change-location-post',
+			'uses' => 'ProfilesController@postChangeLocation'
+			));
+
+		/*
+		| Change first name (Post)
+		*/
+		Route::post('/users/change-firstname',array(
+			'as' => 'users-change-firstname-post',
+			'uses' => 'ProfilesController@postChangeFirstName'
+			));
+
+		/*
+		| Change last name (Post)
+		*/
+		Route::post('/users/change-lastname',array(
+			'as' => 'users-change-lastname-post',
+			'uses' => 'ProfilesController@postChangeLastName'
+			));
+
+		/*
+		| Change bio (Post)
+		*/
+		Route::post('/users/change-bio',array(
+			'as' => 'users-change-bio-post',
+			'uses' => 'ProfilesController@postChangeBio'
+			));
+
+		/*
+		| Remove fb (Post)
+		*/
+		Route::post('/users/remove-fb',array(
+			'as' => 'users-remove-fb-post',
+			'uses' => 'ProfilesController@postRemoveFb'
+			));		
+
+		/*
+		| Add fb (Post)
+		*/
+		Route::post('/users/add-fb',array(
+			'as' => 'users-add-fb-post',
+			'uses' => 'ProfilesController@postAddFb'
+			));		
 	});
 		/*
 		| Invite Friend (GET)
@@ -138,22 +260,6 @@ Route::group(array('before' => 'auth'),function(){
 			));
 
 		/*
-		| Request Email (GET)
-		*/
-		Route::get('/users/request-email',array(
-			'as' => 'users-request-email',
-			'uses' => 'UsersController@getRequestEmail'
-			));
-
-		/*
-		| Change Password (GET)
-		*/
-		Route::get('/users/change-password',array(
-			'as' => 'users-change-password',
-			'uses' => 'UsersController@getChangePassword'
-			));
-
-		/*
 		| Sign Out (GET)
 		*/
 		Route::get('/users/sign-out',array(
@@ -161,11 +267,28 @@ Route::group(array('before' => 'auth'),function(){
 			'uses' => 'UsersController@getSignOut'
 			));
 
+		/*
+		| Change Email (GET)
+		*/
 		Route::get('/users/change-email/{code}',array(
 			'as' =>	'users-change-email',
-			'uses' => 'UsersController@getChangeEmail'
+			'uses' => 'ProfilesController@getChangeEmail'
 			));
 
-		
+		/*
+		| Profile (GET)
+		*/
+		Route::get('/users/{profile}',array(
+			'as' => 'users-profile',
+			'uses' => 'ProfilesController@getProfile'
+			));
+
+		/*
+		| Profile Edit (GET)
+		*/
+		Route::get('/users/{profile}/edit',array(
+			'as' => 'users-profile-edit',
+			'uses' => 'ProfilesController@getProfileEdit'
+			));
 
 });
