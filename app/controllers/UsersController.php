@@ -2,20 +2,28 @@
 
 class UsersController extends \BaseController {
 
+	/*
+	| For the interests dropdown checkbox
+ 	*/
+	public function getHome(){
+		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
+	  ->get();
+	   $view = View::make('home',array('fields'=>$fields,'fields'=>$fields)); 
 
-public function getHome(){
-	$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
-  ->get();
-   $view = View::make('home',array('fields'=>$fields,'fields'=>$fields)); 
-
-  return $view;
-}
-
-	public function getCreate(){
-		return View::make('users.create');
-
+	  return $view;
 	}
 
+
+	/*
+	| User sign up page 
+ 	*/
+	public function getCreate(){
+		return View::make('users.create');
+	}
+
+	/*
+	| User submit sign up page
+ 	*/
 	public function postCreate(){
 		$validator = Validator::make(Input::all(),array(
 				'email' 			=>  'required|email|unique:users',
@@ -65,7 +73,9 @@ public function getHome(){
 		}
 	}
 		
-
+	/*
+	| Activiate account 
+ 	*/
 	public function getActivate($code){
 		$user = User::where('code', '=', $code)->where('active', '=', 0);
 
@@ -76,6 +86,11 @@ public function getHome(){
 			$user->active = 1;
 			$user->code = '';
 			$user->save();
+	        
+	        $profile = new Profile();
+	        $profile->user_id = $user->user_id;
+	        $profile->bio = 'Hi! Thanks for visiting';
+    		$profile->save();
 
 			if($user->save()){
 				return Redirect::to('/users/sign-in')
@@ -86,15 +101,16 @@ public function getHome(){
 			->with('message', 'We could not activate your account. Please contact the admin it144a@gmail.com');
 	} 	
 
+	/*
+	| Sign in page
+ 	*/
 	public function getSignIn(){
 		return View::make('users.signin');
 	}
 
-	public function getSignOut(){
-		Auth::logout();
-		return Redirect::to('/');
-	}
-
+	/*
+	| Sign in validation
+ 	*/
 	public function postSignIn(){
 		
 		$validator = Validator::make(Input::all(),
@@ -135,53 +151,26 @@ public function getHome(){
 
  	}
 	
- 	public function getChangePassword(){
- 		return View::make('users.password');
- 	}
+ 	/*
+	| Sign Out
+ 	*/
+	public function getSignOut(){
+		Auth::logout();
+		return Redirect::to('/');
+	}
 
- 	public function postChangePassword(){
- 		$validator = Validator::make(Input::all(),
- 			array(
- 				'old_password' 		=> 'required',
- 				'password' 			=> 'required|min:6',
- 				'confirm_password' 	=> 'required|same:password'
-
- 			));
- 		if($validator->fails()){
- 			//redirect 
- 			return Redirect::route('users-change-password')
- 					->withErrors($validator);
- 		}
- 		else{
- 			//change password
- 			$user = User::find(Auth::user()->user_id);
-
- 			$old_password = Input::get('old_password');
- 			$password = Input::get('password');
- 			if(Hash::check($old_password, $user->getAuthPassword())){
- 				//password user provided matches
- 				$user->password = Hash::make($password);
-
- 				if($user->save()){
- 					return Redirect::route('users-change-password')
- 						->with('message', 'Your password has been changed');
- 				}
- 			}
- 			else{
- 				return Redirect::route('users-change-password')
- 				->with('message','Your old password is incorrect.');
- 			}
-
- 		}
- 		return Redirect::route('users-change-password')
- 		->with('message','Your password could not be changed. Please contact admin it144a@gmail.com');
- 	}
-
+ 	
+	/*
+	| Forget password page
+ 	*/
  	public function getForgetPassword(){
  		return View::make('users.forget');
  	}
 
- 	 public function postForgetPassword(){
+	/*
+	| Forget password (send email to user with new password to reset password)
+ 	*/
+ 	public function postForgetPassword(){
  		$validator =Validator::make(Input::all(),array(
  			'email' => 'required|email'
 
@@ -221,6 +210,9 @@ public function getHome(){
  		->with('message','Could not request new password. Please contact admin it144a@gmail.com');
  	}
 
+	/*
+	| Recover account (After user click link in email for forget password)
+ 	*/
  	public function getRecover($code){
  		$user = User::Where('code','=',$code)
  			->where('password_temp','!=','');
@@ -242,81 +234,17 @@ public function getHome(){
  			->with('message','Could not recover your account. Please contact admin it144a@gmail.com');
  	}
 
-	public function getRequestEmail(){
-		
-		
-			return View::make('users.email');
-		
- 	}
-
- 	public function postRequestEmail(){
- 		$validator = Validator::make(Input::all(),
- 						array(
-				 				'new_email' => 'required|unique:users,email|email'
-				 				));
- 		
- 		if($validator->fails()){
- 			//redirect 
- 			return Redirect::route('users-change-email')
- 					->withErrors($validator);
- 		}
- 		else{
- 			
- 			//send email to user
-			$user = User::find(Auth::user()->user_id);
- 			$new_email = Input::get('new_email');
- 			$old_email = Auth::user()->email;
-
- 			$code = str_random(60);
- 			$user->email_temp = $new_email;
- 			$user->code = $code;
- 			
- 			if($user->save()){
- 			Mail::send('emails.auth.changeEmail',
- 					array('link'=>URL::route('users-change-email', $code),
- 						'firstname' => $user->firstname,
- 						'lastname' 	=> $user->lastname,
- 						'new_email' => $new_email,
- 						'old_email' => $old_email), 
- 					function($message) use ($user) 
- 					{
- 					$message->to($user->email_temp, $user->firstname, $user->lastname) ->subject('ORAFER Change of Email Confirmation Required');
- 					});
-
- 					return Redirect::to('/dashboard')
- 					->with('message','We had sent you an email to your new email for confirmation.');
- 			}
- 			
- 		}
- 	}
-
-
-	public function getChangeEmail($code){
-	$user = User::Where('code','=',$code)
- 			->where('email_temp','!=','');
- 		if($user->count()){
- 			$user = $user->first();
- 			$user->email = $user->email_temp;
- 			$user->email_temp = '';
- 			$user->code = '';
-
- 			if($user->save())
- 			{
-				return Redirect::to('/dashboard')
-	 				->with('message','Your Email has been changed. You can now sign in with your new email');
- 			}
-
- 		}
- 		
- 		return Redirect::to('/dashboard')
- 			->with('message','Could not change your email. Please contact admin it144a@gmail.com');
- 	}
-
+	/*
+	| invite friends
+ 	*/
 
 	public function getInviteFriend(){
 		return View::make('users.invite');
 	}
 
+	/*
+	| Invite friend. send email to them!
+ 	*/
 	public function postInviteFriend(){
 			$validator = Validator::make(Input::all(),
  						array(
@@ -355,4 +283,6 @@ public function getHome(){
 
  		}
  	}
+
+ 	
 }//controller
