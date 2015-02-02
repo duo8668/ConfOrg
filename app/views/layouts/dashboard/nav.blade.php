@@ -27,11 +27,6 @@
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li><a href="{{ URL::route('users-change-password') }}"><i class="fa fa-user fa-fw"></i> Change password</a>
-                        </li>
-                        <li><a href="{{ URL::route('users-request-email') }}"><i class="fa fa-gear fa-fw"></i> Change Email</a>
-                        </li>
                         <li class="divider"></li>
                         <li><a href="{{ URL::route('users-sign-out') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
