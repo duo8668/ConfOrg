@@ -39,6 +39,7 @@
                                 {{ Form::token() }} 
                                 <hr>
                                 <a href="{{ URL::route('users-forget-password') }}" class="pull-right">Forget Password?</a>
+                                <a href="{{ URL::to('login/fb') }}" class="pull-left">Login with Facebook</a>
                             </fieldset>
                         {{ Form::close() }}
                     </div>
