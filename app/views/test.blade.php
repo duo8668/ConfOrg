@@ -11,19 +11,15 @@ Import/Export
 @stop
 @section('content')
 <div class="container">
-	{{ Form::open(array('url' => 'download', 'class' => 'form-horizontal')) }}
+	{{ Form::open(array('url' => 'download', 'class' => 'form-horizontal', 'files' => true)) }}
 	<fieldset>		
 		<div class="form-group">
 			<label class="col-md-4 control-label" for="submit"></label>
 			<div class="col-md-4">      
-				{{ Form::submit('Download Excel', array('name'=>'Download','class' => 'btn btn-primary')) }}
+				{{ Form::submit('Download Excel', array('name'=>'Export','class' => 'btn btn-primary')) }}
 			</div>
 		</div>
-	</fieldset>
-	{{Form::close()}}	
 
-	{{ Form::open(array('url' => 'previewMap', 'class' => 'form-horizontal')) }}
-	<fieldset>
 		<div class="form-group @if ($errors->has('venueName')) has-error @endif">
 			<label class="col-md-4 control-label" for="venueName">Venue Name</label>  
 			<div class="col-md-4">        
@@ -45,31 +41,28 @@ Import/Export
 		<div class="form-group">
 			<label class="col-md-4 control-label" for="submit"></label>
 			<div class="col-md-4">      
-				{{ Form::submit('btnPreviewMap', array('name'=>'Preview Map','class' => 'btn btn-primary')) }}
+				{{ Form::submit('Preview Map!', array('name'=>'Preview','class' => 'btn btn-primary')) }}
 			</div>
 		</div>
+
+		@if(Session::has('map'))      
+		<center>
+			<div style="max-width:900px">
+				<?php echo Session::get('map')['html']; ?> 
+			</div>			
+<div class="form-group">
+	<label class="col-md-4 control-label" for="submit"></label>
+	<div class="col-md-2">      										
+		{{ Form::file('excel', array('id' => 'excel', 'style'=> 'margin-top:40px' )) }}						
+		{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary', 'style'=> 'margin-top:20px;')) }}
+	</div>
+</div>	
+		</center>
+		@endif
 	</fieldset>
 	{{Form::close()}}	
-
-	@if(Session::has('map'))      
-	<center>
-		<div style="max-width:900px">
-			<?php echo Session::get('map')['html']; ?> 
-		</div>
-		{{ Form::open(array('url' => 'import', 'class' => 'form-horizontal')) }}
-		<fieldset>		
-			<div class="form-group">
-				<label class="col-md-4 control-label" for="submit"></label>
-				<div class="col-md-4">      
-					{{ Form::submit('Import Excel', array('name'=>'btnImportExcel','class' => 'btn btn-primary', 'style'=> 'margin-top:20px')) }}
-				</div>
-			</div>
-		</fieldset>
-		{{Form::close()}}	
-	</center>
-	@endif
 </div>
+
+<script>
+</script>
 @stop
-</html>
-
-
