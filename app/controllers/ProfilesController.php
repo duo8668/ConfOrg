@@ -339,7 +339,8 @@ class ProfilesController extends \BaseController {
  		$user = User::find(Auth::user()->user_id);
  		$user->profile->fb_email = '';
  		$user->profile->uid = '0';
- 		
+ 		$user->profile->access_token = '';
+ 		$user->profile->photo = '';
  		if($user->profile->save()){
  					return Redirect::to('/users/'.Auth::user()->email .'/edit')
  						->with('message', 'Your Facebook account has been unlinked');
@@ -353,8 +354,42 @@ class ProfilesController extends \BaseController {
 	/*
 	| For user to add fb
 	*/
-	public function postAddFb(){
+	public function getAddFb(){
 
- 		//link with fb
+    $facebook = new Facebook(Config::get('facebook'));
+    $params = array(
+        'redirect_uri' => url('/users/add-fb-redirect'),
+        'scope' => 'email',
+    );
+    return Redirect::to($facebook->getLoginUrl($params));
+
+ 	}
+	/*
+	| For user to add fb redirect
+	*/
+ 	public function getAddFbRedirect(){
+
+    $code = Input::get('code');
+    if (strlen($code) == 0) return Redirect::to('/')->with('message', 'There was an error communicating with Facebook');
+
+    $facebook = new Facebook(Config::get('facebook'));
+    $uid = $facebook->getUser();
+
+    if ($uid == 0) return Redirect::to('/')->with('message', 'There was an error');
+
+    $me = $facebook->api('/me');
+
+    $user = User::find(Auth::user()->user_id);
+    $user->profile->uid = $uid;
+	$user->profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
+	$user->profile->bio = 'Hi! Thanks for visiting';
+ 	$user->profile->fb_email = $me['email'];
+	$user->profile->access_token = $facebook->getAccessToken();
+    $user->profile->save();  
+
+	return Redirect::to('/users/'.Auth::user()->email .'/edit')
+ 					->with('message','Your Facebook account is linked.');
+ 				
+
  	}
 }//controller
