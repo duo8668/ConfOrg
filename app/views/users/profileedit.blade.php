@@ -150,7 +150,7 @@ Facebook:
  	{{ Form::token() }}
 </form>
 @else
-<form action = "{{URL::route('users-add-fb-post')}}" method = "post">
+<form action = "{{URL::route('users-add-fb-get')}}" method = "get">
 No Facebook account has been linked yet.<br>
 <input type="submit" value="Link Facebook with ORAFER">
  	{{ Form::token() }}
