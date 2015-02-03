@@ -158,6 +158,8 @@ Route::group(array('before' => 'guest'),function(){
  				
  		}
 		});//Facebook login upon approval (GET)
+
+		
 });//unath group
 
 /*
@@ -243,13 +245,6 @@ Route::group(array('before' => 'auth'),function(){
 			'uses' => 'ProfilesController@postRemoveFb'
 			));		
 
-		/*
-		| Add fb (Post)
-		*/
-		Route::post('/users/add-fb',array(
-			'as' => 'users-add-fb-post',
-			'uses' => 'ProfilesController@postAddFb'
-			));		
 	});
 		/*
 		| Invite Friend (GET)
@@ -275,7 +270,23 @@ Route::group(array('before' => 'auth'),function(){
 			'uses' => 'ProfilesController@getChangeEmail'
 			));
 
+		
 		/*
+		| Add fb (GET)
+		*/
+		Route::get('/users/add-fb',array(
+			'as' => 'users-add-fb-get',
+			'uses' => 'ProfilesController@getAddFb'
+			));		
+
+		/*
+		| Add fb redirect (GET)
+		*/
+		Route::get('/users/add-fb-redirect',array(
+			'as' => 'users-add-fb-redirect-get',
+			'uses' => 'ProfilesController@getAddFbRedirect'
+			));		
+/*
 		| Profile (GET)
 		*/
 		Route::get('/users/{profile}',array(
