@@ -31,7 +31,7 @@ Manage conference :
 <script src="{{ asset('js/bootstrap3-typeahead.js') }}"></script>
 
 <script src="{{ asset('js/bootstrap-tagsinput.js') }}"></script>
- 
+
 <script src="{{ asset('js/conferencecontroller.js') }}"></script>
 
 <style>
@@ -51,6 +51,10 @@ Manage conference :
 		font-size: 14px;
 	}
 
+	.modal-body {
+		max-height: calc(100vh - 110px);
+		overflow-y: auto;
+	}
 </style>
 
 @stop

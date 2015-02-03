@@ -8,7 +8,7 @@
  *
  * Date: 2014-11-29T05:20Z
  */
-(function (factory) {
+ (function (factory) {
   /* global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -27,7 +27,7 @@
      *
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
      */
-    Array.prototype.reduce = function (callback, optInitialValue) {
+     Array.prototype.reduce = function (callback, optInitialValue) {
       var idx, value, length = this.length >>> 0, isValueSet = false;
       if (1 < arguments.length) {
         value = optInitialValue;
@@ -55,13 +55,13 @@
       if (this === void 0 || this === null) {
         throw new TypeError();
       }
-  
+      
       var t = Object(this);
       var len = t.length >>> 0;
       if (typeof fun !== 'function') {
         throw new TypeError();
       }
-  
+      
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
@@ -72,7 +72,7 @@
           }
         }
       }
-  
+      
       return res;
     };
   }
@@ -84,7 +84,7 @@
    * @param {String} fontName
    * @return {Boolean}
    */
-  var isFontInstalled = function (fontName) {
+   var isFontInstalled = function (fontName) {
     var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
     var $tester = $('<div>').css({
       position: 'absolute',
@@ -104,7 +104,7 @@
   /**
    * Object which check platform and agent
    */
-  var agent = {
+   var agent = {
     isMac: navigator.appVersion.indexOf('Mac') > -1,
     isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
     isFF: navigator.userAgent.indexOf('Firefox') > -1,
@@ -118,7 +118,7 @@
   /**
    * func utils (for high-order func's arg)
    */
-  var func = (function () {
+   var func = (function () {
     var eq = function (itemA) {
       return function (itemB) {
         return itemA === itemB;
@@ -166,7 +166,7 @@
      *
      * @param {String} [prefix]
      */
-    var uniqueId = function (prefix) {
+     var uniqueId = function (prefix) {
       var id = ++idCounter + '';
       return prefix ? prefix + id : id;
     };
@@ -184,7 +184,7 @@
      * @return {Number} bounds.width
      * @return {Number} bounds.height
      */
-    var rect2bnd = function (rect) {
+     var rect2bnd = function (rect) {
       var $document = $(document);
       return {
         top: rect.top + $document.scrollTop(),
@@ -199,7 +199,7 @@
      * @param {Object} obj
      * @return {Object}
      */
-    var invertObject = function (obj) {
+     var invertObject = function (obj) {
       var inverted = {};
       for (var key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -227,13 +227,13 @@
   /**
    * list utils
    */
-  var list = (function () {
+   var list = (function () {
     /**
      * returns the first item of an array.
      *
      * @param {Array} array
      */
-    var head = function (array) {
+     var head = function (array) {
       return array[0];
     };
 
@@ -242,7 +242,7 @@
      *
      * @param {Array} array
      */
-    var last = function (array) {
+     var last = function (array) {
       return array[array.length - 1];
     };
 
@@ -251,7 +251,7 @@
      *
      * @param {Array} array
      */
-    var initial = function (array) {
+     var initial = function (array) {
       return array.slice(0, array.length - 1);
     };
 
@@ -260,14 +260,14 @@
      *
      * @param {Array} array
      */
-    var tail = function (array) {
+     var tail = function (array) {
       return array.slice(1);
     };
 
     /**
      * returns item of array
      */
-    var find = function (array, pred) {
+     var find = function (array, pred) {
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         var item = array[idx];
         if (pred(item)) {
@@ -279,7 +279,7 @@
     /**
      * returns true if all of the values in the array pass the predicate truth test.
      */
-    var all = function (array, pred) {
+     var all = function (array, pred) {
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
           return false;
@@ -291,7 +291,7 @@
     /**
      * returns true if the value is present in the list.
      */
-    var contains = function (array, item) {
+     var contains = function (array, item) {
       return $.inArray(item, array) !== -1;
     };
 
@@ -301,25 +301,25 @@
      * @param {Array} array - array
      * @param {Function} fn - iterator
      */
-    var sum = function (array, fn) {
+     var sum = function (array, fn) {
       fn = fn || func.self;
       return array.reduce(function (memo, v) {
         return memo + fn(v);
       }, 0);
     };
-  
+    
     /**
      * returns a copy of the collection with array type.
      * @param {Collection} collection - collection eg) node.childNodes, ...
-     */
-    var from = function (collection) {
-      var result = [], idx = -1, length = collection.length;
-      while (++idx < length) {
-        result[idx] = collection[idx];
-      }
-      return result;
-    };
-  
+*/
+var from = function (collection) {
+  var result = [], idx = -1, length = collection.length;
+  while (++idx < length) {
+    result[idx] = collection[idx];
+  }
+  return result;
+};
+
     /**
      * cluster elements by predicate function.
      *
@@ -327,7 +327,7 @@
      * @param {Function} fn - predicate function for cluster rule
      * @param {Array[]}
      */
-    var clusterBy = function (array, fn) {
+     var clusterBy = function (array, fn) {
       if (!array.length) { return []; }
       var aTail = tail(array);
       return aTail.reduce(function (memo, v) {
@@ -340,14 +340,14 @@
         return memo;
       }, [[head(array)]]);
     };
-  
+    
     /**
      * returns a copy of the array with all falsy values removed
      *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      */
-    var compact = function (array) {
+     var compact = function (array) {
       var aResult = [];
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (array[idx]) { aResult.push(array[idx]); }
@@ -360,7 +360,7 @@
      *
      * @param {Array} array
      */
-    var unique = function (array) {
+     var unique = function (array) {
       var results = [];
 
       for (var idx = 0, len = array.length; idx < len; idx ++) {
@@ -376,7 +376,7 @@
      * returns next item.
      * @param {Array} array
      */
-    var next = function (array, item) {
+     var next = function (array, item) {
       var idx = array.indexOf(item);
       if (idx === -1) { return null; }
 
@@ -387,35 +387,35 @@
      * returns prev item.
      * @param {Array} array
      */
-    var prev = function (array, item) {
+     var prev = function (array, item) {
       var idx = array.indexOf(item);
       if (idx === -1) { return null; }
 
       return array[idx - 1];
     };
 
-  
+    
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, find: find, contains: contains,
-             all: all, sum: sum, from: from,
-             clusterBy: clusterBy, compact: compact, unique: unique };
-  })();
+     prev: prev, next: next, find: find, contains: contains,
+     all: all, sum: sum, from: from,
+     clusterBy: clusterBy, compact: compact, unique: unique };
+   })();
 
 
-  var NBSP_CHAR = String.fromCharCode(160);
-  var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
+   var NBSP_CHAR = String.fromCharCode(160);
+   var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
 
   /**
    * Dom functions
    */
-  var dom = (function () {
+   var dom = (function () {
     /**
      * returns whether node is `note-editable` or not.
      *
      * @param {Node} node
      * @return {Boolean}
      */
-    var isEditable = function (node) {
+     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
     };
 
@@ -425,7 +425,7 @@
      * @param {Node} node
      * @return {Boolean}
      */
-    var isControlSizing = function (node) {
+     var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
     };
 
@@ -435,7 +435,7 @@
      * @param {jQuery} $editor
      * @return {Object}
      */
-    var buildLayoutInfo = function ($editor) {
+     var buildLayoutInfo = function ($editor) {
       var makeFinder;
 
       // air mode
@@ -478,7 +478,7 @@
      * @param {String} nodeName
      * @return {String}
      */
-    var makePredByNodeName = function (nodeName) {
+     var makePredByNodeName = function (nodeName) {
       nodeName = nodeName.toUpperCase();
       return function (node) {
         return node && node.nodeName.toUpperCase() === nodeName;
@@ -493,7 +493,7 @@
      * ex) br, col, embed, hr, img, input, ...
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
-    var isVoid = function (node) {
+     var isVoid = function (node) {
       return node && /^BR|^IMG|^HR/.test(node.nodeName.toUpperCase());
     };
 
@@ -545,14 +545,14 @@
     /**
      * blank HTML for cursor position
      */
-    var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
+     var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
 
     /**
      * returns #text's text size or element's childNodes size
      *
      * @param {Node} node
      */
-    var nodeLength = function (node) {
+     var nodeLength = function (node) {
       if (isText(node)) {
         return node.nodeValue.length;
       }
@@ -566,23 +566,23 @@
      * @param {Node} node
      * @return {Boolean}
      */
-    var isEmpty = function (node) {
+     var isEmpty = function (node) {
       var len = nodeLength(node);
 
       if (len === 0) {
         return true;
       } else if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
         // ex) <p><br></p>, <span><br></span>
-        return true;
-      }
+return true;
+}
 
-      return false;
-    };
+return false;
+};
 
     /**
      * padding blankHTML if node is empty (for cursor position)
      */
-    var paddingBlankHTML = function (node) {
+     var paddingBlankHTML = function (node) {
       if (!isVoid(node) && !nodeLength(node)) {
         node.innerHTML = blankHTML;
       }
@@ -594,7 +594,7 @@
      * @param {Node} node
      * @param {Function} pred - predicate function
      */
-    var ancestor = function (node, pred) {
+     var ancestor = function (node, pred) {
       while (node) {
         if (pred(node)) { return node; }
         if (isEditable(node)) { break; }
@@ -610,7 +610,7 @@
      * @param {Node} node
      * @param {Function} [optional] pred - predicate function
      */
-    var listAncestor = function (node, pred) {
+     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
 
       var ancestors = [];
@@ -627,7 +627,7 @@
     /**
      * find farthest ancestor predicate hit
      */
-    var lastAncestor = function (node, pred) {
+     var lastAncestor = function (node, pred) {
       var ancestors = listAncestor(node);
       return list.last(ancestors.filter(pred));
     };
@@ -638,7 +638,7 @@
      * @param {Node} nodeA
      * @param {Node} nodeB
      */
-    var commonAncestor = function (nodeA, nodeB) {
+     var commonAncestor = function (nodeA, nodeB) {
       var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
         if ($.inArray(n, ancestors) > -1) { return n; }
@@ -652,7 +652,7 @@
      * @param {Node} node
      * @param {Function} [optional] pred - predicate function
      */
-    var listPrev = function (node, pred) {
+     var listPrev = function (node, pred) {
       pred = pred || func.fail;
 
       var nodes = [];
@@ -670,7 +670,7 @@
      * @param {Node} node
      * @param {Function} [pred] - predicate function
      */
-    var listNext = function (node, pred) {
+     var listNext = function (node, pred) {
       pred = pred || func.fail;
 
       var nodes = [];
@@ -688,7 +688,7 @@
      * @param {Node} node
      * @param {Function} [pred] - predicate function
      */
-    var listDescendant = function (node, pred) {
+     var listDescendant = function (node, pred) {
       var descendents = [];
       pred = pred || func.ok;
 
@@ -712,7 +712,7 @@
      * @param {Node} tagName of wrapper
      * @return {Node} - wrapper
      */
-    var wrap = function (node, wrapperName) {
+     var wrap = function (node, wrapperName) {
       var parent = node.parentNode;
       var wrapper = $('<' + wrapperName + '>')[0];
 
@@ -728,7 +728,7 @@
      * @param {Node} node
      * @param {Node} preceding - predicate function
      */
-    var insertAfter = function (node, preceding) {
+     var insertAfter = function (node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
       if (next) {
         parent.insertBefore(node, next);
@@ -744,7 +744,7 @@
      * @param {Node} node
      * @param {Collection} aChild
      */
-    var appendChildNodes = function (node, aChild) {
+     var appendChildNodes = function (node, aChild) {
       $.each(aChild, function (idx, child) {
         node.appendChild(child);
       });
@@ -757,7 +757,7 @@
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
-    var isLeftEdgePoint = function (point) {
+     var isLeftEdgePoint = function (point) {
       return point.offset === 0;
     };
 
@@ -767,7 +767,7 @@
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
-    var isRightEdgePoint = function (point) {
+     var isRightEdgePoint = function (point) {
       return point.offset === nodeLength(point.node);
     };
 
@@ -777,7 +777,7 @@
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
-    var isEdgePoint = function (point) {
+     var isEdgePoint = function (point) {
       return isLeftEdgePoint(point) || isRightEdgePoint(point);
     };
 
@@ -788,7 +788,7 @@
      * @param {Node} ancestor
      * @return {Boolean}
      */
-    var isLeftEdgeOf = function (node, ancestor) {
+     var isLeftEdgeOf = function (node, ancestor) {
       while (node && node !== ancestor) {
         if (position(node) !== 0) {
           return false;
@@ -806,7 +806,7 @@
      * @param {Node} ancestor
      * @return {Boolean}
      */
-    var isRightEdgeOf = function (node, ancestor) {
+     var isRightEdgeOf = function (node, ancestor) {
       while (node && node !== ancestor) {
         if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
@@ -822,7 +822,7 @@
      *
      * @param {Node} node
      */
-    var position = function (node) {
+     var position = function (node) {
       var offset = 0;
       while ((node = node.previousSibling)) {
         offset += 1;
@@ -841,7 +841,7 @@
      * @param {Boolean} isSkipInnerOffset
      * @return {BoundaryPoint}
      */
-    var prevPoint = function (point, isSkipInnerOffset) {
+     var prevPoint = function (point, isSkipInnerOffset) {
       var node, offset;
 
       if (point.offset === 0) {
@@ -872,7 +872,7 @@
      * @param {Boolean} isSkipInnerOffset
      * @return {BoundaryPoint}
      */
-    var nextPoint = function (point, isSkipInnerOffset) {
+     var nextPoint = function (point, isSkipInnerOffset) {
       var node, offset;
 
       if (nodeLength(point.node) === point.offset) {
@@ -903,7 +903,7 @@
      * @param {BoundaryPoint} pointB
      * @return {Boolean}
      */
-    var isSamePoint = function (pointA, pointB) {
+     var isSamePoint = function (pointA, pointB) {
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
     };
 
@@ -913,7 +913,7 @@
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
-    var isVisiblePoint = function (point) {
+     var isVisiblePoint = function (point) {
       if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
         return true;
       }
@@ -932,7 +932,7 @@
      * @param {Function} pred
      * @return {BoundaryPoint}
      */
-    var prevPointUntil = function (point, pred) {
+     var prevPointUntil = function (point, pred) {
       while (point) {
         if (pred(point)) {
           return point;
@@ -949,7 +949,7 @@
      * @param {Function} pred
      * @return {BoundaryPoint}
      */
-    var nextPointUntil = function (point, pred) {
+     var nextPointUntil = function (point, pred) {
       while (point) {
         if (pred(point)) {
           return point;
@@ -967,7 +967,7 @@
      * @param {Function} handler
      * @param {Boolean} isSkipInnerOffset
      */
-    var walkPoint = function (startPoint, endPoint, handler, isSkipInnerOffset) {
+     var walkPoint = function (startPoint, endPoint, handler, isSkipInnerOffset) {
       var point = startPoint;
 
       while (point) {
@@ -978,8 +978,8 @@
         }
 
         var isSkipOffset = isSkipInnerOffset &&
-                           startPoint.node !== point.node &&
-                           endPoint.node !== point.node;
+        startPoint.node !== point.node &&
+        endPoint.node !== point.node;
         point = nextPoint(point, isSkipOffset);
       }
     };
@@ -990,7 +990,7 @@
      * @param {Node} ancestor - ancestor node
      * @param {Node} node
      */
-    var makeOffsetPath = function (ancestor, node) {
+     var makeOffsetPath = function (ancestor, node) {
       var ancestors = listAncestor(node, func.eq(ancestor));
       return $.map(ancestors, position).reverse();
     };
@@ -1001,7 +1001,7 @@
      * @param {Node} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
      */
-    var fromOffsetPath = function (ancestor, aOffset) {
+     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, len = aOffset.length; i < len; i++) {
         if (current.childNodes.length <= aOffset[i]) {
@@ -1020,7 +1020,7 @@
      * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitNode = function (point, isSkipPaddingBlankHTML) {
+     var splitNode = function (point, isSkipPaddingBlankHTML) {
       // split #text
       if (isText(point.node)) {
         // edge case
@@ -1054,47 +1054,47 @@
      * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitTree = function (root, point, isSkipPaddingBlankHTML) {
+     var splitTree = function (root, point, isSkipPaddingBlankHTML) {
       // ex) [#text, <span>, <p>]
-      var ancestors = listAncestor(point.node, func.eq(root));
+var ancestors = listAncestor(point.node, func.eq(root));
 
-      if (!ancestors.length) {
-        return null;
-      } else if (ancestors.length === 1) {
-        return splitNode(point, isSkipPaddingBlankHTML);
-      }
+if (!ancestors.length) {
+  return null;
+} else if (ancestors.length === 1) {
+  return splitNode(point, isSkipPaddingBlankHTML);
+}
 
-      return ancestors.reduce(function (node, parent) {
-        var clone = insertAfter(parent.cloneNode(false), parent);
+return ancestors.reduce(function (node, parent) {
+  var clone = insertAfter(parent.cloneNode(false), parent);
 
-        if (node === point.node) {
-          node = splitNode(point, isSkipPaddingBlankHTML);
-        }
+  if (node === point.node) {
+    node = splitNode(point, isSkipPaddingBlankHTML);
+  }
 
-        appendChildNodes(clone, listNext(node));
+  appendChildNodes(clone, listNext(node));
 
-        if (!isSkipPaddingBlankHTML) {
-          paddingBlankHTML(parent);
-          paddingBlankHTML(clone);
-        }
-        return clone;
-      });
-    };
+  if (!isSkipPaddingBlankHTML) {
+    paddingBlankHTML(parent);
+    paddingBlankHTML(clone);
+  }
+  return clone;
+});
+};
 
-    var create = function (nodeName) {
-      return document.createElement(nodeName);
-    };
+var create = function (nodeName) {
+  return document.createElement(nodeName);
+};
 
-    var createText = function (text) {
-      return document.createTextNode(text);
-    };
+var createText = function (text) {
+  return document.createTextNode(text);
+};
 
     /**
      * remove node, (isRemoveChild: remove child or not)
      * @param {Node} node
      * @param {Boolean} isRemoveChild
      */
-    var remove = function (node, isRemoveChild) {
+     var remove = function (node, isRemoveChild) {
       if (!node || !node.parentNode) { return; }
       if (node.removeNode) { return node.removeNode(isRemoveChild); }
 
@@ -1118,7 +1118,7 @@
      * @param {Node} node
      * @param {Function} pred
      */
-    var removeWhile = function (node, pred) {
+     var removeWhile = function (node, pred) {
       while (node) {
         if (isEditable(node) || !pred(node)) {
           break;
@@ -1137,7 +1137,7 @@
      * @param {String} nodeName
      * @return {Node} - new node
      */
-    var replace = function (node, nodeName) {
+     var replace = function (node, nodeName) {
       if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
         return node;
       }
@@ -1163,7 +1163,7 @@
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
      */
-    var html = function ($node, isNewlineOnBlock) {
+     var html = function ($node, isNewlineOnBlock) {
       var markup = isTextarea($node[0]) ? $node.val() : $node.html();
 
       if (isNewlineOnBlock) {
@@ -1171,7 +1171,7 @@
         markup = markup.replace(regexTag, function (match, endSlash, name) {
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
-                                       !!endSlash;
+          !!endSlash;
           var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
@@ -1266,7 +1266,7 @@
    *
    *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
    */
-  var range = (function () {
+   var range = (function () {
 
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
@@ -1277,9 +1277,9 @@
      *
      * @see http://msdn.microsoft.com/en-us/library/ie/ms535872(v=vs.85).aspx
      */
-    var textRangeToPoint = function (textRange, isStart) {
+     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
-  
+      
       var tester = document.body.createTextRange(), prevContainer;
       var childNodes = list.from(container.childNodes);
       for (offset = 0; offset < childNodes.length; offset++) {
@@ -1292,51 +1292,51 @@
         }
         prevContainer = childNodes[offset];
       }
-  
+      
       if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
         var textRangeStart = document.body.createTextRange(), curTextNode = null;
         textRangeStart.moveToElementText(prevContainer || container);
         textRangeStart.collapse(!prevContainer);
         curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
-  
+        
         var pointTester = textRange.duplicate();
         pointTester.setEndPoint('StartToStart', textRangeStart);
         var textCount = pointTester.text.replace(/[\r\n]/g, '').length;
-  
+        
         while (textCount > curTextNode.nodeValue.length && curTextNode.nextSibling) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+        
         /* jshint ignore:start */
         var dummy = curTextNode.nodeValue; // enforce IE to re-reference curTextNode, hack
         /* jshint ignore:end */
-  
+        
         if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) &&
-            textCount === curTextNode.nodeValue.length) {
+          textCount === curTextNode.nodeValue.length) {
           textCount -= curTextNode.nodeValue.length;
-          curTextNode = curTextNode.nextSibling;
-        }
-  
-        container = curTextNode;
-        offset = textCount;
+        curTextNode = curTextNode.nextSibling;
       }
-  
-      return {
-        cont: container,
-        offset: offset
-      };
-    };
+      
+      container = curTextNode;
+      offset = textCount;
+    }
     
+    return {
+      cont: container,
+      offset: offset
+    };
+  };
+  
     /**
      * return TextRange from boundary point (inspired by google closure-library)
      * @param {BoundaryPoint} point
      * @return {TextRange}
      */
-    var pointToTextRange = function (point) {
+     var pointToTextRange = function (point) {
       var textRangeInfo = function (container, offset) {
         var node, isCollapseToStart;
-  
+        
         if (dom.isText(container)) {
           var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
           var prevContainer = list.last(prevTextNodes).previousSibling;
@@ -1348,21 +1348,21 @@
           if (dom.isText(node)) {
             return textRangeInfo(node, 0);
           }
-  
+          
           offset = 0;
           isCollapseToStart = false;
         }
-  
+        
         return {
           node: node,
           collapseToStart: isCollapseToStart,
           offset: offset
         };
       };
-  
+      
       var textRange = document.body.createTextRange();
       var info = textRangeInfo(point.node, point.offset);
-  
+      
       textRange.moveToElementText(info.node);
       textRange.collapse(info.collapseToStart);
       textRange.moveStart('character', info.offset);
@@ -1377,12 +1377,12 @@
      * @param {Node} ec - end container
      * @param {Number} eo - end offset
      */
-    var WrappedRange = function (sc, so, ec, eo) {
+     var WrappedRange = function (sc, so, ec, eo) {
       this.sc = sc;
       this.so = so;
       this.ec = ec;
       this.eo = eo;
-  
+      
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
         if (agent.isW3CRangeSupport) {
@@ -1432,7 +1432,7 @@
       /**
        * select update visible range
        */
-      this.select = function () {
+       this.select = function () {
         var nativeRng = nativeRange();
         if (agent.isW3CRangeSupport) {
           var selection = document.getSelection();
@@ -1448,7 +1448,7 @@
       /**
        * @return {WrappedRange}
        */
-      this.normalize = function () {
+       this.normalize = function () {
         var getVisiblePoint = function (point) {
           if (!dom.isVisiblePoint(point)) {
             if (dom.isLeftEdgePoint(point)) {
@@ -1468,7 +1468,7 @@
           startPoint.offset,
           endPoint.node,
           endPoint.offset
-        );
+          );
       };
 
       /**
@@ -1480,7 +1480,7 @@
        * @param {Boolean} [options.fullyContains]
        * @return {Node[]}
        */
-      this.nodes = function (pred, options) {
+       this.nodes = function (pred, options) {
         pred = pred || func.ok;
 
         var includeAncestor = options && options.includeAncestor;
@@ -1524,7 +1524,7 @@
        * returns commonAncestor of range
        * @return {Element} - commonAncestor
        */
-      this.commonAncestor = function () {
+       this.commonAncestor = function () {
         return dom.commonAncestor(sc, ec);
       };
 
@@ -1534,7 +1534,7 @@
        * @param {Function} pred - predicate function
        * @return {WrappedRange}
        */
-      this.expand = function (pred) {
+       this.expand = function (pred) {
         var startAncestor = dom.ancestor(sc, pred);
         var endAncestor = dom.ancestor(ec, pred);
 
@@ -1559,14 +1559,14 @@
           boundaryPoints.so,
           boundaryPoints.ec,
           boundaryPoints.eo
-        );
+          );
       };
 
       /**
        * @param {Boolean} isCollapseToStart
        * @return {WrappedRange}
        */
-      this.collapse = function (isCollapseToStart) {
+       this.collapse = function (isCollapseToStart) {
         if (isCollapseToStart) {
           return new WrappedRange(sc, so, sc, so);
         } else {
@@ -1577,7 +1577,7 @@
       /**
        * splitText on range
        */
-      this.splitText = function () {
+       this.splitText = function () {
         var isSameContainer = sc === ec;
         var boundaryPoints = this.getPoints();
 
@@ -1600,14 +1600,14 @@
           boundaryPoints.so,
           boundaryPoints.ec,
           boundaryPoints.eo
-        );
+          );
       };
 
       /**
        * delete contents on range
        * @return {WrappedRange}
        */
-      this.deleteContents = function () {
+       this.deleteContents = function () {
         if (this.isCollapsed()) {
           return this;
         }
@@ -1641,19 +1641,19 @@
           point.offset,
           point.node,
           point.offset
-        );
+          );
       };
       
       /**
        * makeIsOn: return isOn(pred) function
        */
-      var makeIsOn = function (pred) {
+       var makeIsOn = function (pred) {
         return function () {
           var ancestor = dom.ancestor(sc, pred);
           return !!ancestor && (ancestor === dom.ancestor(ec, pred));
         };
       };
-  
+      
       // isOnEditable: judge whether range is on editable or not
       this.isOnEditable = makeIsOn(dom.isEditable);
       // isOnList: judge whether range is on list node or not
@@ -1667,7 +1667,7 @@
        * @param {Function} pred
        * @return {Boolean}
        */
-      this.isLeftEdgeOf = function (pred) {
+       this.isLeftEdgeOf = function (pred) {
         if (!dom.isLeftEdgePoint(this.getStartPoint())) {
           return false;
         }
@@ -1679,7 +1679,7 @@
       /**
        * returns whether range was collapsed or not
        */
-      this.isCollapsed = function () {
+       this.isCollapsed = function () {
         return sc === ec && so === eo;
       };
 
@@ -1688,7 +1688,7 @@
        *
        * @return {WrappedRange}
        */
-      this.wrapBodyInlineWithPara = function () {
+       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
           return new WrappedRange(sc.firstChild, 0);
@@ -1707,8 +1707,12 @@
             topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
           }
         } else {
-          topAncestor = sc.childNodes[so - 1];
-        }
+         if(so == 0){
+           topAncestor = sc.childNodes[so ];
+         }else{
+           topAncestor = sc.childNodes[so - 1];
+         }   
+       }
 
         // siblings not in paragraph
         var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
@@ -1730,7 +1734,7 @@
        * @param {Boolean} [isInline]
        * @return {Node}
        */
-      this.insertNode = function (node, isInline) {
+       this.insertNode = function (node, isInline) {
         var rng = this.wrapBodyInlineWithPara();
         var point = rng.getStartPoint();
 
@@ -1765,17 +1769,17 @@
 
         return node;
       };
-  
+      
       this.toString = function () {
         var nativeRng = nativeRange();
         return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
-  
+      
       /**
        * create offsetPath bookmark
        * @param {Node} editable
        */
-      this.bookmark = function (editable) {
+       this.bookmark = function (editable) {
         return {
           s: {
             path: dom.makeOffsetPath(editable, sc),
@@ -1792,12 +1796,12 @@
        * getClientRects
        * @return {Rect[]}
        */
-      this.getClientRects = function () {
+       this.getClientRects = function () {
         var nativeRng = nativeRange();
         return nativeRng.getClientRects();
       };
     };
-  
+    
     return {
       /**
        * create Range Object From arguments or Browser Selection
@@ -1807,7 +1811,7 @@
        * @param {Node} ec - end container
        * @param {Number} eo - end offset
        */
-      create : function (sc, so, ec, eo) {
+       create : function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
           if (agent.isW3CRangeSupport) {
             var selection = document.getSelection();
@@ -1817,7 +1821,7 @@
               // Firefox: returns entire body as range on initialization. We won't never need it.
               return null;
             }
-  
+            
             var nativeRng = selection.getRangeAt(0);
             sc = nativeRng.startContainer;
             so = nativeRng.startOffset;
@@ -1829,22 +1833,22 @@
             textRangeEnd.collapse(false);
             var textRangeStart = textRange;
             textRangeStart.collapse(true);
-  
+            
             var startPoint = textRangeToPoint(textRangeStart, true),
             endPoint = textRangeToPoint(textRangeEnd, false);
 
             // same visible point case: range was collapsed.
             if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-                dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
-                endPoint.node.nextSibling === startPoint.node) {
+              dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+              endPoint.node.nextSibling === startPoint.node) {
               startPoint = endPoint;
-            }
-
-            sc = startPoint.cont;
-            so = startPoint.offset;
-            ec = endPoint.cont;
-            eo = endPoint.offset;
           }
+
+          sc = startPoint.cont;
+          so = startPoint.offset;
+          ec = endPoint.cont;
+          eo = endPoint.offset;
+        }
         } else if (arguments.length === 2) { //collapsed
           ec = sc;
           eo = so;
@@ -1858,7 +1862,7 @@
        * @param {Node} node
        * @return {WrappedRange}
        */
-      createFromNode: function (node) {
+       createFromNode: function (node) {
         return this.create(node, 0, node, 1);
       },
 
@@ -1869,7 +1873,7 @@
        * @param {Obkect} bookmark
        * @return {WrappedRange}
        */
-      createFromBookmark : function (editable, bookmark) {
+       createFromBookmark : function (editable, bookmark) {
         var sc = dom.fromOffsetPath(editable, bookmark.s.path);
         var so = bookmark.s.offset;
         var ec = dom.fromOffsetPath(editable, bookmark.e.path);
@@ -1886,7 +1890,7 @@
     /**
      * options
      */
-    options: {
+     options: {
       width: null,                  // set editor width
       height: null,                 // set editor height, ex) 300
 
@@ -1918,16 +1922,16 @@
 
       // toolbar
       toolbar: [
-        ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
-        ['fontname', ['fontname']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['height', ['height']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture', 'hr']],
-        ['view', ['fullscreen', 'codeview']],
-        ['help', ['help']]
+      ['style', ['style']],
+      ['font', ['bold', 'italic', 'underline', 'clear']],
+      ['fontname', ['fontname']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['height', ['height']],
+      ['table', ['table']],
+      ['insert', ['link', 'picture', 'hr']],
+      ['view', ['fullscreen', 'codeview']],
+      ['help', ['help']]
       ],
 
       // air mode: inline editor
@@ -1944,11 +1948,11 @@
       //   ['help', ['help']]
       // ],
       airPopover: [
-        ['color', ['color']],
-        ['font', ['bold', 'underline', 'clear']],
-        ['para', ['ul', 'paragraph']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture']]
+      ['color', ['color']],
+      ['font', ['bold', 'underline', 'clear']],
+      ['para', ['ul', 'paragraph']],
+      ['table', ['table']],
+      ['insert', ['link', 'picture']]
       ],
 
       // style tag
@@ -1959,21 +1963,21 @@
 
       // fontName
       fontNames: [
-        'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
-        'Helvetica Neue', 'Impact', 'Lucida Grande',
-        'Tahoma', 'Times New Roman', 'Verdana'
+      'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
+      'Helvetica Neue', 'Impact', 'Lucida Grande',
+      'Tahoma', 'Times New Roman', 'Verdana'
       ],
 
       // pallete colors(n x n)
       colors: [
-        ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
-        ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
-        ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
-        ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
-        ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
-        ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
-        ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
-        ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
+      ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
+      ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
+      ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
+      ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
+      ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
+      ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
+      ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
+      ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
       ],
 
       // lineHeight
@@ -2005,7 +2009,7 @@
        * @param {String} sLinkUrl
        * @return {String}
        */
-      onCreateLink: function (sLinkUrl) {
+       onCreateLink: function (sLinkUrl) {
         if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
           sLinkUrl =  'mailto:' + sLinkUrl;
         } else if (sLinkUrl.indexOf('://') === -1) {
@@ -2184,14 +2188,14 @@
   /**
    * Async functions which returns `Promise`
    */
-  var async = (function () {
+   var async = (function () {
     /**
      * read contents of file as representing URL
      *
      * @param {File} file
      * @return {Promise} - then: sDataUrl
      */
-    var readFileAsDataURL = function (file) {
+     var readFileAsDataURL = function (file) {
       return $.Deferred(function (deferred) {
         $.extend(new FileReader(), {
           onload: function (e) {
@@ -2204,14 +2208,14 @@
         }).readAsDataURL(file);
       }).promise();
     };
-  
+    
     /**
      * create `<image>` from url string
      *
      * @param {String} sUrl
      * @return {Promise} - then: $image
      */
-    var createImage = function (sUrl, filename) {
+     var createImage = function (sUrl, filename) {
       return $.Deferred(function (deferred) {
         $('<img>').one('load', function () {
           deferred.resolve($(this));
@@ -2220,8 +2224,8 @@
         }).css({
           display: 'none'
         }).appendTo(document.body)
-          .attr('src', sUrl)
-          .attr('data-filename', filename);
+        .attr('src', sUrl)
+        .attr('data-filename', filename);
       }).promise();
     };
 
@@ -2234,7 +2238,7 @@
   /**
    * Object for keycodes.
    */
-  var key = {
+   var key = {
     isEdit: function (keyCode) {
       return list.contains([8, 9, 13, 32], keyCode);
     },
@@ -2279,7 +2283,7 @@
    * Style
    * @class
    */
-  var Style = function () {
+   var Style = function () {
     /**
      * passing an array of style properties to .css()
      * will result in an object of property-value pairs.
@@ -2289,7 +2293,7 @@
      * @param  {Array} propertyNames - An array of one or more CSS properties.
      * @returns {Object}
      */
-    var jQueryCSS = function ($obj, propertyNames) {
+     var jQueryCSS = function ($obj, propertyNames) {
       if (agent.jqueryVersion < 1.9) {
         var result = {};
         $.each(propertyNames, function (idx, propertyName) {
@@ -2306,7 +2310,7 @@
      * @param {WrappedRange} rng
      * @param {Object} styleInfo
      */
-    this.stylePara = function (rng, styleInfo) {
+     this.stylePara = function (rng, styleInfo) {
       $.each(rng.nodes(dom.isPara, {
         includeAncestor: true
       }), function (idx, para) {
@@ -2321,7 +2325,7 @@
      * @param {Node} target - target element on event
      * @return {Object} - object contains style properties.
      */
-    this.current = function (rng, target) {
+     this.current = function (rng, target) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
       var styleInfo = jQueryCSS($cont, properties) || {};
@@ -2370,7 +2374,7 @@
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
-    this.insertTab = function ($editable, rng, tabsize) {
+     this.insertTab = function ($editable, rng, tabsize) {
       var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
       rng = rng.deleteContents();
       rng.insertNode(tab, true);
@@ -2382,7 +2386,7 @@
     /**
      * insert paragraph
      */
-    this.insertParagraph = function () {
+     this.insertParagraph = function () {
       var rng = range.create();
 
       // deleteContents on range.
@@ -2406,33 +2410,33 @@
           dom.remove(anchor);
         });
       // no paragraph: insert empty paragraph
+    } else {
+      var next = rng.sc.childNodes[rng.so];
+      nextPara = $(dom.emptyPara)[0];
+      if (next) {
+        rng.sc.insertBefore(nextPara, next);
       } else {
-        var next = rng.sc.childNodes[rng.so];
-        nextPara = $(dom.emptyPara)[0];
-        if (next) {
-          rng.sc.insertBefore(nextPara, next);
-        } else {
-          rng.sc.appendChild(nextPara);
-        }
+        rng.sc.appendChild(nextPara);
       }
+    }
 
-      range.create(nextPara, 0).normalize().select();
-    };
-
+    range.create(nextPara, 0).normalize().select();
   };
+
+};
 
   /**
    * Table
    * @class
    */
-  var Table = function () {
+   var Table = function () {
     /**
      * handle tab key
      *
      * @param {WrappedRange} rng
      * @param {Boolean} isShift
      */
-    this.tab = function (rng, isShift) {
+     this.tab = function (rng, isShift) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var table = dom.ancestor(cell, dom.isTable);
       var cells = dom.listDescendant(table, dom.isCell);
@@ -2450,7 +2454,7 @@
      * @param {Number} colCount
      * @return {Node}
      */
-    this.createTable = function (colCount, rowCount) {
+     this.createTable = function (colCount, rowCount) {
       var tds = [], tdHTML;
       for (var idxCol = 0; idxCol < colCount; idxCol++) {
         tds.push('<td>' + dom.blank + '</td>');
@@ -2472,7 +2476,7 @@
      * toggle ordered list
      * @type command
      */
-    this.insertOrderedList = function () {
+     this.insertOrderedList = function () {
       this.toggleList('OL');
     };
 
@@ -2480,7 +2484,7 @@
      * toggle unordered list
      * @type command
      */
-    this.insertUnorderedList = function () {
+     this.insertUnorderedList = function () {
       this.toggleList('UL');
     };
 
@@ -2488,7 +2492,7 @@
      * indent
      * @type command
      */
-    this.indent = function () {
+     this.indent = function () {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
 
@@ -2515,7 +2519,7 @@
      * outdent
      * @type command
      */
-    this.outdent = function () {
+     this.outdent = function () {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
 
@@ -2543,7 +2547,7 @@
      * toggle list
      * @param {String} listName - OL or UL
      */
-    this.toggleList = function (listName) {
+     this.toggleList = function (listName) {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
 
@@ -2556,30 +2560,30 @@
           self.wrapList(paras, listName);
         });
       // list to paragraph or change list style
-      } else {
-        var diffLists = rng.nodes(dom.isList, {
-          includeAncestor: true
-        }).filter(function (listNode) {
-          return !$.nodeName(listNode, listName);
+    } else {
+      var diffLists = rng.nodes(dom.isList, {
+        includeAncestor: true
+      }).filter(function (listNode) {
+        return !$.nodeName(listNode, listName);
+      });
+
+      if (diffLists.length) {
+        $.each(diffLists, function (idx, listNode) {
+          dom.replace(listNode, listName);
         });
-
-        if (diffLists.length) {
-          $.each(diffLists, function (idx, listNode) {
-            dom.replace(listNode, listName);
-          });
-        } else {
-          this.releaseList(clustereds, true);
-        }
+      } else {
+        this.releaseList(clustereds, true);
       }
+    }
 
-      rng.select();
-    };
+    rng.select();
+  };
 
     /**
      * @param {Node[]} paras
      * @param {String} listName
      */
-    this.wrapList = function (paras, listName) {
+     this.wrapList = function (paras, listName) {
       var head = list.head(paras);
       var last = list.last(paras);
 
@@ -2607,7 +2611,7 @@
      * @param {Boolean} isEscapseToBody
      * @return {Node[]}
      */
-    this.releaseList = function (clustereds, isEscapseToBody) {
+     this.releaseList = function (clustereds, isEscapseToBody) {
       var releasedParas = [];
 
       $.each(clustereds, function (idx, paras) {
@@ -2615,7 +2619,7 @@
         var last = list.last(paras);
 
         var headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) :
-                                         head.parentNode;
+        head.parentNode;
         var lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
           node: last.parentNode,
           offset: dom.position(last) + 1
@@ -2627,7 +2631,7 @@
         }, true);
 
         paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi) :
-                                  list.from(middleList.childNodes).filter(dom.isLi);
+        list.from(middleList.childNodes).filter(dom.isLi);
 
         // LI to P
         if (isEscapseToBody || !dom.isList(headList.parentNode)) {
@@ -2654,15 +2658,15 @@
         releasedParas = releasedParas.concat(paras);
       });
 
-      return releasedParas;
-    };
-  };
+return releasedParas;
+};
+};
 
   /**
    * Editor
    * @class
    */
-  var Editor = function () {
+   var Editor = function () {
 
     var style = new Style();
     var table = new Table();
@@ -2672,7 +2676,7 @@
     /**
      * create range
      */
-    this.createRange = function ($editable) {
+     this.createRange = function ($editable) {
       $editable.focus();
       return range.create();
     };
@@ -2682,7 +2686,7 @@
      *
      * @param {jQuery} $editable
      */
-    this.saveRange = function ($editable, thenCollapse) {
+     this.saveRange = function ($editable, thenCollapse) {
       $editable.focus();
       $editable.data('range', range.create());
       if (thenCollapse) {
@@ -2695,7 +2699,7 @@
      *
      * @param {jQuery} $editable
      */
-    this.restoreRange = function ($editable) {
+     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
       if (rng) {
         rng.select();
@@ -2707,7 +2711,7 @@
      * current style
      * @param {Node} target
      */
-    this.currentStyle = function (target) {
+     this.currentStyle = function (target) {
       var rng = range.create();
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
@@ -2723,7 +2727,7 @@
      * undo
      * @param {jQuery} $editable
      */
-    this.undo = function ($editable) {
+     this.undo = function ($editable) {
       $editable.data('NoteHistory').undo();
       triggerOnChange($editable);
     };
@@ -2732,7 +2736,7 @@
      * redo
      * @param {jQuery} $editable
      */
-    this.redo = function ($editable) {
+     this.redo = function ($editable) {
       $editable.data('NoteHistory').redo();
       triggerOnChange($editable);
     };
@@ -2741,7 +2745,7 @@
      * after command
      * @param {jQuery} $editable
      */
-    var afterCommand = this.afterCommand = function ($editable) {
+     var afterCommand = this.afterCommand = function ($editable) {
       $editable.data('NoteHistory').recordUndo();
       triggerOnChange($editable);
     };
@@ -2749,9 +2753,9 @@
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
-                    'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'formatBlock', 'removeFormat',
-                    'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
+    'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+    'formatBlock', 'removeFormat',
+    'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
@@ -2770,7 +2774,7 @@
      * @param {jQuery} $editable
      * @param {Object} options
      */
-    this.tab = function ($editable, options) {
+     this.tab = function ($editable, options) {
       var rng = range.create();
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
@@ -2783,7 +2787,7 @@
     /**
      * handle shift+tab key
      */
-    this.untab = function () {
+     this.untab = function () {
       var rng = range.create();
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng, true);
@@ -2795,7 +2799,7 @@
      *
      * @param {Node} $editable
      */
-    this.insertParagraph = function ($editable) {
+     this.insertParagraph = function ($editable) {
       typing.insertParagraph($editable);
       afterCommand($editable);
     };
@@ -2803,7 +2807,7 @@
     /**
      * @param {jQuery} $editable
      */
-    this.insertOrderedList = function ($editable) {
+     this.insertOrderedList = function ($editable) {
       bullet.insertOrderedList($editable);
       afterCommand($editable);
     };
@@ -2811,7 +2815,7 @@
     /**
      * @param {jQuery} $editable
      */
-    this.insertUnorderedList = function ($editable) {
+     this.insertUnorderedList = function ($editable) {
       bullet.insertUnorderedList($editable);
       afterCommand($editable);
     };
@@ -2819,7 +2823,7 @@
     /**
      * @param {jQuery} $editable
      */
-    this.indent = function ($editable) {
+     this.indent = function ($editable) {
       bullet.indent($editable);
       afterCommand($editable);
     };
@@ -2827,7 +2831,7 @@
     /**
      * @param {jQuery} $editable
      */
-    this.outdent = function ($editable) {
+     this.outdent = function ($editable) {
       bullet.outdent($editable);
       afterCommand($editable);
     };
@@ -2838,7 +2842,7 @@
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl, filename) {
+     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
         $image.css({
           display: '',
@@ -2860,7 +2864,7 @@
      * @param {Node} node
      * @param {Boolean} [isInline]
      */
-    this.insertNode = function ($editable, node, isInline) {
+     this.insertNode = function ($editable, node, isInline) {
       range.create().insertNode(node, isInline);
       afterCommand($editable);
     };
@@ -2870,7 +2874,7 @@
      * @param {Node} $editable
      * @param {String} text
      */
-    this.insertText = function ($editable, text) {
+     this.insertText = function ($editable, text) {
       var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
@@ -2882,7 +2886,7 @@
      * @param {jQuery} $editable
      * @param {String} tagName
      */
-    this.formatBlock = function ($editable, tagName) {
+     this.formatBlock = function ($editable, tagName) {
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
@@ -2910,7 +2914,7 @@
      * @param {jQuery} $editable
      * @param {String} value - px
      */
-    this.fontSize = function ($editable, value) {
+     this.fontSize = function ($editable, value) {
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
@@ -2930,7 +2934,7 @@
      * @param {jQuery} $editable
      * @param {String} value
      */
-    this.lineHeight = function ($editable, value) {
+     this.lineHeight = function ($editable, value) {
       style.stylePara(range.create(), {
         lineHeight: value
       });
@@ -2944,7 +2948,7 @@
      *
      * @param {jQuery} $editable
      */
-    this.unlink = function ($editable) {
+     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
@@ -2965,7 +2969,7 @@
      * @param {Object} linkInfo
      * @param {Object} options
      */
-    this.createLink = function ($editable, linkInfo, options) {
+     this.createLink = function ($editable, linkInfo, options) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
@@ -2993,7 +2997,7 @@
      *
      * @return {Object}
      */
-    this.getLinkInfo = function ($editable) {
+     this.getLinkInfo = function ($editable) {
       $editable.focus();
 
       var rng = range.create().expand(dom.isAnchor);
@@ -3032,7 +3036,7 @@
      * @param {String} value
      * @param {jQuery} $target
      */
-    this.floatMe = function ($editable, value, $target) {
+     this.floatMe = function ($editable, value, $target) {
       $target.css('float', value);
       afterCommand($editable);
     };
@@ -3053,7 +3057,7 @@
      * @param {String} value
      * @param {jQuery} $target - target element
      */
-    this.resize = function ($editable, value, $target) {
+     this.resize = function ($editable, value, $target) {
       $target.css({
         width: value * 100 + '%',
         height: ''
@@ -3067,7 +3071,7 @@
      * @param {jQuery} $target - target element
      * @param {Boolean} [bKeepRatio] - keep ratio
      */
-    this.resizeTo = function (pos, $target, bKeepRatio) {
+     this.resizeTo = function (pos, $target, bKeepRatio) {
       var imageSize;
       if (bKeepRatio) {
         var newRatio = pos.y / pos.x;
@@ -3093,7 +3097,7 @@
      * @param {String} value - dummy argument (for keep interface)
      * @param {jQuery} $target - target element
      */
-    this.removeMedia = function ($editable, value, $target) {
+     this.removeMedia = function ($editable, value, $target) {
       $target.detach();
 
       afterCommand($editable);
@@ -3104,7 +3108,7 @@
    * History
    * @class
    */
-  var History = function ($editable) {
+   var History = function ($editable) {
     var stack = [], stackOffset = -1;
     var editable = $editable[0];
 
@@ -3160,20 +3164,20 @@
   /**
    * Button
    */
-  var Button = function () {
+   var Button = function () {
     /**
      * update button status
      *
      * @param {jQuery} $container
      * @param {Object} styleInfo
      */
-    this.update = function ($container, styleInfo) {
+     this.update = function ($container, styleInfo) {
       /**
        * handle dropdown's check mark (for fontname, fontsize, lineHeight).
        * @param {jQuery} $btn
        * @param {Number} value
        */
-      var checkDropdownMenu = function ($btn, value) {
+       var checkDropdownMenu = function ($btn, value) {
         $btn.find('.dropdown-menu li a').each(function () {
           // always compare string to avoid creating another func.
           var isChecked = ($(this).data('value') + '') === (value + '');
@@ -3187,7 +3191,7 @@
        * @param {String} selector
        * @param {Function} pred
        */
-      var btnState = function (selector, pred) {
+       var btnState = function (selector, pred) {
         var $btn = $container.find(selector);
         $btn.toggleClass('active', pred());
       };
@@ -3258,7 +3262,7 @@
      * @param {String} eventName
      * @param {value} value
      */
-    this.updateRecentColor = function (button, eventName, value) {
+     this.updateRecentColor = function (button, eventName, value) {
       var $color = $(button).closest('.note-color');
       var $recentColor = $color.find('.note-recent-color');
       var colorInfo = JSON.parse($recentColor.attr('data-value'));
@@ -3272,7 +3276,7 @@
   /**
    * Toolbar
    */
-  var Toolbar = function () {
+   var Toolbar = function () {
     var button = new Button();
 
     this.update = function ($toolbar, styleInfo) {
@@ -3284,7 +3288,7 @@
      * @param {String} eventName
      * @param {String} value
      */
-    this.updateRecentColor = function (buttonNode, eventName, value) {
+     this.updateRecentColor = function (buttonNode, eventName, value) {
       button.updateRecentColor(buttonNode, eventName, value);
     };
 
@@ -3292,20 +3296,20 @@
      * activate buttons exclude codeview
      * @param {jQuery} $toolbar
      */
-    this.activate = function ($toolbar) {
+     this.activate = function ($toolbar) {
       $toolbar.find('button')
-              .not('button[data-event="codeview"]')
-              .removeClass('disabled');
+      .not('button[data-event="codeview"]')
+      .removeClass('disabled');
     };
 
     /**
      * deactivate buttons exclude codeview
      * @param {jQuery} $toolbar
      */
-    this.deactivate = function ($toolbar) {
+     this.deactivate = function ($toolbar) {
       $toolbar.find('button')
-              .not('button[data-event="codeview"]')
-              .addClass('disabled');
+      .not('button[data-event="codeview"]')
+      .addClass('disabled');
     };
 
     this.updateFullscreen = function ($container, bFullscreen) {
@@ -3322,7 +3326,7 @@
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
-  var Popover = function () {
+   var Popover = function () {
     var button = new Button();
 
     /**
@@ -3330,7 +3334,7 @@
      * @param {Node} placeholder
      * @param {Boolean} isAirMode
      */
-    var posFromPlaceholder = function (placeholder, isAirMode) {
+     var posFromPlaceholder = function (placeholder, isAirMode) {
       var $placeholder = $(placeholder);
       var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
       var height = $placeholder.outerHeight(true); // include margin
@@ -3347,7 +3351,7 @@
      * @param {jQuery} popover
      * @param {Position} pos
      */
-    var showPopover = function ($popover, pos) {
+     var showPopover = function ($popover, pos) {
       $popover.css({
         display: 'block',
         left: pos.left,
@@ -3363,7 +3367,7 @@
      * @param {Object} styleInfo - style object
      * @param {Boolean} isAirMode
      */
-    this.update = function ($popover, styleInfo, isAirMode) {
+     this.update = function ($popover, styleInfo, isAirMode) {
       button.update($popover, styleInfo);
 
       var $linkPopover = $popover.find('.note-link-popover');
@@ -3400,7 +3404,7 @@
      * @param {String} eventName
      * @param {String} value
      */
-    this.updateRecentColor = function (button, eventName, value) {
+     this.updateRecentColor = function (button, eventName, value) {
       button.updateRecentColor(button, eventName, value);
     };
 
@@ -3408,7 +3412,7 @@
      * hide all popovers
      * @param {jQuery} $popover - popover container
      */
-    this.hide = function ($popover) {
+     this.hide = function ($popover) {
       $popover.children().hide();
     };
   };
@@ -3416,14 +3420,14 @@
   /**
    * Handle
    */
-  var Handle = function () {
+   var Handle = function () {
     /**
      * update handle
      * @param {jQuery} $handle
      * @param {Object} styleInfo
      * @param {Boolean} isAirMode
      */
-    this.update = function ($handle, styleInfo, isAirMode) {
+     this.update = function ($handle, styleInfo, isAirMode) {
       var $selection = $handle.find('.note-control-selection');
       if (styleInfo.image) {
         var $image = $(styleInfo.image);
@@ -3459,7 +3463,7 @@
    *
    * @class
    */
-  var Dialog = function () {
+   var Dialog = function () {
 
     /**
      * toggle button status
@@ -3467,7 +3471,7 @@
      * @param {jQuery} $btn
      * @param {Boolean} isEnable
      */
-    var toggleBtn = function ($btn, isEnable) {
+     var toggleBtn = function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
     };
@@ -3479,13 +3483,13 @@
      * @param {jQuery} $dialog
      * @return {Promise}
      */
-    this.showImageDialog = function ($editable, $dialog) {
+     this.showImageDialog = function ($editable, $dialog) {
       return $.Deferred(function (deferred) {
         var $imageDialog = $dialog.find('.note-image-dialog');
 
         var $imageInput = $dialog.find('.note-image-input'),
-            $imageUrl = $dialog.find('.note-image-url'),
-            $imageBtn = $dialog.find('.note-image-btn');
+        $imageUrl = $dialog.find('.note-image-url'),
+        $imageBtn = $dialog.find('.note-image-btn');
 
         $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
@@ -3495,7 +3499,7 @@
               $imageDialog.modal('hide');
             })
             .val('')
-          );
+            );
 
           $imageBtn.click(function (event) {
             event.preventDefault();
@@ -3525,7 +3529,7 @@
           }
         }).modal('show');
       });
-    };
+};
 
     /**
      * Show link dialog and set event handlers on dialog controls.
@@ -3534,7 +3538,7 @@
      * @param {Object} linkInfo
      * @return {Promise}
      */
-    this.showLinkDialog = function ($editable, $dialog, linkInfo) {
+     this.showLinkDialog = function ($editable, $dialog, linkInfo) {
       return $.Deferred(function (deferred) {
         var $linkDialog = $dialog.find('.note-link-dialog');
 
@@ -3591,14 +3595,14 @@
           }
         }).modal('show');
       }).promise();
-    };
+};
 
     /**
      * show help dialog
      *
      * @param {jQuery} $dialog
      */
-    this.showHelpDialog = function ($editable, $dialog) {
+     this.showHelpDialog = function ($editable, $dialog) {
       return $.Deferred(function (deferred) {
         var $helpDialog = $dialog.find('.note-help-dialog');
 
@@ -3624,7 +3628,7 @@
   /**
    * EventHandler
    */
-  var EventHandler = function () {
+   var EventHandler = function () {
     var $window = $(window);
     var $document = $(document);
     var $scrollbar = $('html, body');
@@ -3643,7 +3647,7 @@
      * @param {Node} descendant
      * @returns {Object}
      */
-    var makeLayoutInfo = function (descendant) {
+     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
 
       if (!$target.length) { return null; }
@@ -3664,9 +3668,9 @@
      * @param {Object} layoutInfo
      * @param {File[]} files
      */
-    var insertImages = function (layoutInfo, files) {
+     var insertImages = function (layoutInfo, files) {
       var $editor = layoutInfo.editor(),
-          $editable = layoutInfo.editable();
+      $editable = layoutInfo.editable();
 
       var callbacks = $editable.data('callbacks');
       var options = $editor.data('options');
@@ -3675,37 +3679,37 @@
       if (callbacks.onImageUpload) {
         callbacks.onImageUpload(files, editor, $editable);
       // else insert Image as dataURL
-      } else {
-        $.each(files, function (idx, file) {
-          var filename = file.name;
-          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
-            } else {
-              alert(options.langInfo.image.maximumFileSizeError);
-            }
+    } else {
+      $.each(files, function (idx, file) {
+        var filename = file.name;
+        if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
+          if (callbacks.onImageUploadError) {
+            callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
           } else {
-            async.readFileAsDataURL(file).then(function (sDataURL) {
-              editor.insertImage($editable, sDataURL, filename);
-            }).fail(function () {
-              if (callbacks.onImageUploadError) {
-                callbacks.onImageUploadError();
-              }
-            });
+            alert(options.langInfo.image.maximumFileSizeError);
           }
-        });
-      }
-    };
+        } else {
+          async.readFileAsDataURL(file).then(function (sDataURL) {
+            editor.insertImage($editable, sDataURL, filename);
+          }).fail(function () {
+            if (callbacks.onImageUploadError) {
+              callbacks.onImageUploadError();
+            }
+          });
+        }
+      });
+    }
+  };
 
-    var commands = {
+  var commands = {
       /**
        * @param {Object} layoutInfo
        */
-      showLinkDialog: function (layoutInfo) {
+       showLinkDialog: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-            $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable(),
-            linkInfo = editor.getLinkInfo($editable);
+        $dialog = layoutInfo.dialog(),
+        $editable = layoutInfo.editable(),
+        linkInfo = editor.getLinkInfo($editable);
 
         var options = $editor.data('options');
 
@@ -3723,9 +3727,9 @@
       /**
        * @param {Object} layoutInfo
        */
-      showImageDialog: function (layoutInfo) {
+       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+        $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
@@ -3746,9 +3750,9 @@
       /**
        * @param {Object} layoutInfo
        */
-      showHelpDialog: function (layoutInfo) {
+       showHelpDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+        $editable = layoutInfo.editable();
 
         editor.saveRange($editable, true);
         dialog.showHelpDialog($editable, $dialog).then(function () {
@@ -3888,14 +3892,14 @@
      *
      * @param {Event} event
      */
-    var hPasteClipboardImage = function (event) {
+     var hPasteClipboardImage = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
         return;
       }
 
       var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
-          $editable = layoutInfo.editable();
+      $editable = layoutInfo.editable();
 
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
@@ -3913,19 +3917,19 @@
      *
      * @param {MouseEvent} event
      */
-    var hHandleMousedown = function (event) {
+     var hHandleMousedown = function (event) {
       if (dom.isControlSizing(event.target)) {
         event.preventDefault();
         event.stopPropagation();
 
         var layoutInfo = makeLayoutInfo(event.target),
-            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
-            $editable = layoutInfo.editable(),
-            $editor = layoutInfo.editor();
+        $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
+        $editable = layoutInfo.editable(),
+        $editor = layoutInfo.editor();
 
         var target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target), posStart = $target.offset(),
-            scrollTop = $document.scrollTop();
+        $target = $(target), posStart = $target.offset(),
+        scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
 
@@ -3961,8 +3965,8 @@
 
       if ($btn.length) {
         var eventName = $btn.attr('data-event'),
-            value = $btn.attr('data-value'),
-            hide = $btn.attr('data-hide');
+        value = $btn.attr('data-value'),
+        hide = $btn.attr('data-hide');
 
         var layoutInfo = makeLayoutInfo(event.target);
 
@@ -4008,7 +4012,7 @@
      *
      * @param {MouseEvent} event
      */
-    var hStatusbarMousedown = function (event) {
+     var hStatusbarMousedown = function (event) {
       event.preventDefault();
       event.stopPropagation();
 
@@ -4078,7 +4082,7 @@
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options
      */
-    var handleDragAndDropEvent = function (layoutInfo, options) {
+     var handleDragAndDropEvent = function (layoutInfo, options) {
       if (options.disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
@@ -4095,10 +4099,10 @@
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options
      */
-    var attachDragAndDropEvent = function (layoutInfo, options) {
+     var attachDragAndDropEvent = function (layoutInfo, options) {
       var collection = $(),
-          $dropzone = layoutInfo.dropzone,
-          $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
+      $dropzone = layoutInfo.dropzone,
+      $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
@@ -4149,7 +4153,7 @@
      * @param {Object} layoutInfo
      * @param {Object} keyMap
      */
-    this.bindKeyMap = function (layoutInfo, keyMap) {
+     this.bindKeyMap = function (layoutInfo, keyMap) {
       var $editor = layoutInfo.editor;
       var $editable = layoutInfo.editable;
 
@@ -4185,7 +4189,7 @@
           editor.afterCommand($editable);
         }
       });
-    };
+};
 
     /**
      * attach eventhandler
@@ -4194,7 +4198,7 @@
      * @param {Object} options - user options include custom event handlers
      * @param {Function} options.enter - enter key handler
      */
-    this.attach = function (layoutInfo, options) {
+     this.attach = function (layoutInfo, options) {
       // handlers for editable
       if (options.shortcuts) {
         this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
@@ -4226,7 +4230,7 @@
 
       // handler for table dimension
       var $catcherContainer = options.airMode ? layoutInfo.popover :
-                                                layoutInfo.toolbar;
+      layoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.css({
         width: options.insertTableMaxSize.col + 'em',
@@ -4311,7 +4315,7 @@
    *
    * rendering toolbar and editable
    */
-  var Renderer = function () {
+   var Renderer = function () {
 
     /**
      * bootstrap button template
@@ -4324,7 +4328,7 @@
      * @param {String} [options.dropdown]
      * @param {String} [options.hide]
      */
-    var tplButton = function (label, options) {
+     var tplButton = function (label, options) {
       var event = options.event;
       var value = options.value;
       var title = options.title;
@@ -4333,20 +4337,20 @@
       var hide = options.hide;
 
       return '<button type="button"' +
-                 ' class="btn btn-default btn-sm btn-small' +
-                   (className ? ' ' + className : '') +
-                   (dropdown ? ' dropdown-toggle' : '') +
-                 '"' +
-                 (dropdown ? ' data-toggle="dropdown"' : '') +
-                 (title ? ' title="' + title + '"' : '') +
-                 (event ? ' data-event="' + event + '"' : '') +
-                 (value ? ' data-value=\'' + value + '\'' : '') +
-                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
-                 ' tabindex="-1">' +
-               label +
-               (dropdown ? ' <span class="caret"></span>' : '') +
-             '</button>' +
-             (dropdown || '');
+      ' class="btn btn-default btn-sm btn-small' +
+      (className ? ' ' + className : '') +
+      (dropdown ? ' dropdown-toggle' : '') +
+      '"' +
+      (dropdown ? ' data-toggle="dropdown"' : '') +
+      (title ? ' title="' + title + '"' : '') +
+      (event ? ' data-event="' + event + '"' : '') +
+      (value ? ' data-value=\'' + value + '\'' : '') +
+      (hide ? ' data-hide=\'' + hide + '\'' : '') +
+      ' tabindex="-1">' +
+      label +
+      (dropdown ? ' <span class="caret"></span>' : '') +
+      '</button>' +
+      (dropdown || '');
     };
 
     /**
@@ -4359,7 +4363,7 @@
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
      */
-    var tplIconButton = function (iconClassName, options) {
+     var tplIconButton = function (iconClassName, options) {
       var label = '<i class="' + iconClassName + '"></i>';
       return tplButton(label, options);
     };
@@ -4370,13 +4374,13 @@
      * @param {String} className
      * @param {String} content
      */
-    var tplPopover = function (className, content) {
+     var tplPopover = function (className, content) {
       return '<div class="' + className + ' popover bottom in" style="display: none;">' +
-               '<div class="arrow"></div>' +
-               '<div class="popover-content">' +
-                 content +
-               '</div>' +
-             '</div>';
+      '<div class="arrow"></div>' +
+      '<div class="popover-content">' +
+      content +
+      '</div>' +
+      '</div>';
     };
 
     /**
@@ -4387,25 +4391,25 @@
      * @param {String} body
      * @param {String} [footer]
      */
-    var tplDialog = function (className, title, body, footer) {
+     var tplDialog = function (className, title, body, footer) {
       return '<div class="' + className + ' modal" aria-hidden="false">' +
-               '<div class="modal-dialog">' +
-                 '<div class="modal-content">' +
-                   (title ?
-                   '<div class="modal-header">' +
-                     '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                     '<h4 class="modal-title">' + title + '</h4>' +
-                   '</div>' : ''
-                   ) +
-                   '<form class="note-modal-form">' +
-                     '<div class="modal-body">' + body + '</div>' +
-                     (footer ?
-                     '<div class="modal-footer">' + footer + '</div>' : ''
-                     ) +
-                   '</form>' +
-                 '</div>' +
-               '</div>' +
-             '</div>';
+      '<div class="modal-dialog">' +
+      '<div class="modal-content">' +
+      (title ?
+       '<div class="modal-header">' +
+       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+       '<h4 class="modal-title">' + title + '</h4>' +
+       '</div>' : ''
+       ) +
+      '<form class="note-modal-form">' +
+      '<div class="modal-body">' + body + '</div>' +
+      (footer ?
+       '<div class="modal-footer">' + footer + '</div>' : ''
+       ) +
+      '</form>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
     };
 
     var tplButtonInfo = {
@@ -4425,13 +4429,13 @@
       },
       table: function (lang) {
         var dropdown = '<ul class="note-table dropdown-menu">' +
-                         '<div class="note-dimension-picker">' +
-                           '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
-                           '<div class="note-dimension-picker-highlighted"></div>' +
-                           '<div class="note-dimension-picker-unhighlighted"></div>' +
-                         '</div>' +
-                         '<div class="note-dimension-display"> 1 x 1 </div>' +
-                       '</ul>';
+        '<div class="note-dimension-picker">' +
+        '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
+        '<div class="note-dimension-picker-highlighted"></div>' +
+        '<div class="note-dimension-picker-unhighlighted"></div>' +
+        '</div>' +
+        '<div class="note-dimension-display"> 1 x 1 </div>' +
+        '</ul>';
         return tplIconButton('fa fa-table', {
           title: lang.table.table,
           dropdown: dropdown
@@ -4441,11 +4445,11 @@
         var items = options.styleTags.reduce(function (memo, v) {
           var label = lang.style[v === 'p' ? 'normal' : v];
           return memo + '<li><a data-event="formatBlock" href="#" data-value="' + v + '">' +
-                   (
-                     (v === 'p' || v === 'pre') ? label :
-                     '<' + v + '>' + label + '</' + v + '>'
-                   ) +
-                 '</a></li>';
+          (
+           (v === 'p' || v === 'pre') ? label :
+           '<' + v + '>' + label + '</' + v + '>'
+           ) +
+          '</a></li>';
         }, '');
 
         return tplIconButton('fa fa-magic', {
@@ -4457,12 +4461,12 @@
         var items = options.fontNames.reduce(function (memo, v) {
           if (!agent.isFontInstalled(v)) { return memo; }
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
-                        '</a></li>';
+          '<i class="fa fa-check"></i> ' + v +
+          '</a></li>';
         }, '');
         var label = '<span class="note-current-fontname">' +
-                       options.defaultFontName +
-                     '</span>';
+        options.defaultFontName +
+        '</span>';
         return tplButton(label, {
           title: lang.font.name,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
@@ -4478,24 +4482,24 @@
         });
 
         var dropdown = '<ul class="dropdown-menu">' +
-                         '<li>' +
-                           '<div class="btn-group">' +
-                             '<div class="note-palette-title">' + lang.color.background + '</div>' +
-                             '<div class="note-color-reset" data-event="backColor"' +
-                               ' data-value="inherit" title="' + lang.color.transparent + '">' +
-                               lang.color.setTransparent +
-                             '</div>' +
-                             '<div class="note-color-palette" data-target-event="backColor"></div>' +
-                           '</div>' +
-                           '<div class="btn-group">' +
-                             '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
-                             '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
-                               lang.color.resetToDefault +
-                             '</div>' +
-                             '<div class="note-color-palette" data-target-event="foreColor"></div>' +
-                           '</div>' +
-                         '</li>' +
-                       '</ul>';
+        '<li>' +
+        '<div class="btn-group">' +
+        '<div class="note-palette-title">' + lang.color.background + '</div>' +
+        '<div class="note-color-reset" data-event="backColor"' +
+        ' data-value="inherit" title="' + lang.color.transparent + '">' +
+        lang.color.setTransparent +
+        '</div>' +
+        '<div class="note-color-palette" data-target-event="backColor"></div>' +
+        '</div>' +
+        '<div class="btn-group">' +
+        '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
+        '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
+        lang.color.resetToDefault +
+        '</div>' +
+        '<div class="note-color-palette" data-target-event="foreColor"></div>' +
+        '</div>' +
+        '</li>' +
+        '</ul>';
 
         var moreButton = tplButton('', {
           title: lang.color.more,
@@ -4568,13 +4572,13 @@
         });
 
         var dropdown = '<div class="dropdown-menu">' +
-                         '<div class="note-align btn-group">' +
-                           leftButton + centerButton + rightButton + justifyButton +
-                         '</div>' +
-                         '<div class="note-list btn-group">' +
-                           indentButton + outdentButton +
-                         '</div>' +
-                       '</div>';
+        '<div class="note-align btn-group">' +
+        leftButton + centerButton + rightButton + justifyButton +
+        '</div>' +
+        '<div class="note-list btn-group">' +
+        indentButton + outdentButton +
+        '</div>' +
+        '</div>';
 
         return tplIconButton('fa fa-align-left', {
           title: lang.paragraph.paragraph,
@@ -4584,8 +4588,8 @@
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
           return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
-                        '</a></li>';
+          '<i class="fa fa-check"></i> ' + v +
+          '</a></li>';
         }, '');
 
         return tplIconButton('fa fa-text-height', {
@@ -4645,9 +4649,9 @@
           event: 'unlink'
         });
         var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
-                      '<div class="note-insert btn-group">' +
-                        linkButton + unlinkButton +
-                      '</div>';
+        '<div class="note-insert btn-group">' +
+        linkButton + unlinkButton +
+        '</div>';
         return tplPopover('note-link-popover', content);
       };
 
@@ -4712,9 +4716,9 @@
         });
 
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
-                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
-                      '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
-                      '<div class="btn-group">' + removeButton + '</div>';
+        '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+        '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
+        '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
 
@@ -4733,23 +4737,23 @@
       };
 
       return '<div class="note-popover">' +
-               tplLinkPopover() +
-               tplImagePopover() +
-               (options.airMode ?  tplAirPopover() : '') +
-             '</div>';
+      tplLinkPopover() +
+      tplImagePopover() +
+      (options.airMode ?  tplAirPopover() : '') +
+      '</div>';
     };
 
     var tplHandles = function () {
       return '<div class="note-handle">' +
-               '<div class="note-control-selection">' +
-                 '<div class="note-control-selection-bg"></div>' +
-                 '<div class="note-control-holder note-control-nw"></div>' +
-                 '<div class="note-control-holder note-control-ne"></div>' +
-                 '<div class="note-control-holder note-control-sw"></div>' +
-                 '<div class="note-control-sizing note-control-se"></div>' +
-                 '<div class="note-control-selection-info"></div>' +
-               '</div>' +
-             '</div>';
+      '<div class="note-control-selection">' +
+      '<div class="note-control-selection-bg"></div>' +
+      '<div class="note-control-holder note-control-nw"></div>' +
+      '<div class="note-control-holder note-control-ne"></div>' +
+      '<div class="note-control-holder note-control-sw"></div>' +
+      '<div class="note-control-sizing note-control-se"></div>' +
+      '<div class="note-control-selection-info"></div>' +
+      '</div>' +
+      '</div>';
     };
 
     /**
@@ -4757,7 +4761,7 @@
      * @param {String} title
      * @param {String} body
      */
-    var tplShortcut = function (title, keys) {
+     var tplShortcut = function (title, keys) {
       var keyClass = 'note-shortcut-col col-xs-6 note-shortcut-';
       var body = [];
 
@@ -4769,16 +4773,16 @@
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
-             '<div class="note-shortcut-row row">' + body.join('</div><div class="note-shortcut-row row">') + '</div>';
+      '<div class="note-shortcut-row row">' + body.join('</div><div class="note-shortcut-row row">') + '</div>';
     };
 
     var tplShortcutText = function (lang) {
       var keys = [
-        { kbd: '⌘ + B', text: lang.font.bold },
-        { kbd: '⌘ + I', text: lang.font.italic },
-        { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
-        { kbd: '⌘ + \\', text: lang.font.clear }
+      { kbd: '⌘ + B', text: lang.font.bold },
+      { kbd: '⌘ + I', text: lang.font.italic },
+      { kbd: '⌘ + U', text: lang.font.underline },
+      { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
+      { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
       return tplShortcut(lang.shortcut.textFormatting, keys);
@@ -4786,11 +4790,11 @@
 
     var tplShortcutAction = function (lang) {
       var keys = [
-        { kbd: '⌘ + Z', text: lang.history.undo },
-        { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
-        { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
-        { kbd: '⌘ + ENTER', text: lang.hr.insert }
+      { kbd: '⌘ + Z', text: lang.history.undo },
+      { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
+      { kbd: '⌘ + ]', text: lang.paragraph.indent },
+      { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+      { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
       return tplShortcut(lang.shortcut.action, keys);
@@ -4798,12 +4802,12 @@
 
     var tplShortcutPara = function (lang) {
       var keys = [
-        { kbd: '⌘ + ⇧ + L', text: lang.paragraph.left },
-        { kbd: '⌘ + ⇧ + E', text: lang.paragraph.center },
-        { kbd: '⌘ + ⇧ + R', text: lang.paragraph.right },
-        { kbd: '⌘ + ⇧ + J', text: lang.paragraph.justify },
-        { kbd: '⌘ + ⇧ + NUM7', text: lang.lists.ordered },
-        { kbd: '⌘ + ⇧ + NUM8', text: lang.lists.unordered }
+      { kbd: '⌘ + ⇧ + L', text: lang.paragraph.left },
+      { kbd: '⌘ + ⇧ + E', text: lang.paragraph.center },
+      { kbd: '⌘ + ⇧ + R', text: lang.paragraph.right },
+      { kbd: '⌘ + ⇧ + J', text: lang.paragraph.justify },
+      { kbd: '⌘ + ⇧ + NUM7', text: lang.lists.ordered },
+      { kbd: '⌘ + ⇧ + NUM8', text: lang.lists.unordered }
       ];
 
       return tplShortcut(lang.shortcut.paragraphFormatting, keys);
@@ -4811,13 +4815,13 @@
 
     var tplShortcutStyle = function (lang) {
       var keys = [
-        { kbd: '⌘ + NUM0', text: lang.style.normal },
-        { kbd: '⌘ + NUM1', text: lang.style.h1 },
-        { kbd: '⌘ + NUM2', text: lang.style.h2 },
-        { kbd: '⌘ + NUM3', text: lang.style.h3 },
-        { kbd: '⌘ + NUM4', text: lang.style.h4 },
-        { kbd: '⌘ + NUM5', text: lang.style.h5 },
-        { kbd: '⌘ + NUM6', text: lang.style.h6 }
+      { kbd: '⌘ + NUM0', text: lang.style.normal },
+      { kbd: '⌘ + NUM1', text: lang.style.h1 },
+      { kbd: '⌘ + NUM2', text: lang.style.h2 },
+      { kbd: '⌘ + NUM3', text: lang.style.h3 },
+      { kbd: '⌘ + NUM4', text: lang.style.h4 },
+      { kbd: '⌘ + NUM5', text: lang.style.h5 },
+      { kbd: '⌘ + NUM6', text: lang.style.h6 }
       ];
 
       return tplShortcut(lang.shortcut.documentStyle, keys);
@@ -4839,10 +4843,10 @@
     var tplShortcutTable = function (lang, options) {
       var colClass = 'class="note-shortcut note-shortcut-col col-sm-6 col-xs-12"';
       var template = [
-        '<div ' + colClass + '>' + tplShortcutAction(lang, options) + '</div>' +
-        '<div ' + colClass + '>' + tplShortcutText(lang, options) + '</div>',
-        '<div ' + colClass + '>' + tplShortcutStyle(lang, options) + '</div>' +
-        '<div ' + colClass + '>' + tplShortcutPara(lang, options) + '</div>'
+      '<div ' + colClass + '>' + tplShortcutAction(lang, options) + '</div>' +
+      '<div ' + colClass + '>' + tplShortcutText(lang, options) + '</div>',
+      '<div ' + colClass + '>' + tplShortcutStyle(lang, options) + '</div>' +
+      '<div ' + colClass + '>' + tplShortcutPara(lang, options) + '</div>'
       ];
 
       if (options.extraKeys) {
@@ -4850,8 +4854,8 @@
       }
 
       return '<div class="note-shortcut-row row">' +
-               template.join('</div><div class="note-shortcut-row row">') +
-             '</div>';
+      template.join('</div><div class="note-shortcut-row row">') +
+      '</div>';
     };
 
     var replaceMacKeys = function (sHtml) {
@@ -4864,52 +4868,52 @@
         if (options.maximumImageFileSize) {
           var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
           var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
-                             ' ' + ' KMGTP'[unit] + 'B';
+          ' ' + ' KMGTP'[unit] + 'B';
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                     imageLimitation +
-                   '</div>' +
-                   '<div class="form-group row-fluid">' +
-                     '<label>' + lang.image.url + '</label>' +
-                     '<input class="note-image-url form-control span12" type="text" />' +
-                   '</div>';
+        '<label>' + lang.image.selectFromFiles + '</label>' +
+        '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+        imageLimitation +
+        '</div>' +
+        '<div class="form-group row-fluid">' +
+        '<label>' + lang.image.url + '</label>' +
+        '<input class="note-image-url form-control span12" type="text" />' +
+        '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       },
 
       link: function (lang, options) {
         var body = '<div class="form-group row-fluid">' +
-                     '<label>' + lang.link.textToDisplay + '</label>' +
-                     '<input class="note-link-text form-control span12" type="text" />' +
-                   '</div>' +
-                   '<div class="form-group row-fluid">' +
-                     '<label>' + lang.link.url + '</label>' +
-                     '<input class="note-link-url form-control span12" type="text" />' +
-                   '</div>' +
-                   (!options.disableLinkTarget ?
-                     '<div class="checkbox">' +
-                       '<label>' + '<input type="checkbox" checked> ' +
-                         lang.link.openInNewWindow +
-                       '</label>' +
-                     '</div>' : ''
-                   );
+        '<label>' + lang.link.textToDisplay + '</label>' +
+        '<input class="note-link-text form-control span12" type="text" />' +
+        '</div>' +
+        '<div class="form-group row-fluid">' +
+        '<label>' + lang.link.url + '</label>' +
+        '<input class="note-link-url form-control span12" type="text" />' +
+        '</div>' +
+        (!options.disableLinkTarget ?
+         '<div class="checkbox">' +
+         '<label>' + '<input type="checkbox" checked> ' +
+         lang.link.openInNewWindow +
+         '</label>' +
+         '</div>' : ''
+         );
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       },
 
       help: function (lang, options) {
         var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
-                   '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                   (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
-                   '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.0</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
-                   '</p>';
+        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
+        (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
+        '<p class="text-center">' +
+        '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.0</a> · ' +
+        '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
+        '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+        '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       }
     };
@@ -4926,10 +4930,10 @@
 
     var tplStatusbar = function () {
       return '<div class="note-resizebar">' +
-               '<div class="note-icon-bar"></div>' +
-               '<div class="note-icon-bar"></div>' +
-               '<div class="note-icon-bar"></div>' +
-             '</div>';
+      '<div class="note-icon-bar"></div>' +
+      '<div class="note-icon-bar"></div>' +
+      '<div class="note-icon-bar"></div>' +
+      '</div>';
     };
 
     var representShortcut = function (str) {
@@ -4938,9 +4942,9 @@
       }
 
       return str.replace('BACKSLASH', '\\')
-                .replace('SLASH', '/')
-                .replace('LEFTBRACKET', '[')
-                .replace('RIGHTBRACKET', ']');
+      .replace('SLASH', '/')
+      .replace('LEFTBRACKET', '[')
+      .replace('RIGHTBRACKET', ']');
     };
 
     /**
@@ -4950,7 +4954,7 @@
      * @param {Object} keyMap
      * @param {String} [sPlacement]
      */
-    var createTooltip = function ($container, keyMap, sPlacement) {
+     var createTooltip = function ($container, keyMap, sPlacement) {
       var invertedKeyMap = func.invertObject(keyMap);
       var $buttons = $container.find('button');
 
@@ -4964,14 +4968,14 @@
         }
       // bootstrap tooltip on btn-group bug
       // https://github.com/twbs/bootstrap/issues/5687
-      }).tooltip({
-        container: 'body',
-        trigger: 'hover',
-        placement: sPlacement || 'top'
-      }).on('click', function () {
-        $(this).tooltip('hide');
-      });
-    };
+    }).tooltip({
+      container: 'body',
+      trigger: 'hover',
+      placement: sPlacement || 'top'
+    }).on('click', function () {
+      $(this).tooltip('hide');
+    });
+  };
 
     // createPalette
     var createPalette = function ($container, options) {
@@ -4985,10 +4989,10 @@
           for (var col = 0, lenCol = colors.length; col < lenCol; col++) {
             var color = colors[col];
             buttons.push(['<button type="button" class="note-color-btn" style="background-color:', color,
-                           ';" data-event="', eventName,
-                           '" data-value="', color,
-                           '" title="', color,
-                           '" data-toggle="button" tabindex="-1"></button>'].join(''));
+             ';" data-event="', eventName,
+             '" data-value="', color,
+             '" title="', color,
+             '" data-toggle="button" tabindex="-1"></button>'].join(''));
           }
           paletteContents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
         }
@@ -5002,7 +5006,7 @@
      * @param {jQuery} $holder
      * @param {Object} options
      */
-    this.createLayoutByAirMode = function ($holder, options) {
+     this.createLayoutByAirMode = function ($holder, options) {
       var langInfo = options.langInfo;
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var id = func.uniqueId();
@@ -5045,7 +5049,7 @@
      * @param {jQuery} $holder
      * @param {Object} options
      */
-    this.createLayoutByFrame = function ($holder, options) {
+     this.createLayoutByFrame = function ($holder, options) {
       var langInfo = options.langInfo;
 
       //01. create Editor
@@ -5062,7 +5066,7 @@
       //03. create Editable
       var isContentEditable = !$holder.is(':disabled');
       var $editable = $('<div class="note-editable" contentEditable="' + isContentEditable + '"></div>')
-          .prependTo($editor);
+      .prependTo($editor);
       if (options.height) {
         $editable.height(options.height);
       }
@@ -5139,7 +5143,7 @@
      * @param {jQuery} $holder
      * @param {Object} options
      */
-    this.createLayout = function ($holder, options) {
+     this.createLayout = function ($holder, options) {
       if (this.noteEditorFromHolder($holder).length) {
         return;
       }
@@ -5157,7 +5161,7 @@
      * @param {jQuery} $holder - placeholder
      * @returns {Object}
      */
-    this.layoutInfoFromHolder = function ($holder) {
+     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);
       if (!$editor.length) { return; }
 
@@ -5179,10 +5183,10 @@
      * @param {Object} options
      *
      */
-    this.removeLayout = function ($holder, layoutInfo, options) {
+     this.removeLayout = function ($holder, layoutInfo, options) {
       if (options.airMode) {
         $holder.removeClass('note-air-editor note-editable')
-               .removeAttr('id contentEditable');
+        .removeAttr('id contentEditable');
 
         layoutInfo.popover.remove();
         layoutInfo.handle.remove();
@@ -5237,7 +5241,7 @@
    *
    * @param {Object} plugin
    */
-  $.summernote.addPlugin = function (plugin) {
+   $.summernote.addPlugin = function (plugin) {
     if (plugin.buttons) {
       $.each(plugin.buttons, function (name, button) {
         renderer.addButtonInfo(name, button);
@@ -5272,7 +5276,7 @@
   /**
    * extend jquery fn
    */
-  $.fn.extend({
+   $.fn.extend({
     /**
      * initialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
@@ -5280,7 +5284,7 @@
      * @param {Object} options
      * @returns {this}
      */
-    summernote: function (options) {
+     summernote: function (options) {
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
@@ -5332,7 +5336,7 @@
      * @param {String} [sHTML] - HTML contents(optional, set)
      * @returns {this|String} - context(set) or HTML contents of note(get).
      */
-    code: function (sHTML) {
+     code: function (sHTML) {
       // get the HTML contents of note
       if (sHTML === undefined) {
         var $holder = this.first();
@@ -5362,7 +5366,7 @@
      *
      * @returns {this}
      */
-    destroy: function () {
+     destroy: function () {
       this.each(function (idx, holder) {
         var $holder = $(holder);
 

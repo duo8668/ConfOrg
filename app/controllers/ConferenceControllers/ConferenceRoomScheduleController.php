@@ -60,7 +60,7 @@ class ConferenceRoomScheduleController extends BaseController {
 
 
 				if(count($listUsed) > 0 ){
-					$available = Room::whereNotIn('room_id',$used)
+					$available = Room::whereNotIn('room_id',$listUsed)
 					->select('room_id', 'room_name')
 					->get();
 				}else{

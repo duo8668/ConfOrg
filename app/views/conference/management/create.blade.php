@@ -239,7 +239,14 @@ Add New Conference
                 	message = 'Unknown error occurred. Please contact System Administrator.'
                 }
                 $('#modalMessage').html(message);
-                setTimeout(function(){$('#resultModal').modal('hide');},1000);
+                setTimeout(function(){
+                	if(result.success != undefined){
+                		window.location.href ='manage?conf_id=' + result.success.createdConf.conf_id;
+                	}else{
+                		$('#resultModal').modal('hide');
+                	}
+                	
+                },1000);
             }, 'json')
             .fail(function(){
 
