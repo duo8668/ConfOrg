@@ -88,7 +88,7 @@ class ReviewController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		// view user's own review to current submission
 	}
 
 
@@ -100,7 +100,7 @@ class ReviewController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		// edit user's own review to current submission
 	}
 
 

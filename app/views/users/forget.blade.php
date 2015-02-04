@@ -20,14 +20,16 @@
                         {{ Form::open(array('route' => 'users-forget-password-post', 'method' => 'post')) }}
                             <fieldset>
                                 <div class="form-group">
-                                    <input type ="email" class="form-control" placeholder="E-mail" name="email" {{Input::old('email') ? ' value="' . e(Input::old('email')) . '"' : ''  }} autofocus>
+                                    {{ Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'E-mail', 'autofocus' => 'yes')) }}
+                                    <!-- <input type ="email" class="form-control" placeholder="E-mail" name="email" {{Input::old('email') ? ' value="' . e(Input::old('email')) . '"' : ''  }} autofocus> -->
                                     @if($errors->has('email'))
-                                        {{  $errors->first('email')  }} 
+                                        <p class="text-danger">{{  $errors->first('email') }}</p> 
                                     @endif                                     
                                 </div>
                                 
                                 <!-- Button -->
-                                 <input type="submit" class="btn btn-md btn-success btn-block" value="Recover Password">
+                                {{ Form::submit('Recover Password', array('class' => 'btn btn-md btn-success btn-block')) }}
+                                 <!-- <input type="submit" class="btn btn-md btn-success btn-block" value="Recover Password"> -->
                                 {{ Form::token() }} 
                                  <hr>
                                 <a href="{{ URL::route('users-sign-in') }}" class="pull-right">Back to Login</a>

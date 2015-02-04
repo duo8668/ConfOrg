@@ -57,6 +57,20 @@
           {{ Form::label('sub_keywords', 'Keywords *') }}     
           {{ Form::text('sub_keywords', '', array('class' => 'form-control', 'placeholder' => 'Separated by commas, e.g. apples,oranges,grapes')) }}
         </div>
+
+        <!-- Upload --> 
+        <div class="form-group">
+          {{ Form::label('attachment_path', 'Upload your file *') }} 
+          {{ Form::file('attachment_path', array('class' => 'input-file')) }}
+          <p class="help-block">Please ensure your file DOES NOT contain authors name (anonymous). Failure to do so may result in paper rejection</p>
+        </div>
+
+        <!-- Additional Remarks -->
+        <div class="form-group">
+          {{ Form::label('sub_remarks', 'Additional Remarks') }}    
+          {{ Form::textarea('sub_remarks', '', array('class' => 'form-control')) }} 
+        </div>
+
         <hr>
         <legend>Authors</legend>
         <!-- Authors -->
@@ -78,21 +92,7 @@
             <a class="btn btn-default btn-xs col-sm-1" id="addauthors" name="addauthors" role="button" onclick="addRow(this.form);">Add More</a>
           </div>
         </div>
-        <hr>
-        <legend>File Upload</legend>
-        <!-- Upload --> 
-        <div class="form-group">
-          {{ Form::label('attachment_path', 'Upload your file *') }} 
-          {{ Form::file('attachment_path', array('class' => 'input-file')) }}
-          <p class="help-block">Please ensure your file DOES NOT contain authors name (anonymous). Failure to do so may result in paper rejection</p>
-        </div>
-
-        <!-- Additional Remarks -->
-        <div class="form-group">
-          {{ Form::label('sub_remarks', 'Additional Remarks') }}    
-          {{ Form::textarea('sub_remarks', '', array('class' => 'form-control')) }} 
-        </div>
-
+        <div style="margin-bottom:40px;"></div>
     </div>
 
     <div class="row">  

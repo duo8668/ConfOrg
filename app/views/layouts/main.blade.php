@@ -55,6 +55,9 @@
 					<li>
                         <a href="{{ URL::route('users-sign-in') }}">Sign in</a>
                     </li>
+                    <li>
+                        <a href="{{ URL::route('users-create') }}">Sign Up</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
