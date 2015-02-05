@@ -18,7 +18,10 @@ public function profile()
     {
         return $this->hasOne('Profile');
     }
-
+public function sysrole()
+    {
+        return $this->hasOne('SysRole');
+    }
 //1st arguement conference id
 //2nd arguement rolename
 //@if(Auth::user()->hasConfRole('1','reviewer'))  
