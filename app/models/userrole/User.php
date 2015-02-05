@@ -22,6 +22,12 @@ public function sysrole()
     {
         return $this->hasOne('SysRole');
     }
+
+public function isCurrent()
+    {
+        if(Auth::guest()) return false;
+        return Auth::user()->user_id == $this->user_id;
+    }
 //1st arguement conference id
 //2nd arguement rolename
 //@if(Auth::user()->hasConfRole('1','reviewer'))  
