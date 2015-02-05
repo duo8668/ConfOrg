@@ -297,7 +297,7 @@ Route::group(array('before' => 'auth'),function(){
 			'as' => 'users-profile',
 			'uses' => 'ProfilesController@getProfile'
 			));
-
+Route::group(array('before' => 'currentUser'),function(){
 		/*
 		| Profile Edit (GET)
 		*/
@@ -305,5 +305,5 @@ Route::group(array('before' => 'auth'),function(){
 			'as' => 'users-profile-edit',
 			'uses' => 'ProfilesController@getProfileEdit'
 			));
-
+});
 });
