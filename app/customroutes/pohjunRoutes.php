@@ -137,7 +137,11 @@ Route::group(array('before' => 'guest'),function(){
 	        $profile->access_token = $facebook->getAccessToken();
     		$profile->save();
 
-	    	$user = $profile->user;
+    		$sysrole = new SysRole();
+    		$sysrole->user_id = $user->user_id;
+    		$sysrole->role_id = '1';
+    		$sysrole->save();
+	    	
 	    	Auth::login($user);
 			return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
 	    	} 			
