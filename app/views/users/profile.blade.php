@@ -8,37 +8,38 @@ Profile
 
 <!--First name, last name -->
 <div>
-Name : {{$user->firstname}} {{$user->lastname}}  
+Name : <pre>{{$user->firstname}} {{$user->lastname}}</pre> 
 </div>
 
 <!-- Location -->
 <div>
 @if($user->profile->location != '')
-Location : {{$user->profile->location}}
+Location : <pre>{{$user->profile->location}}</pre>
 @else
-Location : Not selected yet.
+Location :<pre>Not selected yet.</pre>
 @endif
 </div>
 
 <!-- Bio -->
 Bio:
 <div>
-	{{$user->profile->bio}}
+<pre>{{$user->profile->bio}}</pre>
+	
 </div>
 
 <!-- Email -->
 <div>
-Email: {{$user->email}}
+Email: <pre>{{$user->email}}</pre>
 </div>
 
 <!-- Facebook -->
 <div>
 Facebook:
 @if($user->profile->uid > 0)
-	<img src="{{ $user->photo}}">
-	{{link_to('https://www.facebook.com/app_scoped_user_id/'. $user->profile->uid , 'Find me on Facebook!')}}
+	<img src="{{ $user->profile->photo}}">
+	<br><br>{{link_to('https://www.facebook.com/app_scoped_user_id/'. $user->profile->uid , 'Find me on Facebook!')}}
 @else
-	No Facebook account has been associated yet.
+	<pre>No Facebook account has been associated yet.</pre>
 @endif
 </div>
 
