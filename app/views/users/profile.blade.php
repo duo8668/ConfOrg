@@ -43,7 +43,7 @@ Facebook:
 </div>
 
 <!-- Edit Profile-->
-@if(Auth::user()->id == $user->id)
-{{link_to('/users/'.Auth::user()->email .'/edit', 'Edit Your Profile')}}
+@if($user->isCurrent())
+	{{link_to('/users/'.Auth::user()->email .'/edit', 'Edit Your Profile')}}
 @endif
 @stop
