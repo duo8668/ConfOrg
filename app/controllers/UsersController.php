@@ -92,6 +92,11 @@ class UsersController extends \BaseController {
 	        $profile->bio = 'Hi! Thanks for visiting';
     		$profile->save();
 
+			$sysrole = new SysRole();
+    		$sysrole->user_id = $user->user_id;
+    		$sysrole->role_id = '1';
+    		$sysrole->save();
+
 			if($user->save()){
 				return Redirect::to('/users/sign-in')
 					->with('message', 'Account activated! You can now login.');
