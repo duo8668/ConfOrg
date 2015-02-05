@@ -14,6 +14,9 @@
                         <h3 class="panel-title">New User Registration</h3>
                     </div>
                     <div class="panel-body">
+                    @if(Session::has('message'))
+                        {{Session::get('message')}} 
+                    @endif
                          {{ Form::open(array('route' => 'users-create-post', 'method' => 'post')) }}
 
                              <div class="form-group">
@@ -68,6 +71,7 @@
             </div>
         </div>
     </div>
+
  @include('layouts.dashboard.footerdash')
 </body>
 </html>
