@@ -117,49 +117,7 @@ class ProfilesController extends \BaseController {
  		->with('message','Your password could not be changed. Please contact admin it144a@gmail.com');
  	}
 
- 	/*
-	| For User to request to change email. (will send out email for verification)
-	*/
- 	public function postRequestEmail(){
- 		$validator = Validator::make(Input::all(),
- 						array(
-				 				'new_email' => 'required|unique:users,email|email'
-				 				));
- 		
- 		if($validator->fails()){
- 			//redirect 
- 			return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->withErrors($validator);
- 		}
- 		else{
- 			
- 			//send email to user
-			$user = User::find(Auth::user()->user_id);
- 			$new_email = Input::get('new_email');
- 			$old_email = Auth::user()->email;
 
- 			$code = str_random(60);
- 			$user->email_temp = $new_email;
- 			$user->code = $code;
- 			
- 			if($user->save()){
- 			Mail::send('emails.auth.changeEmail',
- 					array('link'=>URL::route('users-change-email', $code),
- 						'firstname' => $user->firstname,
- 						'lastname' 	=> $user->lastname,
- 						'new_email' => $new_email,
- 						'old_email' => $old_email), 
- 					function($message) use ($user) 
- 					{
- 					$message->to($user->email_temp, $user->firstname, $user->lastname) ->subject('ORAFER Change of Email Confirmation Required');
- 					});
-
- 					return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->with('message','We had sent you an email to your new email for confirmation.');
- 			}
- 			
- 		}
- 	}
 
  	/*
 	| User to change email
@@ -230,70 +188,65 @@ class ProfilesController extends \BaseController {
 
  		$validator = Validator::make(Input::all(),
  			array(
- 				'firstname' 	=> 'required',
+ 				'firstname' 	=> 	'required',
+ 				'lastname' 		=> 	'required',
+ 				'email'			=>	'required|unique:users,email|email'
 
  			));
+
  		if($validator->fails()){
  			//redirect 
  			return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->with('message', 'Please input your first name');
+ 					->withErrors($validator); 		
  		}
+ 		
  		else{
- 			//change 
+ 			 
  			$user = User::find(Auth::user()->user_id);
+
+ 			//first name and last name
  			$new_firstname = Input::get('firstname');
- 		
-
- 			$user->firstname = $new_firstname;
-
- 				if($user->save()){
- 					return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 						->with('message', 'Your first name has been changed');
- 				}
- 				else{
- 				return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->with('message','Your first name could not be changed. Please contact admin it144a@gmail.com');
- 				}
-
- 		}
- 
- 	}
-
-  	/*
-	| For user to change last name
-	*/
-	public function postChangeLastName(){
-
- 		$validator = Validator::make(Input::all(),
- 			array(
- 				'lastname' 	=> 'required',
-
- 			));
- 		if($validator->fails()){
- 			//redirect 
- 			return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->with('message', 'Please input your last name');
- 		}
- 		else{
- 			//change 
- 			$user = User::find(Auth::user()->user_id);
  			$new_lastname = Input::get('lastname');
- 		
-
+ 			$user->firstname = $new_firstname;
  			$user->lastname = $new_lastname;
+ 			
+ 			//email
+ 			$new_email = Input::get('email');
+ 			$old_email = Auth::user()->email;
 
- 				if($user->save()){
- 					return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 						->with('message', 'Your last name has been changed');
- 				}
- 				else{
- 				return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->with('message','Your last name could not be changed. Please contact admin it144a@gmail.com');
- 				}
+ 			if($new_email !== $old_email)
+ 			{
 
+ 			$code = str_random(60);
+ 			$user->email_temp = $new_email;
+ 			$user->code = $code;
+ 			$user->save();
+ 				Mail::send('emails.auth.changeEmail',
+ 					array('link'=>URL::route('users-change-email', $code),
+ 						'firstname' => $user->firstname,
+ 						'lastname' 	=> $user->lastname,
+ 						'new_email' => $new_email,
+ 						'old_email' => $old_email), 
+ 					function($message) use ($user) 
+ 					{
+ 					$message->to($user->email_temp, $user->firstname, $user->lastname) ->subject('ORAFER Change of Email Confirmation Required');
+ 					});
+ 			}
+ 			
+
+ 			if($user->save()){
+ 			return Redirect::to('/users/'.Auth::user()->email .'/edit')
+ 			->with('message','Your Profile has been changed, if you have requested for a new email address, a email will be send to you for confirmation');
+ 			}
+ 			
+ 			else{
+ 			return Redirect::to('/users/'.Auth::user()->email .'/edit')
+ 			->with('message','Your profile could not be changed. Please contact admin it144a@gmail.com');
+ 			}
  		}
- 
  	}
+
+  
 
   	/*
 	| For user to change bio
@@ -303,18 +256,26 @@ class ProfilesController extends \BaseController {
  		$validator = Validator::make(Input::all(),
  			array(
  				'bio' 	=> 'required',
+ 				'country' 	=> 'required',
 
  			));
  		if($validator->fails()){
  			//redirect 
  			return Redirect::to('/users/'.Auth::user()->email .'/edit')
- 					->with('message', 'Please input something in your bio');
+ 					->withErrors($validator); 
  		}
  		else{
+ 			
  			//change 
  			$user = User::find(Auth::user()->user_id);
  			$new_bio = Input::get('bio');
- 		
+ 			$new_location_int = Input::get('country');
+ 			$new_location_string = DB::table('countries')
+  			->where('country_id','=',$new_location_int)
+ 			->pluck('short_name');
+
+ 			$user->profile->location = $new_location_string;
+
 
  			$user->profile->bio = $new_bio;
 
