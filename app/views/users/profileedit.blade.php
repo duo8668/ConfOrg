@@ -6,87 +6,82 @@ Edit Profile
 
 @section('content') 
 
-<!--First name-->
+<!--User setting-->
+<h2>User setting</h2>
 <form action = "{{URL::route('users-change-firstname-post')}}" method = "post">
 {{Form::model($user)}}
 	<div>
-		{{Form::label('firstname', 'First Name:')}}
-		{{Form::text('firstname')}}
-		<input type="submit" value="Change first name">
-		{{ Form::token() }}
-	</div>
-{{Form::close()}}
-</form>
 
-<!--Last name-->
-<form action = "{{URL::route('users-change-lastname-post')}}" method = "post">
-{{Form::model($user)}}
-	<div>
+		{{Form::label('email', 'Email:')}}
+		{{Form::text('email')}} 
+			@if($errors->has('email'))
+            	{{ $errors->first('email')}}
+            @endif
+		<br>
+
+		{{Form::label('firstname', 'First Name:')}}
+		{{Form::text('firstname')}}  
+			@if($errors->has('firstname'))
+            	{{ $errors->first('firstname')}}
+            @endif
+        <br>
+
 		{{Form::label('lastname', 'Last Name:')}}
 		{{Form::text('lastname')}}
-		<input type="submit" value="Change last name">
+			@if($errors->has('lastname'))
+            	{{ $errors->first('lastname')}}
+            @endif
+		<br>
+
+		<input type="submit" value="Change user">
 		{{ Form::token() }}
 	</div>
 {{Form::close()}}
 </form>
 
+
+<!--Profile setting-->
+<h2>Profile setting</h2>
 <!--Bio-->
-<br>
 <form action = "{{URL::route('users-change-bio-post')}}" method = "post">
 {{Form::model($user->profile)}}
 	<div>
-		{{Form::label('bio', 'Bio:')}} <br>
-		{{Form::textarea('bio')}}<br>
-		<input type="submit" value="Change bio">
+		{{Form::label('bio', 'Bio:')}} 
+		{{Form::textarea('bio')}}
+			@if($errors->has('bio'))
+            	{{ $errors->first('bio')}}
+            @endif
+        <br>
+        <br>
+        {{Form::label('location', 'Location:')}} <br>
+        {{Form::label('location', 'Current location:')}} 
+	       @if($user->profile->location !== '')
+	       	{{$user->profile->location}}
+	       @else
+	       	You had not chose a current location
+	       @endif
+	    <br> 
+	    {{Form::label('location', 'Change to:')}}   
+		{{ Form::select('country', $country_options, $user->profile->location) }}
+			@if($errors->has('location'))
+            	{{ $errors->first('location')}}
+            @endif
+        <br>
+		
+		<input type="submit" value="Change profile">
 		{{ Form::token() }}
 	</div>
 {{Form::close()}}
 </div>
 </form>
 
-<br>
-<!--Location-->
-Location:
-@if($user->profile->location != '')
-	<form action = "{{URL::route('users-change-location-post')}}" method = "post">
-		<div>
-			Currently living in: {{$user->profile->location}}<br>
-			Changing to: {{ Form::select('country', $country_options) }}<br>
-			<input type="submit" value="Change location">
- 			{{ Form::token() }}
-		</div>
-	</form>
-@else
-<form action = "{{URL::route('users-change-location-post')}}" method = "post">
-	<div> 
-		You had not chose a current location<br>
-		Please choose one: {{ Form::select('country', $country_options) }}<br>
-		<input type="submit" value="Change location">
-	</div>
-@endif
-</form>
 
 
-<br>
-<!-- Email -->
-Email:
- <form action = "{{URL::route('users-request-email-post')}}" method = "post">
- 	<div>
- 		Old Email: {{ $user->email}}
- 	</div>
-
- 	<div>
- 		New Email: <input type ="email" name = "new_email">
-		 	@if($errors->has('new_email'))
-		 		{{ $errors->first('new_email')	}}
-		 	@endif
- 	</div>
- 	<input type="submit" value="Change Email">
- 	{{ Form::token() }}
- </form>
 
 <br>
 <!-- Password -->
+<!--Password setting-->
+<h2>Password setting</h2>
 @if($user->password != '')
 Password:
 <br>
