@@ -7,10 +7,10 @@ class UsersController extends \BaseController {
  	*/
 	public function getHome(){
 		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
-	  ->get();
-	   $view = View::make('home',array('fields'=>$fields,'fields'=>$fields)); 
+		->get();
+		$view = View::make('home',array('fields'=>$fields,'fields'=>$fields)); 
 
-	  return $view;
+		return $view;
 	}
 
 
@@ -26,17 +26,17 @@ class UsersController extends \BaseController {
  	*/
 	public function postCreate(){
 		$validator = Validator::make(Input::all(),array(
-				'email' 			=>  'required|email|unique:users',
-				'first_name'		=>	'required',
-				'last_name'			=>	'required',
-				'password'			=>	'required|min:6',
-				'confirm_password'	=>	'required|same:password'
+			'email' 			=>  'required|email|unique:users',
+			'first_name'		=>	'required',
+			'last_name'			=>	'required',
+			'password'			=>	'required|min:6',
+			'confirm_password'	=>	'required|same:password'
 			));
 
 		if($validator->fails()){
 			return Redirect::route('users-create')
-				->withErrors($validator)
-				->withInput();
+			->withErrors($validator)
+			->withInput();
 		}		
 		else{
 			$email = Input::get('email');
@@ -56,23 +56,23 @@ class UsersController extends \BaseController {
 				'active' => 0
 				));
 
- 			if($user){
+			if($user){
  				//send email
- 				Mail::send('emails.auth.activate',
- 					array('link' => URL::route('users-activate',$code),'firstname' => $first_name, 'lastname' => $last_name)
- 					, function($message) use ($user) 
- 					{
- 					$message->to($user->email, $user->firstname, $user->lastname) ->subject('Activate your new ORAFER account');
- 					});
+				Mail::send('emails.auth.activate',
+					array('link' => URL::route('users-activate',$code),'firstname' => $first_name, 'lastname' => $last_name)
+					, function($message) use ($user) 
+					{
+						$message->to($user->email, $user->firstname, $user->lastname) ->subject('Activate your new ORAFER account');
+					});
 
  				//change the home to our homepage
- 				return Redirect::route('users-create')
- 					->with('message', 'Your account has been created! we have sent you an email to activate your account');
- 			}
+				return Redirect::route('users-create')
+				->with('message', 'Your account has been created! we have sent you an email to activate your account');
+			}
 
 		}
 	}
-		
+
 	/*
 	| Activiate account 
  	*/
@@ -86,24 +86,24 @@ class UsersController extends \BaseController {
 			$user->active = 1;
 			$user->code = '';
 			$user->save();
-	        
-	        $profile = new Profile();
-	        $profile->user_id = $user->user_id;
-	        $profile->bio = 'Hi! Thanks for visiting';
-    		$profile->save();
+
+			$profile = new Profile();
+			$profile->user_id = $user->user_id;
+			$profile->bio = 'Hi! Thanks for visiting';
+			$profile->save();
 
 			$sysrole = new SysRole();
-    		$sysrole->user_id = $user->user_id;
-    		$sysrole->role_id = '1';
-    		$sysrole->save();
+			$sysrole->user_id = $user->user_id;
+			$sysrole->role_id = '1';
+			$sysrole->save();
 
 			if($user->save()){
 				return Redirect::to('/users/sign-in')
-					->with('message', 'Account activated! You can now login.');
+				->with('message', 'Account activated! You can now login.');
 			}
 		}
 		return Redirect::to('/users/sign-in')
-			->with('message', 'We could not activate your account. Please contact the admin it144a@gmail.com');
+		->with('message', 'We could not activate your account. Please contact the admin it144a@gmail.com');
 	} 	
 
 	/*
@@ -119,42 +119,42 @@ class UsersController extends \BaseController {
 	public function postSignIn(){
 		
 		$validator = Validator::make(Input::all(),
-		array(
-			'email'	=> 'required|email',
-			'password' => 'required'
-			)
-		);
+			array(
+				'email'	=> 'required|email',
+				'password' => 'required'
+				)
+			);
 
-		 	if($validator->fails()){
+		if($validator->fails()){
 		 		//redirect to sign in 
-		 		return 	Redirect::route('users-sign-in')
-		 				->withErrors($validator)
-		 				->withInput();
-		 	}
+			return 	Redirect::route('users-sign-in')
+			->withErrors($validator)
+			->withInput();
+		}
 
-		 	else{
+		else{
 
-		 		$remember = (Input::has('remember')) ? true  : false; 
+			$remember = (Input::has('remember')) ? true  : false; 
 		 		//attempt user sign in
-		 		$auth = Auth::attempt(array(
-		 			'email' => Input::get('email'),
-		 			'password' => Input::get('password'),
-		 			'active' => 1
-		 			),$remember);
+			$auth = Auth::attempt(array(
+				'email' => Input::get('email'),
+				'password' => Input::get('password'),
+				'active' => 1
+				),$remember);
 
-		 		if($auth){
+			if($auth){
 		 				//redirect to intended page
-		 			return Redirect::to('/dashboard');
-		 		} 
-		 		else{
-		 			return Redirect::route('users-sign-in')
-		 					->with('message','Email/password wrong, Or account not activated');
-		 		}
-		 	}
-		 	return Redirect::route('users-sign-in')
-		 		->with('message','There was a problem signing you in. Please contact admin it144a@gmail.com');
+				return Redirect::to('/dashboard');
+			} 
+			else{
+				return Redirect::route('users-sign-in')
+				->with('message','Email/password wrong, Or account not activated');
+			}
+		}
+		return Redirect::route('users-sign-in')
+		->with('message','There was a problem signing you in. Please contact admin it144a@gmail.com');
 
- 	}
+	}
 	
  	/*
 	| Sign Out
@@ -164,80 +164,80 @@ class UsersController extends \BaseController {
 		return Redirect::to('/');
 	}
 
- 	
+
 	/*
 	| Forget password page
  	*/
- 	public function getForgetPassword(){
- 		return View::make('users.forget');
- 	}
+	public function getForgetPassword(){
+		return View::make('users.forget');
+	}
 
 	/*
 	| Forget password (send email to user with new password to reset password)
  	*/
- 	public function postForgetPassword(){
- 		$validator =Validator::make(Input::all(),array(
- 			'email' => 'required|email'
+	public function postForgetPassword(){
+		$validator =Validator::make(Input::all(),array(
+			'email' => 'required|email'
 
- 			));
+			));
 
- 		if($validator->fails()){
- 			return Redirect::route('users-forget-password')
- 				->withErrors($validator)
- 				->withInput();
- 		}
- 		else{
+		if($validator->fails()){
+			return Redirect::route('users-forget-password')
+			->withErrors($validator)
+			->withInput();
+		}
+		else{
  			//change password
- 			$user = User::where('email', '=', Input::get('email'));
- 			if($user->count()){
- 				$user = $user->first();
+			$user = User::where('email', '=', Input::get('email'));
+			if($user->count()){
+				$user = $user->first();
  				//generate a new code and password
- 				$code = str_random(60);
- 				$password = str_random(10);
+				$code = str_random(60);
+				$password = str_random(10);
 
- 				$user->code = $code;
- 				$user->password_temp = Hash::make($password);
+				$user->code = $code;
+				$user->password_temp = Hash::make($password);
 
- 				if($user->save()){
- 					Mail::send('emails.auth.forget',
- 					array('link'=>URL::route('users-recover', $code),'firstname' => $user->firstname,'lastname' => $user->lastname,'password' => $password)
- 					, function($message) use ($user) 
- 					{
- 					$message->to($user->email, $user->firstname, $user->lastname) ->subject('ORAFER Password Reset Request');
- 					});
+				if($user->save()){
+					Mail::send('emails.auth.forget',
+						array('link'=>URL::route('users-recover', $code),'firstname' => $user->firstname,'lastname' => $user->lastname,'password' => $password)
+						, function($message) use ($user) 
+						{
+							$message->to($user->email, $user->firstname, $user->lastname) ->subject('ORAFER Password Reset Request');
+						});
 
- 					return Redirect::route('users-forget-password')
- 					->with('message','We had sent you an new password by email.');
- 				}
- 			}
- 		}
- 		return Redirect::route('users-forget-password')
- 		->with('message','Could not request new password. Please contact admin it144a@gmail.com');
- 	}
+					return Redirect::route('users-forget-password')
+					->with('message','We had sent you an new password by email.');
+				}
+			}
+		}
+		return Redirect::route('users-forget-password')
+		->with('message','Could not request new password. Please contact admin it144a@gmail.com');
+	}
 
 	/*
 	| Recover account (After user click link in email for forget password)
  	*/
- 	public function getRecover($code){
- 		$user = User::Where('code','=',$code)
- 			->where('password_temp','!=','');
- 		if($user->count()){
- 			$user = $user->first();
- 			$user->password = $user->password_temp;
- 			$user->password_temp = '';
- 			$user->code = '';
+	public function getRecover($code){
+		$user = User::Where('code','=',$code)
+		->where('password_temp','!=','');
+		if($user->count()){
+			$user = $user->first();
+			$user->password = $user->password_temp;
+			$user->password_temp = '';
+			$user->code = '';
 
- 			if($user->save())
- 			{
+			if($user->save())
+			{
 				return Redirect::to('/users/sign-in')
-	 				->with('message','Your account has been recovered. You can now sign in with your new password');
- 			}
+				->with('message','Your account has been recovered. You can now sign in with your new password');
+			}
 
- 		}
- 		
- 		return Redirect::route('users-forget-password')
- 			->with('message','Could not recover your account. Please contact admin it144a@gmail.com');
- 	}
+		}
+
+		return Redirect::route('users-forget-password')
+		->with('message','Could not recover your account. Please contact admin it144a@gmail.com');
+	}
 
 	/*
 	| invite friends
@@ -251,43 +251,72 @@ class UsersController extends \BaseController {
 	| Invite friend. send email to them!
  	*/
 	public function postInviteFriend(){
-			$validator = Validator::make(Input::all(),
- 						array(
-				 				'email' 			=> 'required|email',
-				 				'firstname'			=>	'required',
-								'lastname'			=>	'required'
-				 				));
- 		
- 		if($validator->fails()){
+		$validator = Validator::make(Input::all(),
+			array(
+				'email' 			=> 'required|email',
+				'firstname'			=>	'required',
+				'lastname'			=>	'required'
+				));
+
+		if($validator->fails()){
  			//redirect 
- 			return Redirect::route('users-invite-friend')
- 					->withErrors($validator);
- 		}
- 		else{
+			return Redirect::route('users-invite-friend')
+			->withErrors($validator);
+		}
+		else{
  			//send email to invite friend
- 			$user = User::find(Auth::user()->user_id);
- 			$friend_email = Input::get('email');
- 			$friend_firstname = Input::get('firstname');
- 			$friend_lastname = Input::get('lastname');
+			$user = User::find(Auth::user()->user_id);
+			$friend_email = Input::get('email');
+			$friend_firstname = Input::get('firstname');
+			$friend_lastname = Input::get('lastname');
 			Mail::send('emails.auth.invite',
- 					array('link'=>URL::route('users-invite-friend'),
- 						'firstname' => $user->firstname,
- 						'lastname' 	=> $user->lastname,
- 						'email' 	=> $user->email,
- 						'friend_email' => $friend_email,
- 						'friend_firstname' => $friend_firstname,
- 						'friend_lastname' => $friend_lastname
- 						), 
- 					function($message) use ($friend_email,$friend_firstname,$friend_lastname,$user)
- 					{
- 					$message->to($friend_email, $friend_firstname, $friend_lastname) ->cc($user->email) ->subject('You are invited to join ORAFER!');
- 					});
+				array('link'=>URL::route('users-invite-friend'),
+					'firstname' => $user->firstname,
+					'lastname' 	=> $user->lastname,
+					'email' 	=> $user->email,
+					'friend_email' => $friend_email,
+					'friend_firstname' => $friend_firstname,
+					'friend_lastname' => $friend_lastname
+					), 
+				function($message) use ($friend_email,$friend_firstname,$friend_lastname,$user)
+				{
+					$message->to($friend_email, $friend_firstname, $friend_lastname) ->cc($user->email) ->subject('You are invited to join ORAFER!');
+				});
 
- 					return Redirect::to('/dashboard')
- 					->with('message','We had sent you an invite to your friend.');
+			return Redirect::to('/dashboard')
+			->with('message','We had sent you an invite to your friend.');
 
- 		}
- 	}
+		}
+	}
 
- 	
+	public function getUsersLike(){
+
+		$data = [
+		'partialname' => Input::get('partialname')
+		];
+
+		$rules = [
+		'partialname' => 'required|min:3'
+		];
+
+		$validator = Validator::make($data, $rules); 
+		 
+		if($validator->fails()){
+ 			//redirect 
+			return array('invalidFields'=>$validator->errors()); 
+		}
+		else{
+ 			 
+			$emailLike = User::EmailLike(Input::get('partialname'))->toArray();			 
+			$firstNameLike = User::firstNameLike(Input::get('partialname'))->toArray();
+			$lastNameLike = User::lastNameLike(Input::get('partialname'))->toArray();
+
+			$overall = array_merge($emailLike,$firstNameLike,$lastNameLike);
+
+			return array('success' =>$overall);
+
+		}
+	}
+
+
 }//controller

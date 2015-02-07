@@ -43,7 +43,7 @@ Route::group(array('before' => 'guest'),function(){
 			));
 	});
 
-		
+
 		/*
 		| Recover account (GET)
 		*/
@@ -85,85 +85,86 @@ Route::group(array('before' => 'guest'),function(){
 			'uses' => 'UsersController@getActivate'
 			));
 
+
 		/*
 		| Facebook login (GET)
 		*/
 		Route::get('login/fb', function() {
-    	$facebook = new Facebook(Config::get('facebook'));
-    	$params = array(
-        'redirect_uri' => url('/login/fb/callback'),
-        'scope' => 'email',
-    	);
-    	return Redirect::to($facebook->getLoginUrl($params));
+			$facebook = new Facebook(Config::get('facebook'));
+			$params = array(
+				'redirect_uri' => url('/login/fb/callback'),
+				'scope' => 'email',
+				);
+			return Redirect::to($facebook->getLoginUrl($params));
 		});
 
 		/*
 		| Facebook login upon approval (GET)
 		*/
 		Route::get('login/fb/callback', function() {
-	    $code = Input::get('code');
-	    if (strlen($code) == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error communicating with Facebook');
+			$code = Input::get('code');
+			if (strlen($code) == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error communicating with Facebook');
 
-	    $facebook = new Facebook(Config::get('facebook'));
-	    $uid = $facebook->getUser();
+			$facebook = new Facebook(Config::get('facebook'));
+			$uid = $facebook->getUser();
 
-	    if ($uid == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error');
+			if ($uid == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error');
 
-	    $me = $facebook->api('/me');
-		$check_email_exist = DB::table('users')
-  			->where('email','=',$me['email'])
- 			->first();
+			$me = $facebook->api('/me');
+			$check_email_exist = DB::table('users')
+			->where('email','=',$me['email'])
+			->first();
 
- 		$profile = Profile::whereUid($uid)->first();
+			$profile = Profile::whereUid($uid)->first();
 
  		//check if account already created by normal way
- 		if(empty($check_email_exist)){
+			if(empty($check_email_exist)){
  			//if it is not created
-		    if (empty($profile)) {
+				if (empty($profile)) {
 
-	        $user = new User;
-	        $user->firstname = $me['first_name'];
-	        $user->lastname = $me['last_name'];
-	        $user->email = $me['email'];
-	        $user->active = '1';
-	        $user->save();
+					$user = new User;
+					$user->firstname = $me['first_name'];
+					$user->lastname = $me['last_name'];
+					$user->email = $me['email'];
+					$user->active = '1';
+					$user->save();
 
-	        $profile = new Profile();
-	        $profile->uid = $uid;
-	        $profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
-	        $profile->bio = 'Hi! Thanks for visiting';
-	        $profile->fb_email = $me['email'];
-	        $profile = $user->profile()->save($profile);
-	        $profile->access_token = $facebook->getAccessToken();
-    		$profile->save();
+					$profile = new Profile();
+					$profile->uid = $uid;
+					$profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
+					$profile->bio = 'Hi! Thanks for visiting';
+					$profile->fb_email = $me['email'];
+					$profile = $user->profile()->save($profile);
+					$profile->access_token = $facebook->getAccessToken();
+					$profile->save();
 
-    		$sysrole = new SysRole();
-    		$sysrole->user_id = $user->user_id;
-    		$sysrole->role_id = '1';
-    		$sysrole->save();
-	    	
-	    	Auth::login($user);
-			return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
-	    	} 			
- 		}
+					$sysrole = new SysRole();
+					$sysrole->user_id = $user->user_id;
+					$sysrole->role_id = '1';
+					$sysrole->save();
+
+					Auth::login($user);
+					return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
+				} 			
+			}
  		//if it is created
- 		else{
- 			$compare = $me['email'];
-	        $user = User::where('email','=',$compare)->first();
-	        $profile = Profile::where('user_id','=', $user->user_id)->first();
-	        $profile->uid = $uid;
-	        $profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
-	        $profile->bio = 'Hi! Thanks for visiting';
-	        $profile->fb_email = $me['email'];
-	        $profile->access_token = $facebook->getAccessToken();
-    		$profile->save(); 
-    		Auth::login($user);
-			return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
- 				
- 		}
+			else{
+				$compare = $me['email'];
+				$user = User::where('email','=',$compare)->first();
+				$profile = Profile::where('user_id','=', $user->user_id)->first();
+				$profile->uid = $uid;
+				$profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
+				$profile->bio = 'Hi! Thanks for visiting';
+				$profile->fb_email = $me['email'];
+				$profile->access_token = $facebook->getAccessToken();
+				$profile->save(); 
+				Auth::login($user);
+				return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
+
+			}
 		});//Facebook login upon approval (GET)
 
-		
+
 });//unath group
 
 /*
@@ -247,7 +248,16 @@ Route::group(array('before' => 'auth'),function(){
 		Route::post('/users/remove-fb',array(
 			'as' => 'users-remove-fb-post',
 			'uses' => 'ProfilesController@postRemoveFb'
-			));		
+			));
+
+		/*
+		| Get Account like (ANY)
+		*/
+		Route::get('/users/likeany',array(
+			'as' => 'users-likeany',
+			'uses' => 'UsersController@getUsersLike'
+			));
+
 
 	});
 		/*
@@ -297,7 +307,7 @@ Route::group(array('before' => 'auth'),function(){
 			'as' => 'users-profile',
 			'uses' => 'ProfilesController@getProfile'
 			));
-Route::group(array('before' => 'currentUser'),function(){
+		Route::group(array('before' => 'currentUser'),function(){
 		/*
 		| Profile Edit (GET)
 		*/
@@ -305,5 +315,5 @@ Route::group(array('before' => 'currentUser'),function(){
 			'as' => 'users-profile-edit',
 			'uses' => 'ProfilesController@getProfileEdit'
 			));
-});
-});
+	});
+	});
