@@ -111,17 +111,16 @@ Route::group(array('before' => 'guest'),function(){
 			if ($uid == 0) return Redirect::to('/users/sign-in')->with('message', 'There was an error');
 
 			$me = $facebook->api('/me');
+			$profile = Profile::whereUid($uid)->first();
 			$check_email_exist = DB::table('users')
 			->where('email','=',$me['email'])
 			->first();
 
-			$profile = Profile::whereUid($uid)->first();
-
- 		//check if account already created by normal way
-			if(empty($check_email_exist)){
- 			//if it is not created
-				if (empty($profile)) {
-
+			
+		//if uid is not found(means users not created or fb not assoicated)
+			if(empty($profile)){
+				//if user has nv been created before
+				if(empty($check_email_exist)){
 					$user = new User;
 					$user->firstname = $me['first_name'];
 					$user->lastname = $me['last_name'];
@@ -144,23 +143,32 @@ Route::group(array('before' => 'guest'),function(){
 					$sysrole->save();
 
 					Auth::login($user);
+					return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');	
+				}
+
+				//if user is created before. add in profile
+				else{
+					$compare = $me['email'];
+					$user = User::where('email','=',$compare)->first();
+					$profile = Profile::where('user_id','=', $user->user_id)->first();
+					$profile->uid = $uid;
+					$profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
+					$profile->bio = 'Hi! Thanks for visiting';
+					$profile->fb_email = $me['email'];
+					$profile->access_token = $facebook->getAccessToken();
+					$profile->save(); 
+					Auth::login($user);
 					return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
-				} 			
+				}
 			}
- 		//if it is created
+			//if uid is found
 			else{
-				$compare = $me['email'];
-				$user = User::where('email','=',$compare)->first();
-				$profile = Profile::where('user_id','=', $user->user_id)->first();
-				$profile->uid = $uid;
-				$profile->photo = 'https://graph.facebook.com/'.$me['id'].'/picture?type=normal';
-				$profile->bio = 'Hi! Thanks for visiting';
-				$profile->fb_email = $me['email'];
-				$profile->access_token = $facebook->getAccessToken();
-				$profile->save(); 
+				$get_user_id = DB::table('profiles')
+				->where('uid','=',$uid)
+				->pluck('user_id');
+				$user = User::where('user_id','=',$get_user_id)->first();
 				Auth::login($user);
 				return Redirect::to('/dashboard')->with('message', 'Logged in with Facebook');
-
 			}
 		});//Facebook login upon approval (GET)
 
