@@ -6,10 +6,11 @@
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
-			<td>Submission Title</td>
-			<td>Type</td>
-			<td>Date Submitted</td>
-			<td>Option</td>
+			<td><strong>Submission Title</strong></td>
+			<td><strong>Type</strong></td>
+			<td><strong>Conference</strong></td>
+			<td><strong>Date Submitted</strong></td>
+			<td><strong>Option</strong></td>
 		</tr> 
 		@foreach ($submissions as $sub) 
 			<tr>
@@ -23,6 +24,7 @@
 					    Abstract
 					@endif
 				</td>
+				<td>{{{ $sub->title }}} </td>
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 				<td>
 					{{ link_to_route('submission.reviews', 'Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}

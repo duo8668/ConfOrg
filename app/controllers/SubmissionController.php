@@ -17,10 +17,15 @@ class SubmissionController extends \BaseController {
 	 */
 	public function index()
 	{
-		//TODO: get all submission submitted by current user for current conference
-
-		$submission = Submission::all();
+		//get all submission by current logged-in user
+		$submission = DB::table('conference')
+            ->join('submissions', 'submissions.conf_id', '=', 'conference.conf_id')
+            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at')
+            ->where('submissions.user_id' , '=', Auth::user()->user_id)
+            ->orderBy('submissions.created_at', 'desc')->distinct()->get();
 		return View::make('submission.index')->with('submissions', $submission);
+		
+		// return var_dump($submission);
 	}
 
 	/**
@@ -31,7 +36,6 @@ class SubmissionController extends \BaseController {
 	 */
 	public function show($id) 
 	{
-		//TODO: only allows user to see their own submissions
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
 		$keywords = $submission->keywords()->get();
 		$authors = $submission->authors()->get();
@@ -103,7 +107,8 @@ class SubmissionController extends \BaseController {
 				'sub_title' => Input::get('sub_title'),
 				'sub_abstract' => Input::get('sub_abstract'),
 				'sub_remarks' => Input::get('sub_remarks'),
-				'attachment_path' => $destinationPath . '/' . $fileName
+				'attachment_path' => $destinationPath . '/' . $fileName,
+				'user_id' => Auth::user()->user_id
 				));
 		
 		

@@ -3,7 +3,7 @@ class Submission extends Eloquent {
 
 	protected $table = 'submissions';
 	protected $primaryKey = 'sub_id';
-	protected $fillable = array('sub_type', 'sub_title', 'sub_abstract', 'sub_remarks', 'attachment_path');
+	protected $fillable = array('sub_type', 'sub_title', 'sub_abstract', 'sub_remarks', 'attachment_path', 'user_id');
 
 
     /*public static function boot()

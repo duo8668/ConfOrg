@@ -7,12 +7,6 @@
 <div class="row">
   <div class="col-md-12">
     <legend>Basic Information</legend>
-      <div class="row">
-        <label class="col-md-2 control-label text-right">Submitted By</label>    
-        <div class="col-md-10">
-          [SUBMITTING USER HERE]
-        </div>
-      </div>
 
       <!-- Submission Type -->
       <div class="row">

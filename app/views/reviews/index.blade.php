@@ -6,16 +6,15 @@
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
-			<td>ID</td>
-			<td>Title</td>
-			<td>Type</td>
-			<td>Date Submitted</td>
-			<td>Option</td>
+			<td><strong>Submission Title</strong></td>
+			<td><strong>Type</strong></td>
+			<td><strong>Conference</strong></td>
+			<td><strong>Date Submitted</strong></td>
+			<td><strong>Option</strong></td>
 		</tr> 
-		@foreach ($submission as $sub) 
+		@foreach ($submissions as $sub) 
 			<tr>
-				<td>{{{ $sub->sub_id }}}</td>
-				<td>{{{ $sub->sub_title }}}</td>
+				<td>{{ link_to_route('submission.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
 				<td>
 					@if ($sub->sub_type === 3)
 					    Poster
@@ -25,9 +24,15 @@
 					    Abstract
 					@endif
 				</td>
+				<td>{{{ $sub->title }}} </td>
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
-				<td>{{ link_to_route('reviews.add', 'Enter Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}
-					{{ link_to_route('submission.reviews', 'See Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
+				<td>
+					{{ link_to_route('submission.reviews', 'See All Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
+					@if ($sub->review_id == null) 
+						{{ link_to_route('reviews.add', 'Enter Review', [$sub->sub_id], ['class' => 'btn btn-warning btn-xs'])}}
+					@else 
+						{{ link_to_route('review.edit', 'See Your Review', [$sub->review_id], ['class' => 'btn btn-success btn-xs'])}}
+					@endif
 				</td>
 			</tr>
 		@endforeach
