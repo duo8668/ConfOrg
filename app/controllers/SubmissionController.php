@@ -290,7 +290,39 @@ class SubmissionController extends \BaseController {
 
 	public function update_authors($sub_id)
 	{
-		dd('hello world');
+		//Get submission object
+		$submission = Submission::where('sub_id' , '=', $sub_id)->get()->first();
+
+		// updating authors
+		// delete existing authors
+		$submission->authors()->delete();
+		// add new authors
+		// inputting authors
+			$fname = Input::get('author_fname');
+			$lname = Input::get('author_lname');
+			$org = Input::get('author_org');
+			$email = Input::get('author_email');
+			$ispresenting = Input::get('author_ispresenting');
+
+			// return var_dump($ispresenting);
+
+			for ($i = 0; $i < count($fname); $i++) {
+				$author = new Submission_Author();
+				$author->first_name = $fname[$i];
+				$author->last_name = $lname[$i];
+				$author->organization = $org[$i];
+				$author->email = $email[$i];
+				if (!empty($ispresenting[$i])) {
+					$author->is_presenting = $ispresenting[$i];
+				} else {
+					$author->is_presenting = '0';
+				}
+				
+				$submission->authors()->save($author);
+			}
+
+		return Redirect::route('submission.show', $sub_id)->withMessage('Thank you! Your Contribution Authors Information has been Updated');
+
 	}
 
 	/**

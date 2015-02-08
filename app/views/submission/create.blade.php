@@ -148,7 +148,7 @@
     <hr>
     
     <div class="row">  
-      <div class="col-md-4">
+      <div class="col-md-8 col-md-offset-2">
         <!-- Button -->        
         {{ Form::submit('Add Submission', array('class' => 'btn btn-primary btn-md btn-block')) }}
 
