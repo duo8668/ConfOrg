@@ -16,9 +16,35 @@ class ConferenceUserRole extends Eloquent {
 	public function user(){
 		return $this->belongsTo('User', 'user_id', 'user_id');
 	}
- 
+
 	public function Conference(){
 		return $this->belongsTo('Conference', 'conf_id', 'ConfId');
+	}
+
+	public function scopeConferenceChair($query,$conf_id){
+		return $query->where($this->table.'.conf_id', '=', $conf_id)
+		->where($this->table.'.role_id','=',Role::ConferenceChair()->role_id)
+		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
+		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
+		->get();
+	}
+
+	public function scopeConferenceStaffs($query,$conf_id){
+		return $query->where($this->table.'.conf_id', '=', $conf_id)
+		->where($this->table.'.role_id','=',Role::ConferenceStaff()->role_id)
+		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
+		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
+		->get();
+
+	}
+
+	public function scopeConferenceReviewPanels($query,$conf_id){
+		return $query->where($this->table.'.conf_id', '=', $conf_id)
+		->where($this->table.'.role_id','=',Role::ReviewPanel()->role_id)
+		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
+		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
+		->get();
+
 	}
 
 

@@ -292,28 +292,94 @@ class UsersController extends \BaseController {
 	public function getUsersLike(){
 
 		$data = [
-		'partialname' => Input::get('partialname')
+		'partialname' => Input::get('partialname'),
+		'conf_id' => Input::get('conf_id')
 		];
 
 		$rules = [
-		'partialname' => 'required|min:3'
+		'partialname' => 'required|min:3',
+		'conf_id' => 'required|numeric'
 		];
 
 		$validator = Validator::make($data, $rules); 
-		 
+
 		if($validator->fails()){
  			//redirect 
 			return array('invalidFields'=>$validator->errors()); 
 		}
 		else{
- 			 
-			$emailLike = User::EmailLike(Input::get('partialname'))->toArray();			 
-			$firstNameLike = User::firstNameLike(Input::get('partialname'))->toArray();
-			$lastNameLike = User::lastNameLike(Input::get('partialname'))->toArray();
 
-			$overall = array_merge($emailLike,$firstNameLike,$lastNameLike);
+			$emailLike = User::EmailLike(Input::get('partialname'),$data['conf_id']);
 
-			return array('success' =>$overall);
+			$overall = null;
+			if(!empty($emailLike)){
+				$overall = $emailLike->lists('text');
+			}
+
+			return $overall;
+		}
+	}
+
+	public function getConferenceStaffs(){
+
+		$data = [
+		'conf_id' => Input::get('conf_id')
+		];
+
+		$rules = [
+		'conf_id' => 'required|numeric'
+		];
+
+		$validator = Validator::make($data, $rules); 
+
+		if($validator->fails()){
+ 			//redirect 
+			return array('invalidFields'=>$validator->errors()); 
+		}
+		else{
+
+			$allStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id']);
+
+
+			$overall = null;
+			if(!empty($allStaffs)){
+
+				$overall = $allStaffs->lists('email'); 
+			}
+
+			return $overall;
+
+		}
+	}
+
+	public function getConferenceReviewPanels(){
+
+		$data = [
+		'conf_id' => Input::get('conf_id')
+		];
+
+		$rules = [
+		'conf_id' => 'required|numeric'
+		];
+
+		$validator = Validator::make($data, $rules); 
+
+		if($validator->fails()){
+ 			//redirect 
+			return array('invalidFields'=>$validator->errors()); 
+		}
+		else{
+
+			$reviewPanels = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
+
+
+			$overall = null;
+			if(!empty($reviewPanels)){
+
+				$overall = $reviewPanels->lists('email'); 
+			}
+
+			return $overall;
 
 		}
 	}

@@ -90,9 +90,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     return ($role != null);
 
   }
-
-//1st arguement permission name
-//@if(Auth::user()->hasSysPermission('ViewCredit')) 
+  //1st arguement permission name
+  //@if(Auth::user()->hasSysPermission('ViewCredit')) 
   public function hasSysPermission($permissionname){
     $permission_id = DB::table('permissions')
     ->where('permission_name','=',$permissionname)
@@ -118,12 +117,28 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     return false;
   }
 
-  public  function scopeEmailLike($query, $value){
-     
-    return $query->where('email', 'LIKE', "%$value%")
-    ->select(array('user_id as value','email as text'))
-    ->get();
- 
+  public  function scopeEmailLike($query, $value, $conf_id){
+
+    $query = $query->where('email', 'LIKE', "%$value%@%")->where('user_id','<>',Auth::user()->user_id);
+
+    // ban for conference chair email for same conference to show
+    $banList = ConferenceUserRole::where('conf_id','=',$conf_id)
+    ->where(function($query){
+      $query->where('role_id','=',Role::ConferenceChair()->role_id)
+      ->orWhere('role_id','=',Role::ConferenceStaff()->role_id)
+      ->orWhere('role_id','=',Role::ReviewPanel()->role_id);
+    })
+    ->select('user_id')
+    ->get()->toArray();
+    
+    if(!empty($banList)){
+
+      $query->whereNotIn('user_id',$banList);
+    }
+    
+    $output = $query->select(array('user_id as value','email as text'))->get();
+    
+    return $output;
   }
 
   public  function scopeFirstNameLike($query, $value){

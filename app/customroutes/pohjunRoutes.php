@@ -266,6 +266,21 @@ Route::group(array('before' => 'auth'),function(){
 			'uses' => 'UsersController@getUsersLike'
 			));
 
+		/*
+		| Get Conference Staff Emails
+		*/
+		Route::get('/users/conference_staffs',array(
+			'as' => 'users-conference_staffs',
+			'uses' => 'UsersController@getConferenceStaffs'
+			));
+		/*
+		| Get Conference Review Panels Emails
+		*/
+		Route::get('/users/conference_reviewpanels',array(
+			'as' => 'users-conference_reviewpanels',
+			'uses' => 'UsersController@getConferenceReviewPanels'
+			));
+
 
 	});
 		/*

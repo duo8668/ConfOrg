@@ -9,5 +9,9 @@ class Permission extends Eloquent {
 
 	public $timestamps = false;
 
+	public function scopeFinanceEdit(){
+		return $this->where('permission_name','=','finance-edit')->first();
+	}
+
 
 }
