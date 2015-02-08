@@ -319,9 +319,20 @@ class SubmissionController extends \BaseController {
 	 */
 	public function reviews($id)
 	{
-		$sub = Submission::where('sub_id' , '=', $id)->get()->first();
-		$reviews = $sub->reviews()->get();
-		return View::make('submission.reviews')->withSubmission($sub)->withReviews($reviews);
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$keywords = $submission->keywords()->get();
+		$authors = $submission->authors()->get();
+		$reviews = $submission->reviews()->get();
+		$sub_topics = DB::table('submission_topic')
+		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+
+		return View::make('submission.reviews')->withSubmission($submission)
+		->with('sub_authors', $authors)
+		->with('sub_topics', $sub_topics)
+		->withReviews($reviews)
+		->withKeyword($keywords);
+		
 	}
 
 

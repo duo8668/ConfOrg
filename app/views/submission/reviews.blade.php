@@ -4,41 +4,76 @@
 	{{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
-<div class="row">
-	  <div class="col-md-2"><strong>Submission Title</strong></div>
-	  <div class="col-md-10">{{{ $submission->sub_title }}}</div>
-</div>
-<div class="row">
-  	<div class="col-md-2"><strong>Submission Type</strong></div>
-  	<div class="col-md-10">
-	  	@if ($submission->sub_type === 3)
-		    Poster
-		@elseif ($submission->sub_type === 2)
-		    Full Paper
-		@else
-		    Abstract
-		@endif
-	</div>
-</div>
-<div class="row">
-	  <div class="col-md-2"><strong>Abstract</strong></div>
-	  <div class="col-md-10">{{{ $submission->sub_abstract }}}</div>
-</div>
-<div class="row">
-	  <div class="col-md-2"><strong>Topics</strong></div>
-	  <div class="col-md-10">[TOPICS HERE]</div>
-</div>
-<div class="row">
-	  <div class="col-md-2"><strong>Keywords</strong></div>
-	  <div class="col-md-10">[KEYWORDS HERE]</div>
-</div>
-<div class="row">
-	  <div class="col-md-2"><strong>Remarks</strong></div>
-	  <div class="col-md-10">{{{ $submission->sub_remarks}}}</div>
-</div><div class="row">
-	  <div class="col-md-2"><strong>File</strong></div>
-	  <div class="col-md-10">{{ link_to_asset($submission->attachment_path, 'Click Here to view file', $attributes = array('target' => '_blank'), $secure = null) }}</div>
-</div>
+	<!-- Submission Type -->
+      <div class="row">
+        <label class="col-md-2 control-label text-right">Submission Type</label>
+        <div class="col-md-10">
+          @if ($submission->sub_type === 3)
+              Poster
+          @elseif ($submission->sub_type === 2)
+              Full Paper
+          @else
+              Abstract
+          @endif
+        </div>
+      </div>
+
+      <!-- Submission Title-->
+      <div class="row">
+        <label class="col-md-2 control-label text-right">Submission Title</label>       
+        <div class="col-md-10">
+          <strong>{{{ $submission->sub_title }}}</strong>
+        </div>
+      </div>
+
+      <!-- Abstract -->
+      <div class="row">
+        <label class="col-md-2 control-label text-right">Abstract</label>
+        <div class="col-md-10">   
+          {{{ $submission->sub_abstract }}}               
+        </div>
+      </div>
+
+      <!-- Topics -->
+      <div class="row">
+        <label class="col-md-2 control-label text-right">Topics</label> 
+        <div class="col-md-10">
+          @foreach ($sub_topics as $topic) 
+            {{{ $topic->topic_name }}}
+          @endforeach
+        </div>
+      </div>
+
+      <!-- Keywords -->
+      <div class="row">
+        <label class="col-md-2 control-label text-right">Keywords</label>    
+        <div class="col-md-10">
+          @foreach ($keyword as $word) 
+            {{{ $word->keyword_name }}}
+          @endforeach
+        </div>
+      </div>
+
+      <!-- Remarks -->
+      <div class="row">
+        <label class="col-md-2 control-label text-right">Remarks</label>    
+        <div class="col-md-10">
+          {{{ $submission->sub_remarks }}}
+        </div>
+      </div>
+
+      <!-- Upload --> 
+      
+      <div class="row">
+        <label class="col-md-2 control-label text-right">File Upload</label> 
+        <div class="col-md-10">
+          @if(!empty($submission->attachment_path))
+            {{ link_to_asset($submission->attachment_path, 'View File', $attributes = array('target' => '_blank'), $secure = null) }}
+          @else
+            No File Uploaded
+          @endif
+        </div>
+      </div>
 <hr>
 	<div class="table-responsive">
 	  <table class="table">

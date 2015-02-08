@@ -38,10 +38,11 @@
       <div id="displayChannel">
         @yield('content')
       </div>
+       @include('layouts.dashboard.footerdash')
    </div><!-- /#page-wrapper -->
  </div><!-- /#wrapper -->
 
- @include('layouts.dashboard.footerdash')
+ 
 
 </body>
 </html>

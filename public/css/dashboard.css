@@ -362,3 +362,8 @@ table.dataTable thead .sorting:after {
 .inline {
     display: inline;
 }
+
+.author-inline-form {
+     margin-left: 5px !important; 
+     margin-right: 5px !important;
+}
