@@ -185,13 +185,13 @@ class ProfilesController extends \BaseController {
 	| For user to change firstname
 	*/
 	public function postChangeFirstName(){
+		$new_email = Input::get('email');
 
  		$validator = Validator::make(Input::all(),
  			array(
  				'firstname' 	=> 	'required',
  				'lastname' 		=> 	'required',
- 				'email'			=>	'required|unique:users,email|email'
-
+ 				'email'   => 'required|email|unique:users,email,' . $new_email . ',email'
  			));
 
  		if($validator->fails()){
@@ -211,7 +211,7 @@ class ProfilesController extends \BaseController {
  			$user->lastname = $new_lastname;
  			
  			//email
- 			$new_email = Input::get('email');
+ 			
  			$old_email = Auth::user()->email;
 
  			if($new_email !== $old_email)
