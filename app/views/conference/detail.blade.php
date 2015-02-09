@@ -102,11 +102,23 @@ Manage conference :
 	.conferencebody .date{
 		color:#FF7321;
 	}
+
+	#spCutOffDateTime{
+		padding-right:15px;
+	}
+
 	.staffInfo{
 		padding:5px 5px;
 	}
 	.bootstrap-tagsinput {
 		width: 100%;
+	}
+	.dateContainer .form-control-feedback {
+		top: 0;
+		right: -15px;
+	}
+	.date {
+		background-color: white;
 	}
 </style>
 
@@ -130,6 +142,9 @@ Manage conference :
 				,show:true }); 
 		});
 
+		//==================================================================================================
+		// btn Edit Staff
+		//==================================================================================================
 		$('#btnStaffEdit').on('click',function(e){
 			// raise ajax request here and set text
 			$('#staffName > > [name=emails]').tagsinput('removeAll');
@@ -162,8 +177,9 @@ Manage conference :
 			});
 		});
 
-		//
-
+		//==================================================================================================
+		// btnEdi Review Panel
+		//==================================================================================================
 		$('#btnReviewPanelEdit').on('click',function(e){
 			// raise ajax request here and set text
 			$(this).find('#reviewPanel > > [name=emails]').tagsinput('removeAll');
@@ -196,23 +212,44 @@ Manage conference :
 			});
 		});
 
-$('#staffName').formValidation({
-	framework: 'bootstrap',
-	excluded: ':disabled',
-	err: {
-		container: 'tooltip'
-	}, 
-	icon: {
-		valid: 'glyphicon glyphicon-ok',
-		invalid: 'glyphicon glyphicon-remove',
-		validating: 'glyphicon glyphicon-refresh'
-	},
-	fields: {
-		emails:{
-			validators:{
-				callback: {
-					message: 'Invalid emails',
-					callback: function (value, validator, $field) {
+		//==================================================================================================
+		// btnEditParticular
+		//==================================================================================================
+		$('#innerCutOffDate').datetimepicker({useCurrent: false,pickTime: true, pickDate:true});
+
+		$('#btnEditParticular').on('click',function(e){
+			// raise ajax request here and set text
+			
+			$('#innerCutOffDate').data('DateTimePicker').setValue(new Date($('#cutOffValue').html()));
+			$('#innerCutOffDate').data('DateTimePicker').setMinDate(new Date());
+			var d = new Date($('#beginDate').html());
+			d.setDate(d.getDate()-5);
+			$('#innerCutOffDate').data('DateTimePicker').setMaxDate(d);
+			$('#innerMinScore > input').val($('#minScoreValue').html());
+			$('#particularEditor').modal({ keyboard: false,backdrop:'static',show:true });
+
+		});
+
+		//==================================================================================================
+		// Staff Editor Validation
+		//==================================================================================================
+		$('#staffName').formValidation({
+			framework: 'bootstrap',
+			excluded: ':disabled',
+			err: {
+				container: 'tooltip'
+			}, 
+			icon: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				emails:{
+					validators:{
+						callback: {
+							message: 'Invalid emails',
+							callback: function (value, validator, $field) {
                                 // Determine the numbers which are generated in captchaOperation
                                 var ok = true;
                                 var regexp = RegExp(/(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+\]))/);
@@ -242,31 +279,33 @@ $('#staffName').formValidation({
         		trimValue: true,
         		source: function(query) {
 
-        			return $.ajax({url:'../../users/likeany'
+        			return $.ajax({url: "{{ URL::to('users/likeany') }}"
         				,data:{partialname:query, conf_id:{{ $conf->conf_id }}}
         				,type:'get'});
         		}
         	}
         });
 
-        
-        $('#reviewPanel').formValidation({
-        	framework: 'bootstrap',
-        	excluded: ':disabled',
-        	err: {
-        		container: 'tooltip'
-        	}, 
-        	icon: {
-        		valid: 'glyphicon glyphicon-ok',
-        		invalid: 'glyphicon glyphicon-remove',
-        		validating: 'glyphicon glyphicon-refresh'
-        	},
-        	fields: {
-        		emails:{
-        			validators:{
-        				callback: {
-        					message: 'Invalid emails',
-        					callback: function (value, validator, $field) {
+        //==================================================================================================
+		// Review Panel Editor Validation
+		//==================================================================================================
+		$('#reviewPanel').formValidation({
+			framework: 'bootstrap',
+			excluded: ':disabled',
+			err: {
+				container: 'tooltip'
+			}, 
+			icon: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				emails:{
+					validators:{
+						callback: {
+							message: 'Invalid emails',
+							callback: function (value, validator, $field) {
                                 // Determine the numbers which are generated in captchaOperation
                                 var ok = true;
                                 var regexp = RegExp(/(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+\]))/);
@@ -296,66 +335,110 @@ $('#staffName').formValidation({
         		trimValue: true,
         		source: function(query) {
 
-        			return $.ajax({url:'../../users/likeany'
+        			return $.ajax({url: "{{ URL::to('users/likeany') }}"
         				,data:{partialname:query, conf_id:{{ $conf->conf_id }}}
         				,type:'get'});
         		}
         	}
         });
 
-        $('#staffName').find('[name=emails]').on('change',function(){
-        	var field = $(this).attr('name');
+        //==================================================================================================
+		// Conference Particular Editor Validation
+		//==================================================================================================
+		$('#confParticularField').formValidation({
+			framework: 'bootstrap',
+			excluded: ':disabled',
+			err: {
+				container: 'tooltip'
+			}, 
+			icon: {
+				valid: 'glyphicon glyphicon-ok',
+				invalid: 'glyphicon glyphicon-remove',
+				validating: 'glyphicon glyphicon-refresh'
+			},
+			fields: {
+				cutOffDate:{
+					validators: {
+						date: {
+							format: 'DD-MM-YYYY HH:mm',
+							message: 'The value is not a valid datetime'
+						}
+					} 
+				},
+				minScore:{
+					validators: {
+						numeric : {
+							separator: '.',
+							message: 'The value is not a valid numeric'
+						}
+					}
+				}
+			}
+		}).on('err.field.fv err.validator.fv', function(e, data) {
+			$('#btnSaveConfParticular').prop('disabled', true);
+		}).on('success.field.fv', function(e, data) {
+			$('#btnSaveConfParticular').prop('disabled',false);
+		});
 
-        	$('#staffName').formValidation('revalidateField', field);
-        });
+		$('#staffName').find('[name=emails]').on('change',function(){
+			var field = $(this).attr('name');
 
-        $('#reviewPanel').find('[name=emails]').on('change',function(){
-        	var field = $(this).attr('name');
+			$('#staffName').formValidation('revalidateField', field);
+		});
 
-        	$('#reviewPanel').formValidation('revalidateField', field);
-        });
+		$('#reviewPanel').find('[name=emails]').on('change',function(){
+			var field = $(this).attr('name');
 
-        $('#btnSaveDescription').on('click',function(e){
-        	$.ajax({url:'updateDescription'
-        		,data:{conf_id:{{ $conf->conf_id }},description:$('#summernote').code()}
-        		,type:'get'
-        		,beforeSend:function(){
-        			$('#modalMessage').html('Loading...');
-        			$('#resultModal').modal({
-        				keyboard: false
-        				,backdrop:'static' });   
-        		}
-        	}) 
-        	.done(function(data){
+			$('#reviewPanel').formValidation('revalidateField', field);
+		});
+
+		//==================================================================================================
+		//  Save Description
+		//==================================================================================================
+		$('#btnSaveDescription').on('click',function(e){
+			$.ajax({url: "{{ URL::to('conference/management/updateDescription') }}"
+				,data:{conf_id:{{ $conf->conf_id }},description:$('#summernote').code()}
+				,type:'get'
+				,beforeSend:function(){
+					$('#modalMessage').html('Loading...');
+					$('#resultModal').modal({
+						keyboard: false
+						,backdrop:'static' });   
+				}
+			}) 
+			.done(function(data){
 				//change the current
 				var message ='Record updated successfully !!!';
 				$('#modalMessage').html(message);
 				$('#descriptionContent').html($('#summernote').code());
 				setTimeout(function(){ $('#resultModal').modal('hide'); $('#descriptionEditor').modal('hide');},1000);				 
 			})
-        	.fail(function(data){
+			.fail(function(data){
 
-        		if(data.responseJSON !== undefined){
-        			if(data.responseJSON.error !== undefined ){
-        				var message = data.responseJSON.error.type + ' : '+ data.responseJSON.error.message;
-        				$('#modalMessage').html(message);
-        				setTimeout(function(){$('#resultModal').modal('hide');},1500);
-        			}
-        		}
-        	});
-        });
+				if(data.responseJSON !== undefined){
+					if(data.responseJSON.error !== undefined ){
+						var message = data.responseJSON.error.type + ' : '+ data.responseJSON.error.message;
+						$('#modalMessage').html(message);
+						setTimeout(function(){$('#resultModal').modal('hide');},1500);
+					}
+				}
+			});
+		});
 
-$('#btnSaveStaff').on('click',function(e){ 
+		//==================================================================================================
+		//Save staff
+		//==================================================================================================
+		$('#btnSaveStaff').on('click',function(e){ 
 
-	$.ajax({url:'updateConfStaffs'
-		,data:{conf_id:{{ $conf->conf_id }},emails:$('#staffName').find('[name=emails]').tagsinput('items')}
-		,type:'get'
-		,beforeSend:function(){
-			$('#modalMessage').html('Loading...');
-			$('#resultModal').modal({
-				keyboard: false
-				,backdrop:'static' });   
-		}}).done(function(data){
+			$.ajax({url: "{{ URL::to('conference/management/updateConfStaffs') }}"
+				,data:{conf_id:{{ $conf->conf_id }},emails:$('#staffName').find('[name=emails]').tagsinput('items')}
+				,type:'get'
+				,beforeSend:function(){
+					$('#modalMessage').html('Loading...');
+					$('#resultModal').modal({
+						keyboard: false
+						,backdrop:'static' });   
+				}}).done(function(data){
 				//change the current
 				if(data.success !== undefined){
 					var message = data.success.numRowUpdated +' record(s) updated successfully !!!';
@@ -385,17 +468,20 @@ $('#btnSaveStaff').on('click',function(e){
 			});
 		});
 
-$('#btnSaveReviewPanel').on('click',function(e){ 
+		//==================================================================================================
+		//  Save Review Panels
+		//==================================================================================================
+		$('#btnSaveReviewPanel').on('click',function(e){ 
 
-	$.ajax({url:'updateReviewPanels'
-		,data:{conf_id:{{ $conf->conf_id }},emails:$('#reviewPanel').find('[name=emails]').tagsinput('items')}
-		,type:'get'
-		,beforeSend:function(){
-			$('#modalMessage').html('Loading...');
-			$('#resultModal').modal({
-				keyboard: false
-				,backdrop:'static' });   
-		}}).done(function(data){
+			$.ajax({url: "{{ URL::to('conference/management/updateReviewPanels') }}"
+				,data:{conf_id:{{ $conf->conf_id }},emails:$('#reviewPanel').find('[name=emails]').tagsinput('items')}
+				,type:'get'
+				,beforeSend:function(){
+					$('#modalMessage').html('Loading...');
+					$('#resultModal').modal({
+						keyboard: false
+						,backdrop:'static' });   
+				}}).done(function(data){
 				//change the current
 				if(data.success !== undefined){
 					var message = data.success.numRowUpdated +' record(s) updated successfully !!!';
@@ -413,6 +499,51 @@ $('#btnSaveReviewPanel').on('click',function(e){
 					}					
 				}
 				setTimeout(function(){ $('#resultModal').modal('hide');$('#reviewPanelEditor').modal('hide'); },1000);
+			}).fail(function(data){
+
+				if(data.responseJSON !== undefined){
+					if(data.responseJSON.error !== undefined ){
+						var message = data.responseJSON.error.type + ' : '+ data.responseJSON.error.message;
+						$('#modalMessage').html(message);
+						setTimeout(function(){$('#resultModal').modal('hide');},1500);
+					}
+				}				
+			});
+		});
+
+		//==================================================================================================
+		//  Save Particulars
+		//==================================================================================================
+		$('#btnSaveConfParticular').on('click',function(e){ 
+
+			$.ajax({url: "{{ URL::to('conference/management/updateParticulars') }}"
+				,data:{conf_id:{{ $conf->conf_id }}
+				,cutOffDate:$("#innerCutOffDate").data("DateTimePicker").getDate().format('DD-MMM-YYYY HH:mm')
+				,minScore :$('#innerMinScore > input').val() }
+				,type:'get'
+				,beforeSend:function(){
+					$('#modalMessage').html('Loading...');
+					$('#resultModal').modal({
+						keyboard: false
+						,backdrop:'static' });   
+				}}).done(function(data){
+				//change the current
+				if(data.success !== undefined){
+					var message = data.success.numRowUpdated +' record(s) updated successfully !!!';
+					$('#modalMessage').html(message);
+					$('#cutOffValue').html('');
+					$('#minScoreValue').html('');
+					if(data.success.conf !== undefined){
+						//* put back all into front page
+
+						if(data.success.conf.cutoff_time !== undefined && data.success.conf.min_score !== undefined ){
+							$('#cutOffValue').append(new moment(data.success.conf.cutoff_time).format('DD-MMM-YYYY HH:mm'));
+							$('#minScoreValue').append(data.success.conf.min_score);
+						}							
+
+					}
+				}
+				setTimeout(function(){ $('#resultModal').modal('hide');$('#particularEditor').modal('hide'); },1000);
 			}).fail(function(data){
 
 				if(data.responseJSON !== undefined){
@@ -466,15 +597,19 @@ function sendFile(file, editor, weleditable) {
 
 			<div class="panel-heading"><strong></strong></div>
 			<div class="panel-body conferencebody">
+				{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnEditParticular')) }}
+				<br/>
 				<h2 class="pager title"><u>{{ $conf->title }}</u></h2>
 				<h3 class="pager venue"> {{ $conf->room()->venue()->venue_name }}  </h3>
 				<h4 class="pager room">  {{ $conf->room()->room_name }}  </h4>
-				<h4 class="pager date">  {{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }} <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
-				<h4 class="pager date">  Chairman : 
+				<h4 class="pager date">  <span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
+				<h4 class="pager date">  <b>Chairman : </b>
 					@foreach($confChairUsers as $confChairUser)
 					{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
 					@endforeach
 				</h4>
+				<h4 class="pager room"><span class="center-block"><b>Cut-Off : </b> <span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span></span></h4>
+				<h4 class="pager room">  <b>Min-Score : </b> <span  id="minScoreValue">{{ $conf->min_score }}</span></h4>
 			</div>
 			<div class="divider"></div>
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -489,7 +624,7 @@ function sendFile(file, editor, weleditable) {
 					</div>
 					<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-xs pull-right btnEdit','id'=>'btnEditDescription')) }}
+							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnEditDescription')) }}
 							<br/>
 							<div id='descriptionContent'>
 								{{ $conf->description  }}
@@ -508,7 +643,7 @@ function sendFile(file, editor, weleditable) {
 					</div>
 					<div id="collapseStaff" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingStaff">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-xs pull-right btnEdit','id'=>'btnStaffEdit')) }}
+							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnStaffEdit')) }}
 							<br/>
 							<table class="table table-striped">
 								<tr>
@@ -540,7 +675,7 @@ function sendFile(file, editor, weleditable) {
 					</div>
 					<div id="collapseReviewPanel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingReviewPanel">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-xs pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
+							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
 							<br/>
 							<table class="table table-striped">
 								<tr>
@@ -601,7 +736,7 @@ function sendFile(file, editor, weleditable) {
 	<div class="col-md-12 modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"  id="descriptionEditor">Edit Description for : </h4>
+			<h4 class="modal-title"  id="lbldescriptionEditor">Edit Description for : </h4>
 		</div>
 		<div class="modal-body">				
 			<div class="form-group">
@@ -620,7 +755,7 @@ function sendFile(file, editor, weleditable) {
 	<div class="col-md-12 modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"  id="staffEditor">Edit Staff for : </h4>
+			<h4 class="modal-title"  id="lblstaffEditor">Edit Staff for : </h4>
 		</div>
 		<div class="modal-body">
 			<fieldset>
@@ -652,7 +787,7 @@ function sendFile(file, editor, weleditable) {
 	<div class="col-md-12 modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"  id="reviewPanelEditor">Edit Review Panel for : </h4>
+			<h4 class="modal-title"  id="lblreviewPanelEditor">Edit Review Panel for : </h4>
 		</div>
 		<div class="modal-body">
 			<fieldset>
@@ -678,6 +813,45 @@ function sendFile(file, editor, weleditable) {
 		</div>
 	</div>
 </div>
+
+<!-- Particular -->
+<div class="col-md-12 modal fade" id="particularEditor" tabindex="-1" role="dialog" aria-labelledby="particularEditor" aria-hidden="true">
+	<div class="col-md-12 modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title"  id="lblparticularEditor">Edit Particular for : </h4>
+		</div>
+		<div class="modal-body" id="confParticularField">
+			<fieldset>
+				<div class = 'form-horizontal'>
+					<div class="form-group">
+						{{ Form::label('lblCutOffDate', 'Cuf Off :', array('class' => 'col-md-4 control-label')) }}
+						<div class="col-md-4 dateContainer">
+							<div class="input-group date" id="innerCutOffDate">
+								{{ Form::text('cutoffdate',isset($value)?$value:'',array('name'=>'cutoffdate','id'=>'cutoffdate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY HH:mm')) }}
+								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						{{ Form::label('lblMinScore', 'Min Score :', array('class' => 'col-md-4 control-label')) }}       
+						<div class="col-md-4">
+							<div id="minScore">
+								<div class="necessary" id="innerMinScore">
+									<input type="text" name="minScore" class="form-control"/>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</fieldset>	
+		</div>
+		<div class="modal-footer">
+			{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
+			{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveConfParticular')) }}
+		</div>
+	</div>
 </div>
 <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -687,7 +861,7 @@ function sendFile(file, editor, weleditable) {
 			</div>
 			<div class="modal-body">				
 				<div class="form-group pager">
-					<label class="control-label"><img src="../../img/jqueryui/ajax-loader.gif"></label>
+					<label class="control-label"><img src="{{asset('img/jqueryui/ajax-loader.gif')}}"></label>
 					<label class="control-label" id="modalMessage"></label>
 				</div>
 			</div>

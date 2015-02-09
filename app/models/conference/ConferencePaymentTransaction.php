@@ -12,7 +12,7 @@ class ConferencePaymentTransaction extends Eloquent {
 
 	public function UserBill()
 	{
-		return $this->belongsTo('UserBill','bill_id','bill_id');
+		return $this->where('UserBill','bill_id','bill_id');
 	}
 
 	public function PaymentCash()

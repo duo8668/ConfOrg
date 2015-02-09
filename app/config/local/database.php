@@ -2,7 +2,6 @@
 
 return array(
 
-'fetch' => PDO::FETCH_CLASS,
 	/*
 	|--------------------------------------------------------------------------
 	| Database Connections
@@ -18,15 +17,15 @@ return array(
 	| choice installed on your machine before you begin development.
 	|
 	*/
-	'default' => 'mysql',
+
 	'connections' => array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'conforg_db',
-			'username'  => 'root',
-			'password'  => '',
+			'database'  => 'homestead',
+			'username'  => 'homestead',
+			'password'  => 'secret',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

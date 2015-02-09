@@ -72,13 +72,17 @@ Add New Conference
 	
 	$(document).ready(function(){
 
-		$('#datetimepickerEnd').datetimepicker({useCurrent: false,pickTime: false , pickDate:true });
-
 		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	 , pickDate:true});
 
+		$('#datetimepickerEnd').datetimepicker({useCurrent: false, pickTime: false, pickDate:true });
+ 
+		$('#datetimepickerCutOffDate').datetimepicker({useCurrent: false,pickTime: true	 , pickDate:true});
+ 
 		$("#datetimepickerBegin").on("dp.hide",function (e) {
-
 			$('#datetimepickerEnd').data("DateTimePicker").setMinDate(e.date);
+			$('#datetimepickerEnd').data("DateTimePicker").setViewDate(e.date);
+			$('#datetimepickerCutOffDate').data("DateTimePicker").setMinDate(e.date);
+			$('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(e.date);
 		});
 
 		$("#datetimepickerEnd").on("dp.change",function (e) {
@@ -182,7 +186,23 @@ Add New Conference
 							format: 'DD-MM-YYYY',
 							message: 'The value is not a valid date'
 						}
+					}
+				},
+				cutOffDate:{
+					validators: {
+						date: {
+							format: 'DD-MM-YYYY HH:mm',
+							message: 'The value is not a valid datetime'
+						}
 					} 
+				},
+				minScore:{
+					validators: {
+						numeric : {
+							separator: '.',
+							message: 'The value is not a valid numeric'
+						}
+					}
 				},
 				maxSeats: {
 					validators: {
@@ -190,8 +210,12 @@ Add New Conference
 							message: 'The Max Seats is required'
 						},integer: {
 							message: 'This value must be integer'
+						},greaterThan: {
+							inclusive:false,
+							value: 0.0 ,
+							message: 'This value must be greater than zero'
 						}
-					} 
+					}
 				},
 				venue: {
 					validators: {
@@ -248,21 +272,21 @@ Add New Conference
                 	
                 },1000);
             }, 'json')
-            .fail(function(){
+.fail(function(){
 
-            	var message = 'System fatal error, please contact your System Administrator ...';
-            	$('#resultModal').modal({
-            		keyboard: false
-            		,backdrop:'static' }); 
+	var message = 'System fatal error, please contact your System Administrator ...';
+	$('#resultModal').modal({
+		keyboard: false
+		,backdrop:'static' }); 
 
-            	$('#modalMessage').html(message);
-            	setTimeout(function(){$('#resultModal').modal('hide');},1000);
-            	
-            }).always(function(){
+	$('#modalMessage').html(message);
+	setTimeout(function(){$('#resultModal').modal('hide');},1000);
 
-            });
+}).always(function(){
 
-        }).find('input[name="chkField[]"]')
+});
+
+}).find('input[name="chkField[]"]')
             // Init iCheck elements
             .iCheck({
             	checkboxClass: 'icheckbox_square-green'
@@ -326,6 +350,23 @@ Add New Conference
 					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
 					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>    
 				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ Form::label('cutOffDate', 'Cut Off', array('class' => 'col-md-4 control-label')) }} 
+			<div class="col-md-4 dateContainer">
+				<div class="input-group date" id="datetimepickerCutOffDate">
+					{{ Form::text('cutOffDate',isset($value)?$value:'',array('name'=>'cutOffDate','id'=>'cutOffDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY HH:mm')) }}
+					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ Form::label('minScore', 'Min. Score', array('class' => 'col-md-4 control-label')) }}       
+			<div class="col-md-4">
+				{{ Form::text('minScore',isset($value)?$value:'',array('name'=>'minScore','id'=>'minScore', 'class' => 'form-control necessary'))}}
 			</div>
 		</div>
 

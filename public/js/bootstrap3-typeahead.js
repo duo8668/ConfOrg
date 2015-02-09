@@ -243,7 +243,10 @@
     },
 
     displayText: function(item) {
-      return item.name || item;
+      if(item !== undefined){
+         return item.name === undefined? item : item.name;
+      }
+     
     },
 
     next: function (event) {

@@ -28,6 +28,7 @@
 }
 .bootstrap-tagsinput .tag {
   margin-right: 2px;
+  padding: 1px;
   color: white;
 }
 .bootstrap-tagsinput .tag [data-role="remove"] {

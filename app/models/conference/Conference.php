@@ -4,7 +4,7 @@ class Conference extends Eloquent {
 
 	protected $table = 'conference';
 
-	protected $fillable = array('title', 'description','begin_date','begin_time','end_date','end_time','is_free','created_by','modified_by');
+	protected $fillable = array('title', 'description','begin_date','begin_time','end_date','end_time','is_free','cutoff_time','min_score','created_by','modified_by');
 
 	protected $guarded = array('conf_id');
 	
@@ -31,9 +31,12 @@ class Conference extends Eloquent {
 	public function Room(){
 		$roomSchedule = ConferenceRoomSchedule::where('conf_id' ,'=', $this->conf_id)->first();
 
-		$room = Room::where('room_id','=',$roomSchedule->room_id)->first();
+		$rooms = Room::where('room_id','=',$roomSchedule->room_id)->get();
+		if($rooms !=null){
+			return $rooms->first();
+		}
 
-		return $room;
+		return null;
 	}
 	
 	public function getStatusInConference(){ 

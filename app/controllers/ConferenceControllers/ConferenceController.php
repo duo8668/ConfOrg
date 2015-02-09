@@ -100,21 +100,20 @@ class ConferenceController extends \BaseController {
 		}
 	}
 
-	public function manage()
+	public function detail()
 	{ 
 		$fields=InterestField::select(DB::raw('interestfield_id as id, name as label'))
 		->get();
 
-		$confUsers = ConferenceUserRole::where('conf_id','=',Input::get('conf_id'))
-		->where('role_id','=',Role::where('rolename','=','conference_chair')->first()->role_id)
-		->select(DB::raw('user_id'))
-		->lists('user_id');
+		$confChairUsers = ConferenceUserRole::ConferenceChair(Input::get('conf_id'))->toArray();
 
-		$allStaffs = User::whereIn('user_id',$confUsers)->get();
-	 
+		$allStaffs = ConferenceUserRole::ConferenceStaffs(Input::get('conf_id'))->toArray();
+
+		$reviewPanels = ConferenceUserRole::ConferenceReviewPanels(Input::get('conf_id'))->toArray();
+
 		$conf = Conference::where('conf_id','=',Input::get('conf_id'))->first();
 
-		$view = View::make('conference.management.manage',array('fields'=>$fields,'conf' =>$conf,'allStaffs'=>$allStaffs )); 
+		$view = View::make('conference.detail',array('fields'=>$fields,'conf' =>$conf,'confChairUsers'=>$confChairUsers,'allStaffs'=>$allStaffs,'reviewPanels'=>$reviewPanels)); 
 
 		return $view;
 	}
@@ -161,6 +160,8 @@ class ConferenceController extends \BaseController {
 		'beginDate' => date("Y-m-d", strtotime(Input::get('beginDate'))),
 		'endDate' => date("Y-m-d", strtotime(Input::get('endDate'))),
 		'maxSeats' => Input::get('maxSeats'),
+		'cutOffDate' => date("Y-m-d", strtotime(Input::get('cutOffDate'))),
+		'minScore' => Input::get('minScore'),
 		'venue' => Input::get('venue'),
 		'chkIsFree' => Input::get('chkIsFree') === 'true'? true: false
 		];
@@ -171,6 +172,8 @@ class ConferenceController extends \BaseController {
 		'beginDate'=>'required|date|before:endDate',
 		'endDate'=>'required|date|after:beginDate',
 		'maxSeats'=>'required|numeric',
+		'cutOffDate' => 'date',
+		'minScore' => 'numeric',
 		'venue'=>'required|numeric',
 		'chkIsFree'=>'boolean'
 		];
@@ -197,6 +200,8 @@ class ConferenceController extends \BaseController {
 							,'begin_date' => $data['beginDate']
 							,'end_date' => $data['endDate']
 							,'is_free' => $data['chkIsFree']
+							,'cutoff_time' => $data['cutOffDate']
+							,'min_score' => $data['minScore']
 							,'created_by' => $user->user_id));
 
 						$confRoom = ConferenceRoomSchedule::create(
@@ -225,16 +230,257 @@ class ConferenceController extends \BaseController {
 		return array('success'=>$result);
 	}
 
-	public function validateCreateConference(){
+	public function updateDescription()
+	{ 
+		$data = [ 
+		'conf_id' => Input::get('conf_id') 
+		];
 
-		$confTitle = trim(Input::get('conferenceTitle'));
+		$rules = [ 
+		'conf_id'=>'required|numeric'
+		];
 
-		$conf = Conference::where('Title','=',$confTitle)->first();
+		$validator = Validator::make($data,$rules);
 
-		return	json_encode(array('valid' => ($conf==null)));
+		if(Auth::check()){
+			if($validator->fails()){
 
+				return array('invalidFields'=>$validator->errors()); 
+
+			}else{
+				try
+				{  
+					$user =Auth::user();
+
+					$result = DB::transaction(function() use ($data,$user)
+					{ 
+						$numRowUpdated = Conference::where('conf_id','=',$data['conf_id'])
+						->update(array('description'=>Input::get('description')
+							,'modified_by' => $user->user_id)); 
+
+						return array('numRowUpdated'=>$numRowUpdated);
+					});					
+
+				}
+				catch(Exception $ex)
+				{					 
+					throw $ex;
+				}
+			}
+		}
+
+		return array('success'=>$result);
 	}
 
+	public function updateParticulars()
+	{ 
+		$data = [ 
+		'conf_id' => Input::get('conf_id')
+		,'cutOffDate' => date("Y-m-d H:i", strtotime(Input::get('cutOffDate')))
+		,'minScore' => Input::get('minScore')
+		];
 
+		$rules = [ 
+		'conf_id'=>'required|numeric'
+		,'cutOffDate' => 'date'
+		,'minScore' => 'numeric|min:1'
+		];
+
+		$validator = Validator::make($data,$rules);
+
+		if(Auth::check()){
+			if($validator->fails()){
+
+				return array('invalidFields'=>$validator->errors()); 
+
+			}else{
+				try
+				{  
+					$user =Auth::user();
+
+					$result = DB::transaction(function() use ($data,$user)
+					{ 
+						$numRowUpdated = Conference::where('conf_id','=',$data['conf_id'])
+						->update(array('cutoff_time'=>$data['cutOffDate']
+							,'min_score'=>$data['minScore']
+							,'modified_by' => $user->user_id));
+						$conf = Conference::where('conf_id','=',$data['conf_id'])->first();
+						return array('numRowUpdated'=>$numRowUpdated,'conf'=> $conf);
+					});					
+
+				}
+				catch(Exception $ex)
+				{					 
+					throw $ex;
+				}
+			}
+		}
+
+		return array('success'=>$result);
+	}
+
+	public function updateConfStaffs()
+	{ 
+		$data = [ 
+		'conf_id' => Input::get('conf_id'),
+		'emails' => Input::get('emails'),
+		];
+
+		$rules = [ 
+		'conf_id'=>'required|numeric',
+		'emails' =>'array'
+		];
+
+		$validator = Validator::make($data,$rules);
+
+		if(Auth::check()){
+			if($validator->fails()){
+
+				return array('invalidFields'=>$validator->errors()); 
+
+			}else{
+				try
+				{  
+					$user =Auth::user();
+					$originalStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id']);
+					$numRowUpdated =0;
+					$result = DB::transaction(function() use ($data,$user,$originalStaffs,$numRowUpdated){
+						
+
+						$roleid = Role::ConferenceStaff()->role_id;
+
+						// add all first
+						if(!empty($data['emails'] )){
+							foreach ($data['emails'] as $email) {
+
+								$targetUser = User::where('email','=',$email)->first();
+
+								if(!empty($targetUser)){ 								 
+									if(empty(ConferenceUserRole::where(array('conf_id' =>$data['conf_id']))
+										->Where(array('user_id' =>$targetUser->user_id))
+										->first())){
+
+										if(!empty(ConferenceUserRole::create(array('conf_id' =>$data['conf_id'], 'role_id' =>$roleid ,'user_id' => $targetUser->user_id,'created_by' => $user->user_id )))){
+											$numRowUpdated ++;
+										}
+									}
+								}else{
+								// not exists, send invitation to create staff
+
+								}
+							}
+						}
+
+						// delete not exist
+						if(!empty($originalStaffs)){
+							if(empty($data['emails'])){
+								$data['emails']=array();
+							}
+							foreach ($originalStaffs as $oristaff) {
+
+								if (!in_array($oristaff->email, $data['emails'], true)) {
+									$numRowUpdated += $oristaff->forceDelete();
+								} 
+							}
+						}
+						return array('numRowUpdated'=>$numRowUpdated,'conStaffs'=>ConferenceUserRole::ConferenceStaffs($data['conf_id']));
+					}); 
+}catch(Exception $ex){
+	throw $ex;
+}
+}
+}
+
+return array('success'=>$result);
+}
+
+public function updateReviewPanels()
+{ 
+	$data = [ 
+	'conf_id' => Input::get('conf_id'),
+	'emails' => Input::get('emails'),
+	];
+
+	$rules = [ 
+	'conf_id'=>'required|numeric',
+	'emails' =>'array'
+	];
+
+	$validator = Validator::make($data,$rules);
+
+	if(Auth::check()){
+		if($validator->fails()){
+
+			return array('invalidFields'=>$validator->errors()); 
+
+		}else{
+			try
+			{  
+				$user =Auth::user();
+				$originalRPs = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
+				$numRowUpdated =0;
+
+				$result = DB::transaction(function() use ($data,$user,$originalRPs,$numRowUpdated)
+				{
+					$roleid = Role::ReviewPanel()->role_id;
+
+						// add all first
+					if(!empty($data['emails'] )){
+						foreach ($data['emails'] as $email) {
+
+							$targetUser = User::where('email','=',$email)->first();
+
+							if(!empty($targetUser)){
+								// exists, directly assign the staff								 
+								if(empty(ConferenceUserRole::where(array('conf_id' =>$data['conf_id']))
+									->Where(array('user_id' =>$targetUser->user_id))
+									->first())){
+
+									if(!empty(ConferenceUserRole::create(array('conf_id' =>$data['conf_id'], 'role_id' =>$roleid ,'user_id' => $targetUser->user_id,'created_by' => $user->user_id )))){
+										$numRowUpdated ++;
+									}
+								}
+							}else{
+								// not exists, send invitation to create staff
+
+							}
+						}
+					}
+
+					// delete not exist
+					if(!empty($originalRPs)){
+						if(empty($data['emails'])){
+							$data['emails']=array();
+						}
+						foreach ($originalRPs as $oristaff) {
+
+							if (!in_array($oristaff->email, $data['emails'], true)) {
+								$numRowUpdated += $oristaff->forceDelete();
+							} 
+						}
+
+						// return to the $result variable
+						return array('numRowUpdated'=>$numRowUpdated,'conStaffs'=>ConferenceUserRole::ConferenceReviewPanels($data['conf_id']));
+					}});
+}
+catch(Exception $ex)
+{					 
+	throw $ex;
+}
+}
+}
+
+return array('success'=>$result);
+}
+
+public function validateCreateConference(){
+
+	$confTitle = trim(Input::get('conferenceTitle'));
+
+	$conf = Conference::where('Title','=',$confTitle)->first();
+
+	return	json_encode(array('valid' => ($conf==null)));
+
+}
 
 }

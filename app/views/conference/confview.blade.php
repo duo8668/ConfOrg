@@ -35,8 +35,7 @@
 			data : {subject:$(source).attr('id')}
 		})
 		.done(function(data) {
-			alert(data);
-			//$('#displayChannel').html(data);
+			
 		})
 		.fail(function(xhr,stat,msg) {
 			alert(xhr.responseText);
@@ -64,9 +63,9 @@
 						<p>{{ $conf->begin_date }} to {{ $conf->end_date }}</p>
 					</div>
 					 
-					@if(User::IsInRole('participant',$conf->conf_id )){{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'btn btn-default btn-sm')) }} @endif
-					@if(User::IsInRole('review',$conf->conf_id )){{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'btn btn-default btn-sm')) }} @endif
-					@if(User::IsInRole('fin-view',$conf->conf_id )){{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'btn btn-default btn-sm')) }} @endif
+					@if(Auth::user()->hasConfRole($conf->conf_id, Role::Participant()->rolename)){{ Form::button('Participate',array('name'=>'btnParticipate','id'=>'btnParticipate','class'=>'btn btn-default btn-sm')) }} @endif
+					@if(Auth::user()->hasConfRole($conf->conf_id, Role::ReviewPanel()->rolename)){{ Form::button('Add Review',array('name'=>'btnAddReview','id'=>'btnAddReview','class'=>'btn btn-default btn-sm')) }} @endif
+					@if(Auth::user()->hasConfPermission($conf->conf_id, Permission::FinanceEdit()->permission_name)){{ Form::button('View Receipt',array('name'=>'btnViewReceipt','id'=>'btnViewReceipt','class'=>'btn btn-default btn-sm')) }} @endif
 				</div>
 			</div>
 		</div>
