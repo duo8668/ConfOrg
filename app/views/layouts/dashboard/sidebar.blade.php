@@ -50,14 +50,29 @@
 
 
                         <!-- VENUE MANAGEMENT LINKS, appear if user == Provider/Facilitator -->
-                        <li><a href="{{ url('equipment/create') }}">Add Equipments</a></li>   
-                        <li><a href="{{ url('equipment') }}">All Equipments</a></li>
-                        <li><a href="{{ url('equipmentcategory/create') }}">Add Category</a></li>    
-                        <li><a href="{{ url('equipmentcategory') }}">All Category</a></li>
-                        <li><a href="{{ url('venue/create') }}">Add Venue</a></li>     
-                        <li><a href="{{ url('venue') }}">All Venue</a></li>                       
-                        <li><a href="{{ url('room/create') }}">Add Room</a></li>   
-                        <li><a href="{{ url('room') }}">All Room</a></li>
+                        <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> Venue<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">My Venues</a>
+                                </li>
+                                <li>
+                                    <a href="#">Add New Venue</a>
+                                </li>
+                                <li>
+                                    <a href="#">Category</a>
+                                </li>
+                                <li>
+                                    <a href="t#">Equipment</a>
+                                </li>
+                                <li>
+                                    <a href="#">Room</a>
+                                </li>
+                                
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>                     
+                        <li><a href="#"><i class="fa fa-cutlery fa-fw"></i>Food</a></li>   
+                        <li><a href="#"><i class="fa fa-smile-o fa-fw"></i>Entertainment</a></li>
                          <li class="sidebar-divider"></li>
 
                         <!-- END OF SIDEBAR MENU -->
