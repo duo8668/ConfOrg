@@ -35,6 +35,7 @@
           {{ Form::label('sub_title', 'Submission Title *', ['class' => 'col-sm-2 control-label']) }}   
           <div class="col-sm-10">     
           {{ Form::text('sub_title', null, array('class' => 'form-control')) }}
+          {{ Form::hidden('old_sub_title', null, array('class' => 'form-control')) }}
           </div>
         </div>
 

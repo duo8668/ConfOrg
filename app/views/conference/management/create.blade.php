@@ -28,7 +28,7 @@ Add New Conference
 <style>
 
 	body {
-		margin: 40px 10px;
+		/*margin: 40px 10px;*/
 		padding: 0;
 		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
 		font-size: 14px;
@@ -305,22 +305,21 @@ Add New Conference
 
 
 @if (Auth::check())
-<div id='divFormBody'>
-	{{ Form::open(array('url' => 'conference/management/submitCreateConf','method'=>'POST','id'=>'frmCreateConf', 'class' => 'form-horizontal')) }}
-	<fieldset>
+<div class="row" id='divFormBody'>
+ {{ Form::open(array('url' => 'conference/management/submitCreateConf','method'=>'POST','id'=>'frmCreateConf', 'class' => 'form-horizontal')) }}
+	<div class="col-md-12">
 
 		<div class="form-group">
-			{{ Form::label('lblConfTitle', 'Title', array('class' => 'col-md-4 control-label')) }}       
-			<div class="col-md-4">
+			{{ Form::label('lblConfTitle', 'Title', array('class' => 'col-md-2 control-label')) }}       
+			<div class="col-md-10">
 				{{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle', 'class' => 'form-control necessary'))}}
 			</div>
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-4 control-label')) }}
+			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-2 control-label')) }}
 
-			<div class="col-xs-4">
-
+			<div class="col-md-10">
 				@foreach ($fields as $field)
 				<div class="checkbox">
 					<label> 
@@ -329,12 +328,11 @@ Add New Conference
 					</label>
 				</div>
 				@endforeach
-
 			</div>
 		</div> 
 
 		<div class="form-group">
-			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-4 control-label')) }}  
+			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-2 control-label')) }}  
 			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerBegin">
 					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
@@ -344,7 +342,7 @@ Add New Conference
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('endDate', 'End', array('class' => 'col-md-4 control-label')) }} 
+			{{ Form::label('endDate', 'End', array('class' => 'col-md-2 control-label')) }} 
 			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerEnd">
 					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
@@ -354,7 +352,7 @@ Add New Conference
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('cutOffDate', 'Cut Off', array('class' => 'col-md-4 control-label')) }} 
+			{{ Form::label('cutOffDate', 'Cut Off', array('class' => 'col-md-2 control-label')) }} 
 			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerCutOffDate">
 					{{ Form::text('cutOffDate',isset($value)?$value:'',array('name'=>'cutOffDate','id'=>'cutOffDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY HH:mm')) }}
@@ -364,43 +362,42 @@ Add New Conference
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('minScore', 'Min. Score', array('class' => 'col-md-4 control-label')) }}       
+			{{ Form::label('minScore', 'Min. Score', array('class' => 'col-md-2 control-label')) }}       
 			<div class="col-md-4">
 				{{ Form::text('minScore',isset($value)?$value:'',array('name'=>'minScore','id'=>'minScore', 'class' => 'form-control necessary'))}}
 			</div>
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-4 control-label')) }}
+			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-2 control-label')) }}
 			<div class="col-md-4">
 				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats','class' => 'form-control',"maxlength"=>"6")) }}
 			</div>
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-4 control-label')) }}
-			<div class="col-md-4 venueContainer">
+			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-2 control-label')) }}
+			<div class="col-md-6 venueContainer">
 				{{ Form::select('venue',[null=>''],null,array('id'=>'ddlVenue','class' => 'form-control necessary')) }}
 			</div>
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('isFree', 'Is this Conference Free?', array('class' => 'col-md-4 control-label')) }} 
-			<div class="col-md-1"> 
+			{{ Form::label('isFree', 'Is this Conference Free?', array('class' => 'col-md-2 control-label')) }} 
+			<div class="col-md-10"> 
 				<div class="checkbox">
 					{{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }}    Yes                 
 				</div>			
 			</div>
 		</div>
-
+		<hr>
 		<!-- Submit Button -->
-		<div class="form-group">
-			<label class="col-md-4 control-label"></label>
-			<div class="col-md-4">
-				{{ Form::submit('Add New Conference', array('class' => 'btn btn-primary btn-lg')) }}
-			</div>
-		</div>
-	</fieldset>
+		<div class="row">  
+	      <div class="col-md-8 col-md-offset-2">
+	        {{ Form::submit('Add New Conference', array('class' => 'btn btn-primary btn-md btn-block')) }}
+
+	      </div>
+	    </div>   
 	{{ Form::close() }}
 
 
