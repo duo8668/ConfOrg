@@ -49,7 +49,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#features-section">Features</a></li>                
+                    <li><a href="#nav-section1" class="nav-section1">Features</a></li>                
                     <li><a href="{{ URL::route('users-sign-in') }}">Sign in</a></li>
                     <li><a href="{{ URL::route('users-create') }}">Sign Up</a></li>
                 </ul>
@@ -65,9 +65,9 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="intro-message">
-                        <h1>Welcome to Conference Organizer</h1>
+                        <h1>Welcome to ORAFER</h1>
                         <h3>A solution for easy organization of Conference</h3>
-                        <hr class="intro-divider">                    
+                        <hr class="intro-divider">                   
                     </div>
                 </div>
             </div>
@@ -77,10 +77,10 @@
     <!-- /.intro-header -->
 
     <!-- Page Content -->
-    <div id="features-section"></div>
+    <div id="nav-section1"></div>
 
     <!-- Features Start -->
-	<div class="content-section-a">
+	<!-- <div class="content-section-a">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-sm-6">
@@ -93,12 +93,12 @@
                     <img class="img-responsive" src="img/collaborative-2.jpg" alt="">
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- /.container -->
-    </div>
+    <!-- </div> -->
     <!-- /.content-section-a -->
 
-    <div class="content-section-b">
+    <!-- <div class="content-section-b">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
@@ -111,12 +111,12 @@
                     <img class="img-responsive" src="img/onthecloud.jpg" alt="">
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- /.container -->
-    </div>
+    <!-- </div> -->
     <!-- /.content-section-b -->
 
-    <div class="content-section-a">
+    <!-- <div class="content-section-a">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-sm-6">
@@ -129,12 +129,50 @@
                     <img class="img-responsive" src="img/mobile-friendly.jpg" alt="">
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- /.container -->
-    </div>
+    <!-- </div> -->
     <!-- /.content-section-a -->
+    <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <div class="box">
+                    <div class="box-icon">
+                        <span class="fa fa-4x fa-html5"></span>
+                    </div>
+                    <div class="info">
+                        <h4 class="text-center">Title</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti atque, tenetur quam aspernatur corporis at explicabo nulla dolore necessitatibus doloremque exercitationem sequi dolorem architecto perferendis quas aperiam debitis dolor soluta!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <div class="box">
+                    <div class="box-icon">
+                        <span class="fa fa-4x fa-group"></span>
+                    </div>
+                    <div class="info">
+                        <h4 class="text-center">Easy Access</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti atque, tenetur quam aspernatur corporis at explicabo nulla dolore necessitatibus doloremque exercitationem sequi dolorem architecto perferendis quas aperiam debitis dolor soluta!</p>
+                    </div>
+                </div>
+            </div>
 
-     
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <div class="box">
+                    <div class="box-icon">
+                        <span class="fa fa-4x fa-css3"></span>
+                    </div>
+                    <div class="info">
+                        <h4 class="text-center">Title</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti atque, tenetur quam aspernatur corporis at explicabo nulla dolore necessitatibus doloremque exercitationem sequi dolorem architecto perferendis quas aperiam debitis dolor soluta!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="banner">
 
         <div class="container">
@@ -185,6 +223,8 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+    <script src="{{ asset('js/landing-page.js') }}"></script>
 
 </body>
 </html>
