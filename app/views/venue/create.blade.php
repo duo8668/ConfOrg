@@ -10,39 +10,41 @@
 Add New Venue
 @stop
 @section('content')
-    @if (Session::has('message'))
-        <div class="alert alert-danger">{{ Session::get('message') }}</div>
-    @endif
+   
+    <div class="row">
+    {{ Form::open(array('route' => 'venue.store', 'class' => 'form-horizontal')) }}
     
-    {{ Form::open(array('url' => 'venue', 'class' => 'form-horizontal')) }}
-    <fieldset>  
-    <div class="form-group @if ($errors->has('venueName')) has-error @endif">
-      <label class="col-md-4 control-label" for="venueName">Venue Name</label>  
-      <div class="col-md-4">        
-        {{ Form::text('venueName', Input::old('venueName'), array('class' => 'form-control input-md')) }} 
-        @if ($errors->has('venueName')) <p class="help-block">{{ $errors->first('venueName') }}</p> @endif        
+    <div class="form-group @if ($errors->has('venue_name')) has-error @endif">
+      <label class="col-md-2 control-label" for="venue_name">Venue Name</label>  
+      <div class="col-md-8">        
+        {{ Form::text('venue_name', null, array('class' => 'form-control input-md')) }} 
+        @if ($errors->has('venue_name')) <p class="help-block">{{ $errors->first('venue_name') }}</p> @endif        
       </div>    
     </div>
 
-    <div class="form-group  @if ($errors->has('venueAddress')) has-error @elseif (Session::has('message')) has-error @endif">
-      <label class="col-md-4 control-label" for="venueAddress">Venue Address</label>
-      <div class="col-md-4">                     
-        {{ Form::text('venueAddress', Input::old('venueAddress'), array('class' => 'form-control input-md')) }}
-         @if ($errors->has('venueAddress')) <p class="help-block">{{ $errors->first('venueAddress') }}</p> 
+    <div class="form-group  @if ($errors->has('venue_address')) has-error @elseif (Session::has('message')) has-error @endif">
+      <label class="col-md-2 control-label" for="venue_address">Venue Address</label>
+      <div class="col-md-6">                     
+        {{ Form::text('venue_address', null, array('class' => 'form-control input-md')) }}
+         @if ($errors->has('venue_address')) <p class="help-block">{{ $errors->first('venue_address') }}</p> 
          @elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
          @endif
+         
       </div>
+      <div class="col-md-2">  
+        {{ Form::submit('Preview Map', array('name'=>'Preview','class' => 'btn btn-info btn-sm btn-block')) }}
+      </div>   
     </div>
-    
-    <div class="form-group">
-      <label class="col-md-4 control-label" for="submit"></label>
-      <div class="col-md-4">      
-      {{ Form::submit('Preview Map', array('name'=>'Preview','class' => 'btn btn-primary')) }}
-      {{ Form::submit('Create Venue!', array('name'=>'Create','class' => 'btn btn-primary')) }}
+    <hr>
+    <div class="row">  
+      <div class="col-md-8 col-md-offset-2">
+        <!-- Button -->        
+        {{ Form::submit('Add Venue', array('class' => 'btn btn-primary btn-md btn-block')) }}
+
       </div>
-    </div>
-    </fieldset>
+    </div>     
     {{ Form::close() }}
+    </div>
 
     @if(Session::has('map'))      
       <center>

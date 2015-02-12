@@ -29,13 +29,13 @@
 
 
                         <!-- SUBMISSION LINKS, appear when viewing conference currently calling for papers -->
-                        <li><a href="{{ url('submission') }}"><i class="fa fa-file fa-fw"></i> Your Submissions</a></li>
-                        <li><a href="{{ url('submission/create') }}"><i class="fa fa-plus fa-fw"></i> New Submission</a></li>
+                        <li><a href="{{ URL::route('submission.index') }}"><i class="fa fa-file fa-fw"></i> Your Submissions</a></li>
+                        <li><a href="{{ URL::route('submission.create') }}"><i class="fa fa-plus fa-fw"></i> New Submission</a></li>
                         <li class="sidebar-divider"></li>
 
 
                         <!-- REVIEW LINKS, appear if user == reviewers -->
-                        <li><a href="{{ url('reviews') }}"><i class="fa fa-comment fa-fw"></i> Enter/Edit Reviews</a>
+                        <li><a href="{{ URL::route('reviews.index') }}"><i class="fa fa-comment fa-fw"></i> Enter/Edit Reviews</a>
                         </li>
                         <li class="sidebar-divider"></li>
 
@@ -53,19 +53,19 @@
                         <li><a href="#"><i class="fa fa-map-marker fa-fw"></i> Venue<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">My Venues</a>
+                                    <a href="{{ URL::route('venue.index') }}">My Venues</a>
                                 </li>
                                 <li>
-                                    <a href="#">Add New Venue</a>
+                                    <a href="{{ URL::route('venue.create') }}">Add New Venue</a>
                                 </li>
                                 <li>
-                                    <a href="#">Category</a>
+                                    <a href="{{ URL::route('equipmentcategory.index') }}">Category</a>
                                 </li>
                                 <li>
-                                    <a href="t#">Equipment</a>
+                                    <a href="{{ URL::route('equipment.index') }}">Equipment</a>
                                 </li>
                                 <li>
-                                    <a href="#">Room</a>
+                                    <a href="{{ URL::route('room.index') }}">Room</a>
                                 </li>
                                 
                             </ul>

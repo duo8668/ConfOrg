@@ -32,7 +32,7 @@
 			public function store()
 			{
 				if(Input::get('Preview')) {		 	
-					if($this->validateLocation(Input::get('venueAddress'))==false)
+					if($this->validateLocation(Input::get('venue_address'))==false)
 					{
 			//invalid address
 						Session::flash('message', 'Invalid Address!');
@@ -41,7 +41,7 @@
 					}
 					else
 					{					
-						$map = $this->makeMap(Input::get('venueAddress'));
+						$map = $this->makeMap(Input::get('venue_address'));
 						return Redirect::to('venue/create')            
 						->withInput(Input::all())->with('map',$map);
 					}
@@ -50,8 +50,8 @@
 			// validate
 			// read more on validation at http://laravel.com/docs/validation
 					$rules = array(
-						'venueName'       => 'required',
-						'venueAddress'      => 'required',            
+						'venue_name'       => 'required',
+						'venue_address'      => 'required',            
 						);
 					$validator = Validator::make(Input::all(), $rules);
 
@@ -61,7 +61,7 @@
 						->withErrors($validator)
 						->withInput(Input::all());
 					} 
-					else if($this->validateLocation(Input::get('venueAddress'))==false)
+					else if($this->validateLocation(Input::get('venue_address'))==false)
 					{
 			//invalid address
 						Session::flash('message', 'Invalid Address!');
@@ -71,10 +71,10 @@
 
 					else {
 			// store
-						list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));		
+						list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));		
 						$venue = new venue;
-						$venue->venue_name = Input::get('venueName');
-						$venue->venue_address = Input::get('venueAddress');
+						$venue->venue_name = Input::get('venue_name');
+						$venue->venue_address = Input::get('venue_address');
 						$venue->latitude = $lat;
 						$venue->longitude = $lng;          
 						$venue->save();            
@@ -137,7 +137,7 @@
 			public function update($id)
 			{		 
 				if(Input::get('Preview')) {		 	
-					if($this->validateLocation(Input::get('venueAddress'))==false)
+					if($this->validateLocation(Input::get('venue_address'))==false)
 					{
 			//invalid address
 						Session::flash('message', 'Invalid Address!');
@@ -146,7 +146,7 @@
 					}
 					else
 					{
-						$map = $this->makeMap(Input::get('venueAddress'));				
+						$map = $this->makeMap(Input::get('venue_address'));				
 						return Redirect::to('venue/' .$id. '/edit')->withInput(Input::all())->with('map',$map);
 					}
 
@@ -156,8 +156,8 @@
 			// validate
 			// read more on validation at http://laravel.com/docs/validation
 					$rules = array(
-						'venueName'       => 'required',
-						'venueAddress'      => 'required',            
+						'venue_name'       => 'required',
+						'venue_address'      => 'required',            
 						);
 					$validator = Validator::make(Input::all(), $rules);
 
@@ -167,7 +167,7 @@
 						->withErrors($validator)
 						->withInput(Input::all());	            
 					} 
-					else if($this->validateLocation(Input::get('venueAddress'))==false)
+					else if($this->validateLocation(Input::get('venue_address'))==false)
 					{
 			//invalid address
 						Session::flash('message', 'Invalid Address!');
@@ -178,9 +178,9 @@
 					else {
 			// store
 						$venue = Venue::find($id);        		        
-						list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));			        	
-						$venue->venue_name = Input::get('venueName');
-						$venue->venue_address = Input::get('venueAddress');
+						list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));			        	
+						$venue->venue_name = Input::get('venue_name');
+						$venue->venue_address = Input::get('venue_address');
 						$venue->latitude = $lat;
 						$venue->longitude = $lng;          
 						$venue->save();       
@@ -257,7 +257,7 @@
 				{										
 					$rules = array(						
 						'venue_name'       => 'required|unique:venue',
-						'venueAddress'      => 'required',            
+						'venue_address'      => 'required',            
 						);
 					$validator = Validator::make(Input::all(), $rules);
 
@@ -267,7 +267,7 @@
 						->withInput(Input::all());	
 					}
 
-					else if(!$this->validateLocation(Input::get('venueAddress')))
+					else if(!$this->validateLocation(Input::get('venue_address')))
 					{																
 						Session::flash('message2', 'Invalid Address!');
 						return Redirect::to('about')            
@@ -276,7 +276,7 @@
 
 					else {
 						// store
-						$map = $this->makeMap(Input::get('venueAddress'));				
+						$map = $this->makeMap(Input::get('venue_address'));				
 						return Redirect::to('about')            
 						->withInput(Input::all())->with('map',$map);
 					} 	
@@ -286,20 +286,20 @@
 
 					$rules = array(
 						'venue_name'       => 'required|unique:venue',
-						'venueAddress'      => 'required',
+						'venue_address'      => 'required',
 						'imported_File'            => 'required|mimes:xlsx,xls',
 						);					
 
 					$validator = Validator::make(Input::all(), $rules);					
 					if ($validator->fails()) {					
-						$map = $this->makeMap(Input::get('venueAddress'));
+						$map = $this->makeMap(Input::get('venue_address'));
 						return Redirect::to('about')
 						->withErrors($validator)
 						->withInput(Input::except('imported_File'))
 						->with('map',$map);	
 					}
 
-					else if(!$this->validateLocation(Input::get('venueAddress')))
+					else if(!$this->validateLocation(Input::get('venue_address')))
 					{																
 						Session::flash('message2', 'Invalid Address!');
 						return Redirect::to('about')            
@@ -344,10 +344,10 @@
 								// 		$value['equipment_name'] = strtolower($value['equipment_name']);  																
 								// 	}									
 
-								// 	list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));
+								// 	list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));
 								// 	$venue = new venue;
 								// 	$venue->venue_name = Input::get('venue_name');
-								// 	$venue->venue_address = Input::get('venueAddress');
+								// 	$venue->venue_address = Input::get('venue_address');
 								// 	$venue->latitude = $lat;
 								// 	$venue->longitude = $lng;          
 								// 	$venue->save();    
