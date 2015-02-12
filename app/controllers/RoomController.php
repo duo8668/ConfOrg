@@ -184,7 +184,7 @@ class RoomController extends \BaseController {
 	 */
 	public function edit($id)
 	{		
-		$room = Room::find($id);
+		$room = Room::find($id);		
 		$selectedEquipment = $room->equipments;
 		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');
 		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
@@ -194,7 +194,15 @@ class RoomController extends \BaseController {
 		$eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
 	    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
 	    ->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
+	    ->where('room_equipment.room_id', '=', $id)
 	    ->lists('fullname');
+
+	    // Model::with('relationship')
+	    // ->join(...)
+	    // ->select(...)
+	    // // Note, you won't be able to use 'find' method here, so you'll need 'get', 'first' etc
+	    // ->where(...)
+	    // ->get();
 
 		return View::make('room.edit')
 		->with('venues', $venues)

@@ -200,8 +200,7 @@
 			public function destroy($id)
 			{		
 				$venue = Venue::find($id);
-				$venue->delete();       
-			// redirect
+				$venue->delete();
 				Session::flash('message', 'Successfully deleted the Venue!');
 				return Redirect::to('venue');
 			}
@@ -340,10 +339,10 @@
 										$value['equipment_name'] = strtolower($value['equipment_name']);  																
 									}									
 
-									list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));
+									list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));
 									$venue = new venue;
 									$venue->venue_name = Input::get('venue_name');
-									$venue->venue_address = Input::get('venueAddress');
+									$venue->venue_address = Input::get('venue_address');
 									$venue->latitude = $lat;
 									$venue->longitude = $lng;          
 									$venue->save();    
@@ -398,6 +397,7 @@
 										//attach equipment id, quantity 										
 									}
 								}
+							}
 						}
 					}	
 				}
