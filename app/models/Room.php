@@ -11,8 +11,8 @@ class Room extends Eloquent {
 
 	public function Venue(){
 
-		//return $this->belongsTo('Venue','venue_id','venue_id');
-		return Venue::where('venue_id','=',$this->venue_id)->first();
+		return $this->belongsTo('Venue','venue_id','venue_id');
+		//return Venue::where('venue_id','=',$this->venue_id)->first();
 	}
 
 	public function Equipments(){
