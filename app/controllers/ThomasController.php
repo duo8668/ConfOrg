@@ -8,9 +8,9 @@
 			public function index()
 			{  	
 				$venue = Venue::all();
-			// load the view and pass the venue
+				// load the view and pass the venue				
 				return View::make('venue.index')
-				->with('venue', $venue);
+				->with('venue', $venue);			
 			}
 
 
@@ -247,9 +247,165 @@
 						
 
 			public function download()
-			{				
+			{									
 				if(Input::get('Export')) {
-					Excel::create('Venue-Room Details', function($excel) {
+				$this->exportTemplate();
+				Session::flash('message', 'Successful!');
+				return Redirect::to('about');		
+				}
+				elseif(Input::get('Preview'))
+				{										
+					$rules = array(						
+						'venue_name'       => 'required|unique:venue',
+						'venueAddress'      => 'required',            
+						);
+					$validator = Validator::make(Input::all(), $rules);
+
+					if ($validator->fails()) {											
+						return Redirect::to('about')
+						->withErrors($validator)
+						->withInput(Input::all());	
+					}
+
+					else if(!$this->validateLocation(Input::get('venueAddress')))
+					{																
+						Session::flash('message2', 'Invalid Address!');
+						return Redirect::to('about')            
+						->withInput(Input::all());
+					}
+
+					else {
+						// store
+						$map = $this->makeMap(Input::get('venueAddress'));				
+						return Redirect::to('about')            
+						->withInput(Input::all())->with('map',$map);
+					} 	
+				}
+				elseif(Input::get('Import')){
+					//dd(Input::all())					
+
+					$rules = array(
+						'venue_name'       => 'required|unique:venue',
+						'venueAddress'      => 'required',
+						'imported_File'            => 'required|mimes:xlsx,xls',
+						);					
+
+					$validator = Validator::make(Input::all(), $rules);					
+					if ($validator->fails()) {					
+						$map = $this->makeMap(Input::get('venueAddress'));
+						return Redirect::to('about')
+						->withErrors($validator)
+						->withInput(Input::except('imported_File'))
+						->with('map',$map);	
+					}
+
+					else if(!$this->validateLocation(Input::get('venueAddress')))
+					{																
+						Session::flash('message2', 'Invalid Address!');
+						return Redirect::to('about')            
+						->withInput(Input::all());
+					}
+
+					else 
+					{
+						$file = Input::file('imported_File');					
+						$name = time() . '-' . $file->getClientOriginalName();
+						//$name = preg_replace("/\([^)]+\)/","",$name);
+						$file = $file->move(public_path().'/laravel/public/Excel', $name); 
+
+						if (strpos($name,'Venue-Room Details') === false) {
+							echo 'Invalid File Name. Please download and import the template Venue-Room Details.xlsx provided.';
+						}		
+						else 
+						{ 										
+							$allError = $this->validateExcel($file);							
+							$numError = count($allError);
+							if($numError!=0)
+							{							
+								return View::make('venue.download')->with('allError',$allError) ->with('numError',$numError);	
+							}
+							else if($numError == 0)
+							{
+								var_dump(Room::where('venue_id','=','9')->where('room_name','=',$roomName = 'Conference Room A')->first());
+								DB::listen(function($sql){
+									var_dump($sql);
+								});
+								// $eq = equipmentCategory::where('equipmentcategory_name','=','Logistics')->first()->equipmentcategory_id;
+								// dd($eq);
+							
+								// $results = Excel::load($file)->all();
+								// 	$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
+								// 	$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3									
+								// 	//room
+								// 	$currentEquipmentNameList = Equipment::get(array('equipment_name'))->toArray();
+								// 	//only same equipmentName and Remarks can pass the validation screening
+								// 	foreach($currentEquipmentNameList as &$value)
+								// 	{
+								// 		$value['equipment_name'] = strtolower($value['equipment_name']);  																
+								// 	}									
+
+								// 	list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));
+								// 	$venue = new venue;
+								// 	$venue->venue_name = Input::get('venue_name');
+								// 	$venue->venue_address = Input::get('venueAddress');
+								// 	$venue->latitude = $lat;
+								// 	$venue->longitude = $lng;          
+								// 	$venue->save();    
+																		
+								// 	for($i = 0; $i < $roomCount; ++$i)
+								// 	{										
+								// 		$room = new room;
+								// 		$room->room_name = $results[0][$i]['room_name'];
+								// 		$room->capacity = $results[0][$i]['room_capacity'];
+								// 		$room->venue_id = $venue->venue_id;
+								// 		$room->rental_cost = $results[0][$i]['room_cost'];
+								// 		$room->save();    											
+								// 	}						
+
+								// 	//big problem!		
+								// 	$vid = $venue->venue_id;								
+									
+
+									
+
+								// 	for($i = 0; $i < $roomEquipmentCount; ++$i)
+								// 	{														
+								// 		//iF(!inarray)
+								// 		$eCatID = 0;
+								// 		$equipmentName = strtolower($results[1][$i]['equipment_name']);										
+								// 		if(!in_array(array($equipmentName), $currentEquipmentNameList))	
+								// 		{																						
+								// 			//add or ignore category
+
+								// 			if(is_null(equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
+								// 				$equipmentcategory = new EquipmentCategory;
+								//                 $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category'];								                        
+								//                 $equipmentcategory->save();
+								//                 $eCatID = $equipmentcategory->equipmentcategory_id;
+								// 			}
+
+								// 			$equipment = new equipment;
+								//             $equipment->equipment_name = $results[1][$i]['equipment_name'];
+								//             $equipment->equipment_remark = $results[1][$i]['equipment_remarks'];
+								//             if($eCatID == 0)
+								//             $eCatID = equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
+								//             $equipment->equipmentcategory_id = $eCatID;
+								//             $equipment->save();    																																			
+								// 		}														
+								// 		//venueID for room!			
+								// 		$vId = $venue->venue_id;			
+								// 		$room = room::where('room_name','=',$results[1][$i]['room_name'])->first();
+								// 		$room->equipments()->attach($equipment->equipment_id, array('quantity' => $results[1][$i]['quantity']));
+								// 		//attach equipment id, quantity 										
+								// 	}
+								}
+							}
+						}
+					}	
+				}
+	public function exportTemplate()
+	{
+		Excel::create('Venue-Room Details', function($excel) {
 
 						$excel->sheet('Rooms', function($sheet) {				
 
@@ -335,179 +491,283 @@
 					});	
 
 				})->download('xlsx');
-				Session::flash('message', 'Successful!');
-				return Redirect::to('about');		
-				}
-				elseif(Input::get('Preview'))
-				{
-					$rules = array(
-						'venueName'       => 'required',
-						'venueAddress'      => 'required',            
-						);
-					$validator = Validator::make(Input::all(), $rules);
+	}
+	public function validateExcel($file)
+	{		
+			$allError = [];
+			$roomList = [];
+			$roomEquipmentList = [];
+									
+			$results = Excel::load($file)->all();			
+			$firstrow = $results->first()->toArray();	
+			$secondrow = $results[1]->first()->toArray();				
+						
+			if (count($results) != 2) { //check number of worksheet
+					echo 'Invalid Number of Worksheet. Please download and import the template Venue-Room Details.xlsx provided. <br />';	
+					self::$valid = false;    							 		
+			}
 
-					if ($validator->fails()) {					
-						if(!empty($venueAddress))
-						{
-							if($this->validateLocation($venueAddress)==false)
-							{
-								Session::flash('message', 'Invalid!');
-								return Redirect::to('about')
-								->withErrors($validator)            
-								->withInput(Input::all());					
+			if(self::$valid) {
+				if($results[0]->getTitle()!=='Rooms' or $results[1]->getTitle()!=='Room Equipments')
+				{					
+					echo "Invalid Sheet Name: Did you edit any of the exel worksheet name?";
+					self::$valid = false;	
+				}
+			}
+
+			if(self::$valid)
+			{
+				if(!array_key_exists('room_name', $firstrow[0]) or !array_key_exists('room_capacity', $firstrow[0]) or !array_key_exists('room_cost', $firstrow[0]) or !array_key_exists('remarks', $firstrow[0])){											
+					echo 'Header got problem!';
+					self::$valid = false;	
+				}	
+			}			  
+
+			if(self::$valid)
+			{
+				if(!array_key_exists('room_name', $secondrow) or !array_key_exists('equipment_category', $secondrow) or !array_key_exists('equipment_name', $secondrow) or !array_key_exists('quantity', $secondrow) or !array_key_exists('equipment_remarks', $secondrow)){											
+					echo 'Header got problem!';
+					self::$valid = false;	
+				}	
+			}
+
+			if(self::$valid)
+			{
+				$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
+				$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3	
+				if($roomCount == 0 && $roomEquipmentCount == 0){											
+					echo 'There are no data to be imported';
+					self::$valid = false;	
+				}
+				else if($roomCount == 00)
+				{
+					echo 'There are room data to be imported';
+					self::$valid = false;		
+				}
+			}																			
+
+			if(self::$valid)
+			{																					
+				for($i = 0; $i < $roomCount; ++$i)
+				{										
+					$emptyRow = false; 						
+					$roomName = $results[0][$i]['room_name'];						
+					$roomCapacity = $results[0][$i]['room_capacity'];
+					$roomCost = $results[0][$i]['room_cost'];
+					$remarks = $results[0][$i]['remarks'];
+					$i2 = $i+1;										
+
+					if(empty($roomName) && empty($roomCapacity) && empty($roomCost) && empty($remarks))
+					{										
+						$emptyRow = true;										
+						$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Entire Row','Row'=>'Row: '.$i2, 'error'=>'Empty Row');											
+					}
+					if($emptyRow!=true)
+					{
+						if(!empty($roomName))
+						{						
+							if(count($roomList)>0)
+							{							
+								if(in_array(strtolower($roomName), $roomList[0]))
+								{
+									$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Name','Row'=>'Row: '.$i2, 'error'=>"Identical Room Name is not allowed: '{$roomName}'' is repeated");				
+								}
+								else
+								$roomList[] = array(strtoLower($roomName));																	
 							}
 							else
-							{
-								return Redirect::to('about')
-								->withErrors($validator)
-								->withInput(Input::all());				
-							}									
+							$roomList[] = array(strtoLower($roomName));																	
 						}
 						else
 						{
-							return Redirect::to('about')
-							->withErrors($validator)
-							->withInput(Input::all());	
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Name','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');											
+						}
+
+						if(empty($roomCapacity))
+						{												
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Capacity','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
+						}
+						else if(!is_numeric($roomCapacity))
+						{
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Capacity','Row'=>'Row: '.$i2, 'error'=>"Input '{$roomCapacity}' is NOT a valid numeric input");				
+						}
+						else
+						{
+							//echo $i2.':'.$roomCapacity.'<br />';
+						}
+
+						if(empty($roomCost))
+						{																							
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Cost','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
+						}
+						else if(!is_numeric($roomCost))
+						{																					
+
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Cost','Row'=>'Row: '.$i2, 'error'=>"Input '{$roomCost}' is NOT a valid numeric input");
+
+						}
+						else
+						{
+							//echo $i2.':'.$roomCost.'<br />';
+						}
+
+						if(!empty($remarks))
+						{
+							//echo 'Remarks '.$i2.':'.$remarks.'<br />';
+						}
+						else
+						{											
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Remarks','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
 						}
 					}
+				}				
 
-					else if($this->validateLocation(Input::get('venueAddress'))==false)
-					{			
-													//invalid address
-						Session::flash('message', 'Invalid Address!');
-						return Redirect::to('about')            
-						->withInput(Input::all());
-					}
+				if(self::$valid && $roomEquipmentCount!=0)
+				{
+					for($i = 0; $i < $roomEquipmentCount; ++$i)
+					{										
+						$emptyRow = false; 						
+						$roomName = $results[1][$i]['room_name'];						
+						$equipmentCategory = $results[1][$i]['equipment_category'];
+						$equipmentName = $results[1][$i]['equipment_name'];
+						$quantity = $results[1][$i]['quantity'];
+						$equipmentRemarks = $results[1][$i]['equipment_remarks'];
+						$i2 = $i+1;	
 
-					else {
-													// store
-						$map = $this->makeMap(Input::get('venueAddress'));				
-						return Redirect::to('about')            
-						->withInput(Input::all())->with('map',$map);
-					} 	
-				}
-				elseif(Input::get('Import')){
-				
-					if (Input::hasFile('excel'))
-					{
-						$file = Input::file('excel');					
-						$name = time() . '-' . $file->getClientOriginalName();
-				//$name = preg_replace("/\([^)]+\)/","",$name);
-						$file = $file->move(public_path().'/laravel/public/Excel', $name); 
+						$currentEquipmentList = Equipment::get(array('equipment_name','equipment_remark'))->toArray();	
+						$currentEquipmentNameList = Equipment::get(array('equipment_name'))->toArray();	
 
-						if (strpos($name,'Venue-Room Details') === false) {
-							echo 'Invalid File Name. Please download and import the template Venue-Room Details.xlsx provided.';
-						}		
-						else 
+						foreach($currentEquipmentList as &$value)
 						{
+							$value['equipment_name'] = strtolower($value['equipment_name']);  									
+							$value['equipment_remark'] = strtolower($value['equipment_remark']);  									
+						}			  						
+						foreach($currentEquipmentNameList as &$value)
+						{
+							$value['equipment_name'] = strtolower($value['equipment_name']);  																
+						}				  						
 
-							Excel::load($file, function($reader) {					
-							$results = $reader->all();													
-							$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
-							$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3							
-							$firstrow = $reader->first()->toArray();
-				
-							if (count($results) != 2) { //check number of worksheet
-								echo 'Invalid Number of Worksheet. Please download and import the template Venue-Room Details.xlsx provided. <br />';	
-								self::$valid = false;    							 		
-							}  
-							
-							if(self::$valid==true) {
-								if($results[0]->getTitle()!=='Rooms' or $results[1]->getTitle()!=='Room Equipments')
-								{					
-									echo "Invalid Sheet Name: Did you edit the worksheet name?";											
-									self::$valid = false;	
+						if(empty($roomName) && empty($equipmentCategory) && empty($equipmentName) && empty($quantity) && empty($equipmentRemarks))
+						{										
+							$emptyRow = true;										
+							$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Entire Row','Row'=>'Row: '.$i2, 'error'=>'Empty Row');											
+						}
+						if($emptyRow!=true)
+						{
+							if(!empty($roomName))
+							{								
+								//validate if room name exist on the Room Sheet								
+								if(!in_array(strtolower($roomName), $roomList[0]))
+								{
+									$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Room Name','Row'=>'Row: '.$i2, 'error'=>"Invalid Room Name: The room name: {$roomName} does not exist on the Rooms Worksheet, please rename or include the room on the worksheet.");
 								}
 							}
-							
-							if(self::$valid==true)
+							else
 							{
-								if(!array_key_exists('room_name', $firstrow[0]) or !array_key_exists('room_capacity', $firstrow[0]) or !array_key_exists('room_cost', $firstrow[0]) or !array_key_exists('remarks', $firstrow[0])){											
-									echo 'Header got problem!';
-									self::$valid = false;	
-								}	
+								$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Room Name','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');											
 							}
-							
-							if(self::$valid==true)
+
+							if(empty($equipmentCategory))
+							{												
+								$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Equipment Category','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
+							}							
+							else
 							{
-								if($roomCount == 0 && $roomEquipmentCount == 0){											
-									echo 'There are no data to input';
-									self::$valid = false;	
-								}	
-							}									
-							
-							if(self::$valid==true)
+								//echo $i2.':'.$equipmentCategory.'<br />';
+							}
+
+							if(empty($equipmentName))
+							{																							
+								$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Equipment Name','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
+							}							
+							else
 							{																
-								for($i = 0; $i < $roomCount; ++$i)
-								{																					
-									$emptyRow = false; 						
-									$roomName = $results[0][$i]['room_name'];						
-									$roomCapacity = $results[0][$i]['room_capacity'];
-									$roomCost = $results[0][$i]['room_cost'];
-									$remarks = $results[0][$i]['remarks'];
-									$i2 = $i+1;										
+								if(!empty($roomName))
+								{																	
+									$roomName2 = strtolower($roomName);									
+									$equipmentName2 = strtolower($equipmentName);																											
+									$alreadyExist = false;									
 
-									if(empty($roomName) && empty($roomCapacity) && empty($roomCost) && empty($remarks))
-									{
-										$emptyRow = true;
-										echo 'Worksheet '.$results[0]->getTitle().': Row '.$i2. ' - Is Empty <br />';
+									if(!empty($roomName2) && !empty($equipmentRemarks))
+									{																		
+										$remarks2 = strtolower($equipmentRemarks);																				
+										if(!in_array(array('equipment_name'=>$equipmentName2,'equipment_remark'=>$remarks2), $currentEquipmentList)){																						
+
+											if(in_array(array('equipment_name'=>$equipmentName2), $currentEquipmentNameList))
+											{
+												for($i = 0; $i < count($currentEquipmentList); ++$i)
+												{
+													if($currentEquipmentList[$i]['equipment_name']==$equipmentName2)
+													{
+														$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Equipment Name','Row'=>'Row: '.$i2, 'error'=>"Overriding is not allowed: Equipment {$equipmentName} has already exist in the database with the remark '{$currentEquipmentList[$i]['equipment_remark']}' ");
+													}
+												}
+											}
+										}
+										else
+										{
+											$alreadyExist = true;											
+										}										
 									}
-									if($emptyRow!=true)
-									{
-										if(!empty($roomName))
-										{
-											echo 'Room Name '.$i2.':'.$roomName.'<br />';
-										}
+									if($alreadyExist){									
+										if(count($roomEquipmentList)>0)
+										{										
+											if (in_array(array($roomName2,$equipmentName2), $roomEquipmentList))										
+											{																						
+												$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Equipment Name','Row'=>'Row: '.$i2, 'error'=>"Identical Equipment Name is not allowed: '{$equipmentName}'' is repeated");				
+											}																				
+											else
+											{
+												$roomEquipmentList[] = array($roomName2,$equipmentName2);	
+											}
+										}								
 										else
-										{
-											echo 'Worksheet '.$results[0]->getTitle().': Row '.$i2. ' - Column Room Name is empty, please provide the relevant information <br />';
-										}
-
-										if(empty($roomCapacity))
-										{												
-											echo 'Worksheet '.$results[0]->getTitle().': Row '.$i2. ' - Column Room Capacity is empty, please provide the relevant information <br />';
-										}
-										else if(!is_numeric($roomCapacity))
-										{												
-											echo $results[0]->getTitle().': Row '.$i2. " -Column Room Capacity '{$roomCapacity}' is NOT numeric", PHP_EOL;												
-											echo '<br />';
-										}
-										else
-										{
-											echo $i2.':'.$roomCapacity.'<br />';
-										}
-
-
-										if(empty($roomCost))
-										{												
-											echo 'Worksheet '.$results[0]->getTitle().': Row '.$i2. ' - Column Room Cost is empty, please provide the relevant information <br />';
-										}
-										else if(!is_numeric($roomCost))
-										{																					
-											echo $results[0]->getTitle().': Row '.$i2. " -Column Room Cost '{$roomCost}' is NOT numeric", PHP_EOL;												
-											echo '<br />';
-										}
-										else
-										{
-											echo $i2.':'.$roomCost.'<br />';
-										}
-
-										if(!empty($remarks))
-										{
-											echo 'Remarks '.$i2.':'.$remarks.'<br />';
-										}
-										else
-										{											
-											echo 'Worksheet '.$results[0]->getTitle().': Row '.$i2. ' - Column Remarks is empty, please provide the relevant information <br />';
-										}
+											$roomEquipmentList[] = array($roomName2,$equipmentName2);	
 									}
-								}							
-							}	
-						}); 
+									
+								}								
+							}
 
+							if(empty($quantity))
+							{
+								//echo 'quantity '.$i2.':'.$quantity.'<br />';
+								$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Quantity','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
+							}
+							else if(!is_numeric($quantity))
+							{																					
+								$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Quantity','Row'=>'Row: '.$i2, 'error'=>"Input '{$quantity}' is NOT a valid numeric input");
+							}
+							else
+							{											
+										
+							}
+
+							if(empty($equipmentRemarks))
+							{																							
+								$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Equipment Remarks','Row'=>'Row: '.$i2, 'error'=>'Cell is empty, please provide the relevant information');
+							}							
+							else
+							{
+								//echo $i2.':'.$roomCost.'<br />';
+							}
+						}
+					}
 				}
-			}
-		}
-	}			
+			}			
+		return $allError;
+	}
+
+	public function ImportRoom($file)
+	{	
+		$results = Excel::load($file)->all();
+		$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
+		$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3
+		//room
+		$roomName = $results[0][$i]['room_name'];						
+		$roomCapacity = $results[0][$i]['room_capacity'];
+		$roomCost = $results[0][$i]['room_cost'];
+		$remarks = $results[0][$i]['remarks'];	
+	}
+
 }					
 ?>

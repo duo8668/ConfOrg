@@ -257,9 +257,7 @@ class RoomController extends \BaseController {
 			}
 			echo json_encode($data);
 		}        
-	}
-
-
+	}		
 	/**
 	 * Remove the specified resource from storage.
 	 *
