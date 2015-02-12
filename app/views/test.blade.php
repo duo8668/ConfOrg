@@ -20,20 +20,20 @@ Import/Export
 			</div>
 		</div>
 
-		<div class="form-group @if ($errors->has('venueName')) has-error @endif">
-			<label class="col-md-4 control-label" for="venueName">Venue Name</label>  
+		<div class="form-group @if ($errors->has('venue_name')) has-error @endif">
+			<label class="col-md-4 control-label" for="venue_name">Venue Name</label>  
 			<div class="col-md-4">        
-				{{ Form::text('venueName', Input::old('venueName'), array('class' => 'form-control input-md')) }} 
-				@if ($errors->has('venueName')) <p class="help-block">{{ $errors->first('venueName') }}</p> @endif        
+				{{ Form::text('venue_name', Input::old('venue_name'), array('class' => 'form-control input-md')) }} 
+				@if ($errors->has('venue_name')) <p class="help-block">{{ $errors->first('venue_name') }}</p> @endif        
 			</div>    
 		</div>
 
-		<div class="form-group  @if ($errors->has('venueAddress')) has-error @elseif (Session::has('message')) has-error @endif">
+		<div class="form-group  @if ($errors->has('venueAddress')) has-error @elseif (Session::has('message2')) has-error @endif">
 			<label class="col-md-4 control-label" for="venueAddress">Venue Address</label>
 			<div class="col-md-4">                     
 				{{ Form::text('venueAddress', Input::old('venueAddress'), array('class' => 'form-control input-md')) }}
 				@if ($errors->has('venueAddress')) <p class="help-block">{{ $errors->first('venueAddress') }}</p> 
-				@elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
+				@elseif (Session::has('message2')) <p class="help-block">{{ Session::get('message2') }}</p> 
 				@endif
 			</div>
 		</div>
@@ -49,15 +49,22 @@ Import/Export
 		<center>
 			<div style="max-width:900px">
 				<?php echo Session::get('map')['html']; ?> 
-			</div>			
-<div class="form-group">
-	<label class="col-md-4 control-label" for="submit"></label>
-	<div class="col-md-2">      										
-		{{ Form::file('excel', array('id' => 'excel', 'style'=> 'margin-top:40px' )) }}						
-		{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary', 'style'=> 'margin-top:20px;')) }}
-	</div>
-</div>	
-		</center>
+			</div>		
+		</center>	
+			<div class="form-group @if ($errors->has('imported_File')) has-error @endif">
+				<label class="col-md-4 control-label" for="imported_File"></label>
+				<div class="col-md-4">      										
+					{{ Form::file('imported_File', array('id' => 'imported_File', 'style'=> 'margin-top:10px' )) }}								
+					@if ($errors->has('imported_File')) <p class="help-block">{{ $errors->first('imported_File') }}</p> @endif					
+				</div>
+			</div>				
+
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="submit"></label>
+				<div class="col-md-4">      															
+					{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary')) }}
+				</div>
+			</div>	
 		@endif
 	</fieldset>
 	{{Form::close()}}	

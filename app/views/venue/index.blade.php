@@ -43,5 +43,6 @@ All Venues
 
             </td>
         </tr>
-    @endforeach
+    </tbody>
+    @endforeach    
 @stop
