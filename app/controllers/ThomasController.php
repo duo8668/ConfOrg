@@ -324,82 +324,80 @@
 							{							
 								return View::make('venue.download')->with('allError',$allError) ->with('numError',$numError);	
 							}
-							else if($numError == 0)
-							{
-								var_dump(Room::where('venue_id','=','9')->where('room_name','=',$roomName = 'Conference Room A')->first());
-								DB::listen(function($sql){
-									var_dump($sql);
-								});
+								else if($numError == 0)
+							{																				
 								// $eq = equipmentCategory::where('equipmentcategory_name','=','Logistics')->first()->equipmentcategory_id;
 								// dd($eq);
 							
-								// $results = Excel::load($file)->all();
-								// 	$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
-								// 	$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3									
-								// 	//room
-								// 	$currentEquipmentNameList = Equipment::get(array('equipment_name'))->toArray();
-								// 	//only same equipmentName and Remarks can pass the validation screening
-								// 	foreach($currentEquipmentNameList as &$value)
-								// 	{
-								// 		$value['equipment_name'] = strtolower($value['equipment_name']);  																
-								// 	}									
+								$results = Excel::load($file)->all();
+									$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
+									$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3									
+									//room
+									$currentEquipmentNameList = Equipment::get(array('equipment_name'))->toArray();
+									//only same equipmentName and Remarks can pass the validation screening
+									foreach($currentEquipmentNameList as &$value)
+									{
+										$value['equipment_name'] = strtolower($value['equipment_name']);  																
+									}									
 
-								// 	list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));
-								// 	$venue = new venue;
-								// 	$venue->venue_name = Input::get('venue_name');
-								// 	$venue->venue_address = Input::get('venue_address');
-								// 	$venue->latitude = $lat;
-								// 	$venue->longitude = $lng;          
-								// 	$venue->save();    
+									list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));
+									$venue = new venue;
+									$venue->venue_name = Input::get('venue_name');
+									$venue->venue_address = Input::get('venueAddress');
+									$venue->latitude = $lat;
+									$venue->longitude = $lng;          
+									$venue->save();    
 																		
-								// 	for($i = 0; $i < $roomCount; ++$i)
-								// 	{										
-								// 		$room = new room;
-								// 		$room->room_name = $results[0][$i]['room_name'];
-								// 		$room->capacity = $results[0][$i]['room_capacity'];
-								// 		$room->venue_id = $venue->venue_id;
-								// 		$room->rental_cost = $results[0][$i]['room_cost'];
-								// 		$room->save();    											
-								// 	}						
+									for($i = 0; $i < $roomCount; ++$i)
+									{										
+										$room = new room;
+										$room->room_name = $results[0][$i]['room_name'];
+										$room->capacity = $results[0][$i]['room_capacity'];
+										$room->venue_id = $venue->venue_id;
+										$room->rental_cost = $results[0][$i]['room_cost'];
+										$room->save();    											
+									}						
 
-								// 	//big problem!		
-								// 	$vid = $venue->venue_id;								
-									
+									for($i = 0; $i < $roomEquipmentCount; ++$i)
+									{														
+										//iF(!inarray)
+										$eCatID = 0;
+										$eID = 0;
+										$equipmentName = strtolower($results[1][$i]['equipment_name']);										
+										if(!in_array(array($equipmentName), $currentEquipmentNameList))	
+										{																						
+											//add or ignore category
 
-									
+											if(is_null(equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
+												$equipmentcategory = new EquipmentCategory;
+								                $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category'];								                        
+								                $equipmentcategory->save();
+								                $eCatID = $equipmentcategory->equipmentcategory_id;
+											}
 
-								// 	for($i = 0; $i < $roomEquipmentCount; ++$i)
-								// 	{														
-								// 		//iF(!inarray)
-								// 		$eCatID = 0;
-								// 		$equipmentName = strtolower($results[1][$i]['equipment_name']);										
-								// 		if(!in_array(array($equipmentName), $currentEquipmentNameList))	
-								// 		{																						
-								// 			//add or ignore category
-
-								// 			if(is_null(equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
-								// 				$equipmentcategory = new EquipmentCategory;
-								//                 $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category'];								                        
-								//                 $equipmentcategory->save();
-								//                 $eCatID = $equipmentcategory->equipmentcategory_id;
-								// 			}
-
-								// 			$equipment = new equipment;
-								//             $equipment->equipment_name = $results[1][$i]['equipment_name'];
-								//             $equipment->equipment_remark = $results[1][$i]['equipment_remarks'];
-								//             if($eCatID == 0)
-								//             $eCatID = equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
-								//             $equipment->equipmentcategory_id = $eCatID;
-								//             $equipment->save();    																																			
-								// 		}														
-								// 		//venueID for room!			
-								// 		$vId = $venue->venue_id;			
-								// 		$room = room::where('room_name','=',$results[1][$i]['room_name'])->first();
-								// 		$room->equipments()->attach($equipment->equipment_id, array('quantity' => $results[1][$i]['quantity']));
-								// 		//attach equipment id, quantity 										
-								// 	}
+											//add or ignore equipment
+											if(is_null(equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first())) {
+												$equipment = new equipment;
+												$equipment->equipment_name = $results[1][$i]['equipment_name'];
+												$equipment->equipment_remark = $results[1][$i]['equipment_remarks'];
+												if($eCatID == 0)
+													$eCatID = equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
+												$equipment->equipmentcategory_id = $eCatID;
+												$equipment->save();    																																			
+												$eID = $equipment->equipment_id;
+											}
+											else
+											{
+												//attach the equipment id to something
+												if($eID==0)
+												$eID = equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first()->equipment_id;
+											}											
+										}																								
+										$room = Room::where('venue_id','=',$venue->venue_id)->where('room_name','=',$results[1][$i]['room_name'])->first();										
+										$room->equipments()->attach($eID, array('quantity' => $results[1][$i]['quantity']));
+										//attach equipment id, quantity 										
+									}
 								}
-							}
 						}
 					}	
 				}
