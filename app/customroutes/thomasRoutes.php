@@ -10,7 +10,7 @@
 
 Route::get('/about', 'ThomasController@about');
 //Route::post('/about', array('as' => 'about', 'uses'=>'ThomasController@test'));
-
+Route::get('/download', 'ThomasController@download');
 Route::post('download', array('uses' => 'ThomasController@download'));
 Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
 Route::post('import', array('uses' => 'ThomasController@import'));
