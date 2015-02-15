@@ -3,9 +3,14 @@
   Add New Category
 @stop
 @section('content')
-    @if (Session::has('message'))
-        <div class="alert alert-danger">{{ Session::get('message') }}</div>
-    @endif
+ <!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('equipmentcategory.index') }}">Category</a></li>
+  <li class="active">Add Category</li>
+</ol>
+<hr>
+
 <div class="row"> 
   {{ Form::open(array('url' => 'equipmentcategory', 'class' => 'form-horizontal')) }}
     <div class="col-md-12">

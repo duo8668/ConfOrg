@@ -11,7 +11,14 @@
 Edit {{ $venue->venue_name }}
 @stop
 @section('content')
-
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('venue.index') }}">Venues</a></li>
+  <li>{{ link_to_route( 'venue.show', $venue->venue_name, ['id' => $venue->venue_id] ) }}</li>
+  <li class="active">Edit Venue</li>
+</ol>
+<hr>
 <!-- if there are creation errors, they will show here -->
 {{ HTML::ul($errors->all()) }}
 <div class="row">

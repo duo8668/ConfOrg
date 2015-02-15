@@ -4,20 +4,14 @@
   {{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
-@if($errors->any())
-  <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-      <div class="panel panel-danger">
-        <div class="panel-heading"><h3 class="panel-title">Error!</h3></div>
-        <div class="panel-body">
-          @foreach($errors->all() as $message)
-            <li>{{ $message }}</li>
-          @endforeach
-        </div>
-      </div>
-    </div>
-  </div>
-@endif
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('submission.index') }}">Your Submissions</a></li>
+  <li>{{ link_to_route( 'submission.show', $submission->sub_title, ['id' => $submission->sub_id] ) }}</li>
+  <li class="active">Edit Submission Author</li>
+</ol>
+<hr>
+
 <div class="row">
   {{ Form::open(array('route' => ['submission.update_authors', $submission->sub_id], 'method' => 'PUT') ) }}
     <div class="col-md-12">

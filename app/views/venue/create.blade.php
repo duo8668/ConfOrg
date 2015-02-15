@@ -10,7 +10,14 @@
 Add New Venue
 @stop
 @section('content')
-   
+   <!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('venue.index') }}">Venues</a></li>
+  <li class="active">Add Venues</li>
+</ol>
+<hr>
+
     <div class="row">
     {{ Form::open(array('route' => 'venue.store', 'class' => 'form-horizontal')) }}
     

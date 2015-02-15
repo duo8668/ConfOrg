@@ -7,8 +7,16 @@
     @endif
 @stop
 @section('page-header')
-Showing {{ $room->room_name }}@stop
+Showing {{ $room->room_name }}
+@stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('room.index') }}">Room</a></li>
+  <li class="active">{{{ $room->room_name }}}</li>
+</ol>
+<hr>
     <div class="jumbotron text-center">
         <h2>{{ $room->room_name }}</h2>
         <p>

@@ -3,11 +3,14 @@
 Add New Equipment
 @stop
 @section('content')
-<!-- <center><legend><h1>Create Equipment</h1></legend></center> -->
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('equipment.index') }}">Equipment</a></li>
+  <li class="active">Add Equipment</li>
+</ol>
+<hr>
 
-    @if (Session::has('message'))
-        <div class="alert alert-danger">{{ Session::get('message') }}</div>
-    @endif
 <div class="row">
   {{ Form::open(array('url' => 'equipment', 'class' => 'form-horizontal')) }}
     <div class="col-md-12">

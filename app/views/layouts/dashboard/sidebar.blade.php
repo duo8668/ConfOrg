@@ -22,10 +22,10 @@
 
 
                         <!-- PARTICIPANT SETTINGS, appear when user == participant -->
-                        <li><a href="#"><i class="fa fa-cc-paypal fa-fw"></i> Make Payment</a></li>
+                       <!--  <li><a href="#"><i class="fa fa-cc-paypal fa-fw"></i> Make Payment</a></li>
                         <li><a href="#"><i class="fa fa-ticket fa-fw"></i> Invoice & Confirmation</a></li>
                         <li><a href="#"><i class="fa fa-envelope-o fa-fw"></i> Contact Conference Staff</a></li>
-                        <li class="sidebar-divider"></li>
+                        <li class="sidebar-divider"></li> -->
 
 
                         <!-- SUBMISSION LINKS, appear when viewing conference currently calling for papers -->
@@ -35,18 +35,18 @@
 
 
                         <!-- REVIEW LINKS, appear if user == reviewers -->
-                        <li><a href="{{ URL::route('reviews.index') }}"><i class="fa fa-comment fa-fw"></i> Enter/Edit Reviews</a>
+                        <li><a href="{{ URL::route('reviews.index') }}"><i class="fa fa-comment fa-fw"></i> Submission Reviews</a>
                         </li>
                         <li class="sidebar-divider"></li>
 
 
                         <!-- CONFERENCE MANAGEMENT LINKS, appear if user == Chairman || user == Staff -->
-                        <li><a href="#"><i class="fa fa-graduation-cap fa-fw"></i> Conference Reviewers</a></li>
+                        <!-- <li><a href="#"><i class="fa fa-graduation-cap fa-fw"></i> Conference Reviewers</a></li>
                         <li><a href="#"><i class="fa fa-sitemap fa-fw"></i> Conference Staff</a></li>
                         <li><a href="#"><i class="fa fa-calendar fa-fw"></i> Conference Schedule</a></li>
                         <li><a href="#"><i class="fa fa-group fa-fw"></i> Conference Participants</a></li>
                         <li><a href="{{ url('conference') }}"><i class="fa fa-pencil-square-o fa-fw"></i> Edit Conference</a></li>
-                        <li class="sidebar-divider"></li>
+                        <li class="sidebar-divider"></li> -->
 
 
                         <!-- VENUE MANAGEMENT LINKS, appear if user == Provider/Facilitator -->

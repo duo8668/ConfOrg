@@ -161,6 +161,25 @@ class ReviewController extends \BaseController {
 		return Redirect::route('reviews.index')->withMessage('Thank you! Your review for the contribution has been updated!');
 	}
 
+	/**
+	*  Show all reviews of submissions passed in
+	**/
+	public function show($id)
+	{
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$keywords = $submission->keywords()->get();
+		$authors = $submission->authors()->get();
+		$reviews = $submission->reviews()->get();
+		$sub_topics = DB::table('submission_topic')
+		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+
+		return View::make('reviews.reviews')->withSubmission($submission)
+		->with('sub_authors', $authors)
+		->with('sub_topics', $sub_topics)
+		->withReviews($reviews)
+		->withKeyword($keywords);
+	}
 
 	/**
 	 * Remove the specified resource from storage.
@@ -170,5 +189,5 @@ class ReviewController extends \BaseController {
 	 */
 	public function destroy($id){}
 	public function create(){return View::make('reviews.create');}
-	public function show($id){}
+	
 }

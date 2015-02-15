@@ -1,8 +1,15 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-All Rooms
+    All Rooms
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Rooms</li>
+</ol>
+<hr>
+
 <div class="table-responsive">
     <table class="table">   
         <tr>
@@ -13,12 +20,9 @@ All Rooms
     @foreach($data as $key => $value)
         <tr>
             <td>{{ $value->venue_name}}</td>                        
-            <td>{{ $value->room_name .' (Capacity:'. $value->capacity .' )' }}</td>             
+            <td>{{ link_to_route('room.show', $value->room_name .' (Capacity:'. $value->capacity .' )', ['id' => $value->room_id]) }}</td>             
             <!-- we will also add show, edit, and delete buttons -->
             <td>
-                <!-- show the nerd (uses the show method found at GET /nerds/{id} -->
-                <a class="btn btn-xs btn-success" href="{{ URL::to('room/' . $value->room_id) }}">Show Room</a>
-
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
                 <a class="btn btn-xs btn-info" href="{{ URL::to('room/' . $value->room_id . '/edit') }}">Edit Room</a>
                 
@@ -32,4 +36,7 @@ All Rooms
             </td>
         </tr>
     @endforeach
+    </table> 
+</div>
+<a href="{{ URL::route('room.create') }}" class="btn btn-info btn-sm"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Add Room</span></a>
 @stop

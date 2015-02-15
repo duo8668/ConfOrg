@@ -3,6 +3,13 @@
 	Your Submissions
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Your Submissions</li>
+</ol>
+<hr>
+
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
@@ -27,8 +34,8 @@
 				<td>{{{ $sub->title }}} </td>
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 				<td>
-					{{ link_to_route('submission.reviews', 'Reviews', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}
-					{{ link_to_route('submission.show', 'View/Edit', [$sub->sub_id], ['class' => 'btn btn-success btn-xs'])}}
+					{{ link_to_route('submission.reviews', 'Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
+					{{ link_to_route('submission.show', 'Edit Submission', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}
 					{{ Form::model($sub, ['route' => ['submission.destroy', $sub->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
 						{{ Form::button('Withdraw', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs'])}}
 					{{ Form::close() }}

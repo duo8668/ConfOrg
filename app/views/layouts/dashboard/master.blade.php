@@ -27,15 +27,29 @@
               </div>
           @endif          
 
-          <h1 id="page-header" class="page-header">
+          <h2 id="page-header" >
             @yield('page-header')
-          </h1>
+          </h2>
 
         </div><!-- /.col-lg-12 -->
       </div> <!-- /.row -->
 
       <!-- Main Content -->
       <div id="displayChannel">
+
+        <!-- Universal form error notification -->
+        @if($errors->any())
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="panel panel-danger">
+                <div class="panel-body">
+                  <p class="text-danger"><Strong>There are some errors with the form input!</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endif
+        
         @yield('content')
       </div>
        @include('layouts.dashboard.footerdash')

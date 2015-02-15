@@ -4,6 +4,15 @@ Edit {{ $room->room_name }}
 @stop
 @section('content')
 <div class="row">
+  <!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('room.index') }}">Room</a></li>
+  <li>{{ link_to_route( 'room.show', $room->room_name, ['id' => $room->room_id] ) }}</li>
+  <li class="active">Edit Room</li>
+</ol>
+<hr>
+
   {{ Form::model($room, array('route' => array('room.update', $room->room_id), 'method' => 'PUT', 'class' => 'form-horizontal')) }}
   <div class="col-md-12">
       <legend>Basic Information</legend>

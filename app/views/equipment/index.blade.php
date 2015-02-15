@@ -1,22 +1,22 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-All Equipments
+    All Equipments
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Equipments</li>
+</ol>
+<hr>
 
-<!-- will be used to show any messages 
-@if (Session::has('message'))
-    <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif-->
-
-<table class="table table-striped table-bordered">
-    <thead>
+<div class="table-responsive">
+    <table class="table">   
         <tr>
-            <td>Equipment</td>
-            <td>Category</td>                        
-        </tr>
-    </thead>
-    <tbody>
+            <td style="width:25%"><strong>Equipment</strong></td>
+            <td style="width:25%"><strong>Remarks</strong></td>
+            <td style="width:50%"><strong>Option</strong></td>
+        </tr> 
     @foreach($data as $key => $value)
         <tr>
             <td>{{ $value->equipment_name .' - '. $value->equipment_remark }}</td> 
@@ -39,4 +39,7 @@ All Equipments
             </td>
         </tr>
     @endforeach
+    </table> 
+</div> 
+<a href="{{ URL::route('equipment.create') }}" class="btn btn-info btn-sm"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Add Equipment</span></a>
 @stop

@@ -3,6 +3,15 @@
   Edit {{ $equipmentcategory->equipmentcategory_name }}
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('equipmentcategory.index') }}">Category</a></li>
+  <li>{{ link_to_route( 'equipmentcategory.show', $equipmentcategory->equipmentcategory_name, ['id' => $equipmentcategory->equipmentcategory_id] ) }}</li>
+  <li class="active">Edit Category</li>
+</ol>
+<hr>
+
 {{ Form::model($equipmentcategory, array('route' => array('equipmentcategory.update', $equipmentcategory->equipmentcategory_id), 'method' => 'PUT', 'class' => 'form-horizontal')) }}
     <fieldset>
     <div class="form-group @if ($errors->has('categoryName')) has-error @endif">

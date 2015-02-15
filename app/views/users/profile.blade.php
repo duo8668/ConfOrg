@@ -4,6 +4,12 @@
 @stop
 
 @section('content') 
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Your Profile</li>
+</ol>
+<hr>
 
 <div class="row">
   <div class="col-md-12">

@@ -1,11 +1,15 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-All Venues
+    All Venues
 @stop
 @section('content')
-@if (Session::has('message'))
-    <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif
+ <!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Venues</li>
+</ol>
+<hr>
+
 <div class="table-responsive">
     <table class="table">   
         <tr>
@@ -15,14 +19,11 @@ All Venues
         </tr> 
     @foreach($venue as $key => $value)
         <tr>
-            <td>{{ $value->venue_name }}</td> 
+            <td>{{ link_to_route('venue.show', $value->venue_name, ['id' => $value->venue_id]) }}</td> 
             <td>{{ $value->venue_address }}</td>            
 
             <!-- we will also add show, edit, and delete buttons -->
             <td>
-                <!-- show the nerd (uses the show method found at GET /nerds/{id} -->
-                <a class="btn btn-xs btn-success" href="{{ URL::to('venue/' . $value->venue_id) }}">Show Venue</a>
-
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
                 <a class="btn btn-xs btn-info" href="{{ URL::to('venue/' . $value->venue_id . '/edit') }}">Edit Venue</a>
 
@@ -43,4 +44,5 @@ All Venues
     @endforeach  
     </table> 
 </div> 
+<a href="{{ URL::route('venue.create') }}" class="btn btn-info btn-sm"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Add Venue</span></a>
 @stop

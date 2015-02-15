@@ -3,6 +3,13 @@
 	Select Submissions
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Submissions for Review</li>
+</ol>
+<hr>
+
 <div class="table-responsive">
   	<table class="table">   
   		<tr>
@@ -14,7 +21,7 @@
 		</tr> 
 		@foreach ($submissions as $sub) 
 			<tr>
-				<td>{{ link_to_route('submission.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
+				<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
 				<td>
 					@if ($sub->sub_type === 3)
 					    Poster
@@ -27,7 +34,7 @@
 				<td>{{{ $sub->title }}} </td>
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 				<td>
-					{{ link_to_route('submission.reviews', 'See All Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
+					{{ link_to_route('review.show', 'See Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
 					@if ($sub->review_id == null) 
 						{{ link_to_route('reviews.add', 'Enter Review', [$sub->sub_id], ['class' => 'btn btn-warning btn-xs'])}}
 					@else 

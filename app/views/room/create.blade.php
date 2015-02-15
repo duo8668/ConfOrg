@@ -3,8 +3,16 @@
 Add New Room
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('room.index') }}">Room</a></li>
+  <li class="active">Add Room</li>
+</ol>
+<hr>
+
 <div class="row">
-  {{ Form::open(array('route' => 'room.create', 'class' => 'form-horizontal','id' => 'formCR')) }}
+  {{ Form::open(array('route' => 'room.store', 'class' => 'form-horizontal','id' => 'formCR')) }}
   <div class="col-md-12">
    <legend>Basic Information</legend>
     <div id="venue-group" class="form-group" >

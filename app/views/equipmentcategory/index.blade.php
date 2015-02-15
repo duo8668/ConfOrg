@@ -3,20 +3,20 @@
 All Categories
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Category</li>
+</ol>
+<hr>
 
-<!-- will be used to show any messages 
-@if (Session::has('message'))
-    <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif-->
-
-<table class="table table-striped table-bordered">
-    <thead>
+<div class="table-responsive">
+    <table class="table">   
         <tr>
-            <td>Category</td>
-            <td>Remarks</td>            
-        </tr>
-    </thead>
-    <tbody>
+            <td style="width:25%"><strong>Category</strong></td>
+            <td style="width:25%"><strong>Remarks</strong></td>
+            <td style="width:50%"><strong>Option</strong></td>
+        </tr> 
     @foreach($equipmentcategory as $key => $value)
         <tr>
             <td>{{ $value->equipmentcategory_name }}</td> 
@@ -40,4 +40,7 @@ All Categories
             </td>
         </tr>
     @endforeach
+    </table> 
+</div> 
+<a href="{{ URL::route('equipmentcategory.create') }}" class="btn btn-info btn-sm"> <span class="network-name"> <i class="fa fa-plus fa-fw"></i> Add Category</span></a>
 @stop

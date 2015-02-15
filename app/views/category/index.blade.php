@@ -1,22 +1,15 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-All Categories
+    All Categories
 @stop
 @section('content')
-
-<!-- will be used to show any messages -->
-@if (Session::has('message'))
-    <div class="alert alert-success">{{ Session::get('message') }}</div>
-@endif
-
-<table class="table table-striped table-bordered">
-    <thead>
+<div class="table-responsive">
+    <table class="table">   
         <tr>
-            <td>Category</td>
-            <td>Remarks</td>            
-        </tr>
-    </thead>
-    <tbody>
+            <td style="width:25%"><strong>Category</strong></td>
+            <td style="width:25%"><strong>Remarks</strong></td>
+            <td style="width:50%"><strong>Option</strong></td>
+        </tr> 
     @foreach($category as $key => $value)
         <tr>
             <td>{{ $value->Name }}</td> 
@@ -40,4 +33,6 @@ All Categories
             </td>
         </tr>
     @endforeach
+     </table> 
+</div> 
 @stop

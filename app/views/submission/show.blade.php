@@ -1,9 +1,16 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
   View Submission
-  {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-xs'])}}
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::route('submission.index') }}">Your Submissions</a></li>
+  <li class="active"> {{{ $submission->sub_title }}}</li>
+</ol>
+<hr>
+
 <div class="row">
   <div class="col-md-12">
     <legend>Basic Information</legend>
@@ -84,7 +91,7 @@
         <div class="col-md-5 col-md-offset-7">
           {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-sm'])}}
         
-          {{ link_to_route('submission.edit', 'Edit Basic Info', [$submission->sub_id], ['class' => 'btn btn-success btn-sm'])}}
+          {{ link_to_route('submission.edit', 'Edit Basic Info', [$submission->sub_id], ['class' => 'btn btn-info btn-sm'])}}
         
           {{ Form::model($submission, ['route' => ['submission.destroy', $submission->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
             {{ Form::button('Withdraw Submission', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm'])}}
@@ -121,7 +128,7 @@
         <div class="col-md-5 col-md-offset-7">
           {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-sm'])}}
         
-          {{ link_to_route('submission.edit_authors', 'Edit Authors Info', [$submission->sub_id], ['class' => 'btn btn-success btn-sm'])}}
+          {{ link_to_route('submission.edit_authors', 'Edit Authors Info', [$submission->sub_id], ['class' => 'btn btn-info btn-sm'])}}
         
           {{ Form::model($submission, ['route' => ['submission.destroy', $submission->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
             {{ Form::button('Withdraw Submission', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm'])}}
