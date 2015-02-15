@@ -37,6 +37,8 @@
                         <!-- REVIEW LINKS, appear if user == reviewers -->
                         <li><a href="{{ URL::route('reviews.index') }}"><i class="fa fa-comment fa-fw"></i> Submission Reviews</a>
                         </li>
+                        <li><a href="{{ URL::route('review.topics') }}"><i class="fa fa-check fa-fw"></i> Set Preferred Topics</a>
+                        </li>
                         <li class="sidebar-divider"></li>
 
 

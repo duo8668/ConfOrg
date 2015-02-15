@@ -44,7 +44,14 @@ Route::get('/reviews/{sub_id}/create', array(
     'as'    => 'reviews.add',
     'uses'  => 'ReviewController@add'
 ));
-
+Route::get('/review/topics', array(
+    'as'    => 'review.topics',
+    'uses'  => 'ReviewController@topics'
+));
+Route::post('/review/save_topics', array(
+    'as'    => 'review.save_topics',
+    'uses'  => 'ReviewController@save_topics'
+));
 
 
 Route::resource('review', 'ReviewController');

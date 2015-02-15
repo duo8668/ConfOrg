@@ -18,12 +18,14 @@
      @include('reviews._formpartials')
 
     <!-- Submit Button -->
-    <div style="margin-bottom:20px;"></div>
+    <div style="margin-bottom:30px;"></div>
     <div class="row">  
-      <div class="col-md-6">
+      <div class="col-md-4 col-md-offset-2">
         {{ Form::hidden('hidden_sub_id', $submission->sub_id) }}
-        {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-md')) }}
-        {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-md'])}}
+        {{ Form::submit('Add Review', array('class' => 'btn btn-primary btn-md btn-block')) }}
+      </div>
+      <div class="col-md-4 col-md-offset-6" style="margin-left:0;">
+        {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-md  btn-block'])}}
       </div>
     </div> 
     <div style="margin-bottom:40px;"></div>

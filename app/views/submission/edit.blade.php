@@ -118,12 +118,12 @@
         <div style="margin-bottom:30px;"></div>
         <div class="row">  
           <div class="col-md-4 col-md-offset-2">
-            {{ Form::submit('Update Submission', array('class' => 'btn btn-success btn-md btn-block')) }}
+            {{ Form::submit('Update Submission', array('class' => 'btn btn-primary btn-md btn-block')) }}
           </div>
           <div class="col-md-4 col-md-offset-6" style="margin-left:0;">
             {{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-md btn-block'])}}
           </div>
-      </div> 
+        </div> 
         <div style="margin-bottom:40px;"></div>
     </div>
    
