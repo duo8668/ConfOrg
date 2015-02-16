@@ -123,7 +123,8 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Appitventures\Phpgmaps\PhpgmapsServiceProvider',
 		'Maatwebsite\Excel\ExcelServiceProvider',
-		'Indatus\Dispatcher\ServiceProvider'		
+		'Indatus\Dispatcher\ServiceProvider',
+		'Acme\Providers\BillingServiceProvider'		
 	),
 
 	/*
@@ -191,7 +192,7 @@ return array(
 		'Validator'         => 'Illuminate\Support\Facades\Validator',
 		'View'              => 'Illuminate\Support\Facades\View',
 		'Gmaps' 			=> 'Appitventures\Phpgmaps\Facades\Phpgmaps',
-		//'Excel' 			=> 'Maatwebsite\Excel\Facades\Excel
+		'Excel' 			=> 'Maatwebsite\Excel\Facades\Excel'
 	),
 
 );
