@@ -48,7 +48,7 @@ Edit {{ $venue->venue_name }}
     <div class="row">  
       <div class="col-md-8 col-md-offset-2">
         <!-- Button -->        
-        {{ Form::submit('Add Venue', array('class' => 'btn btn-primary btn-md btn-block')) }}
+        {{ Form::submit('Edit Venue', array('name'=>'Edit','class' => 'btn btn-primary btn-md btn-block')) }}
 
       </div>
     </div>     

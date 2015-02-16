@@ -197,13 +197,6 @@ class RoomController extends \BaseController {
 	    ->where('room_equipment.room_id', '=', $id)
 	    ->lists('fullname');
 
-	    // Model::with('relationship')
-	    // ->join(...)
-	    // ->select(...)
-	    // // Note, you won't be able to use 'find' method here, so you'll need 'get', 'first' etc
-	    // ->where(...)
-	    // ->get();
-
 		return View::make('room.edit')
 		->with('venues', $venues)
 		->with('equipments', $equipments)

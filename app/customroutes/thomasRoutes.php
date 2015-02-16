@@ -7,19 +7,38 @@
 // Route::get('/venue2', 'ThomasController@venue2');
 // Route::post('/venue2', array('as' => 'venue2', 'uses'=>'ThomasController@venue2'));
 // Route::get('/venue2/test', 'ThomasController@test');
-
-Route::get('/about', 'ThomasController@about');
 //Route::post('/about', array('as' => 'about', 'uses'=>'ThomasController@test'));
-Route::get('/download', 'ThomasController@download');
-Route::post('download', array('uses' => 'ThomasController@download'));
-Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
+
+Route::get('/charges', 'BillController@charges');
+Route::post('/charges', function(){
+		dd(Input::all());
+		$billing = App::make('Acme\Billing\BillingInterface');
+		$customerId= $billing->charge([
+			'email' => Input::get('email'),
+			'token' => Input::get('stripe-token')
+			]);		
+		
+		if(array_key_exists('error', $customerId))		
+		return Redirect::refresh()->withMessage($customerId['message'])->withInput(Input::all());
+		// $user::User::first();
+		// $user->billingID
+		else
+		return Redirect::refresh()->withMessage('Charge was successful!');	
+		
+		
+	
+	
+});
+
+Route::get('/import', 'ThomasController@import');
 Route::post('import', array('uses' => 'ThomasController@import'));
+
+Route::get('/importData', 'ThomasController@importData');
+Route::post('importData', array('uses' => 'ThomasController@importData'));
+Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
+
 
 Route::resource('venue', 'ThomasController');
 Route::resource('equipmentcategory', 'EquipmentCategoryController');
 Route::resource('equipment', 'EquipmentController');
 Route::resource('room', 'RoomController');
-
-
-
-

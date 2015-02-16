@@ -151,8 +151,6 @@
 					}
 
 				} elseif(Input::get('Edit')) {
-
-
 			// validate
 			// read more on validation at http://laravel.com/docs/validation
 					$rules = array(
@@ -237,20 +235,20 @@
 				return $map;
 			}
 
-			public function about()
+			public function import()
 			{
-				return View::make('test');
+				return View::make('import');
 			}
 
 			public static $valid =true;
 						
 
-			public function download()
+			public function importData()
 			{									
 				if(Input::get('Export')) {
 				$this->exportTemplate();
 				Session::flash('message', 'Successful!');
-				return Redirect::to('about');		
+				return Redirect::to('import');		
 				}
 				elseif(Input::get('Preview'))
 				{										
@@ -261,7 +259,7 @@
 					$validator = Validator::make(Input::all(), $rules);
 
 					if ($validator->fails()) {											
-						return Redirect::to('about')
+						return Redirect::to('import')
 						->withErrors($validator)
 						->withInput(Input::all());	
 					}
@@ -269,14 +267,14 @@
 					else if(!$this->validateLocation(Input::get('venue_address')))
 					{																
 						Session::flash('message2', 'Invalid Address!');
-						return Redirect::to('about')            
+						return Redirect::to('import')            
 						->withInput(Input::all());
 					}
 
 					else {
 						// store
 						$map = $this->makeMap(Input::get('venue_address'));				
-						return Redirect::to('about')            
+						return Redirect::to('import')            
 						->withInput(Input::all())->with('map',$map);
 					} 	
 				}
@@ -292,7 +290,7 @@
 					$validator = Validator::make(Input::all(), $rules);					
 					if ($validator->fails()) {					
 						$map = $this->makeMap(Input::get('venue_address'));
-						return Redirect::to('about')
+						return Redirect::to('import')
 						->withErrors($validator)
 						->withInput(Input::except('imported_File'))
 						->with('map',$map);	
@@ -301,7 +299,7 @@
 					else if(!$this->validateLocation(Input::get('venue_address')))
 					{																
 						Session::flash('message2', 'Invalid Address!');
-						return Redirect::to('about')            
+						return Redirect::to('import')            
 						->withInput(Input::all());
 					}
 
@@ -321,7 +319,7 @@
 							$numError = count($allError);
 							if($numError!=0)
 							{							
-								return View::make('venue.download')->with('allError',$allError) ->with('numError',$numError);	
+								return View::make('venue.importError')->with('allError',$allError) ->with('numError',$numError);	
 							}
 								else if($numError == 0)
 							{																				
