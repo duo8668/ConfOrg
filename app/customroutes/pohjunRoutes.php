@@ -26,6 +26,14 @@ Route::group(array('before' => 'guest'),function(){
 			));
 
 		/*
+		| Create resource account (POST)
+		*/
+		Route::post('/users/resource/{code}',array(
+			'as' => 'users-resource-post',
+			'uses' => 'UsersController@postResource'
+			));
+
+		/*
 		| Sign in (POST)
 		*/
 		Route::post('/users/sign-in',array(
@@ -51,6 +59,15 @@ Route::group(array('before' => 'guest'),function(){
 			'as' =>	'users-recover',
 			'uses' => 'UsersController@getRecover'
 			));
+
+		/*
+		| sign up for resource provider
+		*/
+		Route::get('/users/resource/{code}',array(
+			'as' =>	'users-resource',
+			'uses' => 'UsersController@getResource'
+			));
+
 
 		/*
 		| Forget Password (GET)
@@ -85,6 +102,7 @@ Route::group(array('before' => 'guest'),function(){
 			'uses' => 'UsersController@getActivate'
 			));
 
+		
 
 		/*
 		| Facebook login (GET)
@@ -219,6 +237,15 @@ Route::group(array('before' => 'auth'),function(){
 			));
 
 		/*
+		| Invite Resource (Post)
+		*/
+		Route::post('/admins/invite-resource',array(
+			'as' => 'admins-invite-resource-post',
+			'uses' => 'UsersController@postInviteResource'
+			));
+
+
+		/*
 		| Change location (Post)
 		*/
 		Route::post('/users/change-location',array(
@@ -248,6 +275,14 @@ Route::group(array('before' => 'auth'),function(){
 		Route::post('/users/change-bio',array(
 			'as' => 'users-change-bio-post',
 			'uses' => 'ProfilesController@postChangeBio'
+			));
+
+		/*
+		| Change bio (Post)
+		*/
+		Route::post('/admins/add-company',array(
+			'as' => 'admins-add-company-post',
+			'uses' => 'UsersController@postAddCompany'
 			));
 
 		/*
@@ -289,6 +324,14 @@ Route::group(array('before' => 'auth'),function(){
 		Route::get('/users/invite-friend',array(
 			'as' => 'users-invite-friend',
 			'uses' => 'UsersController@getInviteFriend'
+			));
+
+		/*
+		| Invite Reviewer (GET)
+		*/
+		Route::get('/admins/invite-resource',array(
+			'as' => 'admins-invite-resource',
+			'uses' => 'UsersController@getInviteResource'
 			));
 
 		/*
