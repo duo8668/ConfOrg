@@ -25,13 +25,11 @@
                         <!-- <li><a href="#"><i class="fa fa-cc-paypal fa-fw"></i> Make Payment</a></li> -->
                         <li><a href="#"><i class="fa fa-ticket fa-fw"></i> Invoice & Confirmation</a></li>
                         <!-- <li><a href="#"><i class="fa fa-envelope-o fa-fw"></i> Contact Conference Staff</a></li> -->
-                        <li class="sidebar-divider"></li>
-
+                        
 
                         <!-- SUBMISSION LINKS, appear when viewing conference currently calling for papers -->
                         <li><a href="{{ URL::route('submission.index') }}"><i class="fa fa-file fa-fw"></i> Your Submissions</a></li>
                         <!-- <li><a href="{{ URL::route('submission.create') }}"><i class="fa fa-plus fa-fw"></i> New Submission</a></li> -->
-                        <li class="sidebar-divider"></li>
 
 
                         <!-- REVIEW LINKS, appear if user == reviewers -->
@@ -39,7 +37,6 @@
                         </li>
                         <li><a href="{{ URL::route('review.topics') }}"><i class="fa fa-check fa-fw"></i> Set Preferred Topics</a>
                         </li>
-                        <li class="sidebar-divider"></li>
 
 
                         <!-- CONFERENCE MANAGEMENT LINKS, appear if user == Chairman || user == Staff -->
@@ -58,7 +55,6 @@
                         <li><a href="{{ URL::route('equipment.index') }}"><i class="fa fa-cogs fa-fw"></i> Equipment</a></li>
                         <li><a href="{{ URL::route('room.index') }}"><i class="fa fa-location-arrow fa-fw"></i> Room</a></li>     
                         <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import</a></li>                    
-                        <li class="sidebar-divider"></li>
 
                         <!-- END OF SIDEBAR MENU -->
                     </ul>
