@@ -16,7 +16,7 @@
                         <li class="sidebar-divider"></li>
 
                         <!-- USER COMMON SETTINGS -->
-                        <li><a href="{{ url('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Main Dashboard</a></li>
+                        <li><a href="{{ URL::route('users.dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Main Dashboard</a></li>
                         <li><a href="{{URL::route('users-profile', ['email' => Auth::user()->email])}}"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
                         <!-- <li class="sidebar-divider"></li> -->
 

@@ -144,7 +144,8 @@ class UsersController extends \BaseController {
 
 			if($auth){
 		 				//redirect to intended page
-				return Redirect::to('/dashboard');
+				$venue = Venue::all();
+				return Redirect::route('users.dashboard');
 			} 
 			else{
 				return Redirect::route('users-sign-in')
@@ -382,6 +383,17 @@ class UsersController extends \BaseController {
 			return $overall;
 
 		}
+	}
+
+	public function getDashboard() {
+		//if user is resource-provider
+		$venue = Venue::where('created_by', '=', Auth::user()->user_id);
+		return View::make('layouts.dashboard.index')
+				->with('venue', $venue);
+
+		// else if user is something else
+		//TODO: Get conferences that the current user participates in
+		
 	}
 
 

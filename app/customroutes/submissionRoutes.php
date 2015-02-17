@@ -5,10 +5,10 @@
 * Dashboard
 */
 //Route::group(array('before' => 'auth'),function(){
-Route::get('/dashboard', function()
-{
-	return View::make('layouts.dashboard.index');
-});
+Route::get('/dashboard', array(
+    'as'    => 'users.dashboard',
+    'uses'  => 'UsersController@getDashboard'
+));
 //});
 /* 
 * Submissions
