@@ -72,7 +72,7 @@ class UsersController extends \BaseController {
 
 		}
 	}
-
+	
 	/*
 	| Activiate account 
  	*/
@@ -144,8 +144,7 @@ class UsersController extends \BaseController {
 
 			if($auth){
 		 				//redirect to intended page
-				$venue = Venue::all();
-				return Redirect::route('users.dashboard');
+				return Redirect::to('/dashboard');
 			} 
 			else{
 				return Redirect::route('users-sign-in')
@@ -247,6 +246,155 @@ class UsersController extends \BaseController {
 	public function getInviteFriend(){
 		return View::make('users.invite');
 	}
+
+	/*
+	| invite reviewers
+ 	*/
+
+	public function getInviteResource(){
+		$company_options =array('' => 'Please Select Company') + DB::table('company')->orderBy('company_name', 'asc')->lists('company_name','company_id');
+		return View::make('admins.invite_resource')->with('company_options',$company_options);
+	}
+
+	/*
+	| Invite Resource provider. send email to them!
+ 	*/
+	public function postInviteResource(){
+		$validator = Validator::make(Input::all(),
+			array(
+				'email' 			=> 'required|email',
+				'company'			=>	'required'
+				));
+		if($validator->fails()){
+ 			//redirect 
+ 			return Redirect::to('/admins/invite-resource')
+ 					->withErrors($validator); 
+ 		}
+ 		else{
+ 			//send email
+			$email = Input::get('email');
+			$company_no = Input::get('company');
+ 			$company_name = DB::table('company')
+  			->where('company_id','=',$company_no)
+ 			->pluck('company_name');
+ 			
+ 			$code = str_random(60);
+
+ 			$invite = new Invite();
+			$invite->code = $code;
+			$invite->email = $email;
+			$invite->company = $company_name;
+			$invite->save();
+
+			Mail::send('emails.auth.invite_resource',
+				array('link'=>URL::route('users-resource', $code),
+					'company' => $company_name,
+					'email' 	=> $email,
+					), 
+				function($message) use ($email,$company_name)
+				{
+					$message->to($email)->subject('You are invited to join ORAFER as Resource Provider!');
+				});
+
+			return Redirect::to('/admins/invite-resource')
+			->with('message','We had sent you an invite to the email.');
+ 		}
+
+	}
+
+	/*
+	| get Resource provider sign up page
+ 	*/
+	public function getResource($code){
+	$invite = Invite::Where('code','=',$code)->firstOrFail();
+	return View::make('users.resource_create')->withInvite($invite);
+	}
+
+	/*
+	| Resource provider submit sign up page
+ 	*/
+	public function postResource(){
+		$validator = Validator::make(Input::all(),array(
+			'first_name'		=>	'required',
+			'last_name'			=>	'required',
+			'password'			=>	'required|min:6',
+			'confirm_password'	=>	'required|same:password'
+			));
+
+		if($validator->fails()){
+			 return Redirect::back()
+ 			->withErrors($validator)
+			->withInput();
+		}//if		
+		else{
+			$company = Input::get('company');
+			$email = Input::get('email');
+			$first_name = Input::get('first_name');
+			$last_name = Input::get('last_name');
+			$password = Input::get('password');
+
+			$user = User::create(array(
+				'email' => $email,
+				'firstname' => $first_name,
+				'lastname' => $last_name,
+				'password' => Hash::make($password),
+				'active' => 1
+				));
+			$user->save();
+
+			$profile = new Profile();
+			$profile->user_id = $user->user_id;
+			$profile->bio = 'Hi! Thanks for visiting';
+			$profile->save();
+
+			$sysrole = new SysRole();
+			$sysrole->user_id = $user->user_id;
+			$sysrole->role_id = '2';
+			$sysrole->save();
+
+			$company_id = DB::table('company')->where('Company_name', $company)->pluck('company_id');
+
+			DB::table('company_user')->insert(
+    		array('company_id' => $company_id, 'user_id' => $user->user_id)
+			);
+
+			return Redirect::to('/users/sign-in')
+ 			->with('message','Succesfully created! Login now!');
+			}//else
+
+		
+	}
+
+
+	/*
+	| For admin to add in company 
+ 	*/
+	public function postAddCompany(){
+		$validator = Validator::make(Input::all(),
+ 			array(
+ 				'new' 	=> 'required|unique:company,company_name'
+ 			));
+
+		if($validator->fails()){
+ 			//redirect 
+ 			return Redirect::to('/admins/invite-resource')
+ 					->withErrors($validator);
+ 		}
+ 		else{
+ 			$new = Input::get('new');
+			$company = new Company();
+			$company->company_name = $new;
+			$company->save();
+
+
+ 			return Redirect::to('/admins/invite-resource')
+ 				->with('message', 'New company has been added');
+ 				
+ 				
+
+ 		} 
+	}
+
 
 	/*
 	| Invite friend. send email to them!
@@ -384,8 +532,8 @@ class UsersController extends \BaseController {
 
 		}
 	}
-
-	public function getDashboard() {
+	
+		public function getDashboard() {
 		//if user is resource-provider
 		$venue = Venue::where('created_by', '=', Auth::user()->user_id);
 		return View::make('layouts.dashboard.index')
