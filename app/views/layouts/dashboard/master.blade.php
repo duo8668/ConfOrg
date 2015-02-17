@@ -25,7 +25,15 @@
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   {{{ Session::get('message') }}}
               </div>
-          @endif          
+          @endif    
+          
+          <!-- Universal form error notification -->
+          @if ($errors->any())
+              <div class="alert alert-danger alert-dismissible" role="alert" style="margin-top:15px;">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <p class="text-danger"><Strong>There are some errors with the form input!</strong></p>
+              </div>
+          @endif       
 
           <h2 id="page-header" >
             @yield('page-header')
@@ -36,20 +44,6 @@
 
       <!-- Main Content -->
       <div id="displayChannel">
-
-        <!-- Universal form error notification -->
-        @if($errors->any())
-          <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-              <div class="panel panel-danger">
-                <div class="panel-body">
-                  <p class="text-danger"><Strong>There are some errors with the form input!</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        @endif
-        
         @yield('content')
       </div>
        @include('layouts.dashboard.footerdash')

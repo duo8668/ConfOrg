@@ -55,11 +55,12 @@ class SubmissionController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create()
+
+	public function add($conf_id)
 	{
-		//TODO: get topics of current conference
-		$topics = ConferenceTopic::all();
-		return View::make('submission.create')->with('topics', $topics);
+		$conference = Conference::where('conf_id' , '=', $conf_id)->get()->first();
+		$topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
+		return View::make('submission.create')->with('topics', $topics)->with('conference', $conference);
 	}
 
 	/**
@@ -92,7 +93,7 @@ class SubmissionController extends \BaseController {
 
 		// test if input fails
 		if ($validator->fails()) {
-			return Redirect::route('submission.create')->withErrors($validator)->withInput();
+			return Redirect::route('submission.add', ['conf_id' => Input::get('conf_id')])->withErrors($validator)->withInput();
 		}
 		// TODO: Input submitting author id a.k.a USER ID
 		if (Input::file('attachment_path')->isValid()) {
@@ -154,7 +155,7 @@ class SubmissionController extends \BaseController {
 			return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Submitted');
 
 		} else {
-		 	return Redirect::route('submission.create')->withErrors($validator)->withInput()->withMessage('Your file is invalid. Please upload in PDF format!');
+		 	return Redirect::route('submission.add', ['conf_id' => Input::get('conf_id')])->withErrors($validator)->withInput()->withMessage('Your file is invalid. Please upload in PDF format!');
 		 }
 	}
 
@@ -371,6 +372,8 @@ class SubmissionController extends \BaseController {
 		->withKeyword($keywords);
 		
 	}
+
+	public function create(){}
 
 
 }

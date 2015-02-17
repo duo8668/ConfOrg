@@ -115,6 +115,8 @@ class ConferenceController extends \BaseController {
 
 		$view = View::make('conference.detail',array('fields'=>$fields,'conf' =>$conf,'confChairUsers'=>$confChairUsers,'allStaffs'=>$allStaffs,'reviewPanels'=>$reviewPanels)); 
 
+		// SET SESSION
+		Session::put('orafer_conf_id', Input::get('conf_id'));
 		return $view;
 	}
 

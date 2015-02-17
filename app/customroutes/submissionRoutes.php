@@ -18,6 +18,11 @@ Route::get('/submission/{sub_id}/reviews', array(
     'uses'  => 'SubmissionController@reviews'
 ));
 
+Route::get('/submission/{conf_id}/add', array(
+    'as'    => 'submission.add',
+    'uses'  => 'SubmissionController@add'
+));
+
 /* 
 * Editing Authors
 */

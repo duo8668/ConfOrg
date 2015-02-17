@@ -6,7 +6,6 @@
 <!-- BREADCRUMB -->
 <ol class="breadcrumb">
   <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
-  <li><a href="{{ URL::to('/Submission') }}">Your Submissions</a></li>
   <li class="active">Add Submission</li>
 </ol>
 <hr>
@@ -16,6 +15,13 @@
    <div class="col-md-12">
         
         <legend>Basic Information</legend>
+        <!-- Conference Name -->
+        <div class="form-group">
+          <label class="col-md-2 control-label">Submitting To</label>
+          <div class="col-md-10">
+            <p class="form-control-static"><strong>{{ link_to('conference/detail?conf_id='. $conference->conf_id, $conference->title) }}</strong></p>
+          </div>
+        </div>
         <!-- Submission Type -->
         <div class="form-group @if ($errors->has('sub_type')) has-error @endif">
           {{ Form::label('sub_type', 'Submission Type *', ['class' => 'col-md-2 control-label']) }} 
@@ -29,7 +35,7 @@
         <div class="form-group @if ($errors->has('sub_title')) has-error @endif">
           {{ Form::label('sub_title', 'Submission Title *', ['class' => 'col-md-2 control-label']) }}   
           <div class="col-md-10">     
-          {{ Form::text('sub_title', '', array('class' => 'form-control')) }}
+          {{ Form::text('sub_title', null, array('class' => 'form-control')) }}
           @if ($errors->has('sub_title')) <p class="help-block">{{ $errors->first('sub_title') }}</p> @endif
           </div>
         </div>
@@ -38,7 +44,7 @@
         <div class="form-group @if ($errors->has('sub_abstract')) has-error @endif">
           {{ Form::label('sub_abstract', 'Abstract *', ['class' => 'col-md-2 control-label']) }}    
           <div class="col-md-10">     
-          {{ Form::textarea('sub_abstract', '', array('class' => 'form-control')) }} 
+          {{ Form::textarea('sub_abstract', null, array('class' => 'form-control')) }} 
           @if ($errors->has('sub_abstract')) <p class="help-block">{{ $errors->first('sub_abstract') }}</p> @endif
           </div>
         </div>
@@ -60,7 +66,7 @@
         <div class="form-group @if ($errors->has('sub_keywords')) has-error @endif">
           {{ Form::label('sub_keywords', 'Keywords *', ['class' => 'col-md-2 control-label']) }}     
           <div class="col-md-10">     
-            {{ Form::text('sub_keywords', '', array('class' => 'form-control', 'placeholder' => 'Separated by commas, e.g. apples,oranges,grapes')) }}
+            {{ Form::text('sub_keywords', null, array('class' => 'form-control', 'placeholder' => 'Separated by commas, e.g. apples,oranges,grapes')) }}
             @if ($errors->has('sub_keywords')) <p class="help-block">{{ $errors->first('sub_keywords') }}</p> @endif
           </div>
         </div>
@@ -124,31 +130,14 @@
               <a class="btn btn-default btn-xs" id="addauthors" name="addauthors" role="button" onclick="addRow(this.form);">Add More</a>
             </div>
           </div>
-        <!-- <div class="form-group" id="author_row">
-          <div class="row"  style="margin-left:30px; margin-right:30px;">
-            {{ Form::label('fname', 'First Name', ['class' => 'col-md-2 text-center']) }} 
-            {{ Form::label('lname', 'Last Name', ['class' => 'col-md-2 text-center']) }} 
-            {{ Form::label('org', 'Organization', ['class' => 'col-md-3 text-center']) }} 
-            {{ Form::label('email', 'Email', ['class' => 'col-md-2 text-center']) }} 
-            {{ Form::label('ispresenting', 'Presenting?', ['class' => 'col-md-2 text-center']) }} 
-            {{ Form::label('author_btn', 'More', ['class' => 'col-md-1 text-center']) }} 
-          </div>
-          <div class="row" style="margin-left:30px; margin-right:30px;">
-            <input class="col-md-2" name="author_lname[]" type="text" value="" id="author_lname0" required>
-            <input class="col-md-2" name="author_fname[]" type="text" value="" id="author_fname0" required>
-            <input class="col-md-3" name="author_org[]" type="text" value="" id="author_org0" required> 
-            <input class="col-md-2" name="author_email[]" type="email" value="" id="author_email0" required>
-            <div class="radio-inline col-md-2 text-center"><input name="author_ispresenting[]]" type="checkbox" value="1" id="author_ispresenting0"> Yes</div>
-            <a class="btn btn-default btn-xs col-md-1" id="addauthors" name="addauthors" role="button" onclick="addRow(this.form);">Add More</a>
-          </div>
-        </div> -->
     
     </div>
     <hr>
     
     <div class="row">  
       <div class="col-md-8 col-md-offset-2">
-        <!-- Button -->        
+        <!-- Button -->     
+        {{ Form::hidden('conf_id', $conference->conf_id) }}   
         {{ Form::submit('Add Submission', array('class' => 'btn btn-primary btn-md btn-block')) }}
 
       </div>
