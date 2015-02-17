@@ -8,23 +8,14 @@ Add New Conference
 @section('extraScripts')
 
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
-
 <link href="{{ asset('css/icheck/square/green.css') }}" rel="stylesheet" type="text/css">
-
 <link href="{{ asset('css/formvalidation/formValidation.css') }}" rel="stylesheet" type="text/css">
-
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
-
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
-
 <script src="{{ asset('js/icheck/icheck.js') }}"></script>
-
 <script src="{{ asset('js/formvalidation/formValidation.js') }}"></script>
-
 <script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
-
 <script src="{{ asset('js/conferencecontroller.js') }}"></script>
-
 <style>
 
 	body {
@@ -302,7 +293,12 @@ Add New Conference
 
 </script>
 <!-- include('../../utils/customcalendar') -->
-
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">Add New Conference</li>
+</ol>
+<hr>
 
 @if (Auth::check())
 <div class="row" id='divFormBody'>

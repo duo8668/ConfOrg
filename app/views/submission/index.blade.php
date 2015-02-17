@@ -17,6 +17,7 @@
 			<td><strong>Type</strong></td>
 			<td><strong>Conference</strong></td>
 			<td><strong>Date Submitted</strong></td>
+			<td><strong>Status</strong></td>
 			<td><strong>Option</strong></td>
 		</tr> 
 		@foreach ($submissions as $sub) 
@@ -33,6 +34,15 @@
 				</td>
 				<td>{{{ $sub->title }}} </td>
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
+				<td>
+					@if ($sub->status === 1)
+					    <span class="text-success">Accepted</span>
+					@elseif ($sub->status === 2)
+					    <span class="text-danger">Rejected</span>
+					@else
+					    On review
+					@endif
+				</td>
 				<td>
 					{{ link_to_route('submission.reviews', 'Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
 					{{ link_to_route('submission.show', 'Edit Submission', [$sub->sub_id], ['class' => 'btn btn-info btn-xs'])}}

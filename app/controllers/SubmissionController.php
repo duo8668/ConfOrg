@@ -20,7 +20,7 @@ class SubmissionController extends \BaseController {
 		//get all submission by current logged-in user
 		$submission = DB::table('conference')
             ->join('submissions', 'submissions.conf_id', '=', 'conference.conf_id')
-            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at')
+            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at', 'submissions.status')
             ->where('submissions.user_id' , '=', Auth::user()->user_id)
             ->orderBy('submissions.created_at', 'desc')->distinct()->get();
 		return View::make('submission.index')->with('submissions', $submission);

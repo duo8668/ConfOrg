@@ -1,43 +1,29 @@
 @extends('layouts.dashboard.master')
 
 @section('page-header')
-Manage conference : 
+	Conference Detail
 @stop
 <!-- extrascripts section -->
 @section('extraScripts')
 
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
-
 <link href="{{ asset('css/icheck/square/green.css') }}" rel="stylesheet" type="text/css">
-
 <link href="{{ asset('css/formvalidation/formvalidation.css') }}" rel="stylesheet" type="text/css">
-
 <link href="{{ asset('css/summernote.css') }}" rel="stylesheet" type="text/css">
-
 <link href="{{ asset('css/bootstrap-tagsinput.css') }}" rel="stylesheet" type="text/css">
-
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
-
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
-
 <script src="{{ asset('js/icheck/icheck.js') }}"></script>
-
 <script src="{{ asset('js/formvalidation/formvalidation.js') }}"></script>
-
 <script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
-
 <script src="{{ asset('js/summernote.js') }}"></script>
-
 <script src="{{ asset('js/bootstrap3-typeahead.js') }}"></script>
-
 <script src="{{ asset('js/bootstrap-tagsinput.js') }}"></script>
-
 <script src="{{ asset('js/conferencecontroller.js') }}"></script>
-
 <style>
 
 	body {
-		margin: 40px 10px;
+		/*margin: 40px 10px;*/
 		padding: 0;
 		font-family: "lucida grande",helvetica,arial,verdana,sans-serif;
 		font-size: 14px;
@@ -60,68 +46,6 @@ Manage conference :
 		overflow-y: auto;
 	}
 </style>
-
-@stop
-@section('content')
-
-<style>
-
-	.customborder:hover, .delStaff:hover{ 
-		cursor: pointer;
-	}
-
-	.delStaff:active{ 
-		background-color: #780000 ;
-	}
-
-	.divider {
-		height: 2px;
-		margin: 9px 0;
-		overflow: hidden;
-		background-color: #e5e5e5;
-	}
-
-	.btnEdit{
-		padding: 1px 20px;
-	}
-	.panel-heading {
-		cursor: pointer;
-	}
-	.boldtext{
-		font-weight: bolder;
-	}
-	.conferencebody .title{
-		color:#FF7321;
-	}
-	.conferencebody .venue{
-		color:#FF7321;
-	}	
-	.conferencebody .room{
-		color:#FF7321;
-	}	
-	.conferencebody .date{
-		color:#FF7321;
-	}
-
-	#spCutOffDateTime{
-		padding-right:15px;
-	}
-
-	.staffInfo{
-		padding:5px 5px;
-	}
-	.bootstrap-tagsinput {
-		width: 100%;
-	}
-	.dateContainer .form-control-feedback {
-		top: 0;
-		right: -15px;
-	}
-	.date {
-		background-color: white;
-	}
-</style>
-
 <script type="text/javascript">	
 	
 	$(document).ready(function() {
@@ -588,33 +512,171 @@ function sendFile(file, editor, weleditable) {
 
 
 </script>
+@stop
+@section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">{{ $conf->title }}</li>
+</ol>
+<hr>
 
-<div class="">
-	<div class="row">
+<div class="row">
+  <div class="col-md-12">
+		<div id="conf_id_col_{{$conf->conf_id}}" class="confclass">
+			<div class="conferencebody">
+				
+				<h3 class="text-center"><u>{{ $conf->title }}</u></h2>
+				<h4 class="text-center"> {{ $conf->room()->venue()->venue_name }}  </h4>
+				<!-- <h4>  {{ $conf->room()->room_name }}  </h4> -->
+				<h4 class="text-center">  <span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
 
+				<div class="row">
+				  <div class="col-md-6 col-md-offset-3" style="margin-top:1em;"><a href="#" class="btn btn-primary btn-block" role="button">Submit Paper</a></div>
+				</div>
+				<!-- BELOW INFO ONLY VISIBLE TO CHAIRMAN -->
 
-		<div id="conf_id_col_{{$conf->conf_id}}" class="col-md-12 confclass">
+				<div class="row">
+				  <div class="col-md-8 col-md-offset-2">
+				  	<hr>
+				  	<!-- Submission Title-->
+				      <div class="row">
+				        <label class="col-md-6 control-label text-right">Chairman</label>       
+				        <div class="col-md-6">
+				          @foreach($confChairUsers as $confChairUser)
+								{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
+							@endforeach
+				        </div>
+				      </div>
 
-			<div class="panel-heading"><strong></strong></div>
-			<div class="panel-body conferencebody">
-				{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnEditParticular')) }}
-				<br/>
-				<h2 class="pager title"><u>{{ $conf->title }}</u></h2>
-				<h3 class="pager venue"> {{ $conf->room()->venue()->venue_name }}  </h3>
-				<h4 class="pager room">  {{ $conf->room()->room_name }}  </h4>
-				<h4 class="pager date">  <span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
-				<h4 class="pager date">  <b>Chairman : </b>
-					@foreach($confChairUsers as $confChairUser)
-					{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
-					@endforeach
-				</h4>
-				<h4 class="pager room"><span class="center-block"><b>Cut-Off : </b> <span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span></span></h4>
-				<h4 class="pager room">  <b>Min-Score : </b> <span  id="minScoreValue">{{ $conf->min_score }}</span></h4>
+				      <!-- Abstract -->
+				      <div class="row">
+				        <label class="col-md-6 control-label text-right">Submission Deadline</label>
+				        <div class="col-md-6">   
+				          <span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span>        
+				        </div>
+				      </div>
+
+				      <!-- Topics -->
+				      <div class="row">
+				        <label class="col-md-6 control-label text-right">Minimum Acceptance Score</label> 
+				        <div class="col-md-6">
+				          <span  id="minScoreValue">{{ $conf->min_score }}</span>
+				        </div>
+				      </div>
+
+				  </div>
+				</div>
+				{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
+				<!-- END CHAIRMAN INFO -->
+
 			</div>
-			<div class="divider"></div>
-			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+			<div style="margin-bottom: 30px;"></div>
+			
+
+			<div role="tabpanel">
+
+			  <!-- Nav tabs -->
+			  <ul class="nav nav-tabs" role="tablist">
+			    <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+			    <li role="presentation"><a href="#topics" aria-controls="topics" role="tab" data-toggle="tab">Topics</a></li>
+			    <li role="presentation"><a href="#committee" aria-controls="committee" role="tab" data-toggle="tab">Committee</a></li>
+			    <li role="presentation"><a href="#reviewer" aria-controls="reviewer" role="tab" data-toggle="tab">Reviewers</a></li>
+			    <li role="presentation"><a href="#submissions" aria-controls="submissions" role="tab" data-toggle="tab">Submissions</a></li>
+			    <li role="presentation"><a href="#participants" aria-controls="participants" role="tab" data-toggle="tab">Participants</a></li>
+			  </ul>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+
+			  	<!-- Description -->
+			    <div role="tabpanel" class="tab-pane fade in active" id="description">
+			    	{{ Form::button('Edit Conference Description', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditDescription')) }}
+					<div class="clearfix"></div>
+
+					<div id='descriptionContent'>
+						{{ $conf->description  }}
+					</div>	
+			    </div>
+
+			    <!-- Topics -->
+			    <div role="tabpanel" class="tab-pane fade" id="topics">
+			    	[[ TOPICS HERE ]]
+			    </div>
+
+			    <!-- Committee -->
+			    <div role="tabpanel" class="tab-pane fade" id="committee">
+			    	{{ Form::button('Edit Committee', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnStaffEdit')) }}
+					<div class="clearfix"></div>
+					
+					<table class="table table-striped">
+						<tr>
+							<td class='col-md-2'>
+								<b>Committee Members</b>
+							</td>
+							<td class='col-md-8'>
+								<div id="allStaffContainer">
+									@foreach($allStaffs as $staff)
+									<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
+										{{  $staff['firstname'] }},  {{ $staff['lastname'] }}
+									</span>
+									@endforeach
+								</div>
+							</td>
+						</tr>
+					</table>
+			    </div>
+
+			    <!-- Reviewer -->
+			    <div role="tabpanel" class="tab-pane fade" id="reviewer">
+			    	{{ Form::button('Edit Reviewers', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
+					<div class="clearfix"></div>
+					
+					<table class="table table-striped">
+						<tr>
+							<td class='col-md-2'>
+								<b>Peer Reviewers</b>
+							</td>
+							<td class='col-md-8'>
+								<div id="allReviewPanelContainer">
+									@foreach($reviewPanels as $reviewpanel)
+									<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
+										{{  $reviewpanel['firstname'] }},  {{ $reviewpanel['lastname'] }}
+									</span>
+									@endforeach
+								</div>
+							</td>
+						</tr>
+					</table>	
+			    </div>
+
+			    <!-- Submissions -->
+			    <div role="tabpanel" class="tab-pane fade" id="submissions">
+			    	<div class="table-responsive">
+					  	<table class="table">   
+					  		<tr>
+								<td><strong>Submission Title</strong></td>
+								<td><strong>Type</strong></td>
+								<td><strong>Date Submitted</strong></td>
+								<td><strong>Status</strong></td>
+								<td><strong>Option</strong></td>
+							</tr> 
+						</table>
+					</div>
+			    </div>
+
+			    <!-- Participants -->
+			    <div role="tabpanel" class="tab-pane fade" id="participants">
+			    	[PARTICIPANTS HERE]
+			    </div>
+			  </div>
+
+			</div> <!-- END TAB PANEL -->
+
+			<!-- TAB BEGIN -->
+			<!-- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"> -->
 				<!-- Description  -->
-				<div class="panel panel-default">
+				<!-- <div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="tab" id="headingOne">
 						<h4 class="panel-title">
 							<a>
@@ -624,16 +686,12 @@ function sendFile(file, editor, weleditable) {
 					</div>
 					<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnEditDescription')) }}
-							<br/>
-							<div id='descriptionContent'>
-								{{ $conf->description  }}
-							</div>							
+													
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<!-- Staff List  -->
-				<div class="panel panel-default">
+				<!-- div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseStaff" aria-expanded="true" aria-controls="v" role="tab" id="headingStaff">
 						<h4 class="panel-title">
 							<a class="collapsed">
@@ -643,29 +701,12 @@ function sendFile(file, editor, weleditable) {
 					</div>
 					<div id="collapseStaff" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingStaff">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnStaffEdit')) }}
-							<br/>
-							<table class="table table-striped">
-								<tr>
-									<td class='col-md-2'>
-										<b>Staff :</b>
-									</td>
-									<td class='col-md-8'>
-										<div id="allStaffContainer">
-											@foreach($allStaffs as $staff)
-											<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
-												{{  $staff['firstname'] }},  {{ $staff['lastname'] }}
-											</span>
-											@endforeach
-										</div>
-									</td>
-								</tr>
-							</table>						 
+													 
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<!-- Review Panel List  -->
-				<div class="panel panel-default">
+				<!-- div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseReviewPanel" aria-expanded="true" aria-controls="collapseReviewPanel" role="tab" id="headingReviewPanel">
 						<h4 class="panel-title">
 							<a class="collapsed">
@@ -675,29 +716,12 @@ function sendFile(file, editor, weleditable) {
 					</div>
 					<div id="collapseReviewPanel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingReviewPanel">
 						<div class="panel-body">
-							{{ Form::button('Edit', array('class' => 'btn btn-primary btn-lg pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
-							<br/>
-							<table class="table table-striped">
-								<tr>
-									<td class='col-md-2'>
-										<b>Review Panel :</b>
-									</td>
-									<td class='col-md-8'>
-										<div id="allReviewPanelContainer">
-											@foreach($reviewPanels as $reviewpanel)
-											<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
-												{{  $reviewpanel['firstname'] }},  {{ $reviewpanel['lastname'] }}
-											</span>
-											@endforeach
-										</div>
-									</td>
-								</tr>
-							</table>						 
+												 
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<!-- Submission  -->
-				<div class="panel panel-default">
+				<!-- <div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseSubmission" aria-expanded="false" aria-controls="collapseSubmission" role="tab" id="headingSubmissione">
 						<h4 class="panel-title">
 							<a class="collapsed">
@@ -710,9 +734,9 @@ function sendFile(file, editor, weleditable) {
 							Submission List
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<!-- Participant  -->
-				<div class="panel panel-default">
+				<!-- <div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseParticipants" aria-expanded="false" aria-controls="collapseParticipants" role="tab" id="headingParticipants">
 						<h4 class="panel-title">
 							<a class="collapsed">
@@ -725,8 +749,8 @@ function sendFile(file, editor, weleditable) {
 							Participant List
 						</div>
 					</div>
-				</div>
-			</div>			
+				</div> -->
+			<!-- </div>			 -->
 		</div>
 	</div>
 

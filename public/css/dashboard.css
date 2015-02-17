@@ -368,3 +368,7 @@ table.dataTable thead .sorting:after {
      margin-right: 5px !important;
 }
 
+/* customize table content a little bit*/
+.tab-content>.active {
+padding-top: 15px;
+}
