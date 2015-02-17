@@ -30,23 +30,15 @@ PohJun private home
 </script>
 
 <!-- Poh Jun Testing -->
-<li> <a href="{{ URL::to('/home') }}">Home</a></li>
-
-@if(Auth::check())
-	
-	
+	<li> <a href="{{ URL::to('/home') }}">Home</a></li>	
 	<li><a href="{{ URL::route('users-invite-friend') }}">Invite a friend!</a></li>
+	<li><a href="{{ URL::route('admins-invite-resource') }}">Invite a Resource Provider!</a></li>
 	<li>{{link_to('/users/'.Auth::user()->email, 'Your Profile')}}</li>
 	<p>Hello, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}.</p>
 	<a href="{{ URL::route('users-sign-out') }}">Sign out</a>
 
 
-@else
-	<li> <a href="{{ URL::route('users-sign-in') }}">Sign In</a></li>
-	<li> <a href="{{ URL::route('users-create') }}">Create An Account</a></li>
-	<li> <a href="{{ URL::route('users-forget-password') }}">Forget Password?</a></li>
-	<p>You are not signed in.</p>
-@endif
+
 <br> 
 	<div id="confType" class="dropdown-checkbox dropdown">
 					<span class="dropdown-checkbox-nbselected"></span>
