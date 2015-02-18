@@ -278,7 +278,7 @@ Route::group(array('before' => 'auth'),function(){
 			));
 
 		/*
-		| Change bio (Post)
+		| add company (Post)
 		*/
 		Route::post('/admins/add-company',array(
 			'as' => 'admins-add-company-post',
@@ -366,7 +366,7 @@ Route::group(array('before' => 'auth'),function(){
 			'as' => 'users-add-fb-redirect-get',
 			'uses' => 'ProfilesController@getAddFbRedirect'
 			));		
-/*
+		/*
 		| Profile (GET)
 		*/
 		Route::get('/users/{profile}',array(
