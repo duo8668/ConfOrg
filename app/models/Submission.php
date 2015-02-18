@@ -3,7 +3,7 @@ class Submission extends Eloquent {
 
 	protected $table = 'submissions';
 	protected $primaryKey = 'sub_id';
-	protected $fillable = array('sub_type', 'sub_title', 'sub_abstract', 'sub_remarks', 'attachment_path', 'user_id');
+	protected $fillable = array('sub_type', 'sub_title', 'sub_abstract', 'sub_remarks', 'attachment_path', 'user_id', 'conf_id');
 
 
     /*public static function boot()
@@ -35,6 +35,11 @@ class Submission extends Eloquent {
     public function topics()
     {
         return $this->hasMany('Submission_Topic', 'sub_id', 'sub_id');
+    }
+
+    public function conference()
+    {
+        return $this->belongsTo('Conference', 'conf_id', 'conf_id');
     }
 
     public function delete() {

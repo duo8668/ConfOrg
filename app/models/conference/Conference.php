@@ -28,6 +28,10 @@ class Conference extends Eloquent {
 		return $this->hasMany('ConferenceTopic', 'conf_id', 'conf_id');
 	}
 
+	public function ConferenceSubmissions(){
+		return $this->hasMany('Submission', 'conf_id', 'conf_id');
+	}
+
 	public function Room(){
 		$roomSchedule = ConferenceRoomSchedule::where('conf_id' ,'=', $this->conf_id)->first();
 
