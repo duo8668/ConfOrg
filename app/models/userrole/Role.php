@@ -22,16 +22,22 @@ class Role extends Eloquent {
 		return $this->where('rolename','=','Conference Staff')->first();
 	}
 
-	public function scopeReviewPanel()
+	public function scopeReviewer()
 	{
 		# code...
-		return $this->where('rolename','=','Review Panel')->first();
+		return $this->where('rolename','=','Reviewer')->first();
 	}
 
 	public function scopeParticipant()
 	{
 		# code...
 		return $this->where('rolename','=','Participant')->first();
+	}
+
+	public function scopeAuthor()
+	{
+		# code...
+		return $this->where('rolename','=','Author')->first();
 	}
 
 }
