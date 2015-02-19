@@ -2,74 +2,77 @@
 
 class ConferenceRoomScheduleController extends BaseController {
 
-	public function conferenceEvents($begin,$end)
-	{
-		$confs = Conference::where('BeginTime','>=',  $begin)
-		->where('EndTime','<=',  $end)
-		//->get()
-		->select(DB::raw('conf_id as id ,title as title ,DATE_FORMAT(begin_date, "%Y-%m-%d") as start ,DATE_FORMAT(end_date,"%Y-%m-%d") as end'))
-		->get();
+    public function conferenceEvents($begin, $end) {
+        $confs = Conference::where('BeginTime', '>=', $begin)
+                ->where('EndTime', '<=', $end)
+                ->select(DB::raw('conf_id as id ,title as title ,DATE_FORMAT(begin_date, "%Y-%m-%d") as start ,DATE_FORMAT(end_date,"%Y-%m-%d") as end'))
+                ->get();
 
-		//dd($confs[1]);
-		//dd(DB::getQueryLog());
+        //dd($confs[1]);
+        //dd(DB::getQueryLog());
 
-		$output_arrays = array();
-		$timezone = new DateTimeZone('UTC');
-		$range_start = DateUtility::parseDateTime($begin);
-		$range_end =  DateUtility::parseDateTime($end);
+        $output_arrays = array();
+        $timezone = new DateTimeZone('UTC');
+        $range_start = DateUtility::parseDateTime($begin);
+        $range_end = DateUtility::parseDateTime($end);
 
-		foreach ($confs as $array) {
+        foreach ($confs as $array) {
 
-			// Convert the input array into a useful Event object
-			$event = new CalendarEvent($array, $timezone);
+            // Convert the input array into a useful Event object
+            $event = new CalendarEvent($array, $timezone);
 
-			// If the event is in-bounds, add it to the output
-			if ($event->isWithinDayRange($range_start, $range_end)) {
-				$event->editable = false;
-				$event->end = $event->end->add(new DateInterval('P1D'));
-				$output_arrays[] = $event->toArray();
-			}
-		}
+            // If the event is in-bounds, add it to the output
+            if ($event->isWithinDayRange($range_start, $range_end)) {
+                $event->editable = false;
+                $event->end = $event->end->add(new DateInterval('P1D'));
+                $output_arrays[] = $event->toArray();
+            }
+        }
 
-		return $output_arrays;
-	}
+        return $output_arrays;
+    }
 
-	public function allRoomSchedules(){
-		$confRoomSchedule = ConferenceRoomSchedule::
-		select(DB::raw('DATE_FORMAT(date_start, "%m/%d/%Y") as start ,DATE_FORMAT(date_end,"%m/%d/%Y") as end'))
-		->get();
+    public function allRoomSchedules() {
+        $confRoomSchedule = ConferenceRoomSchedule::
+                select(DB::raw('DATE_FORMAT(date_start, "%m/%d/%Y") as start ,DATE_FORMAT(date_end,"%m/%d/%Y") as end'))
+                ->get();
 
-		return $confRoomSchedule;
-	}
-	/*
-	select * from conference_room_schedule
-	where date_start < '2015-02-06' And date_end > '2015-02-01'
-	*/
-	public function availableRooms(){
+        return $confRoomSchedule;
+    }
 
-		//select(DB::raw('DATE_FORMAT(date_start, "%Y-%m-%d") as start ,DATE_FORMAT(date_end,"%Y-%m-%d") as end'))
+    /*
+      select * from conference_room_schedule
+      where date_start < '2015-02-06' And date_end > '2015-02-01'
+     */
 
-		if(Input::has('date_start') && Input::has('date_end'))
-			if(Utility::checkIsAValidDate(Input::get('date_start')) && Utility::checkIsAValidDate(Input::get('date_end'))){
+    public function availableRooms() {
 
-				$used = ConferenceRoomSchedule::where('date_start','<',date ('Y-m-d',strtotime(Input::get('date_end'))))
-				->where('date_end','>',date ('Y-m-d',strtotime(Input::get('date_start'))))
-				->get();
+        //select(DB::raw('DATE_FORMAT(date_start, "%Y-%m-%d") as start ,DATE_FORMAT(date_end,"%Y-%m-%d") as end'))
 
-				$listUsed = $used->lists(DB::raw('room_id'));
+        if (Input::has('date_start') && Input::has('date_end')) {
+            if (Utility::checkIsAValidDate(Input::get('date_start')) && Utility::checkIsAValidDate(Input::get('date_end'))) {
+
+                $used = ConferenceRoomSchedule::where('date_start', '<', date('Y-m-d', strtotime(Input::get('date_end'))))
+                        ->where('date_end', '>', date('Y-m-d', strtotime(Input::get('date_start'))))
+                        ->get();
+
+                $listUsed = $used->lists(DB::raw('room_id'));
 
 
-				if(count($listUsed) > 0 ){
-					$available = Room::whereNotIn('room_id',$listUsed)
-					->select('room_id', 'room_name')
-					->get();
-				}else{
-					$available = Room::select('room_id', 'room_name')
-					->get();
-				}
-				return $available;
-			}
+                if (!empty($listUsed)) {
+                    $available = Room::whereNotIn('room_id', $listUsed)
+                            ->select('room_id', 'room_name')
+                            ->get();
+                } else {
+                    $available = Room::select('room_id', 'room_name')
+                            ->get();
+                }
+                return $available;
+            }
+        }
 
-			return NULL;
-		}
-	}
+
+        return NULL;
+    }
+
+}

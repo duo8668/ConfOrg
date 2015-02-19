@@ -22,8 +22,14 @@ Route::get('conference/detail', 'ConferenceController@detail');
 
 Route::get('conference/management/conferenceevents/{beginTime}/{endTime}', 'ConferenceController@conferenceEvents');
 
+//*  Room Schedule
 Route::get('conference/roomSchedule/unavailabledates', 'ConferenceRoomScheduleController@allRoomSchedules');
 Route::get('conference/roomSchedule/availableRooms', 'ConferenceRoomScheduleController@availableRooms');
+
+//*  Conference Events
+Route::get('conference/conferenceEvents/addConferenceScheduleEvents', 'ConferenceScheduleEventController@addConferenceScheduleEvents');
+Route::get('conference/conferenceEvents/getConferenceScheduleEvents', 'ConferenceScheduleEventController@getConferenceScheduleEvents');
+Route::get('conference/conferenceEvents/getAvailableConferenceScheduleEvents', 'ConferenceScheduleEventController@getAvailableConferenceScheduleEvents');
 
 
 Route::any('conference/checkUserInConf', 'ConferenceController@ValidateConference');

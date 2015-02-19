@@ -5533,7 +5533,7 @@ button.close {
 }
 .modal-dialog {
   position: relative;
-  width: auto;
+  /* width: auto; */
   margin: 10px;
 }
 .modal-content {

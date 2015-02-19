@@ -29,7 +29,7 @@
     <script src="{{ asset('js/jquery.js') }}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{{ asset('js/metisMenu.min.js') }}"></script>
