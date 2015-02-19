@@ -7,15 +7,7 @@ class ConferenceUserRole extends Eloquent {
 	protected $fillable = array( 'user_id', 'role_id', 'conf_id', 'remarks');
 	
 	protected $guarded = array('confuserrole_id');
-	public $timestamps = false;
-
-	public function Role(){
-		return $this->belongsTo('Role', 'role_id', 'role_id');
-	}
-
-	public function user(){
-		return $this->belongsTo('User', 'user_id', 'user_id');
-	}
+	public $timestamps = false; 
 
 	public function Conference(){
 		return $this->belongsTo('Conference', 'conf_id', 'ConfId');
