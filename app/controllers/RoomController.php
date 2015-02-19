@@ -195,7 +195,7 @@ class RoomController extends \BaseController {
 	    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
 	    ->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
 	    ->where('room_equipment.room_id', '=', $id)
-	    ->lists('fullname');
+	    ->lists('fullname');	    
 
 		return View::make('room.edit')
 		->with('venues', $venues)

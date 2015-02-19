@@ -7,28 +7,28 @@
 @section('content')
   <h1>Make A Payment</h1>
 
-  {{Form::open(['id'=>'billing-form', 'class' => 'form-horizontal'])}}
-  	<div class="form-row">
-  		<label>
-  			<span>Card Number:</span>
-  			<input type="text" data-stripe="number">                
-  		</label>
-  	</div>
+  {{ Form::open(array('action' => 'BillController@chargeUser','method'=>'Post','id'=>'billing-form', 'class' => 'form-horizontal')) }}
+    <div class="form-row">
+      <label>
+        <span>Card Number:</span>
+        <input type="text" data-stripe="number">                
+      </label>
+    </div>
 
-  	<div class="form-row">
-  		<label>
-  			<span>CVC:</span>
-  			<input type="text" data-stripe="cvc">
-  		</label>
-  	</div>
+    <div class="form-row">
+      <label>
+        <span>CVC:</span>
+        <input type="text" data-stripe="cvc">
+      </label>
+    </div>
 
-  	<div class="form-row">
-  		<label>
-  			<span>Expiration Date:</span>
-  			{{Form::selectMonth(null, null, ['data-stripe' => 'exp-month'])}}
-  			{{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year'])}}
-  		</label>
-  	</div>
+    <div class="form-row">
+      <label>
+        <span>Expiration Date:</span>
+        {{Form::selectMonth(null, null, ['data-stripe' => 'exp-month'])}}
+        {{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year'])}}
+      </label>
+    </div>
 
     <div class="form-row">
       <label>
@@ -38,7 +38,7 @@
     </div>
 
     <div>
-      {{Form::submit('Buy Now')}}
+      {{Form::submit('Buy Now',['id'=>'btnSubmit'])}}
     </div>
     <div class="payment-errors"></div>
   {{Form::close()}}  
@@ -47,6 +47,9 @@
 
   <script>
   (function(){
+    $("#btnSubmit").click(function() {
+    StripeBilling.init();
+  });
     var StripeBilling ={
       init:function(){
         this.form = $('#billing-form');
@@ -84,10 +87,9 @@
 
         this.form[0].submit();
       }
-
     };
 
-    StripeBilling.init();
+
 
 })();
   </script>     
