@@ -16,22 +16,20 @@ class StripeBilling implements BillingInterface {
 	public function charge(array $data){
 		try{
 
-			$customer = Stripe_Customer::create([
-				'card' => $data['token'],
-				'description' => $data['email']
-				]);
-
-
-			Stripe_Charge::create([
+			// $customer = Stripe_Customer::create([
+			// 	'card' => $data['token'],
+			// 	'description' => $data['email']
+			// 	]);
+			return Stripe_Charge::create([
 			//refer amount from the database
-				'customer' => $customer->id,
-				'amount' =>10*100,
+				// 'customer' => $customer->id,
+				'amount' =>11*100,
 				'currency' => 'usd',
 				'description' => $data['email'],
 				'card' => $data['token']
 				]);	
 
-			return $customer->id;
+			// return $customer->id;
 		}
 		catch(Stripe_InvalidRequestError $e)
 		{
