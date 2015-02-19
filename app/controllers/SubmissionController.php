@@ -208,7 +208,7 @@ class SubmissionController extends \BaseController {
 		// define rules
 		$rules = array(
 				'sub_type' => 'required',
-				'sub_title' => 'required|unique:submissions,sub_title,10',
+				'sub_title' => 'required',
 				'sub_abstract' => 'required',
 				'sub_topics' => 'required'
 			);

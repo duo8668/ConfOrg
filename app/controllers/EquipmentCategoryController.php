@@ -9,7 +9,7 @@ class EquipmentCategoryController extends \BaseController {
     public function index()
     {
         //
-        $equipmentcategory = Equipmentcategory::all();
+        $equipmentcategory = EquipmentCategory::all();
         // load the view and pass the venue
         return View::make('equipmentcategory.index')
         ->with('equipmentcategory', $equipmentcategory);

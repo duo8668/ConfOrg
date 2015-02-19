@@ -60,4 +60,12 @@ class UtilsController extends \BaseController {
 		return array('success' => true);
 		
 	}
+
+	public static function acceptRejectSubs() {
+		//TODO: for each conference
+		// if timing => cut_off
+		// then for all subs check if score > mins
+		// if yes accept else reject
+		Log::info('SubsCommand working! calling acceptRejectSubs');
+	}
 }

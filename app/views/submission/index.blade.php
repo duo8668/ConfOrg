@@ -11,14 +11,14 @@
 <hr>
 
 <div class="table-responsive">
-  	<table class="table">   
+  	<table class="table table-striped">   
   		<tr>
-			<td><strong>Submission Title</strong></td>
-			<td><strong>Type</strong></td>
-			<td><strong>Conference</strong></td>
-			<td><strong>Date Submitted</strong></td>
+			<td style="width: 20%;"><strong>Submission Title</strong></td>
+			<td style="width: 8%;"><strong>Type</strong></td>
+			<td style="width: 30%;"><strong>Conference</strong></td>
+			<td style="width: 12%;"><strong>Date Submitted</strong></td>
 			<td><strong>Status</strong></td>
-			<td><strong>Option</strong></td>
+			<td style="width: 25%;"><strong>Option</strong></td>
 		</tr> 
 		@foreach ($submissions as $sub) 
 			<tr>

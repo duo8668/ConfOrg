@@ -10,7 +10,7 @@ class RoomController extends \BaseController {
 	public function index()
 	{
 		
-		$data = DB::table('Room')
+		$data = DB::table('room')
 		->join('venue', 'venue.venue_id', '=', 'room.venue_id')
 		->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name'));		
 
