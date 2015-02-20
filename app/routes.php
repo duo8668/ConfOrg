@@ -30,5 +30,15 @@ Route::get('/', function()
     return View::make('hello');
 });
 
+Route::get('/conference_list', array(
+    'as'    => 'conference.public_list',
+    'uses'  => 'ConferenceController@conf_public_list'
+));
+
+Route::get('/conference_detail/{conf_id}', array(
+    'as'    => 'conference.public_detail',
+    'uses'  => 'ConferenceController@conf_public_detail'
+));
+
 });
 

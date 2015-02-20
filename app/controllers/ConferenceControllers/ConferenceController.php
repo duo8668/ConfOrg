@@ -446,4 +446,12 @@ class ConferenceController extends \BaseController {
         return json_encode(array('valid' => ($conf == null)));
     }
 
+    public function conf_public_list() {
+        return View::make('conf_list');
+    }
+
+     public function conf_public_detail($id) {
+        return View::make('conf_detail');
+    }
+
 }
