@@ -23,7 +23,7 @@ class StripeBilling implements BillingInterface {
 			return Stripe_Charge::create([
 			//refer amount from the database
 				// 'customer' => $customer->id,
-				'amount' =>11*100,
+				'amount' =>$data['total'],
 				'currency' => 'usd',
 				'description' => $data['email'],
 				'card' => $data['token']

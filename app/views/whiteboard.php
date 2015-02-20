@@ -1,115 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Laravel 4 E-Commerce</title>
-    <style type="text/css">
-      body {
-        padding     : 25px 0;
-        font-family : Helvetica;
-      }
-      td {
-        padding : 0 10px 0 0;
-      }
-      * {
-        float : none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8">
-          
-        </div>
-        <div class="col-md-4 well">
-          <table>
-            <tr>
-              <td class="pull-right">
-                <strong>Account</strong>
-              </td>
-              <td>
-                some random text
-              </td>
-            </tr>
-            <tr>
-              <td class="pull-right">
-                <strong>Date</strong>
-              </td>
-              <td>
-                some random date
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <h2>Invoice #44224</h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>            
-              <tr>
-                <td>
-                 Yya
-                </td>
-                <td>
-                  wagwa
-                </td>
-                <td>
-                  25
-                </td>
-              </tr>            
-            <tr>
-              <td>&nbsp;</td>
-              <td>
-                <strong>Total</strong>
-              </td>
-              <td>
-                <strong>$ 6.40</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>
 
-   <button class="btn btn-xs btn-info" onclick="$('#{{$value->venue_id}}').toggle();">Show/Hide</button>
-                <div id="{{$value->venue_id}}" style="display:none">  
-                    Hide show.....
-                </div>
-
-                @extends('layouts.dashboard.master')
-@section('page-header')
-@section('extraScripts')
-<script src="https://js.stripe.com/v2/"></script>
-<script src="{{ asset('js/stripe.js') }}"></script>
-@stop
-@section('content')
-<!--<p>Conference Name: {{$conference->title}}</p>
-<p>Conference Description: {{$conference->description}}</p>
-
- 'user_id' => string '52' (length=2)
-'conf_id' => string '1' (length=1)
-'description' => string 'some random text' (length=16)
-'TicketPrice' => string '$30' (length=3)
-'quantity' => string '2' (length=1)
-'days' => string '2' (length=1)
-'Total' => string '' (length=0)
-'Proceed' => string 'Proceed' (length=7) -->
 @extends('layouts.dashboard.master')
 @section('page-header')
 @section('extraScripts')
@@ -118,16 +7,30 @@
 @stop
 @section('content')
 
+<?php
+    if (!is_null(Session::get('ticketPrice')) && !is_null(Session::get('user')) && !is_null(Session::get('conference'))) {
+      $ticketPrice = Session::get('ticketPrice');
+      $user = Session::get('user');
+      $conference = Session::get('conference');
+    }
+    else
+    {
+
+    }    
+?>
+
+<h1>Hello {{$user->firstname, ', ',$user->lastname}}</h1>
 <p>Conference Name: {{$conference->title}}</p>
 <p>Conference Description: {{$conference->description}}</p>
 
+
 {{Form::open(['id'=>'billing-form', 'class' => 'form-horizontal'])}}
 <div class="form-row">
-  <label>Ticket Price:</label>{{ Form::text('ticketPrice', $ticketPrice, array('readonly', 'id' => 'ticketPrice')) }}
+  Ticket Price: <label id="ticketPrice">{{$ticketPrice}}</label>  
 </div>
 
 <div class="form-row">
-  <label>Number of Ticket:</label> {{ Form::selectRange('quantity', 1, 10, null, ['class' => 'field','id'=>'quantity']) }}
+  <label>Number of Ticket:</label> {{ Form::selectRange('quantity', 0, 10, null, ['class' => 'field','id'=>'quantity']) }}
 </div>
 
 <div class="form-row">
@@ -142,7 +45,7 @@
 <div class="form-row">
   <label>
     <span>Card Number:</span>
-    <input type="text" data-stripe="number">                
+    <input type="text" data-stripe="number" value="4000000000000002">                
   </label>
 </div>
 
@@ -160,14 +63,16 @@
     {{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year'])}}
   </label>
 </div>
-{{ Form::hidden('conf_id', $conf_id) }}
+{{ Form::hidden('conf_id', $conference->conf_id) }}
+{{ Form::hidden('user_id', $user->user_id) }}
+{{ Form::hidden('description', $conference->description) }}
+{{ Form::hidden('price', $ticketPrice) }}
+
 <div>
   {{Form::submit('Buy Now')}}
 </div>
 <div class="payment-errors"></div>
 {{Form::close()}}  
-
-
 
 <script>
 (function(){
@@ -211,8 +116,10 @@
 
   };
 
-  $("#quantity").change(function() {
-    $('#total').val('$'+$('#ticketPrice').val().replace("$","")*$('#quantity').val());      
+  $("#quantity").change(function() {  
+    var ticket = $('#ticketPrice').text().replace("$","");
+    var quantity = $('#quantity').val();
+    $('#total').val('$'+ticket*quantity);      
   });
 
   StripeBilling.init();

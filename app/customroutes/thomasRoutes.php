@@ -9,11 +9,14 @@
 // Route::get('/venue2/test', 'ThomasController@test');
 // Route::post('/about', array('as' => 'about', 'uses'=>'ThomasController@test'));
 
-Route::get('/payment', 'BillController@payment');
-Route::post('payment/charges', 'BillController@paymentCharges');
+// Route::get('/invoice', 'BillController@index');
+// Route::get('/invoice/{id}', 'BillController@show');
 
-Route::get('/payment/charges', 'BillController@charges');
-Route::post('/payment/charges', 'BillController@chargeUser');
+Route::get('/payment', 'BillController@payment');
+Route::post('payment', 'BillController@createInvoice');
+
+Route::get('/payment/charges/{id}', 'BillController@charges');
+Route::post('/payment/charges/{id}', 'BillController@chargeUser');
 
 Route::get('/import', 'ThomasController@import');
 Route::post('import', array('uses' => 'ThomasController@import'));
@@ -22,7 +25,7 @@ Route::get('/importData', 'ThomasController@importData');
 Route::post('importData', array('uses' => 'ThomasController@importData'));
 Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
 
-
+Route::resource('invoice', 'BillController');
 Route::resource('venue', 'ThomasController');
 Route::resource('equipmentcategory', 'EquipmentCategoryController');
 Route::resource('equipment', 'EquipmentController');
