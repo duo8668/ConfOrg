@@ -62,10 +62,54 @@ class UtilsController extends \BaseController {
 	}
 
 	public static function acceptRejectSubs() {
-		//TODO: for each conference
-		// if timing => cut_off
-		// then for all subs check if score > mins
-		// if yes accept else reject
+		
+		$dt = new DateTime("now", new DateTimeZone('Asia/Singapore'));
+		$confs = Conference::where('cutoff_time', '<=', $dt)->get();
+		foreach ($confs as $conf) {
+
+			//accept submissions who passed the minimum score
+			DB::table('submissions')
+            	->where('overall_score', '>=', $conf->min_score)
+            	->where('conf_id', '=', $conf->conf_id)
+            	->update(array('status' => 1));
+
+            //reject the rest of the submissions
+            DB::table('submissions')
+            	->where('overall_score', '<', $conf->min_score)
+            	->where('conf_id', '=', $conf->conf_id)
+            	->update(array('status' => 0));
+		}
+		
 		Log::info('SubsCommand working! calling acceptRejectSubs');
+	}
+
+	public static function updateScore($id) {
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$reviews = $submission->reviews()->get();
+
+		$qlty = 0;
+		$ori = 0;
+		$relv = 0;
+		$sigf = 0;
+		$pres = 0;
+		$recm = 0;
+		$count = 0;
+
+		foreach ($reviews as $rev) {
+			$qlty += $rev->quality_score;
+			$ori += $rev->originality_score;
+			$relv += $rev->relevance_score;
+			$sigf += $rev->significance_score;
+			$pres += $rev->presentation_score;
+			$count++;
+		}
+
+		$overall = 0;
+		if ($count > 0) {
+			$overall = ( ($qlty + $ori + $relv + $sigf + $pres) / ($count * 50) ) * 100;
+			$submission->overall_score = $overall;
+			$submission->save();
+		}
+			
 	}
 }

@@ -95,7 +95,7 @@ class SubmissionController extends \BaseController {
 		if ($validator->fails()) {
 			return Redirect::route('submission.add', ['conf_id' => Input::get('conf_id')])->withErrors($validator)->withInput();
 		}
-		// TODO: Input submitting author id a.k.a USER ID
+		
 		if (Input::file('attachment_path')->isValid()) {
 		
 	      	$destinationPath = 'uploads'; // upload path
@@ -109,7 +109,8 @@ class SubmissionController extends \BaseController {
 				'sub_abstract' => Input::get('sub_abstract'),
 				'sub_remarks' => Input::get('sub_remarks'),
 				'attachment_path' => $destinationPath . '/' . $fileName,
-				'user_id' => Auth::user()->user_id
+				'user_id' => Auth::user()->user_id,
+				'conf_id' => Input::get('conf_id')
 				));
 		
 		
@@ -137,6 +138,8 @@ class SubmissionController extends \BaseController {
 			$email = Input::get('author_email');
 			$ispresenting = Input::get('author_ispresenting');
 
+			$co_author_data = array();
+
 			for ($i = 0; $i < count($fname); $i++) {
 				$author = new Submission_Author();
 				$author->first_name = $fname[$i];
@@ -151,6 +154,33 @@ class SubmissionController extends \BaseController {
 				
 				$submission->authors()->save($author);
 			}
+
+			// SEND EMAIL NOTIF TO REVIEWERS
+			//prepare string
+			$topicdb_str = '';
+			for ($i = 0; $i < count($sub_topics); $i++) {
+				if ($i == 0) {
+					$topicdb_str .= 'find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
+				} else {
+					$topicdb_str .= 'OR find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
+				}
+			}
+
+			$rawdb_str = 'select firstname, lastname, email from users where user_id IN ( select user_id from user_preferred_topic where '. $topicdb_str . ')';
+
+			//retrieve reviewers
+			$reviewers = DB::select( DB::raw($rawdb_str) );
+            
+            //send email to reviewers
+            foreach ($reviewers as $reviewer) {
+            	Mail::queue('emails.submission.to_reviewers',
+				['name' => $reviewer->firstname . ' ' . $reviewer->lastname,
+				 'title' => 'Testing',
+				 'conf' => 'Testing Conference'], 
+				function($message) use ($reviewer) 	{
+			    	$message->to($reviewer->email, $reviewer->firstname . ' ' . $reviewer->lastname)->subject('New submission for you to review!');
+				});
+            }
 
 			return Redirect::route('submission.index')->withMessage('Thank you! Your Contribution has been Submitted');
 
@@ -171,7 +201,7 @@ class SubmissionController extends \BaseController {
 		$keywords = $submission->keywords()->get();
 
 		//TODO: get topics of current conference
-		$conf_topics = ConferenceTopic::all();
+		$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
 		$topics = DB::table('submission_topic')
 		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
 		->select('submission_topic.topic_id')->where('submission_topic.sub_id', '=', $id)->get();
@@ -373,7 +403,73 @@ class SubmissionController extends \BaseController {
 		
 	}
 
+	public function veto($id, $decision) {
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$submission->status = int($decision);
+		$submission->save();
+
+		return Redirect::to('conference/detail?conf_id=' . Input::get('conf_id'))->withMessage('Submission status changed!');
+	}
+
 	public function create(){}
 
+	public function testsql() {
+		
+			// // prepare string
+			// $sub_topics = array(23);
+			// $topicdb_str = '';
+			// for ($i = 0; $i < count($sub_topics); $i++) {
+			// 	if ($i == 0) {
+			// 		$topicdb_str .= 'find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
+			// 	} else {
+			// 		$topicdb_str .= 'OR find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
+			// 	}
+			// }
 
+			// $rawdb_str = 'select firstname, lastname, email from users where user_id IN ( select user_id from user_preferred_topic where '. $topicdb_str . ')';
+
+			// $reviewers = DB::select( DB::raw($rawdb_str) );
+
+			// // return var_dump($reviewers);
+            
+   //          foreach ($reviewers as $reviewer) {
+   //          	Mail::queue('emails.submission.to_reviewers',
+			// 	['name' => $reviewer->firstname . ' ' . $reviewer->lastname,
+			// 	 'title' => 'Testing',
+			// 	 'conf' => 'Testing Conference'], 
+			// 	function($message) use ($reviewer) 	{
+			//     	$message->to($reviewer->email, $reviewer->firstname . ' ' . $reviewer->lastname)->subject('New submission for you to review!');
+			// 	});
+   //          }
+
+   //          return 'Check email!';
+		$id = 1;
+		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		$reviews = $submission->reviews()->get();
+
+		$qlty = 0;
+		$ori = 0;
+		$relv = 0;
+		$sigf = 0;
+		$pres = 0;
+		$recm = 0;
+		$count = 0;
+
+		foreach ($reviews as $rev) {
+			$qlty += $rev->quality_score;
+			$ori += $rev->originality_score;
+			$relv += $rev->relevance_score;
+			$sigf += $rev->significance_score;
+			$pres += $rev->presentation_score;
+			$count++;
+		}
+
+		$overall = 0;
+		if ($count > 0) {
+			$overall = ( ($qlty + $ori + $relv + $sigf + $pres) / ($count * 50) ) * 100;
+		}
+
+		return 'overall is '. $overall;
+			
+	}
 }

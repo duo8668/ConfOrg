@@ -8,7 +8,7 @@ class ProfilesController extends \BaseController {
  	*/
 	public function getProfile($email){
 		try{
-		$user = User::with('Profile')->whereEmail($email)-> firstOrFail();
+		$user = User::with('Profile')->whereEmail($email)->firstOrFail();
 
 		}
 		catch(Illuminate\Database\Eloquent\ModelNotFoundException $e)
@@ -16,7 +16,7 @@ class ProfilesController extends \BaseController {
 			return Redirect::to('/dashboard')
  					->with('message','User does not exist.');
 		}	
-		return View::make('users.profile')->withUser($user);
+		return View::make('users.profile')->with('user',$user);
 	}
 
 
@@ -25,7 +25,7 @@ class ProfilesController extends \BaseController {
 	*/
 	public function getProfileEdit($email){
 		try{
-		$user = User::with('Profile')->whereEmail($email)-> firstOrFail();
+		$user = User::with('Profile')->whereEmail($email)->firstOrFail();
 
 		}
 		catch(Illuminate\Database\Eloquent\ModelNotFoundException $e)

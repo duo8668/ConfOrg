@@ -9,15 +9,39 @@ class ReviewController extends \BaseController {
 	 */
 	public function index()
 	{
-		//TODO: Get all submissions based on current user's preferred topic of current conference
-		$submission = DB::table('conference')
-            ->join('submissions', 'submissions.conf_id', '=', 'conference.conf_id')
-            ->leftJoin('reviews', 'reviews.sub_id', '=', 'submissions.sub_id')
-            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at', 'reviews.review_id')
-            ->orderBy('submissions.created_at', 'desc')->distinct()->get();
-		return View::make('reviews.index')->with('submissions', $submission);
+		//get the conf_id in which the user is a reviewer
+		$confs = DB::table('confuserrole')
+		->select('conf_id')
+		->where('user_id', '=', Auth::user()->user_id)
+		->where('role_id', '=', 7)
+		->get();
 
-		// return var_dump($submission);
+		//set just the conf ID into array, 
+		$conf_ids = array();
+		foreach ($confs as $conf) {
+			array_push($conf_ids, $conf->conf_id);
+		}
+
+		$submission = DB::table('submissions')
+            ->join('conference', 'submissions.conf_id', '=', 'conference.conf_id')
+            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at', 'submissions.updated_at')
+            ->whereIn('submissions.conf_id', $conf_ids)
+            ->orderBy('submissions.created_at', 'desc')->get();
+
+        $reviews = DB::table('reviews')
+        	->select('review_id', 'sub_id')
+        	->where('user_id', '=', Auth::user()->user_id)
+        	->get();
+
+        //set just the conf ID into array, 
+		$review_ids = array();
+		foreach ($reviews as $rev) {
+			$review_ids[$rev->review_id] = $rev->sub_id;
+		}
+
+            // var_dump($review_ids);
+
+		return View::make('reviews.index')->with('submissions', $submission)->with('reviews', $review_ids);
 		
 	}
 	
@@ -83,6 +107,9 @@ class ReviewController extends \BaseController {
 		$submission = Submission::find(Input::get('hidden_sub_id'));
 
 		$review = $submission->reviews()->save($review);
+
+		//update total score in submission table
+		UtilsController::updateScore(Input::get('hidden_sub_id'));
 
 		return Redirect::route('reviews.index')->withMessage('Thank you! Your review for the contribution has been submitted!');
 	}
@@ -158,6 +185,9 @@ class ReviewController extends \BaseController {
 
 		$review = $submission->reviews()->save($review);
 
+		//update total score in submission table
+		UtilsController::updateScore(Input::get('hidden_sub_id'));
+
 		return Redirect::route('reviews.index')->withMessage('Thank you! Your review for the contribution has been updated!');
 	}
 
@@ -194,7 +224,7 @@ class ReviewController extends \BaseController {
         //set just the topic ID of selected topic into array, for checking purpose
         $selected_topic = array();
         if (!empty($topics)) {
-        	$selected_topic = explode(" ", $topics[0]->topic_ids);	
+        	$selected_topic = explode(",", $topics[0]->topic_ids);	
         }
 				
 		return View::make('reviews.topics')
@@ -217,7 +247,7 @@ class ReviewController extends \BaseController {
 		}
 
 		$sub_topics = Input::get('sub_topics');
-		$new_data = implode(" ", $sub_topics);
+		$new_data = implode(",", $sub_topics);
 		
 		$user = DB::table('user_preferred_topic')->select('topic_ids')->where('user_id', Auth::user()->user_id)->get();
 		

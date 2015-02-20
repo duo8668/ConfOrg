@@ -104,7 +104,7 @@
 				<td><?php echo ( number_format($relv/$count,2) ); ?></td>
 				<td><?php echo ( number_format($sigf/$count,2) ); ?></td>
 				<td><?php echo ( number_format($pres/$count,2) ); ?></td>
-				<td><strong><?php echo ( number_format((($qlty + $ori + $relv + $sigf + $pres) / ($count * 50)) * 100,2) ); ?>%</strong></td>
+				<td><strong><?php echo ( number_format( $submission->overall_score ,2) ); ?>%</strong></td>
 			@else
 				<td>0</td>
 				<td>0</td>

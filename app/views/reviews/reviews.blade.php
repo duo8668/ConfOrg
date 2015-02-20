@@ -12,5 +12,23 @@
 <hr>
 
 	@include('reviews._reviewpartials')
+<?php
+	$count = count($reviews);
+?>
+<div style="margin-bottom:40px"></div>
+<div class="row">
+  <div class="col-md-12"><strong>Internal comments from other reviewers</strong>
+  	@if ($count > 0)
+		@foreach ($reviews as $rev)
+			<hr>
+			<div class="row">
+				<div class="col-md-12">{{{ $rev->internal_comment }}}</div>
+			</div>
+		@endforeach
+	@else 
+	  	<br />No comments yet
+	@endif
+  </div>
+</div>
 	
 @stop
