@@ -90,7 +90,7 @@
                 </tr>                                  
               </tbody>
             </table>
-            <a href="#" class="btn btn-info btn-block" onclick="javascript:window.print();"><i class="fa fa-print"></i> Print</a>
+            <a href="#" class="btn btn-info btn-block hidden-print" onclick="javascript:window.print();"><i class="fa fa-print"></i> Print</a>
           </div><!--/col-->
 
         </div><!--/row-->
