@@ -103,11 +103,17 @@ class ConferenceController extends \BaseController {
         $reviewPanels = ConferenceUserRole::ConferenceReviewPanels(Input::get('conf_id'))->toArray();
 
         $conf = Conference::where('conf_id', '=', Input::get('conf_id'))->first();
+
+        $submissions = Submission::where('conf_id', '=', Input::get('conf_id'))->get();
+
+        $topics = DB::table('conference_topic')->select('topic_id', 'topic_name')->where('conf_id', '=', Input::get('conf_id'))->get();
  
         $view = View::make('conference.detail', array('fields' => $fields, 'conf' => $conf
                     , 'confChairUsers' => $confChairUsers
                     , 'allStaffs' => $allStaffs
-                    , 'reviewPanels' => $reviewPanels ));
+                    , 'reviewPanels' => $reviewPanels 
+                    , 'submissions' => $submissions
+                    , 'topics' => $topics));
 
         // SET SESSION
         Session::put('orafer_conf_id', Input::get('conf_id'));

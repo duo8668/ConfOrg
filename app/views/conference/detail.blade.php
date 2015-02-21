@@ -546,7 +546,6 @@ $.fn.textWidth = function() {
 								</div>
 							</div>
 
-							<!-- Abstract -->
 							<div class="row">
 								<label class="col-md-6 control-label text-right">Submission Deadline</label>
 								<div class="col-md-6">   
@@ -554,7 +553,6 @@ $.fn.textWidth = function() {
 								</div>
 							</div>
 
-							<!-- Topics -->
 							<div class="row">
 								<label class="col-md-6 control-label text-right">Minimum Acceptance Score</label> 
 								<div class="col-md-6">
@@ -609,7 +607,15 @@ $.fn.textWidth = function() {
 
 						<!-- Topics -->
 						<div role="tabpanel" class="tab-pane fade" id="topics">
-							[[ TOPICS HERE ]]
+							<ol>
+								@if (count($topics) > 0)
+									@foreach($topics as $topic)
+										<li>{{{ $topic->topic_name }}}</li>
+									@endforeach
+								@else
+									No topics defined
+								@endif
+							</ol>
 						</div>
 
 						<!-- Committee -->
@@ -661,14 +667,55 @@ $.fn.textWidth = function() {
 						<!-- Submissions -->
 						<div role="tabpanel" class="tab-pane fade" id="submissions">
 							<div class="table-responsive">
-								<table class="table">   
-									<tr>
-										<td><strong>Submission Title</strong></td>
-										<td><strong>Type</strong></td>
-										<td><strong>Date Submitted</strong></td>
-										<td><strong>Status</strong></td>
+							  	<table class="table table-striped">   
+							  		<tr>
+										<td style="width: 25%;"><strong>Submission Title</strong></td>
+										<td style="width: 10%;"><strong>Type</strong></td>
+										<td style="width: 15%;"><strong>Date Submitted</strong></td>
+										<td style="width: 10%;"><strong>Score</strong></td>
+										<td style="width: 10%;"><strong>Status</strong></td>
 										<td><strong>Option</strong></td>
 									</tr> 
+									@foreach ($submissions as $sub) 
+										<tr>
+											<td>{{ link_to_route('submission.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
+											<td>
+												@if ($sub->sub_type === 3)
+												    Poster
+												@elseif ($sub->sub_type === 2)
+												    Full Paper
+												@else
+												    Abstract
+												@endif
+											</td>
+											<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
+
+											<td>{{{ $sub->overall_score }}} </td>
+											<td>
+												@if ($sub->status === 1)
+												    <span class="text-success">Accepted</span>
+												@elseif ($sub->status === 9)
+												    <span class="text-danger">Rejected</span>
+												@else
+												    On review
+												@endif
+											</td>
+											<td>
+												{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
+													<div class="col-sm-9">
+														{{Form::select('chair_decision', 
+														array('1' => 'Manually Accept'
+														, '9' => 'Manually Reject'
+														, '0' => 'Need to Peer-review again')
+														, '1'
+														, ['class' => 'form-control input-sm']);}}
+													</div>
+													{{ Form::hidden('conf_id', $conf->conf_id) }}
+													{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
+												{{ Form::close() }}
+											</td>
+										</tr>
+									@endforeach
 								</table>
 							</div>
 						</div>

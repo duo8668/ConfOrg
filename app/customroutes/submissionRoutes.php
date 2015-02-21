@@ -36,6 +36,11 @@ Route::put('/submission/{sub_id}/authors', array(
     'uses'  => 'SubmissionController@update_authors'
 ));
 
+Route::put('/submission/{sub_id}/veto', array(
+    'as'    => 'submission.veto',
+    'uses'  => 'SubmissionController@veto'
+));
+
 Route::resource('submission', 'SubmissionController');
 
 /* 

@@ -37,7 +37,7 @@
 				<td>
 					@if ($sub->status === 1)
 					    <span class="text-success">Accepted</span>
-					@elseif ($sub->status === 2)
+					@elseif ($sub->status === 9)
 					    <span class="text-danger">Rejected</span>
 					@else
 					    On review

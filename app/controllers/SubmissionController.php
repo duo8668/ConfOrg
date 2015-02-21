@@ -263,6 +263,7 @@ class SubmissionController extends \BaseController {
 		$submission->sub_title = Input::get('sub_title');
 		$submission->sub_abstract = Input::get('sub_abstract');
 		$submission->sub_remarks = Input::get('sub_remarks');
+		$submission->modified_by = Auth::user()->user_id;
 		$submission->save();
 
 		// updating keywords
@@ -328,7 +329,7 @@ class SubmissionController extends \BaseController {
 	{
 		//Get submission object
 		$submission = Submission::where('sub_id' , '=', $sub_id)->get()->first();
-
+		$submission->modified_by = Auth::user()->user_id;
 		// updating authors
 		// delete existing authors
 		$submission->authors()->delete();
@@ -403,9 +404,11 @@ class SubmissionController extends \BaseController {
 		
 	}
 
-	public function veto($id, $decision) {
+	public function veto($id) {
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$submission->status = int($decision);
+		$decision = Input::get('chair_decision');
+		$submission->status = $decision;
+		$submission->modified_by = Auth::user()->user_id;
 		$submission->save();
 
 		return Redirect::to('conference/detail?conf_id=' . Input::get('conf_id'))->withMessage('Submission status changed!');
