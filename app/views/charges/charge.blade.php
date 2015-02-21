@@ -32,7 +32,7 @@
         <div class="form-group @if ($errors->has('sub_type')) has-error @endif">
           <label class="col-md-2 control-label">Ticket Price</label>
           <div class="col-md-10">
-            <p class="form-control-static"><strong>$30</strong></p>
+            <p class="form-control-static" id="ticketPrice"><strong>$30</strong></p>
           </div>
         </div>
        
@@ -155,7 +155,7 @@
 
   $("#quantity").change(function() {  
     var ticket = $('#ticketPrice').text().replace("$","");
-    var quantity = $('#quantity').val();
+    var quantity = $('#quantity').val();    
     $('#total').val('$'+ticket*quantity);      
   });
 
