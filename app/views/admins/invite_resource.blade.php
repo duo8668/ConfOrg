@@ -15,7 +15,7 @@ Invite a Resource Provider
  	
 	 	<legend>Invite Resource Provider Company</legend>
 	 	<div class="form-group @if ($errors->has('email')) has-error @endif">
-	      {{ Form::label('email', 'Resource Provider Email', ['class' => 'col-sm-2 control-label']) }}    
+	      {{ Form::label('email', 'Resource Provider Email', ['class' => 'col-md-2 control-label']) }}    
 	      <div class="col-sm-6">     
 	        {{ Form::email('email', null, array('class' => 'form-control', 'required' => 'required')) }}
 	      </div>
@@ -24,7 +24,7 @@ Invite a Resource Provider
 	    <div class="clearfix"></div>
 
 	    <div class="form-group @if ($errors->has('company')) has-error @endif">
-	      {{ Form::label('company', 'Resource Provider Email', ['class' => 'col-sm-2 control-label']) }}    
+	      {{ Form::label('company', 'Resource Provider Email', ['class' => 'col-md-2 control-label']) }}    
 	      <div class="col-sm-6">   
 	       {{ Form::select('company', $company_options, null, ['class' => 'form-control', 'required' => 'required']) }}
 	       <p class="help-block">If the company name is not listed here, please add it in first in the form below</p>
@@ -45,7 +45,7 @@ Invite a Resource Provider
 		<legend>Add New Company</legend>
 
  		<div class="form-group @if ($errors->has('new')) has-error @endif">
-	      {{ Form::label('new', 'Company Name', ['class' => 'col-sm-2 control-label']) }}    
+	      {{ Form::label('new', 'Company Name', ['class' => 'col-md-2 control-label']) }}    
 	      <div class="col-sm-6">     
 	        {{ Form::text('new', null, array('class' => 'form-control', 'required' => 'required')) }}
 	      </div>

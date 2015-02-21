@@ -19,14 +19,14 @@
                         @endif
                         {{ Form::open(array('route' => 'users-sign-in-post', 'method' => 'post')) }}
                             <fieldset>
-                                <div class="form-group">
+                                <div class="form-group @if ($errors->has('email')) has-error @endif">
                                     {{ Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'E-mail', 'autofocus' => 'yes')) }}
                                     <!-- <input type ="email" class="form-control" placeholder="E-mail" name="email" {{Input::old('email') ? ' value="' . e(Input::old('email')) . '"' : ''  }} autofocus> -->
                                     @if($errors->has('email'))
                                         <p class="text-danger">{{  $errors->first('email') }}</p> 
                                     @endif                                     
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group @if ($errors->has('password')) has-error @endif">
                                     {{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password')) }}
                                     @if($errors->has('password'))
                                         <p class="text-danger">{{  $errors->first('password') }}</p>
@@ -42,6 +42,10 @@
                                 <hr>
                                 <a href="{{ URL::route('users-forget-password') }}" class="pull-right">Forget Password?</a>
                                 <a href="{{ URL::to('login/fb') }}" class="pull-left" style="margin-top: -8px;"><img src="{{ url() }}/images/fblogin.png" alt="Login with Facebook" width="175"></a>
+                                <div class="clearfix"></div>
+                                <hr>
+                                <div class="text-center"><i class="fa fa-user"></i> Don't have an account yet? <a href="{{ URL::route('users-create') }}" ><span class="text-success">Sign up Here</span></a></div>
+                                
                             </fieldset>
                         {{ Form::close() }}
                     </div>

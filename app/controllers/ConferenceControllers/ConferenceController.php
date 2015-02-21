@@ -453,11 +453,24 @@ class ConferenceController extends \BaseController {
     }
 
     public function conf_public_list() {
-        return View::make('conf_list');
+        //get all conferences sorted by begin date
+        $confs = Conference::orderBy('begin_date', 'desc')->get();
+        return View::make('conf_list')->with('confs', $confs);
     }
 
      public function conf_public_detail($id) {
-        return View::make('conf_detail');
+        $conf = DB::table('conference')
+            ->join('users', 'conference.created_by', '=', 'users.user_id')
+            ->select('conference.conf_id', 'conference.title', 'conference.description', 'conference.begin_date', 'conference.end_date', 'users.email')
+            ->where('conference.conf_id' , '=', $id)
+            ->get();
+
+            // return var_dump($conf[0]);
+        if (empty($conf)) {
+            return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
+        } else {
+            return View::make('conf_detail')->with('conf', $conf[0]);
+        }
     }
 
 }

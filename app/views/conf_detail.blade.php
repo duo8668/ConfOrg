@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="jumbotron" style="background-image: url({{asset('img/conflist-bg.jpg')}}); background-size:cover;">
       <div style="padding-bottom: 50px;"></div>
-      <h2 class="text-center" style="color:#fff;">Conference Name Here</h2>
+      <h2 class="text-center" style="color:#fff;">{{{ $conf->title }}}</h2>
       <div style="padding-bottom: 30px;"></div>
     </div>
     
@@ -18,8 +18,8 @@
         
         <form class="form-horizontal">
             <div class="form-group">
-                <div class="col-md-10">
-                    <input type="email" class="form-control" id="search_conf" placeholder="Search conference" >
+                <div class="col-md-10" style="padding-left:0; padding-right:0;" >
+                    <input type="text" class="form-control" id="search_conf" placeholder="Search conference" >
                 </div>
               <button type="submit" class="btn btn-primary col-md-2">Search Conference</button>
             </div>
@@ -29,14 +29,16 @@
         <div class="row">
             <div class="col-md-12" style="margin-bottom:50px;">
                
-                <h2 class="text-center"><u>Information Technology Conference 2015 </u></h2>
-                <h3 class="text-center"> Singapore Expo  </h3>
-                <h3 class="text-center"> 20 - 25 May 2015</h3>
+                <h2 class="text-center"><u>{{{ $conf->title }}}</u></h2>
+                <h3 class="text-center"> [[ VENUE HERE ]]</h3>
+                <h3 class="text-center">{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</h3>
 
                 <!-- SUBMIT PAPER BUTTON  -->
+                @if (Auth::check())
+
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
-                        <a href="#" class="btn btn-primary btn-block" role="button">Submit Paper</a>
+                        <a href="{{ URL::route('submission.add', ['conf_id' => $conf->conf_id]) }}" class="btn btn-primary btn-block" role="button">Submit Paper</a>
                     </div>
                 </div>
                 <div class="row">
@@ -45,15 +47,18 @@
                     </div>
                 </div>
 
+                @else
+                <h5 class="text-center well" style="margin-top:40px;">
+                    Please {{ link_to_route('users-sign-in', 'sign in') }} or {{ link_to_route('users-create', 'create an account') }} before submitting papers or purchasing tickets to this conference
+                </h5>
+                @endif
+
             </div>
-            <div style="clearfix"></div>
 
             <div class="col-md-10 col-md-offset-1">
                 <legend>About the Conference</legend>
                 <p class="desc">
-                    In ornare libero eget neque condimentum pellentesque. Proin nunc augue, iaculis quis lobortis et, gravida ut nisl. Aenean gravida dolor nec maximus pulvinar. Morbi ac tempus ipsum. Donec iaculis sapien eget viverra vulputate. Sed urna erat, ultricies sed lacus a, pharetra lacinia quam. Curabitur ut blandit arcu. Maecenas vel odio sed mi pharetra vehicula a nec sapien. Vivamus tempus accumsan neque, non consectetur est malesuada vitae. Sed arcu eros, vestibulum a tellus at, bibendum mollis mauris. Morbi eget neque dolor. Curabitur a consequat justo, vitae placerat augue. Maecenas malesuada porttitor dictum. Aliquam blandit commodo lorem eu egestas. Maecenas consectetur tincidunt urna, eu egestas metus ultricies non.
-
-                    In hac habitasse platea dictumst. Nam tempus nunc sit amet mauris commodo, non convallis tortor luctus. Ut ultricies est vitae justo vulputate, in dapibus mi euismod. Ut quis condimentum augue. Aenean cursus eget enim eu elementum. Vivamus vitae eros in justo efficitur tincidunt eu ac odio. Aliquam sed sapien vestibulum, tincidunt tortor quis, venenatis eros. Nullam sagittis dui eros, vitae euismod dui ultricies id. Pellentesque et lacus sagittis, tempor neque quis, vehicula mi.
+                    {{ $conf->description }}
                 </p>
                 <legend>Topics</legend>
                     <ol>
@@ -70,7 +75,7 @@
                  <p class="desc">Click here to download the schedule</p>
 
                  <legend>Contact</legend>
-                 <p class="desc">For further enquiry regarding this conference, please contact [CHAIR EMAIL HERE]</p>
+                 <p class="desc">For further enquiry regarding this conference, please contact <strong><a href="mailto:{{{ $conf->email }}}">{{{ $conf->email }}}</a>  </strong></p>
             </div>
 
         </div>

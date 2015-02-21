@@ -32,7 +32,7 @@
                                  <!-- <input type="submit" class="btn btn-md btn-success btn-block" value="Recover Password"> -->
                                 {{ Form::token() }} 
                                  <hr>
-                                <a href="{{ URL::route('users-sign-in') }}" class="pull-right">Back to Login</a>
+                                 <a href="{{ URL::route('users-sign-in') }}" class="pull-right"><p class="text-danger"><i class="fa fa-arrow-left"></i> Back to Login</p></a>
                             </fieldset>
                         {{ Form::close() }}
                     </div>
