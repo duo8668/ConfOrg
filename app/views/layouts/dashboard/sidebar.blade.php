@@ -23,7 +23,7 @@
 
                         <!-- PARTICIPANT SETTINGS, appear when user == participant -->
                         <!-- <li><a href="#"><i class="fa fa-cc-paypal fa-fw"></i> Make Payment</a></li> -->
-                        <li><a href="#"><i class="fa fa-ticket fa-fw"></i> Invoice & Confirmation</a></li>
+                        <li><a href="{{ URL::route('invoice.index') }}"><i class="fa fa-ticket fa-fw"></i> Invoice & Payment</a></li>
                         <!-- <li><a href="#"><i class="fa fa-envelope-o fa-fw"></i> Contact Conference Staff</a></li> -->
                         
 

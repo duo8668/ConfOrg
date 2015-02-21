@@ -1,22 +1,22 @@
 @extends('layouts.dashboard.master')
 @section('page-header')
-All Invoice - Hello {{$user}}
+Invoice & Payment
 @stop
 @section('content')
 <!-- BREADCRUMB -->
 <ol class="breadcrumb">
   <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
-  <li class="active">Invoice</li>    
+  <li class="active">Invoice & Payment</li>    
 </ol>
 <hr>
 
 <div class="table-responsive">
-    <table class="table">   
+    <table class="table table-striped">   
         <tr>
-            <td style="width:15%"><strong>Invoice #</strong></td>
-            <td style="width:15%"><strong>Conference</strong></td>
-            <td style="width:15%"><strong>Number of Ticket</strong></td>
-            <td style="width:15%"><strong>Total Cost</strong></td>
+            <td style="width:7%"><strong>Invoice #</strong></td>
+            <td style="width:20%"><strong>Conference</strong></td>
+            <td style="width:8%"><strong>Quantity</strong></td>
+            <td style="width:10%"><strong>Total</strong></td>
             <td style="width:15%"><strong>Status</strong></td>
             <td style="width:25%"><strong>Option</strong></td>
         </tr> 
@@ -39,7 +39,7 @@ All Invoice - Hello {{$user}}
                 <!-- we will add this later since its a little more complicated than the other two buttons -->
                 {{ Form::open(array('url' => 'invoice/' . $invoice->invoice_id, 'class' => 'inline')) }}
                     {{ Form::hidden('_method', 'DELETE') }}
-                    {{ Form::submit('Delete Payment', array('class' => 'btn btn-danger btn-xs')) }}
+                    {{ Form::submit('Cancel Purchase', array('class' => 'btn btn-danger btn-xs')) }}
                 {{ Form::close() }}
                 @endif
             </td>
