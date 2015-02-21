@@ -1,63 +1,115 @@
 
 @extends('layouts.dashboard.master')
 @section('page-header')
+  Make Payment
+@stop
 @section('extraScripts')
 <script src="https://js.stripe.com/v2/"></script>
 <script src="{{ asset('js/stripe.js') }}"></script>
 @stop
 @section('content')
+<!-- BREADCRUMB -->
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li><a href="{{ URL::to('/invoice') }}">Invoice & Payment</a></li>
+  <li class="active">Make Payment</li>    
+</ol>
+<hr>
 
-<h2>Hello {{$invoice->user->firstname,',',$invoice->user->lastname}} </h2>
-<h2>Conference: {{$invoice->Conference->title}}</h2>
+<div class="row">
+  {{ Form::open(['id'=>'billing-form', 'class' => 'form-horizontal']) }}
+   <div class="col-md-12">
+        
+        <legend>Ticket Details</legend>
+        <!-- Conference Name -->
+        <div class="form-group">
+          <label class="col-md-2 control-label">Conference</label>
+          <div class="col-md-10">
+            <p class="form-control-static"><strong>{{$invoice->Conference->title}}</strong></p>
+          </div>
+        </div>
+        
+        <div class="form-group @if ($errors->has('sub_type')) has-error @endif">
+          <label class="col-md-2 control-label">Ticket Price</label>
+          <div class="col-md-10">
+            <p class="form-control-static"><strong>$30</strong></p>
+          </div>
+        </div>
+       
+       <div class="form-group @if ($errors->has('quantity')) has-error @endif">
+          {{ Form::label('quantity', 'Ticket Quantity', ['class' => 'col-md-2 control-label']) }} 
+          <div class="col-md-2">
+            {{ Form::selectRange('quantity', 0, 10, null, ['class' => 'form-control','id'=>'quantity']) }}
+            @if ($errors->has('quantity')) <p class="help-block">{{ $errors->first('quantity') }}</p> @endif
+          </div>
+        </div>
+        <div class="clearfix"></div>
 
-{{Form::open(['id'=>'billing-form', 'class' => 'form-horizontal'])}}
-<div class="form-row">
-  Ticket Price per ticket: <label id="ticketPrice">$30</label>  
+         <div class="form-group @if ($errors->has('total')) has-error @endif">
+          {{ Form::label('total', 'Total Price', ['class' => 'col-md-2 control-label']) }} 
+          <div class="col-md-2">
+            {{ Form::text('total', 0, array('readonly', 'id' => 'total', 'class' => 'form-control')) }}
+            @if ($errors->has('total')) <p class="help-block">{{ $errors->first('total') }}</p> @endif
+          </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="form-group @if ($errors->has('email')) has-error @endif">
+          {{ Form::label('email', 'Email', ['class' => 'col-md-2 control-label']) }} 
+          <div class="col-md-6">
+            {{ Form::text('email', $invoice->user->email, array('readonly', 'id' => 'email', 'class' => 'form-control')) }} 
+            @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div style="margin-bottom:30px;"></div>
+
+        <legend>Credit Card Details</legend>
+
+        <div class="payment-errors"></div>
+
+        <div class="form-group @if ($errors->has('email')) has-error @endif">
+          <label class="col-md-2 control-label">Card Number</label>
+          <div class="col-md-6">
+               <input type="text" data-stripe="number" value="4000000000000002" class="form-control"> 
+          </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="form-group @if ($errors->has('email')) has-error @endif">
+          <label class="col-md-2 control-label">CVC Number</label>
+          <div class="col-md-6">
+            <input type="text" data-stripe="cvc" class="form-control">
+          </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="form-group @if ($errors->has('email')) has-error @endif">
+          <label class="col-md-2 control-label">Expiration Date</label>
+          <div class="col-md-6">
+              <div class="col-md-3" style="padding-left: 0;">  
+                  {{Form::selectMonth(null, null, ['data-stripe' => 'exp-month', 'class' => 'form-control'])}}
+              </div>
+              <div class="col-md-3" style="padding-left: 0;">  
+                  {{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year', 'class' => 'form-control'])}}
+              </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <hr>
+    </div>
+
+    <div class="row">  
+      <div class="col-md-8 col-md-offset-2">
+        <!-- Button -->     
+        {{ Form::submit('Buy Now', array('class' => 'btn btn-primary btn-md btn-block')) }}
+
+      </div>
+    </div>    
+    {{ Form::close() }}
 </div>
 
-<div class="form-row">
-  <label>Number of Ticket:</label> {{ Form::selectRange('quantity', 0, 10, null, ['class' => 'field','id'=>'quantity']) }}
-</div>
 
-<div class="form-row">
-  <label>Total Cost:</label> {{ Form::text('total', 0, array('readonly', 'id' => 'total')) }}
-</div>
-
-<div class="form-row">
-  <label>Email:</label>          
-  <!---need to submit this to the controller---->
-  {{ Form::text('email', $invoice->user->email, array('readonly', 'id' => 'email')) }}         
-</div>    
-
-
-<h2>Fill in your credit card details here:</h2>
-<div class="form-row">
-  <label>
-    <span>Card Number:</span>
-    <input type="text" data-stripe="number" value="4000000000000002">                
-  </label>
-</div>
-
-<div class="form-row">
-  <label>
-    <span>CVC:</span>
-    <input type="text" data-stripe="cvc">
-  </label>
-</div>
-
-<div class="form-row">
-  <label>
-    <span>Expiration Date:</span>
-    {{Form::selectMonth(null, null, ['data-stripe' => 'exp-month'])}}
-    {{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year'])}}
-  </label>
-</div>
-
-<div>
-  {{Form::submit('Buy Now')}}
-</div>
-<div class="payment-errors"></div>
-{{Form::close()}}  
 
 <script>
 (function(){
