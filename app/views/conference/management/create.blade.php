@@ -306,14 +306,14 @@ Add New Conference
 	<div class="col-md-12">
 
 		<div class="form-group">
-			{{ Form::label('lblConfTitle', 'Title', array('class' => 'col-md-2 control-label')) }}       
+			{{ Form::label('lblConfTitle', 'Conference Title', array('class' => 'col-md-2 control-label')) }}       
 			<div class="col-md-10">
 				{{ Form::text('conferenceTitle',isset($value)?$value:'',array('name'=>'conferenceTitle','id'=>'conferenceTitle', 'class' => 'form-control necessary'))}}
 			</div>
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('lblConfType', 'Category', array('class' => 'col-md-2 control-label')) }}
+			{{ Form::label('lblConfType', 'Conference Category', array('class' => 'col-md-2 control-label')) }}
 
 			<div class="col-md-10">
 				@foreach ($fields as $field)
@@ -324,11 +324,20 @@ Add New Conference
 					</label>
 				</div>
 				@endforeach
+				<p class="help-block">Categorizing your conference will help in making your conference visible in ORAFER search result</p>
 			</div>
 		</div> 
 
 		<div class="form-group">
-			{{ Form::label('beginDate', 'Begin', array('class' => 'col-md-2 control-label')) }}  
+			{{ Form::label('lblCOnfTopic', 'Topics Covered', array('class' => 'col-md-2 control-label')) }}       
+			<div class="col-md-10">
+				{{ Form::text('conferenceTopic', null ,array('name'=>'conferenceTopic','id'=>'conferenceTopic', 'class' => 'form-control necessary'))}}
+				<p class="help-block">Please input each topics separated by comma (,)</p>
+			</div>
+		</div>
+
+		<div class="form-group">
+			{{ Form::label('beginDate', 'Start Date', array('class' => 'col-md-2 control-label')) }}  
 			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerBegin">
 					{{ Form::text('beginDate',isset($value)?$value:'',array('name'=>'beginDate','id'=>'beginDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
@@ -338,7 +347,7 @@ Add New Conference
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('endDate', 'End', array('class' => 'col-md-2 control-label')) }} 
+			{{ Form::label('endDate', 'End Date', array('class' => 'col-md-2 control-label')) }} 
 			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerEnd">
 					{{ Form::text('endDate',isset($value)?$value:'',array('name'=>'endDate','id'=>'endDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY')) }}
@@ -348,7 +357,7 @@ Add New Conference
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('cutOffDate', 'Cut Off', array('class' => 'col-md-2 control-label')) }} 
+			{{ Form::label('cutOffDate', 'Peer Review Deadline', array('class' => 'col-md-2 control-label')) }} 
 			<div class="col-md-4 dateContainer">
 				<div class="input-group date" id="datetimepickerCutOffDate">
 					{{ Form::text('cutOffDate',isset($value)?$value:'',array('name'=>'cutOffDate','id'=>'cutOffDate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY HH:mm')) }}
@@ -358,14 +367,14 @@ Add New Conference
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('minScore', 'Min. Score', array('class' => 'col-md-2 control-label')) }}       
+			{{ Form::label('minScore', 'Minimum Score for Acceptance', array('class' => 'col-md-2 control-label')) }}       
 			<div class="col-md-4">
 				{{ Form::text('minScore',isset($value)?$value:'',array('name'=>'minScore','id'=>'minScore', 'class' => 'form-control necessary'))}}
 			</div>
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('lblMaxSeats', 'Max Seats', array('class' => 'col-md-2 control-label')) }}
+			{{ Form::label('lblMaxSeats', 'Total Seats', array('class' => 'col-md-2 control-label')) }}
 			<div class="col-md-4">
 				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats','class' => 'form-control',"maxlength"=>"6")) }}
 			</div>

@@ -18,7 +18,7 @@
     <link href="{{ asset('css/landing-page.css') }}" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="{{ asset('font-awesome-4.2.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('font-awesome-4.3.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <!-- <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css"> -->
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,700,400italic,700italic' rel='stylesheet' type='text/css'>
 

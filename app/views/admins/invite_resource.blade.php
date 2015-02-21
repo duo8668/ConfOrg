@@ -40,7 +40,7 @@ Invite a Resource Provider
 	      </div>
 	    </div>
  	{{ Form::close() }} 
- 	 <div style="margin-bottom:40px;"
+ 	 <div style="margin-bottom:40px;">
  	{{ Form::open(array('route' => 'admins-add-company-post', 'class' => 'form-horizontal','method' => 'POST')) }}
 		<legend>Add New Company</legend>
 

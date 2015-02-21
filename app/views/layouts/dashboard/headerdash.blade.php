@@ -21,7 +21,7 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="{{ asset('font-awesome-4.2.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('font-awesome-4.3.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css"> -->
 

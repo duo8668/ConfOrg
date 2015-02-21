@@ -17,7 +17,9 @@
 
                         <!-- USER COMMON SETTINGS -->
                         <li><a href="{{ URL::route('users.dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Main Dashboard</a></li>
-                        <li><a href="{{URL::route('users-profile', ['profile' => Auth::user()->email])}}"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+                        <li><a href="{{ URL::route('users-profile', ['profile' => Auth::user()->email]) }}"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+                        <li><a href="{{ URL::route('users-invite-friend') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Friend</a></li>
+                        <li><a href="{{ URL::route('admins-invite-resource') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Resource Provider</a></li>
                         <!-- <li class="sidebar-divider"></li> -->
 
 
