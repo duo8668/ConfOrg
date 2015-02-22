@@ -8,6 +8,6 @@ CREATE TABLE `room` (
   `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
-  `avaliable` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
+  `available` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`room_id`,`venue_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

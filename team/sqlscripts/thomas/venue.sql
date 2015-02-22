@@ -9,7 +9,6 @@ CREATE TABLE `venue` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   `company_id` int(11) DEFAULT NULL,
-  `avaliable` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
+  `available` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`venue_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-SELECT * FROM conforg_db.venue;
