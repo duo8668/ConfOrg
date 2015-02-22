@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.gmail.com',
+	'host' => 'au03.etcserver.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'it144a@gmail.com', 'name' => 'ORAFER'),
+	'from' => array('address' => 'admin@orafer.com', 'name' => 'ORAFER'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return array(
 	|
 	*/
 
-	'username' => 'it144a@gmail.com',
+	'username' => 'admin@orafer.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => 'changemepls',
+	'password' => 'FYP_IT144a',
 
 	/*
 	|--------------------------------------------------------------------------
