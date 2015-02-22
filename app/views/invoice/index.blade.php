@@ -32,15 +32,16 @@ Invoice & Payment
             <td>
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
                 <a class="btn btn-xs btn-info" href="{{ URL::to('invoice/' . $invoice->invoice_id) }}">Show Invoice</a>
-                @if($invoice->status=='unpaid')
+                @if($privilege=false)                
                 <a class="btn btn-warning btn-xs" href="{{ URL::to('payment/charges/'.$invoice->invoice_id) }}">Make Payment</a>                
-                
+                @endif
                 <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->
                 <!-- we will add this later since its a little more complicated than the other two buttons -->
+                @if($invoice->status=='unpaid')                
                 {{ Form::open(array('url' => 'invoice/' . $invoice->invoice_id, 'class' => 'inline')) }}
                     {{ Form::hidden('_method', 'DELETE') }}
                     {{ Form::submit('Cancel Purchase', array('class' => 'btn btn-danger btn-xs')) }}
-                {{ Form::close() }}
+                {{ Form::close() }}                
                 @endif
             </td>
         </tr>

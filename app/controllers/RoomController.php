@@ -8,12 +8,23 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
-		
-		$data = DB::table('room')
-		->join('venue', 'venue.venue_id', '=', 'room.venue_id')
-		->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name'));		
-
+	{				
+		$privilege = false;
+		if(Auth::User()->hasSysRole('Admin'))
+		{			
+			$data = DB::table('room')
+			->join('venue', 'venue.venue_id', '=', 'room.venue_id')			
+			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
+			$privilege = true;
+		}
+		else if(Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');		
+			$data = DB::table('room')
+			->join('venue', 'venue.venue_id', '=', 'room.venue_id')
+			->where('venue.company_id', '=', $company_id)
+			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
+		}		
 		if (Session::has('edit'))
 		{			
 			session::forget('edit');
@@ -21,18 +32,16 @@ class RoomController extends \BaseController {
 			return Redirect::to('room');
 		}
 		else if (Session::has('create'))
-		{
+		{			
 			session::forget('create');
 			Session::flash('message', 'Room Successfully Created!');
 			return Redirect::to('room');	
 		}
 		else
-		{
-			return View::make('Room.index')->with('data',$data);
+		{			
+			return View::make('Room.index')->with('data',$data)->with('privilege',$privilege);
 		}
-		
 	}
-
 
 	/**
 	 * Show the form for creating a new resource.
@@ -41,15 +50,39 @@ class RoomController extends \BaseController {
 	 */
 	public function create()
 	{	
+		//where created by this user and approved by owner
 		Session::forget('message');
-		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');					
+		$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');	
+		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
 		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
 		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+		->where('equipment_status', '=', 'Approved')
+		->orWhere('equipment.created_by', '=', Auth::user()->user_id)
 		->lists('full_name', 'id');
 
+		//dd($equipments->toArray());
 		return View::make('room.create')
 		->with('venues', $venues)
 		->with('equipments', $equipments);	    
+	}
+
+	public function modify($id)
+	{
+
+		$room = room::find($id);
+		if($room->available == 'no')        		        				
+		{
+			$room->available = 'yes';  
+			Session::flash('message', 'Room Made Unavailable!');
+		}
+		else        
+		{
+			$room->available = 'no';  
+			Session::flash('message', 'Room Made Available!');
+		}
+		$room->save();    
+
+		return Redirect::to('room');
 	}
 
 	/**
@@ -59,6 +92,7 @@ class RoomController extends \BaseController {
 	 */
 	public function store()
 	{		
+		//dd(Input::all());
 		$rules = array(
 			'room_name'       => 'required|unique:room',
 			'roomCapacity'      => 'required|Integer',			                      
@@ -75,7 +109,7 @@ class RoomController extends \BaseController {
 				'errors' => $validation->errors()->toArray());
 			return Response::json($response_values);
 
-		} 
+		} 		
 		else {            
 
 			$data['success'] = true;
@@ -85,7 +119,7 @@ class RoomController extends \BaseController {
 
 			$room = new room;
 			$room->room_name = Input::get('room_name');
-			$room->capacity = Input::get('roomCapacity');	            
+			$room->capacity = Input::get('roomCapacity');
 			$room->venue_id = Input::get('venue');
 			$room->rental_cost = Input::get('roomCost');
 			$room->save();            
@@ -101,52 +135,10 @@ class RoomController extends \BaseController {
 					$room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
 				}
 			}
-			echo json_encode($data);
-		}        
-
-		// $rules = array(
-		// 	'roomName'       => 'required',
-		// 	'roomCapacity'      => 'required|Integer',			                      
-		// 	'venue' 				=>'required',
-		// 	);
-		// $validator = Validator::make(Input::all(), $rules);
-
-	 //        // process the login
-		// if ($validator->fails()) {
-		// 	return Redirect::to('room/create')
-		// 	->withErrors($validator)
-		// 	->withInput(Input::all());
-		// } 	        
-		// else {
-	 //            // store	           
-		// 	$room = new room;
-		// 	$room->room_name = Input::get('roomName');
-		// 	$room->capacity = Input::get('roomCapacity');	            
-		// 	$room->venue_id = Input::get('venue');
-		// 	$room->save();            
-
-	 //            //$LastInsertId = $room->id;
-		// 	$SelectedValues = Input::get('duallistbox_demo2');
-
-		// 	if(!empty($SelectedValues))
-		// 	{
-		// 		foreach($SelectedValues as $Selectedvalue)
-		// 		{					
-		// 			$equipment = Equipment::find($Selectedvalue);					
-		// 			$room->equipments()->attach($equipment->equipment_id);
-		// 		}
-		// 	}
-
-	 //        // redirect
-		// 	Session::flash('message', 'room Successfully Created!');
-		// 	return Redirect::to('room');
-
-		// }                    
-	 //        return Redirect::to('room') with the list of equipment with an ID;	    
+			return json_encode($data);
+		}        		
 	}
 	
-
-
 	/**
 	 * Display the specified resource.
 	 *
@@ -186,16 +178,19 @@ class RoomController extends \BaseController {
 	{		
 		$room = Room::find($id);		
 		$selectedEquipment = $room->equipments;
-		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->lists('full_name', 'venue_id');
+		$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');	
+		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
 		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+		->where('equipment_status', '=', 'Approved')
+		->orWhere('equipment.created_by', '=', Auth::user()->user_id)
 		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
 		->lists('full_name', 'id');
 
 		$eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
-	    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
-	    ->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
-	    ->where('room_equipment.room_id', '=', $id)
-	    ->lists('fullname');	    
+		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
+		->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
+		->where('room_equipment.room_id', '=', $id)
+		->lists('fullname');	    
 
 		return View::make('room.edit')
 		->with('venues', $venues)
@@ -212,7 +207,7 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function update($id)
-	{		 
+	{		 	
 		$rules = array(
 			'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',			
 			'roomCapacity'      => 'required|Integer',			                      
@@ -256,7 +251,7 @@ class RoomController extends \BaseController {
 					$room->equipments()->attach($eID, array('quantity' => trim($breakDown[2])));
 				}
 			}
-			echo json_encode($data);
+			return json_encode($data);
 		}        
 	}		
 	/**
@@ -277,3 +272,4 @@ class RoomController extends \BaseController {
 
 
 }
+

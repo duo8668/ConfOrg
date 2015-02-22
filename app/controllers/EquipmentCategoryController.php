@@ -7,12 +7,20 @@ class EquipmentCategoryController extends \BaseController {
      * @return Response
      */
     public function index()
-    {
-        //
-        $equipmentcategory = EquipmentCategory::all();
+    {        
+        // $equipmentcategory = EquipmentCategory::with('equipments')->count();
+        // dd($equipmentcategory);
+
+        $privilege = false;
+        if(Auth::User()->hasSysRole('Admin'))
+        {            
+            $privilege = true;
+        }        
+        $equipmentcategory = EquipmentCategory::with('equipments')->get();        
         // load the view and pass the venue
         return View::make('equipmentcategory.index')
-        ->with('equipmentcategory', $equipmentcategory);
+        ->with('equipmentcategory', $equipmentcategory)
+        ->with('privilege',$privilege);
     }
 
 
@@ -36,8 +44,8 @@ class EquipmentCategoryController extends \BaseController {
     public function store()
     {
         $rules = array(
-                'categoryName'       => 'required',
-                'categoryRemarks'      => 'required',            
+                'categoryName'       => 'required'
+                //'categoryRemarks'      => 'required',            
             );
             $validator = Validator::make(Input::all(), $rules);
 
@@ -51,7 +59,7 @@ class EquipmentCategoryController extends \BaseController {
                 // store               
                 $equipmentcategory = new EquipmentCategory;
                 $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
-                $equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');               
+                //$equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');               
                 $equipmentcategory->save();            
 
                 // redirect
@@ -69,12 +77,24 @@ class EquipmentCategoryController extends \BaseController {
      */
     public function show($id)
     {
-        //get this equipmentcategory         
+        //get this equipmentcategory
+        $privilege = false;
+        if(Auth::User()->hasSysRole('Admin'))
+        {            
+            $privilege = true;
+        }
+        else
+        {
+            $privilege = false;   
+        }                   
         $equipmentcategory = equipmentCategory::find($id);
+        $equipmentList = equipment::where('equipmentcategory_id','=',$id)->get();        
 
         // show the view and pass the nerd to it
         return View::make('equipmentcategory.show')
-            ->with('equipmentcategory', $equipmentcategory);
+            ->with('equipmentcategory', $equipmentcategory)
+            ->with('equipmentList',$equipmentList)
+            ->with('privilege',$privilege);
     }
 
 
@@ -106,7 +126,7 @@ class EquipmentCategoryController extends \BaseController {
         //
         $rules = array(
             'categoryName'       => 'required',
-            'categoryRemarks'      => 'required',            
+        //    'categoryRemarks'      => 'required',            
         );
         $validator = Validator::make(Input::all(), $rules);
 
@@ -120,7 +140,7 @@ class EquipmentCategoryController extends \BaseController {
             // store
             $equipmentcategory = equipmentCategory::find($id);                                
             $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
-            $equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');                                     
+          //  $equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');                                     
             $equipmentcategory->save();       
 
             // redirect

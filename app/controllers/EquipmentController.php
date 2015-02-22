@@ -8,15 +8,27 @@ class EquipmentController extends \BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
-
-		$data = DB::table('equipment')
-    	->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-    	->get(array('equipment_id','equipment_name', 'equipment_remark', 'equipmentcategory_remark', 'equipmentcategory_name'));	
-
-    	return View::make('Equipment.index')->with('data',$data);
+	{		
+		$privilege = false;
+		if(Auth::User()->hasSysRole('Admin'))
+		{            
+			$privilege = true;
+		}   
+		$data = equipment::with('equipmentCategory')->get();    	
+		return View::make('Equipment.index')->with('data',$data)->with('privilege',$privilege);
 	}
 
+	public function modify($id)
+	{
+
+		$Equipment = Equipment::find($id);
+
+		$Equipment->equipment_status = 'Approved';  
+		$Equipment->save();
+		Session::flash('message', 'Approved Equipment!');  
+
+		return Redirect::to('equipment');
+	}
 
 	/**
 	 * Show the form for creating a new resource.
@@ -28,7 +40,7 @@ class EquipmentController extends \BaseController {
 		//
 		$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name, " - ", equipmentcategory_remark) AS full_name'))->lists('full_name', 'equipmentcategory_id');
 		return View::make('equipment.create')
-	    ->with('categories', $categories);	    
+		->with('categories', $categories);	    
 	}
 
 
@@ -40,31 +52,34 @@ class EquipmentController extends \BaseController {
 	public function store()
 	{
 		//
-	        $rules = array(
-            'equipmentName'      => 'required',
-            'equipmentRemarks'   => 'required',            
-            'equipmentcategory'  =>'required',
-        );
-        $validator = Validator::make(Input::all(), $rules);
+		$rules = array(
+			'equipmentName'      => 'required',
+			'equipmentRemarks'   => 'required',            
+			'equipmentcategory'  =>'required',
+			);
+		$validator = Validator::make(Input::all(), $rules);
 
         // process the login
-        if ($validator->fails()) {
-            return Redirect::to('equipment/create')
-                ->withErrors($validator)
-                ->withInput(Input::all());
-        } 	        
-        else {
+		if ($validator->fails()) {
+			return Redirect::to('equipment/create')
+			->withErrors($validator)
+			->withInput(Input::all());
+		} 	        
+		else {
             // store	           
-        	$equipment = new equipment;
-            $equipment->equipment_name = Input::get('equipmentName');
-            $equipment->equipment_remark = Input::get('equipmentRemarks');	            
-            $equipment->equipmentcategory_id = Input::get('equipmentcategory');
-            $equipment->save();            
+			$equipment = new equipment;
+			$equipment->equipment_name = Input::get('equipmentName');
+			$equipment->equipment_remark = Input::get('equipmentRemarks');	            
+			$equipment->equipmentcategory_id = Input::get('equipmentcategory');
+			$equipment->created_by = Auth::user()->user_id;
+			if(Auth::User()->hasSysRole('Admin'))           
+				$equipment->equipment_status='Approved';  
+			$equipment->save();          
 
             // redirect
-            Session::flash('message', 'equipment Successfully Created!');
-            return Redirect::to('equipment');
-        } 
+			Session::flash('message', 'Equipment Successfully Created!');
+			return Redirect::to('equipment');
+		} 
 
 	}
 
@@ -85,11 +100,11 @@ class EquipmentController extends \BaseController {
   //       })
   //       ->get(array('equipmentcategory.Remarks', 'equipmentcategory.Name'));  
     	//dd($equipment2);
-    	$equipment = Equipment::find($id);
-    	$equipmentcategory = EquipmentCategory::find($equipment->equipmentCategory_id);
-    	$cat = $equipmentcategory->Name .' - '. $equipmentcategory->Remarks;
-    	
-        return View::make('equipment.show')->with('equipment', $equipment)->with('cat',$cat);
+		$equipment = Equipment::find($id);
+		$equipmentcategory = EquipmentCategory::find($equipment->equipmentCategory_id);
+		$cat = $equipmentcategory->Name .' - '. $equipmentcategory->Remarks;
+
+		return View::make('equipment.show')->with('equipment', $equipment)->with('cat',$cat);
 
 
 	}
@@ -105,11 +120,11 @@ class EquipmentController extends \BaseController {
 	{
 		//
 		$equipment = Equipment::find($id);
-		$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name, " - ", equipmentcategory_remark) AS full_name'))->lists('full_name', 'equipmentcategory_id');
+		$categories = EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name) AS full_name'))->lists('full_name', 'equipmentcategory_id');
         // show the edit form and pass the equipment
-        return View::make('equipment.edit')
-            ->with('equipment', $equipment)
-            ->with('categories', $categories);	  			      
+		return View::make('equipment.edit')
+		->with('equipment', $equipment)
+		->with('categories', $categories);	  			      
 	}
 
 
@@ -122,32 +137,54 @@ class EquipmentController extends \BaseController {
 	public function update($id)
 	{
 		$rules = array(
-            'equipmentName'       => 'required',
-            'equipmentRemarks'    => 'required',            
-            'equipmentcategory'   =>'required',
-        );
-        $validator = Validator::make(Input::all(), $rules);
+			'equipmentName'       => 'required',
+			'equipmentRemarks'    => 'required',            
+			'equipmentcategory'   =>'required',
+			);
+		$validator = Validator::make(Input::all(), $rules);
 
         // process the login
-        if ($validator->fails()) {
-            return Redirect::to('equipment/' .$id. '/edit')
-                ->withErrors($validator)
-                ->withInput(Input::all());
-        } 	        
-        else {
-            // store	           
-        	$equipment = Equipment::find($id);
-            $equipment->equipment_name = Input::get('equipmentName');
-            $equipment->equipment_remark = Input::get('equipmentRemarks');	            
-            $equipment->equipmentcategory_id = Input::get('equipmentcategory');
-            $equipment->save();            
+		if ($validator->fails()) {
+			return Redirect::to('equipment/' .$id. '/edit')
+			->withErrors($validator)
+			->withInput(Input::all());
+		} 	        
+		else {
+            // store            
+			$updated =false;
+			$equipment = Equipment::find($id);
+			if($equipment->equipment_name != Input::get('equipmentName')) {
+				$equipment->equipment_name = Input::get('equipmentName');
+				$updated=true;	
+			}
+			if ($equipment->equipment_remark != Input::get('equipmentRemarks')) {
+				$equipment->equipment_remark = Input::get('equipmentRemarks');	   
+				$updated=true;	
+			}
+			if ($equipment->equipmentcategory_id != Input::get('equipmentcategory')) {
+				$equipment->equipmentcategory_id = Input::get('equipmentcategory');	   
+				$updated=true;	
+			}                       
+			if($updated==true)
+			{
+				$equipment->modified_by = Auth::user()->user_id;
+
+				if(Auth::User()->hasSysRole('Admin'))           
+					$equipment->equipment_status='Approved';
+				else
+					$equipment->equipment_status='Pending';        			
+
+				Session::flash('message', 'Equipment Successfully Edited!');
+			}
+
+			$equipment->save();            
 
             // redirect
-            Session::flash('message', 'Equipment Successfully Edited!');
-            return Redirect::to('equipment');
-        } 
+			
+			return Redirect::to('equipment');
+		} 
 
-    } 	
+	} 	
 
 
 	/**
@@ -162,8 +199,8 @@ class EquipmentController extends \BaseController {
 		$equipment = Equipment::find($id);
 		$equipment->delete();       
         // redirect
-        Session::flash('message', 'Successfully deleted the Equipment!');
-        return Redirect::to('equipment');
+		Session::flash('message', 'Successfully deleted the Equipment!');
+		return Redirect::to('equipment');
 	}
 
 

@@ -10,9 +10,9 @@ Add New Room
   <li class="active">Add Room</li>
 </ol>
 <hr>
-
+{{ Form::open(array('url' => 'room', 'method' => 'POST', 'class' => 'form-horizontal','id' => 'formCR')) }}
+<fieldset>
 <div class="row">
-  {{ Form::open(array('route' => 'room.store', 'class' => 'form-horizontal','id' => 'formCR')) }}
   <div class="col-md-12">
    <legend>Basic Information</legend>
     <div id="venue-group" class="form-group" >
@@ -92,12 +92,12 @@ Add New Room
    <div class="row">  
       <div class="col-md-8 col-md-offset-2">
         <!-- Button -->        
-        {{ Form::submit('Add Room', array('class' => 'btn btn-primary btn-md btn-block')) }}
-
+        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'Add')) }}        
       </div>
     </div>  
    
   </div>
+  </fieldset>
   {{ Form::close() }} 
 </div>
 
@@ -214,7 +214,7 @@ $("#SelectedValues").click(function() {
   $('#number').val($.trim(arr[2]));    
 });
 
-$('#Edit').click( function() {         
+$('#Add').click( function() {         
 
   var values = [];
   var room_name = $('input[name=room_name]').val();          
@@ -233,7 +233,7 @@ $('#Edit').click( function() {
  };               
 
  $.ajax({      
-  type: 'post',
+  type: 'POST',
   url: '/laravel/public/room',
   data : formData,        
   dataType: 'json',

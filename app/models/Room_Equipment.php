@@ -4,16 +4,16 @@ class Room_Equipment extends Eloquent {
 
 	public $timestamps = false;	
 
-	protected $primaryKey = 'roomEquipment_ID';
+	protected $primaryKey = 'roomEquipment_id';
 	protected $table = 'room_equipment';
 
-	protected $fillable = array('Room_ID', 'Equipment_ID');
+	protected $fillable = array('Room_id', 'Equipment_id');
 
 	public function equipmentcategory(){
 		return $this->belongsTo('equipmentcategory');
 	}
 
 	public function rooms(){
-		return $this->belongsToMany('Room', 'Room_Equipment', 'equipment_ID', 'room_ID');
+		return $this->belongsToMany('Room', 'Room_Equipment', 'equipment_id', 'room_id');
 	}
 }

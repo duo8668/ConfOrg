@@ -7,12 +7,42 @@
 			*/
 			public function index()
 			{  	
-				$venue = Venue::all();
+				//retrieve venue that only belongs to company
+				$privilege = false;
+				if(Auth::User()->hasSysRole('Admin'))
+				{
+					$venue = Venue::all();													
+					$privilege = true;
+				}
+				else if(Auth::User()->hasSysRole('Resource Provider'))
+				{
+					$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
+					$venue = Venue::where('company_id', $company_id)->get();									
+				}				
 				// load the view and pass the venue				
 				return View::make('venue.index')
-				->with('venue', $venue);			
+				->with('venue', $venue)
+				->with('privilege',$privilege);
 			}
 
+			public function modify($id)
+			{
+
+				$venue = Venue::find($id);
+				if($venue->available == 'no')        		        				
+				{
+					$venue->available = 'yes';  
+					Session::flash('message', 'Venue Made Unavailable!');
+				}
+				else        
+				{
+					$venue->available = 'no';  
+					Session::flash('message', 'Venue Made Available!');
+				}
+				$venue->save();    
+				
+				return Redirect::to('venue');
+			}
 
 			/**
 			* Show the form for creating a new resource.
@@ -20,7 +50,7 @@
 			* @return Response
 			*/
 			public function create()
-			{			
+			{							
 				return View::make('venue.create');
 			}
 
@@ -69,14 +99,15 @@
 						->withInput(Input::all());
 					}
 
-					else {
-			// store
+					else {						
+			// Store						
 						list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));		
 						$venue = new venue;
 						$venue->venue_name = Input::get('venue_name');
 						$venue->venue_address = Input::get('venue_address');
 						$venue->latitude = $lat;
 						$venue->longitude = $lng;          
+						$venue->company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
 						$venue->save();            
 
 			// redirect
@@ -94,6 +125,12 @@
 			public function show($id)
 			{
 			// get the venue
+				$privilege = false;
+				if(Auth::User()->hasSysRole('Admin'))
+				{														
+					$privilege = true;
+				}
+
 				$venue = Venue::find($id);
 				$geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
@@ -104,11 +141,16 @@
 				$marker = array();
 				$marker['position'] = $geoLocation;
 				Gmaps::add_marker($marker);
-				$map = Gmaps::create_map();						    	
+				$map = Gmaps::create_map();		
+
+				$data  = room::where('venue_id','=',$id)->get();				
+
 			// show the view and pass the venue to it
 				return View::make('venue.show')
 				->with('venue', $venue)
-				->with('map',$map);
+				->with('data',$data)
+				->with('map',$map)
+				->with('privilege',$privilege);
 			}
 
 

@@ -17,15 +17,25 @@ class BillController extends \BaseController {
 // Route::get('/payment/charges', 'BillController@charges');
 // Route::post('/payment/charges', 'BillController@chargeUser');
 	public function index()
-	{  			
+	{  					
+		$privilege = false;
+		if(Auth::User()->hasSysRole('Admin'))
+		{
+			$user = 'Hello Admin!';						
+			$data=invoice::all();			
+			$privilege = true;
+		}
+		else if(Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$user = User::find(Auth::user()->user_id)->firstname.', '.User::find(Auth::user()->user_id)->lastname;
+			$data = invoice::with('conference','user')->where('user_id', '=', Auth::user()->user_id)->orderBy('created_at','Desc')->get();		
+		}
 		
-		$user = User::find(Auth::user()->user_id)->firstname.', '.User::find(Auth::user()->user_id)->lastname;
-		$data = invoice::with('conference','user')->where('user_id', '=', Auth::user()->user_id)->orderBy('created_at','Desc')->get();		
 		return View::make('invoice.index')		
 		->with('user', $user)
-		->with('data', $data);		
-	}
-
+		->with('data', $data)
+		->with('privilege',$privilege);
+	}	
 
 	public function show($id)
 	{
@@ -40,9 +50,9 @@ class BillController extends \BaseController {
 	{
 		//
 		$invoice = invoice::find($id);
-		$invoice->delete();       
+		$invoice->delete(); 
         // redirect
-		Session::flash('message', 'Successfully deleted the invoice!');
+		Session::flash('message', 'Successfully removed the invoice!');
 		return Redirect::to('invoice');
 	}
 
@@ -109,6 +119,32 @@ class BillController extends \BaseController {
 	// 	$invoice =invoice::find($id);	
 	// 	return View::make('payment/charges/'.$id)->with('invoice',$invoice);
 	// }
+
+	public function shinCreateInvoice($userID,$confID)
+	{
+		$success = true;
+		$invoiceID = 0;
+		$invoice = invoice::all();		
+		if($this->invoiceExsit(Input::get('user_id'),Input::get('conf_id')))
+		{
+			$invoice = invoice::with('conference','user')->where('user_id','=',Input::get('user_id'))->where('conf_id','=',Input::get('conf_id'))->first();
+			$invoiceID=$invoice->invoiceID;
+		}
+		else
+		{
+			$invoice = new invoice;
+			$invoice->user_id = Input::get('user_id');
+			$invoice->conf_id = Input::get('conf_id');			
+			$invoice->created_by = Input::get('user_id');
+			$invoice->save();
+			$invoiceID = $invoice->invoice_id;
+		}
+
+		$arrayResult = [];
+		$arrayResult[] = array('createResult'=>$success,'InvoiceDetail'=>$invoiceID);		
+
+		return $arrayResult;
+	}
 
 	public function chargeUser($id)
 	{						

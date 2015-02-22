@@ -17,16 +17,21 @@
 
                 <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->
                 <!-- we will add this later since its a little more complicated than the other two buttons -->
-                {{ Form::open(array('url' => 'venue/' . $value->venue_id, 'class' => 'inline')) }}
-                    {{ Form::hidden('_method', 'DELETE') }}
-                    {{ Form::submit('Delete this Venue', array('class' => 'btn btn-danger btn-xs')) }}
+                @if($value->available=='no')                
+                {{ Form::open(array('url' => 'venue/modify/' . $value->venue_id, 'class' => 'inline')) }}                    
+                    {{ Form::submit('Make Venue Available', array('class' => 'btn btn-success btn-xs')) }}
                 {{ Form::close() }}
-
-                <button class="btn btn-xs btn-info" onclick="$('#{{$value->venue_id}}').toggle();">Show/Hide</button>
-                <div id="{{$value->venue_id}}" style="display:none">  
-                    Hide show.....
-                </div>
-
+                @elseif($value->available==='yes')
+                {{ Form::open(array('url' => 'venue/modify/' . $value->venue_id, 'class' => 'inline')) }}                    
+                    {{ Form::submit('Make Venue Unavailable', array('class' => 'btn btn-danger btn-xs')) }}
+                {{ Form::close() }}
+                @endif
+                @if($privilege)
+                {{ Form::open(array('url' => 'venue/' . $value->venue_id, 'class' => 'pull-right')) }}
+                    {{ Form::hidden('_method', 'DELETE') }}
+                    {{ Form::submit('Delete this venue', array('class' => 'btn btn-danger btn-xs')) }}
+                {{ Form::close() }}
+                @endif
             </td>
         </tr>
     @endforeach  

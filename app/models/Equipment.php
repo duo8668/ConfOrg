@@ -7,7 +7,7 @@ class Equipment extends Eloquent {
 	protected $primaryKey = 'equipment_id';
 	protected $table = 'equipment';
 
-	protected $fillable = array('equipment_name', 'equipment_remark', 'equipmentcategory_id', 'rental_cost');
+	protected $fillable = array('equipment_name', 'equipment_remark', 'equipmentcategory_id', 'equipment_status');
 
 	public function equipmentCategory(){
 		return $this->belongsTo('equipmentCategory', 'equipmentcategory_id','equipmentcategory_id');

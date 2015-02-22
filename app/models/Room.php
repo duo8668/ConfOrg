@@ -6,7 +6,7 @@ class Room extends Eloquent {
 
 	protected $table = 'room';
 	protected $primaryKey = 'room_id';
-	protected $fillable = array('room_name', 'capacity', 'venue_id');
+	protected $fillable = array('room_name', 'capacity', 'venue_id', 'available');
 	protected $guarded = array('room_id');
 
 	public function Venue(){
