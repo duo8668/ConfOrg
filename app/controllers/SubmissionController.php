@@ -157,26 +157,32 @@ class SubmissionController extends \BaseController {
 
 			// SEND EMAIL NOTIF TO REVIEWERS
 			//prepare string
-			$topicdb_str = '';
-			for ($i = 0; $i < count($sub_topics); $i++) {
-				if ($i == 0) {
-					$topicdb_str .= 'find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
-				} else {
-					$topicdb_str .= 'OR find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
-				}
-			}
+			// $topicdb_str = '';
+			// for ($i = 0; $i < count($sub_topics); $i++) {
+			// 	if ($i == 0) {
+			// 		$topicdb_str .= 'find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
+			// 	} else {
+			// 		$topicdb_str .= 'OR find_in_set("' . $sub_topics[$i] . '", cast(topic_ids as char)) > 0 ';
+			// 	}
+			// }
 
-			$rawdb_str = 'select firstname, lastname, email from users where user_id IN ( select user_id from user_preferred_topic where '. $topicdb_str . ')';
+			// $rawdb_str = 'select firstname, lastname, email from users where user_id IN ( select user_id from user_preferred_topic where '. $topicdb_str . ')';
 
 			//retrieve reviewers
-			$reviewers = DB::select( DB::raw($rawdb_str) );
+			$reviewers = DB::table('users')
+						->join('confuserrole', 'users.user_id', '=', 'confuserrole.user_id')
+						->join('conference', 'conference.conf_id', '=', 'confuserrole.conf_id')
+						->select('users.email', 'users.firstname', 'users.lastname', 'conference.title')
+						->where('confuserrole.role_id', '=', 7)
+						->where('confuserrole.conf_id', '=', Input::get('conf_id'))
+						->get();
             
             //send email to reviewers
             foreach ($reviewers as $reviewer) {
             	Mail::queue('emails.submission.to_reviewers',
 				['name' => $reviewer->firstname . ' ' . $reviewer->lastname,
-				 'title' => 'Testing',
-				 'conf' => 'Testing Conference'], 
+				 'title' => Input::get('sub_title'),
+				 'conf' => $reviewer->title], 
 				function($message) use ($reviewer) 	{
 			    	$message->to($reviewer->email, $reviewer->firstname . ' ' . $reviewer->lastname)->subject('New submission for you to review!');
 				});
@@ -417,6 +423,17 @@ class SubmissionController extends \BaseController {
 	public function create(){}
 
 	public function testsql() {
+
+		//topics
+			$topicStr = "blue,red,green,orange";
+            $topics_array = explode(",", $topicStr);
+            $conf_topics = array();
+            foreach ($topics_array as $topic) {
+                array_push($conf_topics, ['topic_name' => $topic, 'conf_id' => 1]);
+            }
+
+            // DB::table('conference_topic')->insert($conf_topics);
+            return var_dump($conf_topics);
 		
 			// // prepare string
 			// $sub_topics = array(23);
@@ -474,21 +491,34 @@ class SubmissionController extends \BaseController {
 
 		// return 'overall is '. $overall;
 
-		$arr = array(1,2,3,4,5,5,4,3,2,1);
-		$ones = array();
-		$twos = array();
+		
 
-		for ($i = 0; $i < count($arr); $i++) {
-			if ($arr[$i] == 1) { 
-				array_push($ones, $arr[$i]); 
-			} else if ($arr[$i] == 2) { 
-				array_push($twos, $arr[$i]); 
-			} else {
+		// $chair_email = DB::table('conference')
+  //           			->join('confuserrole', 'conference.conf_id', '=', 'confuserrole.conf_id')
+		// 				->join('users', 'confuserrole.user_id', '=', 'users.user_id')
+		// 				->select('users.email')
+		// 				->where('confuserrole.role_id', '=', 4)
+		// 				->where('conference.conf_id', '=', 2)
+		// 				->get();
 
-			}
-		}
+		// 				return var_dump($chair_email[0]->email);
+		// $arr = array(1,2,3,4,5,5,4,3,2,1);
+		// $ones = array();
+		// $twos = array();
 
-		return var_dump($ones);
+		// for ($i = 0; $i < count($arr); $i++) {
+		// 	if ($arr[$i] == 1) { 
+		// 		array_push($ones, $arr[$i]); 
+		// 	} else if ($arr[$i] == 2) { 
+		// 		array_push($twos, $arr[$i]); 
+		// 	} else {
+
+		// 	}
+		// }
+
+		// return var_dump($ones);
+
+
 			
 	}
 }

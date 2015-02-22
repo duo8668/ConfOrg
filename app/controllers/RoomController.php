@@ -142,7 +142,7 @@ class RoomController extends \BaseController {
 		// 	return Redirect::to('room');
 
 		// }                    
-	        //return Redirect::to('room') with the list of equipment with an ID;	    
+	 //        return Redirect::to('room') with the list of equipment with an ID;	    
 	}
 	
 

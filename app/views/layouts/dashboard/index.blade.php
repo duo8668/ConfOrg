@@ -44,7 +44,7 @@
                 <tr>
                   <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
                   <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>[[LOCATION HERE]]</td>
+                  <td>{{{ $conf->venue_name }}}</td>
               </tr> 
               @endif
             @endforeach
@@ -68,7 +68,7 @@
                 <tr>
                   <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
                   <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>[[LOCATION HERE]]</td>
+                  <td>{{{ $conf->venue_name }}}</td>
               </tr> 
               @endif
             @endforeach
@@ -92,7 +92,7 @@
                 <tr>
                   <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
                   <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>[[LOCATION HERE]]</td>
+                  <td>{{{ $conf->venue_name }}}</td>
               </tr> 
               @endif
             @endforeach
@@ -116,7 +116,7 @@
                 <tr>
                   <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
                   <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>[[LOCATION HERE]]</td>
+                  <td>{{{ $conf->venue_name }}}</td>
               </tr> 
               @endif
             @endforeach
@@ -127,6 +127,10 @@
   </div>
 
 </div>
+<hr >
+<div class="clearfix"></div>
+<div style="margin-bottom:20px;"></div>
+<a href="{{ URL::to('conference') }}" class="btn btn-info col-md-3"> See All Conferences</a>
 
 <!-- 
     NON-RESOURCE PROVIDER VIEW END 

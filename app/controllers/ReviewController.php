@@ -212,57 +212,57 @@ class ReviewController extends \BaseController {
 	}
 
 	// Function to save reviewer's preferred topics
-	public function topics() 
-	{
-		//TODO: get all preferred topics of current users based on current conference ID
-		$conf_topics = ConferenceTopic::all();
-		$topics = DB::table('user_preferred_topic')
-            ->select('user_preferred_topic.topic_ids')
-            ->where('user_preferred_topic.user_id' , '=', Auth::user()->user_id)
-            ->get();           
+	// public function topics() 
+	// {
+	// 	//TODO: get all preferred topics of current users based on current conference ID
+	// 	$conf_topics = ConferenceTopic::all();
+	// 	$topics = DB::table('user_preferred_topic')
+ //            ->select('user_preferred_topic.topic_ids')
+ //            ->where('user_preferred_topic.user_id' , '=', Auth::user()->user_id)
+ //            ->get();           
 
-        //set just the topic ID of selected topic into array, for checking purpose
-        $selected_topic = array();
-        if (!empty($topics)) {
-        	$selected_topic = explode(",", $topics[0]->topic_ids);	
-        }
+ //        //set just the topic ID of selected topic into array, for checking purpose
+ //        $selected_topic = array();
+ //        if (!empty($topics)) {
+ //        	$selected_topic = explode(",", $topics[0]->topic_ids);	
+ //        }
 				
-		return View::make('reviews.topics')
-		->with('selection', $selected_topic)
-		->with('topics', $conf_topics);
-	}
+	// 	return View::make('reviews.topics')
+	// 	->with('selection', $selected_topic)
+	// 	->with('topics', $conf_topics);
+	// }
 
-	public function save_topics() 
-	{
-		// define rules
-		$rules = array('sub_topics' => 'required');
-		$messages = array('sub_topics.required' => 'Please select the <strong>topics</strong> that you prefer to review!');
+	// public function save_topics() 
+	// {
+	// 	// define rules
+	// 	$rules = array('sub_topics' => 'required');
+	// 	$messages = array('sub_topics.required' => 'Please select the <strong>topics</strong> that you prefer to review!');
 
-		// pass input to validator
-		$validator = Validator::make(Input::all(), $rules, $messages);
+	// 	// pass input to validator
+	// 	$validator = Validator::make(Input::all(), $rules, $messages);
 
-		// test if input fails
-		if ($validator->fails()) {
-			return Redirect::route('review.topics')->withErrors($validator)->withInput();
-		}
+	// 	// test if input fails
+	// 	if ($validator->fails()) {
+	// 		return Redirect::route('review.topics')->withErrors($validator)->withInput();
+	// 	}
 
-		$sub_topics = Input::get('sub_topics');
-		$new_data = implode(",", $sub_topics);
+	// 	$sub_topics = Input::get('sub_topics');
+	// 	$new_data = implode(",", $sub_topics);
 		
-		$user = DB::table('user_preferred_topic')->select('topic_ids')->where('user_id', Auth::user()->user_id)->get();
+	// 	$user = DB::table('user_preferred_topic')->select('topic_ids')->where('user_id', Auth::user()->user_id)->get();
 		
-		if (!empty($result)) {
-			//row exists, update
-			DB::table('user_preferred_topic')
-            ->where('user_id', Auth::user()->user_id)
-            ->update(array('topic_ids' => $new_data));
-		} else {
-			DB::table('user_preferred_topic')
-			->insert(array('topic_ids' => $new_data, 'user_id' => Auth::user()->user_id));
-		}
+	// 	if (!empty($result)) {
+	// 		//row exists, update
+	// 		DB::table('user_preferred_topic')
+ //            ->where('user_id', Auth::user()->user_id)
+ //            ->update(array('topic_ids' => $new_data));
+	// 	} else {
+	// 		DB::table('user_preferred_topic')
+	// 		->insert(array('topic_ids' => $new_data, 'user_id' => Auth::user()->user_id));
+	// 	}
 		
-		return Redirect::route('review.topics')->with('message', 'Preference Updated!');
-	}
+	// 	return Redirect::route('review.topics')->with('message', 'Preference Updated!');
+	// }
 
 	/**
 	 * Remove the specified resource from storage.

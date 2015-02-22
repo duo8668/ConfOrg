@@ -372,3 +372,7 @@ table.dataTable thead .sorting:after {
 .tab-content>.active {
 padding-top: 15px;
 }
+
+.help-block {
+font-style: italic;
+}

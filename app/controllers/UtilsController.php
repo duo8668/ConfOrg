@@ -77,10 +77,26 @@ class UtilsController extends \BaseController {
             DB::table('submissions')
             	->where('overall_score', '<', $conf->min_score)
             	->where('conf_id', '=', $conf->conf_id)
-            	->update(array('status' => 0));
+            	->update(array('status' => 9));
+
+            $chair_email = DB::table('conference')
+            			->join('confuserrole', 'conference.conf_id', '=', 'confuserrole.conf_id')
+						->join('users', 'confuserrole.user_id', '=', 'users.user_id')
+						->select('users.email')
+						->where('confuserrole.role_id', '=', 4)
+						->where('conference.conf_id', '=', $conf->conf_id)
+						->get();
+
+            Mail::queue('emails.submission.to_chairman',
+				array(
+					'confname' => $conf->title
+					), 
+				function($message) use ($chair_email)
+				{
+					$message->to($chair_email[0]->email)->subject('Conference submissions have been automatically marked as accepted or rejected');
+				});
 		}
-		
-		Log::info('SubsCommand working! calling acceptRejectSubs');
+		Log::info($dt->format('Y-m-d H:i:s') . ' acceptRejectSubs');
 	}
 
 	public static function checkHasRole($array, $role) {

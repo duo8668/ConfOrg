@@ -163,6 +163,7 @@ class ConferenceController extends \BaseController {
             'cutOffDate' => date("Y-m-d", strtotime(Input::get('cutOffDate'))),
             'minScore' => Input::get('minScore'),
             'venue' => Input::get('venue'),
+            'topicStr' => Input::get('conferenceTopic'),
             'chkIsFree' => Input::get('chkIsFree') === 'true' ? true : false
         ];
 
@@ -212,6 +213,17 @@ class ConferenceController extends \BaseController {
                                 $confUserRole = ConferenceUserRole::create(array('user_id' => $user->user_id
                                             , 'role_id' => $role_id
                                             , 'conf_id' => $createdConf->conf_id));
+
+                                //save topics
+                                $topics_array = explode(",", $data['topicStr']);
+                                if (!empty($topics_array)) {
+                                    $conf_topics = array();
+                                    foreach ($topics_array as $topic) {
+                                        array_push($conf_topics, ['topic_name' => $topic, 'conf_id' => $createdConf->conf_id, 'created_by' => $user->user_id]);
+                                    }
+
+                                    DB::table('conference_topic')->insert($conf_topics);
+                                }
 
                                 return array('createdConf' => $createdConf, 'confRoom' => $confRoom);
                             });
