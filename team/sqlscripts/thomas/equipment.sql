@@ -8,13 +8,14 @@ CREATE TABLE `equipment` (
   `equipmentcategory_id` int(11) NOT NULL DEFAULT '0',
   `equipment_name` varchar(45) DEFAULT NULL,
   `equipment_remark` varchar(45) DEFAULT NULL,
-  `rental_cost` varchar(45) DEFAULT NULL,
   `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NULL,
+  `modified_by` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NULL,
-  PRIMARY KEY (`equipment_id`,`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `updated_at` datetime DEFAULT NULL,
+  `equipment_status` varchar(45) NOT NULL DEFAULT 'Pending',
+  PRIMARY KEY (`equipment_id`,`equipmentcategory_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
 
 -- ----------------------------
 -- Records of equipment
