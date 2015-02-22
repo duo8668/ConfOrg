@@ -5,7 +5,7 @@
             <td style="width:25%"><strong>Address</strong></td>
             <td style="width:50%"><strong>Option</strong></td>
         </tr> 
-    @foreach($venue as $key => $value)
+    @foreach($venue as $value)
         <tr>
             <td>{{ link_to_route('venue.show', $value->venue_name, ['id' => $value->venue_id]) }}</td> 
             <td>{{ $value->venue_address }}</td>            

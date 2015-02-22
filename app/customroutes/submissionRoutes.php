@@ -64,7 +64,7 @@ Route::post('/review/save_topics', array(
 ));
 
 // TESTING
-// Route::get('/testsql', 'SubmissionController@testsql');
+Route::get('/testsql', 'SubmissionController@testsql');
 
 
 Route::resource('review', 'ReviewController');

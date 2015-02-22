@@ -83,6 +83,14 @@ class UtilsController extends \BaseController {
 		Log::info('SubsCommand working! calling acceptRejectSubs');
 	}
 
+	public static function checkHasRole($array, $role) {
+	    foreach ($array as $item)
+        if (isset($item->role_id) && $item->role_id == $role)
+            return true;
+    return false;
+	               
+	}
+
 	public static function updateScore($id) {
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
 		$reviews = $submission->reviews()->get();

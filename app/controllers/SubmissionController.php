@@ -446,33 +446,49 @@ class SubmissionController extends \BaseController {
    //          }
 
    //          return 'Check email!';
-		$id = 1;
-		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$reviews = $submission->reviews()->get();
+		// $id = 1;
+		// $submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		// $reviews = $submission->reviews()->get();
 
-		$qlty = 0;
-		$ori = 0;
-		$relv = 0;
-		$sigf = 0;
-		$pres = 0;
-		$recm = 0;
-		$count = 0;
+		// $qlty = 0;
+		// $ori = 0;
+		// $relv = 0;
+		// $sigf = 0;
+		// $pres = 0;
+		// $recm = 0;
+		// $count = 0;
 
-		foreach ($reviews as $rev) {
-			$qlty += $rev->quality_score;
-			$ori += $rev->originality_score;
-			$relv += $rev->relevance_score;
-			$sigf += $rev->significance_score;
-			$pres += $rev->presentation_score;
-			$count++;
+		// foreach ($reviews as $rev) {
+		// 	$qlty += $rev->quality_score;
+		// 	$ori += $rev->originality_score;
+		// 	$relv += $rev->relevance_score;
+		// 	$sigf += $rev->significance_score;
+		// 	$pres += $rev->presentation_score;
+		// 	$count++;
+		// }
+
+		// $overall = 0;
+		// if ($count > 0) {
+		// 	$overall = ( ($qlty + $ori + $relv + $sigf + $pres) / ($count * 50) ) * 100;
+		// }
+
+		// return 'overall is '. $overall;
+
+		$arr = array(1,2,3,4,5,5,4,3,2,1);
+		$ones = array();
+		$twos = array();
+
+		for ($i = 0; $i < count($arr); $i++) {
+			if ($arr[$i] == 1) { 
+				array_push($ones, $arr[$i]); 
+			} else if ($arr[$i] == 2) { 
+				array_push($twos, $arr[$i]); 
+			} else {
+
+			}
 		}
 
-		$overall = 0;
-		if ($count > 0) {
-			$overall = ( ($qlty + $ori + $relv + $sigf + $pres) / ($count * 50) ) * 100;
-		}
-
-		return 'overall is '. $overall;
+		return var_dump($ones);
 			
 	}
 }

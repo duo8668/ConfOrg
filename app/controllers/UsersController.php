@@ -534,14 +534,43 @@ class UsersController extends \BaseController {
 	}
 	
 		public function getDashboard() {
-		//if user is resource-provider
-		$venue = Venue::where('created_by', '=', Auth::user()->user_id);
-		return View::make('layouts.dashboard.index')
-				->with('venue', $venue);
 
-		// else if user is something else
-		//TODO: Get conferences that the current user participates in
-		
+		if (Auth::User()->hasSysRole('Resoure Provider')) {
+
+			$venue = Venue::where('created_by', '=', Auth::user()->user_id)->get();
+			return View::make('layouts.dashboard.index')
+				->with('venue', $venue)
+				->with('flag', 'RP');
+
+		} else if (Auth::User()->hasSysRole('Admin')){
+
+			return View::make('layouts.dashboard.index')
+				->with('flag', 'SA');
+
+		} else {
+
+			$confs = DB::table('conference')
+						->join('confuserrole', 'conference.conf_id', '=', 'confuserrole.conf_id')
+						->select('conference.conf_id', 'conference.title', 'conference.begin_date', 'conference.end_date', 'confuserrole.role_id')
+						->where('confuserrole.user_id', '=', Auth::user()->user_id)
+						->get();
+
+			$has_participant = UtilsController::checkHasRole($confs, 8);
+			$has_chair = UtilsController::checkHasRole($confs, 4);
+			$has_reviewer = UtilsController::checkHasRole($confs, 7);
+			$has_staff = UtilsController::checkHasRole($confs, 5);
+
+			// return var_dump($not_participant);
+
+			return View::make('layouts.dashboard.index')
+				->with('confs', $confs)
+				->with('flag', 'NONRP')
+				->with('p_flag', $has_participant)
+				->with('c_flag', $has_chair)
+				->with('r_flag', $has_reviewer)
+				->with('s_flag', $has_staff);
+
+		}
 	}
 
 

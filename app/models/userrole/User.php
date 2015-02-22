@@ -80,15 +80,20 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     ->where('rolename','=',$rolename)
     ->lists('role_id');
 
-    $userid= Auth::user()->user_id;
+    if(!empty($role_id)) {
+      $userid= Auth::user()->user_id;
 
-    $role = DB::table('sysrole')
-    ->where('user_id','=',$userid)
-    ->where('role_id','=',$role_id)
-    ->first();
+      $role = DB::table('sysrole')
+      ->where('user_id','=',$userid)
+      ->where('role_id','=',$role_id)
+      ->first();
 
-    return ($role != null);
-
+      return ($role != null);
+    } else {
+       return false;
+    }
+    
+   
   }
   //1st arguement permission name
   //@if(Auth::user()->hasSysPermission('ViewCredit')) 

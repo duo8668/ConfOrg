@@ -12,8 +12,7 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                
-                
+                  
                 <li class="dropdown">
                     <a class="dropdown-toggle"  href="{{ url('conference/management/create') }}">
                         <i class="fa fa-plus-circle fa-fw"></i>  Add New Conference
@@ -22,7 +21,7 @@
                 <!-- USER PROFILE -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-user fa-fw"></i> Welcome, {{{ Auth::user()->firstname }}} {{{ Auth::user()->lastname }}} <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="{{URL::route('users-profile', ['email' => Auth::user()->email])}}"><i class="fa fa-user fa-fw"></i> User Profile</a>
