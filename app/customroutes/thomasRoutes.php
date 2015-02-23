@@ -12,32 +12,34 @@
 // Route::get('/invoice', 'BillController@index');
 // Route::get('/invoice/{id}', 'BillController@show');
 
-Route::get('/payment', 'BillController@payment');
-Route::post('payment', 'BillController@createInvoice');
-Route::any('/payment/actionCreateInvoice', 'BillController@actionCreateInvoice');
-Route::any('/payment/actionCreatePayment', 'BillController@actionCreatePayment');
+Route::group(array('before' => 'auth'),function(){
+	
+	Route::get('/payment', 'BillController@payment');
+	Route::post('payment', 'BillController@createInvoice');
+	Route::any('/payment/actionCreateInvoice', 'BillController@actionCreateInvoice');
+	Route::any('/payment/actionCreatePayment', 'BillController@actionCreatePayment');
 
-Route::get('/payment/charges/{id}', 'BillController@charges');
-Route::post('/payment/charges/{id}', 'BillController@chargeUser');
+	Route::get('/payment/charges/{id}', 'BillController@charges');
+	Route::post('/payment/charges/{id}', 'BillController@chargeUser');
 
-Route::get('/import', 'ThomasController@import');
-Route::post('import', array('uses' => 'ThomasController@import'));
+	Route::get('/import', 'ThomasController@import');
+	Route::post('import', array('uses' => 'ThomasController@import'));
 
-Route::get('/importData', 'ThomasController@importData');
-Route::post('importData', array('uses' => 'ThomasController@importData'));
-Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
+	Route::get('/importData', 'ThomasController@importData');
+	Route::post('importData', array('uses' => 'ThomasController@importData'));
+	Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
 
-Route::post('equipmentcategory/modify/{id}', 'EquipmentCategoryController@modify');
-Route::post('equipment/modify/{id}', 'EquipmentController@modify');
-Route::post('room/modify/{id}', 'RoomController@modify');
-Route::post('venue/modify/{id}', 'ThomasController@modify');
-Route::resource('invoice', 'BillController');
-Route::resource('venue', 'ThomasController');
-Route::resource('equipmentcategory', 'EquipmentCategoryController');
-Route::resource('equipment', 'EquipmentController');
-Route::resource('room', 'RoomController');
+	Route::post('equipmentcategory/modify/{id}', 'EquipmentCategoryController@modify');
+	Route::post('equipment/modify/{id}', 'EquipmentController@modify');
+	Route::post('room/modify/{id}', 'RoomController@modify');
+	Route::post('venue/modify/{id}', 'ThomasController@modify');
+	Route::resource('invoice', 'BillController');
+	Route::resource('venue', 'ThomasController');
+	Route::resource('equipmentcategory', 'EquipmentCategoryController');
+	Route::resource('equipment', 'EquipmentController');
+	Route::resource('room', 'RoomController');
 
-
+});
 
 // Route::get('/payment', 'BillController@payment');
 // Route::get('/charges', 'BillController@charges');

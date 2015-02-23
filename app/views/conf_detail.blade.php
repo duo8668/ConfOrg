@@ -30,7 +30,7 @@
             <div class="col-md-12" style="margin-bottom:50px;">
                
                 <h2 class="text-center"><u>{{{ $conf->title }}}</u></h2>
-                <h3 class="text-center"> [[ VENUE HERE ]]</h3>
+                <h3 class="text-center">{{ $conf->Room()->Venue()->venue_name }}</h3>
                 <h3 class="text-center">{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</h3>
 
                 <!-- SUBMIT PAPER BUTTON  -->
@@ -60,22 +60,20 @@
                 <p class="desc">
                     {{ $conf->description }}
                 </p>
-                <legend>Topics</legend>
+                @if (!empty($topics))
+                    <legend>Topics</legend>
                     <ol>
-                        <li>Topic 1</li>
-                        <li>Topic 2</li>
-                        <li>Topic 3</li>
-                        <li>Topic 4</li>
-                        <li>Topic 5</li>
-                        <li>Topic 6</li>
-                        <li>Topic 7</li>
+                        @foreach ($topics as $topic)
+                            <li> {{{ $topic->topic_name }}} </li>
+                        @endforeach 
                     </ol>
                     <p class="desc">The paper submitted may cover more than 1 topics.</p>
-                <legend>Schedule</legend>
-                 <p class="desc">Click here to download the schedule</p>
+                @endif
+                {{-- <legend>Schedule</legend>
+                 <p class="desc">Click here to download the schedule</p> --}}
 
                  <legend>Contact</legend>
-                 <p class="desc">For further enquiry regarding this conference, please contact <strong><a href="mailto:{{{ $conf->email }}}">{{{ $conf->email }}}</a>  </strong></p>
+                 <p class="desc">For further enquiry regarding this conference, please contact {{{ $chair->firstname }}} {{{ $chair->lastname }}} at <strong><a href="mailto:{{{ $chair->email }}}">{{{ $chair->email }}}</a>  </strong></p>
             </div>
 
         </div>

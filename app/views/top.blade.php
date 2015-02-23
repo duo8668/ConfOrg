@@ -39,7 +39,7 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 
-                <a href="#">{{ HTML::image('img/logo.png', 'ORAFER', ['class' => 'logo']) }}</a>
+                <a href="{{ URL::to('/') }}">{{ HTML::image('img/logo.png', 'ORAFER', ['class' => 'logo']) }}</a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -50,10 +50,14 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#nav-section1">Conferences</a></li> 
-                    <li><a href="#nav-section1" class="nav-section1">Features</a></li>                
-                    <li><a href="{{ URL::route('users-sign-in') }}">Sign in</a></li>
-                    <li><a href="{{ URL::route('users-create') }}">Sign Up</a></li>
+                    <li><a href="{{ URL::route('conference.public_list') }}">Conferences</a></li> 
+                    <li><a href="{{ URL::to('/#features') }}" class="features">Features</a></li>   
+                    @if (Auth::check() == true) 
+                        <li><a href="{{ URL::route('users-sign-in') }}">Hello, {{{ Auth::user()->firstname }}} {{{ Auth::user()->lastname }}}</a></li> 
+                    @else             
+                        <li><a href="{{ URL::route('users-sign-in') }}">Sign in</a></li>
+                        <li><a href="{{ URL::route('users-create') }}">Sign Up</a></li>
+                    @endif
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

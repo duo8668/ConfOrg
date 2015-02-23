@@ -41,7 +41,7 @@ Route::filter('auth', function()
 		{
 			return Response::make('Unauthorized', 401);
 		}
-		return Redirect::guest('/users/sign-in');
+		return Redirect::guest('/users/sign-in')->with('message', 'Please sign in');
 	}
 });
 

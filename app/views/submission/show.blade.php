@@ -13,6 +13,7 @@
 
 <div class="row">
   <div class="col-md-12">
+    <div class="alert @if ($submission->status == 1) alert-success @elseif ($submission->status == 9) alert-warning @endif </strong>" role="alert">This submissions has been <strong>@if ($submission->status == 1) accepted @elseif ($submission->status == 9) rejected @endif </strong></div>
     <legend>Basic Information</legend>
 
       <!-- Submission Type -->
@@ -89,13 +90,15 @@
       <div style="margin-bottom:40px;"></div>
       <div class="row">
         <div class="col-md-5 col-md-offset-7">
-          {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-sm'])}}
-        
-          {{ link_to_route('submission.edit', 'Edit Basic Info', [$submission->sub_id], ['class' => 'btn btn-info btn-sm'])}}
-        
-          {{ Form::model($submission, ['route' => ['submission.destroy', $submission->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
-            {{ Form::button('Withdraw Submission', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm'])}}
-          {{ Form::close() }}
+          {{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-sm pull-right'])}}
+                 
+          @if ($submission->status == 0)
+            {{ Form::model($submission, ['route' => ['submission.destroy', $submission->sub_id], 'method' => 'delete', 'class' => 'inline ' ]) }}
+              {{ Form::button('Withdraw Submission', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm pull-right'])}}
+            {{ Form::close() }}
+
+              {{ link_to_route('submission.edit', 'Edit Basic Info', [$submission->sub_id], ['class' => 'btn btn-info btn-sm pull-right'])}}
+          @endif
         </div>
       </div>
       <div style="margin-bottom:40px;"></div>
@@ -126,13 +129,19 @@
       <div style="margin-bottom:40px;"></div>
       <div class="row">
         <div class="col-md-5 col-md-offset-7">
-          {{ link_to_route('reviews.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-sm'])}}
-        
-          {{ link_to_route('submission.edit_authors', 'Edit Authors Info', [$submission->sub_id], ['class' => 'btn btn-info btn-sm'])}}
-        
-          {{ Form::model($submission, ['route' => ['submission.destroy', $submission->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
-            {{ Form::button('Withdraw Submission', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm'])}}
-          {{ Form::close() }}
+          {{ link_to_route('submission.index', 'Back to submissions', null, ['class' => 'btn btn-default btn-sm pull-right'])}}
+          
+           @if ($submission->status == 0)
+
+            {{ Form::model($submission, ['route' => ['submission.destroy', $submission->sub_id], 'method' => 'delete', 'class' => 'inline' ]) }}
+              {{ Form::button('Withdraw Submission', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm pull-right'])}}
+            {{ Form::close() }}
+
+            {{ link_to_route('submission.edit_authors', 'Edit Authors Info', [$submission->sub_id], ['class' => 'btn btn-info btn-sm pull-right'])}}
+          
+           @endif
+          
+
         </div>
       </div>
       <div style="margin-bottom:40px;"></div>

@@ -18,7 +18,7 @@
     <!-- /.intro-header -->
 
     <!-- Page Content -->
-    <div id="nav-section1"></div>
+    <div id="features"></div>
 
     <div class="container" style="margin-top: 50px; margin-bottom: 50px;">
         <div class="row">

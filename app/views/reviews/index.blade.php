@@ -37,11 +37,13 @@
 				<td>{{ date("d F Y",strtotime($sub->updated_at)) }} at {{ date("g:ha",strtotime($sub->updated_at)) }}</td>
 				<td>
 					{{ link_to_route('review.show', 'See Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
-					@if (in_array($sub->sub_id, $reviews)) 
-						<?php $key = array_keys($reviews, $sub->sub_id); ?>
-						{{ link_to_route('review.edit', 'See Your Review', [$key[0]], ['class' => 'btn btn-success btn-xs'])}}
-					@else 
-						{{ link_to_route('reviews.add', 'Enter Review', [$sub->sub_id], ['class' => 'btn btn-warning btn-xs'])}}
+					@if ($sub->status == 0)
+						@if (in_array($sub->sub_id, $reviews)) 
+							<?php $key = array_keys($reviews, $sub->sub_id); ?>
+							{{ link_to_route('review.edit', 'See Your Review', [$key[0]], ['class' => 'btn btn-success btn-xs'])}}
+						@else 
+							{{ link_to_route('reviews.add', 'Enter Review', [$sub->sub_id], ['class' => 'btn btn-warning btn-xs'])}}
+						@endif
 					@endif
 				</td>
 			</tr>

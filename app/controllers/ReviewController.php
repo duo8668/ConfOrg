@@ -24,9 +24,10 @@ class ReviewController extends \BaseController {
 
 		$submission = DB::table('submissions')
             ->join('conference', 'submissions.conf_id', '=', 'conference.conf_id')
-            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at', 'submissions.updated_at')
+            ->select('conference.conf_id', 'conference.title', 'submissions.sub_type', 'submissions.sub_title', 'submissions.sub_id', 'submissions.created_at', 'submissions.updated_at', 'submissions.status')
             ->whereIn('submissions.conf_id', $conf_ids)
-            ->orderBy('submissions.created_at', 'desc')->get();
+            // ->whereNotIn('submissions.status', array(1, 9))
+            ->orderBy('submissions.updated_at', 'desc')->get();
 
         $reviews = DB::table('reviews')
         	->select('review_id', 'sub_id')
@@ -54,14 +55,19 @@ class ReviewController extends \BaseController {
 	public function add($id)
 	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$keywords = $submission->keywords()->get();
-		$topics = DB::table('submission_topic')
-		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+		//check if submissions status = on review
+		if ($submission->status == 0 ) {
+			$keywords = $submission->keywords()->get();
+			$topics = DB::table('submission_topic')
+			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
-		return View::make('reviews.create')->withSubmission($submission)
-		->with('sub_topics', $topics)
-		->withKeyword($keywords);
+			return View::make('reviews.create')->withSubmission($submission)
+			->with('sub_topics', $topics)
+			->withKeyword($keywords);
+		} else {
+			return Redirect::route('reviews.index')->withMessage('Sorry! You can no longer review this submission. The committe decision has been finalized!');
+		}
 	}
 
 
@@ -128,16 +134,22 @@ class ReviewController extends \BaseController {
 		$sub_id = $review->sub_id;
 		// return var_dump($review->sub_id);
 		$submission = Submission::where('sub_id' , '=', $sub_id)->get()->first();
-		$keywords = $submission->keywords()->get();
-		$topics = DB::table('submission_topic')
-		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $sub_id)->get();
+
+		//check if submissions status = on review
+		if ($submission->status == 0 ) {
+			$keywords = $submission->keywords()->get();
+			$topics = DB::table('submission_topic')
+			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $sub_id)->get();
 
 
-		return View::make('reviews.edit')->withSubmission($submission)
-		->with('sub_topics', $topics)
-		->with('review', $review)
-		->withKeyword($keywords);
+			return View::make('reviews.edit')->withSubmission($submission)
+			->with('sub_topics', $topics)
+			->with('review', $review)
+			->withKeyword($keywords);
+		} else {
+			return Redirect::route('review.show', $id)->withMessage('Sorry! You can no longer edit this review. The committe decision has been finalized!');
+		}
 	}
 
 

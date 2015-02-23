@@ -53,7 +53,11 @@ All Conferences
 
 </script>
 
-
+<ol class="breadcrumb">
+  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+  <li class="active">All Conferences</li>
+</ol>
+<hr>
 <div class="input-group  col-md-4">
 	<span class="input-group-btn">
 		<button class="btn btn-default" type="submit">Search</button>

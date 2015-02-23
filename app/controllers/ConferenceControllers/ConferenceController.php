@@ -472,18 +472,26 @@ public function conf_public_list() {
     return View::make('conf_list')->with('confs', $confs);
 }
 
-public function conf_public_detail($id) {
-    $conf = DB::table('conference')
-    ->join('users', 'conference.created_by', '=', 'users.user_id')
-    ->select('conference.conf_id', 'conference.title', 'conference.description', 'conference.begin_date', 'conference.end_date', 'users.email')
-    ->where('conference.conf_id' , '=', $id)
-    ->get();
+     public function conf_public_detail($id) {
+        
+        $conf = Conference::where('conf_id', '=', $id)->first();
+        $chair = DB::table('users')
+                    ->join('confuserrole', 'confuserrole.user_id', '=', 'users.user_id')
+                    ->select('users.email', 'users.firstname', 'users.lastname')
+                    ->where('confuserrole.role_id', '=', 4)
+                    ->where('confuserrole.conf_id', '=', $id)
+                    ->first();
+        $topics = DB::table('conference_topic')
+                    ->join('conference', 'conference.conf_id', '=', 'conference_topic.conf_id')
+                    ->select('conference_topic.topic_name')
+                    ->where('conference_topic.conf_id', '=', $id)
+                    ->get();
 
-            // return var_dump($conf[0]);
-    if (empty($conf)) {
-        return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
-    } else {
-        return View::make('conf_detail')->with('conf', $conf[0]);
+        if (empty($conf)) {
+            return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
+        } else {
+            return View::make('conf_detail')->with('conf', $conf)->with('chair', $chair)->with('topics', $topics);
+        }
     }
 }
 

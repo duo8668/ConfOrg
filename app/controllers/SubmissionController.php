@@ -203,34 +203,48 @@ class SubmissionController extends \BaseController {
 	 */
 	public function edit($id)
 	{
+		//check if status still 0
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$keywords = $submission->keywords()->get();
 
-		//TODO: get topics of current conference
-		$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
-		$topics = DB::table('submission_topic')
-		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-		->select('submission_topic.topic_id')->where('submission_topic.sub_id', '=', $id)->get();
+		if ($submission->status == 0 ) {
+			$keywords = $submission->keywords()->get();
 
-		//set just the topic ID of selected topic into array, for checking purpose
-		$selected_topic = array();
-		foreach ($topics as $topic) {
-			array_push($selected_topic, $topic->topic_id);
+			//TODO: get topics of current conference
+			$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
+			$topics = DB::table('submission_topic')
+			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+			->select('submission_topic.topic_id')->where('submission_topic.sub_id', '=', $id)->get();
+
+			//set just the topic ID of selected topic into array, for checking purpose
+			$selected_topic = array();
+			foreach ($topics as $topic) {
+				array_push($selected_topic, $topic->topic_id);
+			}
+
+			return View::make('submission.edit')->withSubmission($submission)
+			->with('sub_topics', $selected_topic)
+			->with('conf_topics', $conf_topics)
+			->withKeyword($keywords);
+		} else {
+			return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer edit this submission. The committe decision has been finalized!');
 		}
-
-		return View::make('submission.edit')->withSubmission($submission)
-		->with('sub_topics', $selected_topic)
-		->with('conf_topics', $conf_topics)
-		->withKeyword($keywords);
 	}
 
 	public function edit_authors($id)
 	{
+		//check if status still 0
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$authors = $submission->authors()->get();
 
-		return View::make('submission.edit_authors')->withSubmission($submission)
-		->with('authors', $authors);
+		if ($submission->status == 0 ) {
+			$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+			$authors = $submission->authors()->get();
+
+			return View::make('submission.edit_authors')->withSubmission($submission)
+			->with('authors', $authors);
+
+		} else {
+			return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer edit this submission. The committe decision has been finalized!');
+		}
 	}
 
 	/**

@@ -18,8 +18,7 @@
                         <!-- USER COMMON SETTINGS -->
                         <li><a href="{{ URL::route('users.dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Main Dashboard</a></li>
                         <li><a href="{{ URL::route('users-profile', ['profile' => Auth::user()->email]) }}"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
-                        <li><a href="{{ URL::route('users-invite-friend') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Friend</a></li>
-                        <li><a href="{{ URL::route('admins-invite-resource') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Resource Provider</a></li>
+                        
                         <!-- <li class="sidebar-divider"></li> -->
 
 
@@ -56,7 +55,10 @@
                         <li><a href="{{ URL::route('equipmentcategory.index') }}"><i class="fa fa-sitemap fa-fw"></i> Category</a></li>
                         <li><a href="{{ URL::route('equipment.index') }}"><i class="fa fa-cogs fa-fw"></i> Equipment</a></li>
                         <li><a href="{{ URL::route('room.index') }}"><i class="fa fa-location-arrow fa-fw"></i> Room</a></li>     
-                        <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import</a></li>                    
+                        <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import</a></li>       
+
+                        <li><a href="{{ URL::route('users-invite-friend') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Friend</a></li>
+                        <li><a href="{{ URL::route('admins-invite-resource') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Resource Provider</a></li>             
 
                         <!-- END OF SIDEBAR MENU -->
                     </ul>

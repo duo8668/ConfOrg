@@ -37,7 +37,7 @@
                         </h4>    
                         <p class="desc">{{ $out = strlen($conf->description) > 70 ? substr($conf->description,0,70)."..." : $conf->description }}</p>
                         <p class="desc">{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</p>
-                        <p class="desc">[[ VENUE HERE ]]</p>
+                        <p class="desc">{{ $conf->Room()->Venue()->venue_name }}</p>
                         {{ link_to_route( 'conference.public_detail', 'More Info', ['id' => $conf->conf_id], ['class' => 'btn btn-info btn-md pull-right'] ) }}
                       </div>
                     </div>

@@ -23,7 +23,7 @@ include('customroutes/thomasRoutes.php');
 include('customroutes/pohjunRoutes.php');
 
 
-Route::group(array('before' => 'guest'),function(){
+// Route::group(array('before' => 'guest'),function(){
 
 Route::get('/', function()
 {
@@ -40,5 +40,9 @@ Route::get('/conference_detail/{conf_id}', array(
     'uses'  => 'ConferenceController@conf_public_detail'
 ));
 
-});
+// TESTING
+Route::get('/testsql', 'SubmissionController@testsql');
+
+
+// });
 
