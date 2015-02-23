@@ -25,6 +25,7 @@ Route::get('/importData', 'ThomasController@importData');
 Route::post('importData', array('uses' => 'ThomasController@importData'));
 Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
 
+Route::post('equipmentcategory/modify/{id}', 'EquipmentCategoryController@modify');
 Route::post('equipment/modify/{id}', 'EquipmentController@modify');
 Route::post('room/modify/{id}', 'RoomController@modify');
 Route::post('venue/modify/{id}', 'ThomasController@modify');

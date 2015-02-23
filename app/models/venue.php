@@ -11,7 +11,4 @@ class Venue extends Eloquent {
 	public function Rooms(){
 		return $this->hasMany('Room','venue_id','venue_id');
 	}
-
-
-	
 }

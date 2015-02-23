@@ -11,13 +11,13 @@
 				$privilege = false;
 				if(Auth::User()->hasSysRole('Admin'))
 				{
-					$venue = Venue::all();													
+					$venue = Venue::with('Rooms')->all();													
 					$privilege = true;
 				}
 				else if(Auth::User()->hasSysRole('Resource Provider'))
 				{
 					$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
-					$venue = Venue::where('company_id', $company_id)->get();									
+					$venue = Venue::with('Rooms')->where('company_id', $company_id)->get();
 				}				
 				// load the view and pass the venue				
 				return View::make('venue.index')
@@ -108,6 +108,7 @@
 						$venue->latitude = $lat;
 						$venue->longitude = $lng;          
 						$venue->company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
+						$venue->created_by = Auth::user()->user_id;
 						$venue->save();            
 
 			// redirect
@@ -131,7 +132,9 @@
 					$privilege = true;
 				}
 
-				$venue = Venue::find($id);
+				$venue = Venue::find($id);				
+				$created_by = User::find($venue->created_by);				
+				$modified_by = User::find($venue->modified_by);
 				$geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
 				$config['center'] = $geoLocation;
@@ -150,7 +153,9 @@
 				->with('venue', $venue)
 				->with('data',$data)
 				->with('map',$map)
-				->with('privilege',$privilege);
+				->with('privilege',$privilege)
+				->with('created_By',$created_by)
+				->with('modified_By',$modified_by);
 			}
 
 
@@ -222,7 +227,8 @@
 						$venue->venue_name = Input::get('venue_name');
 						$venue->venue_address = Input::get('venue_address');
 						$venue->latitude = $lat;
-						$venue->longitude = $lng;          
+						$venue->longitude = $lng;   
+						$venue->modified_by = Auth::user()->user_id;
 						$venue->save();       
 
 			// redirect
@@ -363,7 +369,7 @@
 							{							
 								return View::make('venue.importError')->with('allError',$allError) ->with('numError',$numError);	
 							}
-								else if($numError == 0)
+							else if($numError == 0)
 							{																				
 								// $eq = equipmentCategory::where('equipmentcategory_name','=','Logistics')->first()->equipmentcategory_id;
 								// dd($eq);
@@ -384,7 +390,9 @@
 									$venue->venue_name = Input::get('venue_name');
 									$venue->venue_address = Input::get('venue_address');
 									$venue->latitude = $lat;
-									$venue->longitude = $lng;          
+									$venue->longitude = $lng;
+									$venue->created_by = Auth::user()->user_id;
+									$venue->company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');      
 									$venue->save();    
 																		
 									for($i = 0; $i < $roomCount; ++$i)
@@ -394,6 +402,7 @@
 										$room->capacity = $results[0][$i]['room_capacity'];
 										$room->venue_id = $venue->venue_id;
 										$room->rental_cost = $results[0][$i]['room_cost'];
+										$room->created_by = Auth::user()->user_id;
 										$room->save();    											
 									}						
 
@@ -409,7 +418,8 @@
 
 											if(is_null(equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
 												$equipmentcategory = new EquipmentCategory;
-								                $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category'];								                        
+								                $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category']; 
+								                $equipmentcategory->created_by=Auth::user()->user_id;
 								                $equipmentcategory->save();
 								                $eCatID = $equipmentcategory->equipmentcategory_id;
 											}
@@ -419,6 +429,7 @@
 												$equipment = new equipment;
 												$equipment->equipment_name = $results[1][$i]['equipment_name'];
 												$equipment->equipment_remark = $results[1][$i]['equipment_remarks'];
+												$equipment->created_by=Auth::user()->user_id;
 												if($eCatID == 0)
 													$eCatID = equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
 												$equipment->equipmentcategory_id = $eCatID;
@@ -436,6 +447,7 @@
 										$room->equipments()->attach($eID, array('quantity' => $results[1][$i]['quantity']));
 										//attach equipment id, quantity 										
 									}
+									return Redirect::to('venue');
 								}
 							}
 						}
@@ -606,7 +618,8 @@
 						{						
 							if(count($roomList)>0)
 							{							
-								if(in_array(strtolower($roomName), $roomList[0]))
+								if($this->ifRoomExist($roomList,$roomName))
+								// if(in_array(strtolower($roomName), $roomList[0]))
 								{
 									$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Room Name','Row'=>'Row: '.$i2, 'error'=>"Identical Room Name is not allowed: '{$roomName}'' is repeated");				
 								}
@@ -694,9 +707,10 @@
 						{
 							if(!empty($roomName))
 							{								
-								//validate if room name exist on the Room Sheet								
-								if(!in_array(strtolower($roomName), $roomList[0]))
-								{
+								//validate if room name exist on the Room Sheet		
+								if(!$this->ifRoomExist($roomList,$roomName))
+								//if(!in_array(strtolower($roomName), $roomList[0]))
+								{									
 									$allError[] = array('Sheet'=>'Excel Sheet: '.$results[1]->getTitle(),'column'=>'Room Name','Row'=>'Row: '.$i2, 'error'=>"Invalid Room Name: The room name: {$roomName} does not exist on the Rooms Worksheet, please rename or include the room on the worksheet.");
 								}
 							}
@@ -805,6 +819,21 @@
 		$roomCapacity = $results[0][$i]['room_capacity'];
 		$roomCost = $results[0][$i]['room_cost'];
 		$remarks = $results[0][$i]['remarks'];	
+	}
+	public function ifRoomExist($array, $value)
+	{
+		// if(in_array(strtolower($roomName), $roomList[0]))
+		$value = strtolower($value);
+		$exist = false;
+		foreach($array as $array)
+		{
+			if(in_array($value, $array))
+			{				
+				$exist = true;
+				break;
+			}
+		}
+		return $exist;
 	}
 
 }					

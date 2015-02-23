@@ -32,7 +32,7 @@ Invoice & Payment
             <td>
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
                 <a class="btn btn-xs btn-info" href="{{ URL::to('invoice/' . $invoice->invoice_id) }}">Show Invoice</a>
-                @if($privilege=false)                
+                @if(!$privilege && $invoice->status!='paid')
                 <a class="btn btn-warning btn-xs" href="{{ URL::to('payment/charges/'.$invoice->invoice_id) }}">Make Payment</a>                
                 @endif
                 <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->

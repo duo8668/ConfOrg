@@ -16,13 +16,14 @@
   <li><a href="{{ URL::route('venue.index') }}">Venues</a></li>
   <li class="active">{{{ $venue->venue_name }}}</li>
 </ol>
-<hr>
-
+<hr> 
 <div class="container">    
-        <h2>{{ $venue->venue_name }}</h2>
-        <p>            
-            <strong>Venue Address:</strong> {{ $venue->venue_address }}
-        </p>
+        <h2>{{ $venue->venue_name }}</h2>        
+        <p><strong>Venue Address:</strong> {{ $venue->venue_address }}</p>        
+        <p><strong>Created By: {{ $created_By->firstname.', '.$created_By->lastname}}</strong> on the {{$venue->created_at}}</p>        
+        @if(!is_null($modified_By))        
+        <p><strong>Updated By: {{ $modified_By->firstname.', '.$modified_By->lastname}}</strong> on the {{$venue->updated_at}}</p>
+        @endif
     @if($map!='')
         <center>
             <div style="max-width:900px; maring-top:5px; margin-bottom:15px; border-style:solid; border-width:2px;">

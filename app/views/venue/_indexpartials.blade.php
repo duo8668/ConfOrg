@@ -1,14 +1,18 @@
 <div class="table-responsive">
     <table class="table">   
         <tr>
-            <td style="width:25%"><strong>Venue Name</strong></td>
-            <td style="width:25%"><strong>Address</strong></td>
-            <td style="width:50%"><strong>Option</strong></td>
+            <td style="width:15%"><strong>Venue Name</strong></td>
+            <td style="width:30%"><strong>Address</strong></td>
+            <td style="width:10%"><strong>Number of Room</strong></td>
+            <td style="width:20%"><strong>Available for Booking</strong></td>
+            <td style="width:25%"><strong>Option</strong></td>
         </tr> 
     @foreach($venue as $value)
         <tr>
             <td>{{ link_to_route('venue.show', $value->venue_name, ['id' => $value->venue_id]) }}</td> 
             <td>{{ $value->venue_address }}</td>            
+            <td>{{ $value->Rooms->count() }}</td>
+            <td>{{ $value->available }}</td>
 
             <!-- we will also add show, edit, and delete buttons -->
             <td>

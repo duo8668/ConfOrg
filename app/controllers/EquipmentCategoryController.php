@@ -10,7 +10,7 @@ class EquipmentCategoryController extends \BaseController {
     {        
         // $equipmentcategory = EquipmentCategory::with('equipments')->count();
         // dd($equipmentcategory);
-
+        $user_id = Auth::user()->user_id;
         $privilege = false;
         if(Auth::User()->hasSysRole('Admin'))
         {            
@@ -20,7 +20,8 @@ class EquipmentCategoryController extends \BaseController {
         // load the view and pass the venue
         return View::make('equipmentcategory.index')
         ->with('equipmentcategory', $equipmentcategory)
-        ->with('privilege',$privilege);
+        ->with('privilege',$privilege)
+        ->with('user_id',$user_id);
     }
 
 
@@ -59,6 +60,9 @@ class EquipmentCategoryController extends \BaseController {
                 // store               
                 $equipmentcategory = new EquipmentCategory;
                 $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
+                $equipmentcategory->created_by = Auth::user()->user_id;
+                if(Auth::User()->hasSysRole('Admin'))           
+                $equipmentcategory->status='Approved';  
                 //$equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');               
                 $equipmentcategory->save();            
 
@@ -108,11 +112,23 @@ class EquipmentCategoryController extends \BaseController {
     {
         //
         $equipmentcategory = equipmentCategory::find($id);
-
         // show the edit form and pass the equipmentcategory
         return View::make('equipmentcategory.edit')
             ->with('equipmentcategory', $equipmentcategory);
     }
+
+    public function modify($id)
+    {
+
+        $equipmentcategory = equipmentcategory::find($id);
+
+        $equipmentcategory->status = 'Approved';  
+        $equipmentcategory->save();
+        Session::flash('message', 'Approved Equipment Category!');  
+
+        return Redirect::to('equipmentcategory');
+    }
+
 
 
     /**
@@ -138,11 +154,25 @@ class EquipmentCategoryController extends \BaseController {
         }         
         else {
             // store
+            $updated =false;
             $equipmentcategory = equipmentCategory::find($id);                                
-            $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
-          //  $equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');                                     
-            $equipmentcategory->save();       
+            if($equipmentcategory->equipmentcategory_name != Input::get('categoryName')) {
+                $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
+                $updated=true;  
+            }            
+            if($updated==true)
+            {
+                $equipment->modified_by = Auth::user()->user_id;
 
+                if(Auth::User()->hasSysRole('Admin'))           
+                    $equipmentcategory->status='Approved';
+                else
+                    $equipmentcategory->status='Pending';                 
+
+                Session::flash('message', 'Equipment Category Successfully Edited!');
+            }
+
+            $equipmentcategory->save();
             // redirect
             Session::flash('message', 'Category Successfully Updated!');
             return Redirect::to('equipmentcategory');
