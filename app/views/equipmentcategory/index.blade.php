@@ -43,11 +43,6 @@ All Categories
                     {{ Form::submit('Delete Category', array('class' => 'btn btn-danger btn-xs')) }}
                 {{ Form::close() }}
                 @endif                
-
-                <!-- show the nerd (uses the show method found at GET /nerds/{id} -->
-                
-
-                <!-- edit this nerd (uses the edit method found at GET /nerds/{equipmentcategory_id}/edit -->
                 
             </td>
         </tr>

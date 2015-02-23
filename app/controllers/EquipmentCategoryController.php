@@ -13,7 +13,7 @@ class EquipmentCategoryController extends \BaseController {
         $user_id = Auth::user()->user_id;
         $privilege = false;
         if(Auth::User()->hasSysRole('Admin'))
-        {            
+        {                        
             $privilege = true;
         }        
         $equipmentcategory = EquipmentCategory::with('equipments')->get();        
@@ -162,7 +162,7 @@ class EquipmentCategoryController extends \BaseController {
             }            
             if($updated==true)
             {
-                $equipment->modified_by = Auth::user()->user_id;
+                $equipmentcategory->modified_by = Auth::user()->user_id;
 
                 if(Auth::User()->hasSysRole('Admin'))           
                     $equipmentcategory->status='Approved';

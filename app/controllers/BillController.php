@@ -40,10 +40,28 @@ class BillController extends \BaseController {
 	public function show($id)
 	{
         //get this equipmentcategory         
-		$invoice = invoice::with('conference','user')->where('invoice_id','=', $id)->first();		
+		$invoice = invoice::with('conference','user')->where('invoice_id','=', $id)->first();			
         // show the view and pass the nerd to it
 		return View::make('invoice.show')
 		->with('invoice', $invoice);
+	}
+
+	public function populate($id)
+	{
+		$invoice = invoice::with('user','conference')->where('conf_id','=', $id)->where('status','=','paid')->get();			
+		$conference2 = conference::find($id)->pluck('title');			
+		return View::make('invoice.shinPage')->with('invoice',$invoice)->with('conference2',$conference2);
+	}
+
+	public function populateFilter()
+	{
+		//$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
+		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+		->where('equipment_status', '=', 'Approved')		
+		->lists('full_name', 'id');
+
+		return View::make('invoice.shinfilter')->with('equipments',$equipments);
 	}
 
 	public function destroy($id)
@@ -201,7 +219,7 @@ class BillController extends \BaseController {
 			// $ticketPrice = Input::get('ticketPrice');			
 			// $conference = Conference::find(Input::get('conf_id'));			
 			// $user = User::find(Auth::user()->user_id);							
-			return Redirect::to('payment/charges/'.$id)->withInput(Input::all())->withMessage($customerId['message']);
+			return Redirect::to('payment/charges/'.$id)->withInput(Input::all())->with('message',$customerId['message']);
 			//return Redirect::to('payment/charges')->withMessage($customerId['message'])->withInput(Input::all());
 		}
 				// $user::User::first();

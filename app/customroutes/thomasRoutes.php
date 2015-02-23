@@ -13,7 +13,10 @@
 // Route::get('/invoice/{id}', 'BillController@show');
 
 Route::group(array('before' => 'auth'),function(){
-	
+	//-----------------------SHIN's Route--------------------------
+	Route::get('/conferenceFinance/{id}','BillController@populate');
+	Route::get('/conferenceFilterRoom','BillController@populateFilter');
+	//-----------------------For the finance information-----------
 	Route::get('/payment', 'BillController@payment');
 	Route::post('payment', 'BillController@createInvoice');
 	Route::any('/payment/actionCreateInvoice', 'BillController@actionCreateInvoice');

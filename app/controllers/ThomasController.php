@@ -125,13 +125,12 @@
 			*/
 			public function show($id)
 			{
-			// get the venue
+				// get the venue
 				$privilege = false;
 				if(Auth::User()->hasSysRole('Admin'))
 				{														
 					$privilege = true;
-				}
-
+				}				
 				$venue = Venue::find($id);				
 				$created_by = User::find($venue->created_by);				
 				$modified_by = User::find($venue->modified_by);
