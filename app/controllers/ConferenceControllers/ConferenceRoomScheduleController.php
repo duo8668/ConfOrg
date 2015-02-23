@@ -58,13 +58,21 @@ class ConferenceRoomScheduleController extends BaseController {
 
                 $listUsed = $used->lists(DB::raw('room_id'));
 
+                $maxSeat = 0 ;
+                if(Input::has('max_seats')){
+                    $maxSeat = (int)Input::get('max_seats');
+                }
 
                 if (!empty($listUsed)) {
                     $available = Room::whereNotIn('room_id', $listUsed)
-                            ->select('room_id', 'room_name')
+                            ->where('available','=','yes')
+                            ->where('capacity','>=',$maxSeat)
+                            ->select('room_id', 'room_name', 'rental_cost')
                             ->get();
                 } else {
-                    $available = Room::select('room_id', 'room_name')
+                    $available = Room::select('room_id', 'room_name', 'rental_cost')
+                            ->where('available','=','yes')
+                            ->where('capacity','>=',$maxSeat)
                             ->get();
                 }
                 return $available;

@@ -32,7 +32,7 @@ class ConferenceUserRole extends Eloquent {
 
 	public function scopeConferenceReviewPanels($query,$conf_id){
 		return $query->where($this->table.'.conf_id', '=', $conf_id)
-		->where($this->table.'.role_id','=',Role::Reviewer()->role_id)
+		->where($this->table.'.role_id','=',Role::ReviewPanel()->role_id)
 		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
 		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
 		->get();

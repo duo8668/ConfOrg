@@ -146,16 +146,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     return $output;
   }
 
-  public  function scopeFirstNameLike($query, $value){
-    return $query->Where('firstname', 'LIKE', "%$value%")
-    ->select(array('user_id as value','firstname as text'))
-    ->get();
+  public  function Invoices(){
+    return  Invoice::where('user_id','=',$this->user_id)
+    ->get();    
   }
 
-  public  function scopeLastNameLike($query, $value){
-    return $query->Where('lastname', 'LIKE', "%$value%")
-    ->select(array('user_id as value','lastname as text'))
-    ->get();
-  }
 
 }

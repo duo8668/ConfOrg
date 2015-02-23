@@ -102,7 +102,6 @@ class BillController extends \BaseController {
 		{
 			if($invoice->user_id == $user_id && $invoice->conf_id == $conf_id)
 			{
-				var_dump($invoice->user_id,$invoice->conf_id);
 				if($invoice->status == 'unpaid')
 				{
 					$exist = true;
@@ -120,30 +119,62 @@ class BillController extends \BaseController {
 	// 	return View::make('payment/charges/'.$id)->with('invoice',$invoice);
 	// }
 
-	public function shinCreateInvoice($userID,$confID)
+	public function actionCreateInvoice()
 	{
 		$success = true;
 		$invoiceID = 0;
-		$invoice = invoice::all();		
-		if($this->invoiceExsit(Input::get('user_id'),Input::get('conf_id')))
+
+		$user_id = Auth::user()->user_id;
+
+		$invoice = new invoice;
+		$invoice->user_id = $user_id;		
+		$invoice->created_by = $user_id;
+		$invoice->save();
+		$invoiceID = $invoice->invoice_id;
+
+		return array('createResult'=>$success,'invoiceId'=>$invoiceID);
+	}
+
+	public function actionCreatePayment(){
+		$success = true;
+
+		preg_match('/[0-9]+[\.]*[0-9]*/',Input::get('total'), $match);
+		$total = $match[0] * 100;
+
+		preg_match('/[0-9]+[\.]*[0-9]*/', Input::get('price'), $match);
+
+		$price  = $match[0];
+
+		$billing = App::make('Acme\Billing\BillingInterface');
+		$customerId= $billing->charge([
+			'email' => Auth::user()->email,
+			'token' => Input::get('stripeToken'),
+			'total' => $total
+			]);		
+
+		$invoice = invoice::find(Input::get('invoice_id'));			
+		$invoice->quantity = Input::get('quantity'); 
+
+		$invoice->price = $price;
+		$invoice->total = $total;
+		$invoice->created_by = Auth::user()->user_id;
+		$invoice->save();
+		if(array_key_exists('error', $customerId))
 		{
-			$invoice = invoice::with('conference','user')->where('user_id','=',Input::get('user_id'))->where('conf_id','=',Input::get('conf_id'))->first();
-			$invoiceID=$invoice->invoiceID;
-		}
+			$success = false;		 
+		} 
 		else
 		{
-			$invoice = new invoice;
-			$invoice->user_id = Input::get('user_id');
-			$invoice->conf_id = Input::get('conf_id');			
-			$invoice->created_by = Input::get('user_id');
+			$payment = new payment;			
+			$payment->invoice_id = $invoice->invoice_id;
+			$payment->amount = $invoice->total;		
+			$payment->created_by = Auth::user()->user_id;
+			$payment->save();			
+			$invoice->status = 'paid';
 			$invoice->save();
-			$invoiceID = $invoice->invoice_id;
+
 		}
-
-		$arrayResult = [];
-		$arrayResult[] = array('createResult'=>$success,'InvoiceDetail'=>$invoiceID);		
-
-		return $arrayResult;
+		return array('createResult'=>$success,'message'=> $customerId);
 	}
 
 	public function chargeUser($id)
@@ -161,8 +192,8 @@ class BillController extends \BaseController {
 		$invoice = invoice::find($id);			
 		$invoice->quantity = Input::get('quantity');      
 		$invoice->price = ltrim(Input::get('price'),'$');
-		$invoice->total = ltrim(Input::get('total'),'$');
-		$invoice->created_by = Input::get('user_id');
+		$invoice->total = $total;
+		$invoice->created_by = Auth::user()->user_id;
 		$invoice->save();
 
 		if(array_key_exists('error', $customerId))

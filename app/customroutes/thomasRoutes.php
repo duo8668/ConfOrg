@@ -14,6 +14,8 @@
 
 Route::get('/payment', 'BillController@payment');
 Route::post('payment', 'BillController@createInvoice');
+Route::any('/payment/actionCreateInvoice', 'BillController@actionCreateInvoice');
+Route::any('/payment/actionCreatePayment', 'BillController@actionCreatePayment');
 
 Route::get('/payment/charges/{id}', 'BillController@charges');
 Route::post('/payment/charges/{id}', 'BillController@chargeUser');

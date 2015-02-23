@@ -15,7 +15,12 @@ Add New Conference
 <script src="{{ asset('js/icheck/icheck.js') }}"></script>
 <script src="{{ asset('js/formvalidation/formValidation.js') }}"></script>
 <script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
-<script src="{{ asset('js/conferencecontroller.js') }}"></script>
+
+<!-- STRIPE payment processor  -->
+<script src="https://js.stripe.com/v2/"></script>
+<script src="{{ asset('js/stripe.js') }}"></script>
+
+<script src="{{ asset('js/app/conference/createConference.js') }}"></script>
 <style>
 
 	body {
@@ -28,7 +33,7 @@ Add New Conference
 	.date {
 		background-color: white;
 	}
-	
+
 	ul {
 		margin: 0;
 		padding: 0;
@@ -59,252 +64,68 @@ Add New Conference
 
 <!-- Content Section -->
 @section('content')
-<script>
-	
-	$(document).ready(function(){
+<script type="text/javascript">
 
-		$('#datetimepickerBegin').datetimepicker({useCurrent: false,pickTime: false	 , pickDate:true});
+	$(document).ready(function () {
 
-		$('#datetimepickerEnd').datetimepicker({useCurrent: false, pickTime: false, pickDate:true });
- 
-		$('#datetimepickerCutOffDate').datetimepicker({useCurrent: false,pickTime: true	 , pickDate:true});
- 
-		$("#datetimepickerBegin").on("dp.hide",function (e) {
-			$('#datetimepickerEnd').data("DateTimePicker").setMinDate(e.date);
-			$('#datetimepickerEnd').data("DateTimePicker").setViewDate(e.date);
-			$('#datetimepickerCutOffDate').data("DateTimePicker").setMinDate(e.date);
-			$('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(e.date);
-		});
+		loadDateTimePicker();
 
-		$("#datetimepickerEnd").on("dp.change",function (e) {
-			$('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
-		});
+		loadFormValidation("{{ URL::to('conference/roomSchedule/availableRooms') }}");
 
-		var loadedJson ;
-		$('#ddlVenue').hover(function(event){
+		loadVenueDropDownListAction();
 
-			var beginDate = $("#datetimepickerBegin").data("DateTimePicker").getDate().format('DD-MM-YYYY');
-			var endDate =  $("#datetimepickerEnd").data("DateTimePicker").getDate().format('DD-MM-YYYY');
-			if(beginDate != undefined && endDate != undefined){
-				$.ajax({
-					type: "GET",
-					url : "/laravel/public/conference/roomSchedule/availableRooms" ,
-					data : {date_start:beginDate,date_end:endDate}
-				})
-				.done(function(data) {
-					var canload = false ;
-					if(loadedJson ==undefined){
-						canload = true;
-					}else{
-						canload =(JSON.stringify(loadedJson) != JSON.stringify(data));
-					}
-					if(canload){
-						loadedJson = data;
+		loadPayNowbutton("{{ URL::to('/payment/actionCreateInvoice') }}");
 
-						$("#ddlVenue").empty();
+		Stripe.setPublishableKey('pk_test_hZuusSMMVDm0qEuF6dvPTARV');
 
-						$.each(data, function (key, value) {
-							$("#ddlVenue").append($("<option></option>").val
-								(value.room_id).html(value.room_name));
-						});
-					}
+		var StripeBilling = {
+			init: function () {
+				this.form = $('#billing-form');
+				this.submitButton = this.form.find('input[type=submit]');
+				this.submitButtonValue = this.submitButton.val();
+				var stripeKey = $('meta[name="publishable-key"]').attr('content');
+				Stripe.setPublishableKey(stripeKey);
+				this.bindEvents();
 
-				})
-				.fail(function(xhr,stat,msg) {
-					alert(xhr.responseText);
-				})
-				.always(function(data) {
-
-				});
-			}
-		});
-
-		$('#frmCreateConf').formValidation({
-			err: {
-				container: 'tooltip'
-			}, 
-			icon: {
-				valid: 'glyphicon glyphicon-ok',
-				invalid: 'glyphicon glyphicon-remove',
-				validating: 'glyphicon glyphicon-refresh'
 			},
-			fields: {
-				conferenceTitle: {
-					validators: {
-						notEmpty: {
-							message: 'The Conference Title is required'
-						},
-						stringLength: {
-							min: 6,
-							max: 30,
-							message: 'The Conference Title must be more than 6 and less than 30 characters long'
-						},
-						regexp: {
-							regexp: /^[a-zA-Z0-9 ]+$/,
-							message: 'The Conference Title can only consist of alphabetical, number, and space'
-						},
-						remote: {
-							message: 'The Conference Title is not available',
-							url: 'validateConference',
-							type: 'POST'
-						}
-					} 
-				},
-				'chkField[]': {
-					validators: {
-						choice: {
-							min: 2,
-							max: 4,
-							message: 'Please choose 2 - 4 interest field'
-						}
-					}
-				},
-				beginDate: {
-					validators: {
-						notEmpty: {
-							message: 'The Begin Date is required'
-						},date: {
-							format: 'DD-MM-YYYY',
-							message: 'The value is not a valid date'
-						}
-					} 
-				},
-				endDate: {
-					validators: {
-						notEmpty: {
-							message: 'The End Date is required'
-						},date: {
-							format: 'DD-MM-YYYY',
-							message: 'The value is not a valid date'
-						}
-					}
-				},
-				cutOffDate:{
-					validators: {
-						date: {
-							format: 'DD-MM-YYYY HH:mm',
-							message: 'The value is not a valid datetime'
-						}
-					} 
-				},
-				minScore:{
-					validators: {
-						numeric : {
-							separator: '.',
-							message: 'The value is not a valid numeric'
-						}
-					}
-				},
-				maxSeats: {
-					validators: {
-						notEmpty: {
-							message: 'The Max Seats is required'
-						},integer: {
-							message: 'This value must be integer'
-						},greaterThan: {
-							inclusive:false,
-							value: 0.0 ,
-							message: 'This value must be greater than zero'
-						}
-					}
-				},
-				venue: {
-					validators: {
-						notEmpty: {
-							message: 'Please select one venue'
-						}
-					} 
-				}
-			}
-		}).on('err.field.fv err.validator.fv success.validator.fv', function(e, data) {
-			if (data.fv.getSubmitButton()) {
-				data.fv.disableSubmitButtons(false);
-			}
-		}).on('success.field.fv', function(e, data) {
-			if (data.fv.getSubmitButton()) {
-				data.fv.disableSubmitButtons(false);
-			}
-            //if (data.fv.getInvalidFields().length > 0) {    // There is invalid field
-            //	data.fv.disableSubmitButtons(true);
-            //}
-        }).on('success.form.fv', function(e,data) {
-            // Prevent form submission         
-            e.preventDefault();
+			bindEvents: function () {
+				this.form.on('submit', $.proxy(this.sendToken, this));
+			},
+			sendToken: function (event) {
+				event.preventDefault();
+				this.submitButton.val('One Moment...').prop('disabled', true);
+				Stripe.createToken(this.form, $.proxy(this.stripeResponseHandler, this));
+			},
+			stripeResponseHandler: function (status, response) {
+				if (response.error) {
+					this.form.find('.payment-errors').show().text(response.error.message);
+					return this.submitButton.prop('disabled', false).val(this.submitButtonValue);
+				} else {
+                // proceed to create invoice and conference id
 
-            // Get the form instance
-            var $form = $(e.target);
+            }
+            this.form[0].submit();
+        }
+    };
 
-            // Get the FormValidation instance
-            var bv = $form.data('formValidation');
-            $('#resultModal').modal({
-            	keyboard: false
-            	,backdrop:'static' });   
-            // Use Ajax to submit form data
-            $.post($form.attr('action'), $form.serialize(), function(result) {
-                // ... Process the result ...
-                var message = '';
-                if(result.success != undefined){
-                	message += 'Conference created. You may view your conference at ...';
-                }else if (result.invalidFields!= undefined){
-                	$.each(result.invalidFields,function(key,value){
-                		message += '<p>' + key + ':' + value + '</p>';
-                	});
-                	
-                }else{
-                	message = 'Unknown error occurred. Please contact System Administrator.'
-                }
-                $('#modalMessage').html(message);
-                setTimeout(function(){
-                	if(result.success != undefined){
-                		window.location.href ='manage?conf_id=' + result.success.createdConf.conf_id;
-                	}else{
-                		$('#resultModal').modal('hide');
-                	}
-                	
-                },1000);
-            }, 'json')
-.fail(function(){
-
-	var message = 'System fatal error, please contact your System Administrator ...';
-	$('#resultModal').modal({
-		keyboard: false
-		,backdrop:'static' }); 
-
-	$('#modalMessage').html(message);
-	setTimeout(function(){$('#resultModal').modal('hide');},1000);
-
-}).always(function(){
+    //StripeBilling.init();
 
 });
 
-}).find('input[name="chkField[]"]')
-            // Init iCheck elements
-            .iCheck({
-            	checkboxClass: 'icheckbox_square-green'
-            })
-            // Called when the radios/checkboxes are changed
-            .on('ifChanged', function(e) {
-                // Get the field name
-                var field = $(this).attr('name');
-                $('#frmCreateConf').formValidation('revalidateField', field);
-            });
-
-        }); 
 
 </script>
 <!-- include('../../utils/customcalendar') -->
 <!-- BREADCRUMB -->
 <ol class="breadcrumb">
-  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
-  <li class="active">Add New Conference</li>
+	<li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+	<li class="active">Add New Conference</li>
 </ol>
 <hr>
 
 @if (Auth::check())
 <div class="row" id='divFormBody'>
- {{ Form::open(array('url' => 'conference/management/submitCreateConf','method'=>'POST','id'=>'frmCreateConf', 'class' => 'form-horizontal')) }}
+	{{ Form::open(array('url' => URL::to('conference/management/submitCreateConf'),'method'=>'POST','id'=>'frmCreateConf', 'class' => 'form-horizontal')) }}
 	<div class="col-md-12">
-
 		<div class="form-group">
 			{{ Form::label('lblConfTitle', 'Conference Title', array('class' => 'col-md-2 control-label')) }}       
 			<div class="col-md-10">
@@ -379,54 +200,125 @@ Add New Conference
 				{{ Form::text('maxSeats',isset($value)?$value:'',array('name'=>'maxSeats','id'=>'maxSeats','class' => 'form-control',"maxlength"=>"6")) }}
 			</div>
 		</div>
-
 		<div class="form-group">
 			{{ Form::label('lblVenue', 'Venue', array('class' => 'col-md-2 control-label')) }}
 			<div class="col-md-6 venueContainer">
 				{{ Form::select('venue',[null=>''],null,array('id'=>'ddlVenue','class' => 'form-control necessary')) }}
 			</div>
 		</div>
-
-		<div class="form-group">
-			{{ Form::label('isFree', 'Is this Conference Free?', array('class' => 'col-md-2 control-label')) }} 
-			<div class="col-md-10"> 
-				<div class="checkbox">
-					{{ Form::checkbox('chkIsFree', 'checked',0,array('name'=>'chkIsFree','id'=>'chkIsFree')) }}    Yes                 
-				</div>			
-			</div>
-		</div>
 		<hr>
 		<!-- Submit Button -->
 		<div class="row">  
-	      <div class="col-md-8 col-md-offset-2">
-	        {{ Form::submit('Add New Conference', array('class' => 'btn btn-primary btn-md btn-block')) }}
+			<div class="col-md-8 col-md-offset-2">
+				{{ Form::submit('Add New Conference', array('class' => 'btn btn-primary btn-md btn-block')) }}
 
-	      </div>
-	    </div>   
-	{{ Form::close() }}
-
-
-</div>
-<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">			 
-				<h4 class="modal-title" id="exampleModalLabel"></h4>
 			</div>
-			<div class="modal-body">				
-				<div class="form-group pager">
-					<label class="control-label"><img src="../../img/jqueryui/ajax-loader.gif"></label>
-					<label class="control-label" id="modalMessage"></label>
+		</div>   
+		{{ Form::close() }}
+	</div>
+
+	<!-- Payment Panel -->
+	<div class="col-md-12 modal fade" id="paymentPanel" tabindex="-1" role="dialog" aria-labelledby="paymentPanel" aria-hidden="true">
+		<div class="innerModal col-md-8 modal-dialog">
+			<div class="col-md-12 modal-content">
+				{{ Form::open(array('url' => URL::to('payment/actionCreatePayment'),'method'=>'POST','id'=>'billing-form', 'class' => 'form-horizontal')) }}
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title"  id="lblPaymentPanel">Please enter your payment details: </h4>
+					<div class="payment-errors"></div>
 				</div>
+				<div class="modal-body" id="paymentPanelFields">
+					<fieldset>
+
+						<div class = 'form-horizontal'>
+							<div class="form-group">
+								{{ Form::label('lblPrice', 'Price :', array('class' => 'col-md-4 control-label')) }}
+								<div class="col-md-4">
+									<div class="input-group" id="innerPrice">
+										{{ Form::text('price',isset($value)?$value:'',array('id'=>'price', 'class' => 'form-control necessary','readonly','maxlength' => '10')) }}  
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								{{ Form::label('lblQuantity', 'Quantity :', array('class' => 'col-md-4 control-label')) }}
+								<div class="col-md-4">
+									<div class="input-group" id="innerQuantity">
+										{{ Form::text('quantity',isset($value)?$value:'',array('id'=>'quantity', 'class' => 'form-control necessary','readonly','maxlength' => '5')) }}  
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								{{ Form::label('lblTotal', 'Total :', array('class' => 'col-md-4 control-label')) }}
+								<div class="col-md-4">
+									<div class="input-group" id="innerTotal">
+										{{ Form::text('total',isset($value)?$value:'',array('id'=>'total', 'class' => 'form-control necessary','readonly','maxlength' => '5')) }}  
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								{{ Form::label('lblCreditCardNumber', 'Credit Card Number :', array('class' => 'col-md-4 control-label')) }}
+								<div class="col-md-4">
+									<div class="input-group" id="innerCreditCardNumber">
+										{{ Form::text('cardnumber',isset($value)?$value:'',array('id'=>'cardnumber', 'class' => 'form-control necessary','maxlength' => '20', 'data-stripe'=>'number')) }}  
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								{{ Form::label('lblCVC', 'CVC :', array('class' => 'col-md-4 control-label')) }}       
+								<div class="col-md-4">
+									<div class="necessary" id="innerCVC">
+										{{ Form::text('cvc',isset($value)?$value:'',array('id'=>'cvc', 'class' => 'form-control necessary', 'data-stripe'=>'cvc','maxlength' => '3')) }}
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								{{ Form::label('lblExpirationDate', 'Card Expiry :', array('class' => 'col-md-4 control-label')) }}       
+								<div class="col-md-4">
+									<div class="necessary" id="innerExpiry">
+										{{Form::selectMonth(null, null, array('class' => 'form-control necessary','data-stripe' => 'exp-month'))}}
+										{{Form::selectYear(null,date('Y'), date('Y') + 10, null,  array('class' => 'form-control necessary','data-stripe' => 'exp-year'))}}
+									</div>
+								</div>
+							</div>
+							<div class="row">  
+								<div class="col-md-3 col-md-offset-2">
+									<!-- Button -->     
+									{{ Form::submit('Pay Now !!!', array('id'=>'btnPayNow','class' => 'btn btn-primary btn-md btn-block')) }}
+								</div>
+							</div>   
+						</div>						
+
+					</fieldset>	
+				</div>
+				<div class="modal-footer">
+				</div>
+				{{ Form::close() }}
 			</div>
-			<div class="modal-footer">
+		</div>
+
+	</div>
+
+	<!-- Return Message -->
+	<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">			 
+					<h4 class="modal-title" id="exampleModalLabel"></h4>
+				</div>
+				<div class="modal-body">				
+					<div class="form-group pager">
+						<label class="control-label"><img src="../../img/jqueryui/ajax-loader.gif"></label>
+						<label class="control-label" id="modalMessage"></label>
+					</div>
+				</div>
+				<div class="modal-footer">
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-@endif
+	@endif
 
-@stop
+	@stop
 
 
 
