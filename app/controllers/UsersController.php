@@ -144,7 +144,8 @@ class UsersController extends \BaseController {
 
 			if($auth){
 		 				//redirect to intended page
-				return Redirect::to('/dashboard');
+				 return Redirect::intended('/dashboard');
+				//return Redirect::to('/dashboard');
 			} 
 			else{
 				return Redirect::route('users-sign-in')
