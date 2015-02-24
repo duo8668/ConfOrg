@@ -13,7 +13,9 @@
 
 <div class="row">
   <div class="col-md-12">
-    <div class="alert @if ($submission->status == 1) alert-success @elseif ($submission->status == 9) alert-warning @endif </strong>" role="alert">This submissions has been <strong>@if ($submission->status == 1) accepted @elseif ($submission->status == 9) rejected @endif </strong></div>
+    @if ($submission->status == 1 || $submission->status == 9) 
+      <div class="alert @if ($submission->status == 1) alert-success @elseif ($submission->status == 9) alert-danger @endif </strong>" role="alert">This submissions has been <strong>@if ($submission->status == 1) accepted @elseif ($submission->status == 9) rejected @endif </strong></div>
+    @endif
     <legend>Basic Information</legend>
 
       <!-- Submission Type -->

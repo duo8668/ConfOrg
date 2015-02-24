@@ -55,19 +55,32 @@ class ReviewController extends \BaseController {
 	public function add($id)
 	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		//check if submissions status = on review
-		if ($submission->status == 0 ) {
-			$keywords = $submission->keywords()->get();
-			$topics = DB::table('submission_topic')
-			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+		$conf = $submission->Conference()->first();
+		$is_reviewer = DB::table('confuserrole')
+						->select('role_id')
+						->where('conf_id', '=', $conf->conf_id)
+						->where('role_id', '=', 7)
+						->where('user_id', '=', Auth::user()->user_id)
+						->first();
+		
+		if ($is_reviewer != null) {
+			//check if submissions status = on review
+			if ($submission->status == 0 ) {
+				$keywords = $submission->keywords()->get();
+				$topics = DB::table('submission_topic')
+				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+				->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
-			return View::make('reviews.create')->withSubmission($submission)
-			->with('sub_topics', $topics)
-			->withKeyword($keywords);
+				return View::make('reviews.create')->withSubmission($submission)
+				->with('sub_topics', $topics)
+				->withKeyword($keywords);
+			} else {
+				return Redirect::route('reviews.index')->withMessage('Sorry! You can no longer review this submission. The committe decision has been finalized!');
+			}
 		} else {
-			return Redirect::route('reviews.index')->withMessage('Sorry! You can no longer review this submission. The committe decision has been finalized!');
+			return Redirect::route('reviews.index')->withMessage('You do not have the rights to review this submission!');
 		}
+		
 	}
 
 
@@ -134,22 +147,26 @@ class ReviewController extends \BaseController {
 		$sub_id = $review->sub_id;
 		// return var_dump($review->sub_id);
 		$submission = Submission::where('sub_id' , '=', $sub_id)->get()->first();
+		if ($review->user_id == Auth::user()->user_id) {
+			//check if submissions status = on review
+			if ($submission->status == 0 ) {
+				$keywords = $submission->keywords()->get();
+				$topics = DB::table('submission_topic')
+				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+				->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $sub_id)->get();
 
-		//check if submissions status = on review
-		if ($submission->status == 0 ) {
-			$keywords = $submission->keywords()->get();
-			$topics = DB::table('submission_topic')
-			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $sub_id)->get();
 
-
-			return View::make('reviews.edit')->withSubmission($submission)
-			->with('sub_topics', $topics)
-			->with('review', $review)
-			->withKeyword($keywords);
+				return View::make('reviews.edit')->withSubmission($submission)
+				->with('sub_topics', $topics)
+				->with('review', $review)
+				->withKeyword($keywords);
+			} else {
+				return Redirect::route('review.show', $id)->withMessage('Sorry! You can no longer edit this review. The committe decision has been finalized!');
+			}
 		} else {
-			return Redirect::route('review.show', $id)->withMessage('Sorry! You can no longer edit this review. The committe decision has been finalized!');
+			return Redirect::route('reviews.index')->withMessage('You do not have access to this page!');
 		}
+		
 	}
 
 
@@ -209,18 +226,36 @@ class ReviewController extends \BaseController {
 	public function show($id)
 	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$keywords = $submission->keywords()->get();
-		$authors = $submission->authors()->get();
-		$reviews = $submission->reviews()->get();
-		$sub_topics = DB::table('submission_topic')
-		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
-		return View::make('reviews.reviews')->withSubmission($submission)
-		->with('sub_authors', $authors)
-		->with('sub_topics', $sub_topics)
-		->withReviews($reviews)
-		->withKeyword($keywords);
+		$conf = $submission->Conference()->first();
+		$is_reviewer = DB::table('confuserrole')
+						->select('role_id')
+						->where('conf_id', '=', $conf->conf_id)
+						->where('role_id', '=', 7)
+						->where('user_id', '=', Auth::user()->user_id)
+						->first();
+		if ($is_reviewer != null) {
+			//check if submissions status = on review
+			if ($submission->status == 0 ) {
+				$keywords = $submission->keywords()->get();
+				$authors = $submission->authors()->get();
+				$reviews = $submission->reviews()->get();
+				$sub_topics = DB::table('submission_topic')
+				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+				->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+
+				return View::make('reviews.reviews')->withSubmission($submission)
+				->with('sub_authors', $authors)
+				->with('sub_topics', $sub_topics)
+				->withReviews($reviews)
+				->withKeyword($keywords);
+			} else {
+				return Redirect::route('reviews.index')->withMessage('Sorry! You can no longer review this submission. The committe decision has been finalized!');
+			}
+		} else {
+			return Redirect::route('reviews.index')->withMessage('You do not have the rights to review this submission!');
+		}				
+		
 	}
 
 	// Function to save reviewer's preferred topics

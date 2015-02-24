@@ -36,7 +36,7 @@
 				<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 				<td>{{ date("d F Y",strtotime($sub->updated_at)) }} at {{ date("g:ha",strtotime($sub->updated_at)) }}</td>
 				<td>
-					{{ link_to_route('review.show', 'See Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
+					{{ link_to_route('review.show', 'All Reviews', [$sub->sub_id], ['class' => 'btn btn-default btn-xs'])}}
 					@if ($sub->status == 0)
 						@if (in_array($sub->sub_id, $reviews)) 
 							<?php $key = array_keys($reviews, $sub->sub_id); ?>
