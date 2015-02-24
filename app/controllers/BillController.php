@@ -19,15 +19,16 @@ class BillController extends \BaseController {
 	public function index()
 	{  					
 		$privilege = false;
+		$user = '';
 		if(Auth::User()->hasSysRole('Admin'))
 		{
 			$user = 'Hello Admin!';						
-			$data=invoice::all();			
+			$data= invoice::all();			
 			$privilege = true;
 		}
-		else if(Auth::User()->hasSysRole('Resource Provider'))
+		else if(!Auth::User()->hasSysRole('Resource Provider'))
 		{
-			$user = User::find(Auth::user()->user_id)->firstname.', '.User::find(Auth::user()->user_id)->lastname;
+			$user = Auth::user()->firstname . ', ' . Auth::user()->lastname;
 			$data = invoice::with('conference','user')->where('user_id', '=', Auth::user()->user_id)->orderBy('created_at','Desc')->get();		
 		}
 		

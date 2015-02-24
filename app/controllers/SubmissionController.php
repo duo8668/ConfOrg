@@ -37,16 +37,22 @@ class SubmissionController extends \BaseController {
 	public function show($id) 
 	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$keywords = $submission->keywords()->get();
-		$authors = $submission->authors()->get();
-		$sub_topics = DB::table('submission_topic')
-		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
-		return View::make('submission.show')->withSubmission($submission)
-		->with('sub_authors', $authors)
-		->with('sub_topics', $sub_topics)
-		->withKeyword($keywords);
+		//ensure only the owner can see it
+		if (!empty($submission) && $submission->user_id == Auth::user()->user_id) {
+			$keywords = $submission->keywords()->get();
+			$authors = $submission->authors()->get();
+			$sub_topics = DB::table('submission_topic')
+			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+
+			return View::make('submission.show')->withSubmission($submission)
+			->with('sub_authors', $authors)
+			->with('sub_topics', $sub_topics)
+			->withKeyword($keywords);
+		} else {
+			return Redirect::route('submission.index')->with('message', 'You do not have access to this page!');
+		}
 	}
 
 
@@ -59,8 +65,12 @@ class SubmissionController extends \BaseController {
 	public function add($conf_id)
 	{
 		$conference = Conference::where('conf_id' , '=', $conf_id)->get()->first();
-		$topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
-		return View::make('submission.create')->with('topics', $topics)->with('conference', $conference);
+		if (!empty($conference)) {
+			$topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
+			return View::make('submission.create')->with('topics', $topics)->with('conference', $conference);
+		} else {
+			return Redirect::to('/dashboard')->with('message', 'The conference does not exist!');
+		}
 	}
 
 	/**
@@ -203,47 +213,53 @@ class SubmissionController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//check if status still 0
+		//check if submission belongs to use, then check if status still on review
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		if (!empty($submission) && $submission->user_id == Auth::user()->user_id) {
+			if ($submission->status == 0 ) {
+				$keywords = $submission->keywords()->get();
 
-		if ($submission->status == 0 ) {
-			$keywords = $submission->keywords()->get();
+				//TODO: get topics of current conference
+				$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
+				$topics = DB::table('submission_topic')
+				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+				->select('submission_topic.topic_id')->where('submission_topic.sub_id', '=', $id)->get();
 
-			//TODO: get topics of current conference
-			$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
-			$topics = DB::table('submission_topic')
-			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-			->select('submission_topic.topic_id')->where('submission_topic.sub_id', '=', $id)->get();
+				//set just the topic ID of selected topic into array, for checking purpose
+				$selected_topic = array();
+				foreach ($topics as $topic) {
+					array_push($selected_topic, $topic->topic_id);
+				}
 
-			//set just the topic ID of selected topic into array, for checking purpose
-			$selected_topic = array();
-			foreach ($topics as $topic) {
-				array_push($selected_topic, $topic->topic_id);
+				return View::make('submission.edit')->withSubmission($submission)
+				->with('sub_topics', $selected_topic)
+				->with('conf_topics', $conf_topics)
+				->withKeyword($keywords);
+			} else {
+				return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer edit this submission. The committe decision has been finalized!');
 			}
-
-			return View::make('submission.edit')->withSubmission($submission)
-			->with('sub_topics', $selected_topic)
-			->with('conf_topics', $conf_topics)
-			->withKeyword($keywords);
 		} else {
-			return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer edit this submission. The committe decision has been finalized!');
+			return Redirect::route('submission.index')->with('message', 'You do not have access to this page!');
 		}
 	}
 
 	public function edit_authors($id)
 	{
-		//check if status still 0
+		//check if submission belongs to use, then check if status still on review
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+		if (!empty($submission) && $submission->user_id == Auth::user()->user_id) {
+			if ($submission->status == 0 ) {
+				$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+				$authors = $submission->authors()->get();
 
-		if ($submission->status == 0 ) {
-			$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-			$authors = $submission->authors()->get();
+				return View::make('submission.edit_authors')->withSubmission($submission)
+				->with('authors', $authors);
 
-			return View::make('submission.edit_authors')->withSubmission($submission)
-			->with('authors', $authors);
-
+			} else {
+				return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer edit this submission. The committe decision has been finalized!');
+			}
 		} else {
-			return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer edit this submission. The committe decision has been finalized!');
+			return Redirect::route('submission.index')->with('message', 'You do not have access to this page!');
 		}
 	}
 
@@ -391,13 +407,21 @@ class SubmissionController extends \BaseController {
 	public function destroy($id)
 	{
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$submission->topics()->delete();
-		$submission->keywords()->delete();
-		$submission->authors()->delete();
-		File::delete($submission->attachment_path);
-		$submission->delete();
+		if (!empty($submission) && $submission->user_id == Auth::user()->user_id) {
+			if ($submission->status == 0 ) {
+				$submission->topics()->delete();
+				$submission->keywords()->delete();
+				$submission->authors()->delete();
+				File::delete($submission->attachment_path);
+				$submission->delete();
 
-		return Redirect::route('submission.index')->withMessage('Submission withdrawn!');
+				return Redirect::route('submission.index')->withMessage('Submission withdrawn!');
+		} else {
+				return Redirect::route('submission.show', $id)->withMessage('Sorry! You can no longer withdraw this submission. The committee decision has been finalized!');
+			}
+		} else {
+			return Redirect::route('submission.index')->with('message', 'You do not have access to delete the submission!');
+		}
 	}
 
 
@@ -408,19 +432,24 @@ class SubmissionController extends \BaseController {
 	 */
 	public function reviews($id)
 	{
+		
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
-		$keywords = $submission->keywords()->get();
-		$authors = $submission->authors()->get();
-		$reviews = $submission->reviews()->get();
-		$sub_topics = DB::table('submission_topic')
-		->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-		->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+		if ($submission->user_id == Auth::user()->user_id) {
+			$keywords = $submission->keywords()->get();
+			$authors = $submission->authors()->get();
+			$reviews = $submission->reviews()->get();
+			$sub_topics = DB::table('submission_topic')
+			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
-		return View::make('submission.reviews')->withSubmission($submission)
-		->with('sub_authors', $authors)
-		->with('sub_topics', $sub_topics)
-		->withReviews($reviews)
-		->withKeyword($keywords);
+			return View::make('submission.reviews')->withSubmission($submission)
+			->with('sub_authors', $authors)
+			->with('sub_topics', $sub_topics)
+			->withReviews($reviews)
+			->withKeyword($keywords);
+		} else {
+			return Redirect::route('submission.index')->with('message', 'You do not have access to this page!');
+		}
 		
 	}
 
