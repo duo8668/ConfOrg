@@ -493,6 +493,6 @@ public function conf_public_list() {
             return View::make('conf_detail')->with('conf', $conf)->with('chair', $chair)->with('topics', $topics);
         }
     }
-}
+
 
 }

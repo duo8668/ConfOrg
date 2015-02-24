@@ -13,16 +13,23 @@
 				{
 					$venue = Venue::with('Rooms')->all();													
 					$privilege = true;
+					// load the view and pass the venue				
+					return View::make('venue.index')
+					->with('venue', $venue)
+					->with('privilege',$privilege);
 				}
 				else if(Auth::User()->hasSysRole('Resource Provider'))
 				{
 					$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
 					$venue = Venue::with('Rooms')->where('company_id', $company_id)->get();
-				}				
-				// load the view and pass the venue				
-				return View::make('venue.index')
-				->with('venue', $venue)
-				->with('privilege',$privilege);
+					// load the view and pass the venue				
+					return View::make('venue.index')
+					->with('venue', $venue)
+					->with('privilege',$privilege);
+				} else {
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+				}	
+				
 			}
 
 			public function modify($id)

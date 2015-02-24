@@ -10,12 +10,14 @@ class RoomController extends \BaseController {
 	public function index()
 	{				
 		$privilege = false;
+		$flag = false;
 		if(Auth::User()->hasSysRole('Admin'))
 		{			
 			$data = DB::table('room')
 			->join('venue', 'venue.venue_id', '=', 'room.venue_id')			
 			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
 			$privilege = true;
+			$flag = true;
 		}
 		else if(Auth::User()->hasSysRole('Resource Provider'))
 		{
@@ -23,24 +25,32 @@ class RoomController extends \BaseController {
 			$data = DB::table('room')
 			->join('venue', 'venue.venue_id', '=', 'room.venue_id')
 			->where('venue.company_id', '=', $company_id)
-			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
+			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));		
+
+			$flag = true;							
 		}		
-		if (Session::has('edit'))
-		{			
-			session::forget('edit');
-			Session::flash('message', 'Room Successfully Updated!');
-			return Redirect::to('room');
+
+		if ($flag == true {
+			if (Session::has('edit'))
+			{			
+				session::forget('edit');
+				Session::flash('message', 'Room Successfully Updated!');
+				return Redirect::to('room');
+			}
+			else if (Session::has('create'))
+			{			
+				session::forget('create');
+				Session::flash('message', 'Room Successfully Created!');
+				return Redirect::to('room');	
+			}
+			else
+			{			
+				return View::make('Room.index')->with('data',$data)->with('privilege',$privilege);
+			}
+		} else {
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
 		}
-		else if (Session::has('create'))
-		{			
-			session::forget('create');
-			Session::flash('message', 'Room Successfully Created!');
-			return Redirect::to('room');	
-		}
-		else
-		{			
-			return View::make('Room.index')->with('data',$data)->with('privilege',$privilege);
-		}
+		
 	}
 
 	/**
