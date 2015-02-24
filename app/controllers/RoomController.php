@@ -30,7 +30,7 @@ class RoomController extends \BaseController {
 			$flag = true;							
 		}		
 
-		if ($flag == true {
+		if ($flag) {
 			if (Session::has('edit'))
 			{			
 				session::forget('edit');
