@@ -30,6 +30,11 @@ Route::get('/', function()
     return View::make('hello');
 });
 
+Route::get('/contact', function()
+{
+    return View::make('contact');
+});
+
 Route::get('/conference_list', array(
     'as'    => 'conference.public_list',
     'uses'  => 'ConferenceController@conf_public_list'
@@ -40,8 +45,13 @@ Route::get('/conference_detail/{conf_id}', array(
     'uses'  => 'ConferenceController@conf_public_detail'
 ));
 
+Route::post('/send_message', array(
+    'as'    => 'homepage.contact',
+    'uses'  => 'UtilsController@send_msg_orafer'
+));
+
 // TESTING
-Route::get('/testsql', 'SubmissionController@testsql');
+// Route::get('/testsql', 'SubmissionController@testsql');
 
 
 // });

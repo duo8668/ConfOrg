@@ -253,7 +253,7 @@ class ReviewController extends \BaseController {
 				return Redirect::route('reviews.index')->withMessage('Sorry! You can no longer review this submission. The committe decision has been finalized!');
 			}
 		} else {
-			return Redirect::route('reviews.index')->withMessage('You do not have the rights to review this submission!');
+			return Redirect::route('reviews.index')->withMessage('You do not have access to this page!');
 		}				
 		
 	}

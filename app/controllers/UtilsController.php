@@ -136,4 +136,28 @@ class UtilsController extends \BaseController {
 		}
 			
 	}
+
+	public function send_msg_orafer() {
+		$t = date('Y-m-d H:i:s');
+		// $data = array(Input::get('name'), Input::get('email'), Input::get('message'), Input::get('subject'));
+		// return var_dump($data);
+		//send email to ORAFER
+		Mail::queue('emails.contact.to_orafer',
+				['name' => Input::get('name'),
+				 'email' => Input::get('email'),
+				 'msg' => Input::get('message'), 
+				 'subject' => Input::get('subject'),
+				 'time' => $t] 
+				, function($message) {
+			    	$message->to('bella.ratmelia@gmail.com', 'ORAFER')->subject('New Message Received!');
+				});
+
+		//send email confirmation to user
+		Mail::queue('emails.contact.to_user', array()
+				, function($message) {
+			    	$message->to(Input::get('email'), Input::get('name'))->subject('We have received your message');
+				});
+		Session::flash('success', 'Your message has been sent!');
+		return Redirect::to('/contact');
+	}
 }

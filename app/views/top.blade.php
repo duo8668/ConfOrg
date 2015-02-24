@@ -49,9 +49,10 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right">                    
+                    <li><a href="{{ URL::to('/#features') }}" class="features">Features</a></li>  
+                    <li><a href="{{ URL::to('/contact') }}" class="contact_us">Contact</a></li> 
                     <li><a href="{{ URL::route('conference.public_list') }}">Conferences</a></li> 
-                    <li><a href="{{ URL::to('/#features') }}" class="features">Features</a></li>   
                     @if (Auth::check() == true) 
                         <li><a href="{{ URL::route('users-sign-in') }}">Hello, {{{ Auth::user()->firstname }}} {{{ Auth::user()->lastname }}}</a></li> 
                     @else             
