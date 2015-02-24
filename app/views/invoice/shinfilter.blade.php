@@ -74,33 +74,33 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
   });
 };
 
+$('#searchlist').keyup(function () {
+  var valthis = $(this).val().toLowerCase();
+  var num = 0;
+  $('select#SelectedValues>option').each(function () {
+      var text = $(this).text().toLowerCase();
+      if(text.indexOf(valthis) !== -1)  
+          {$(this).show(); $(this).prop('selected',true);}
+      else{$(this).hide();}
+       });
+});
+
 $(function() {
   $('#duallistbox_demo2').filterByText($('#searchbox'), true);
-  $('#SelectedValues').filterByText($('#searchlist'), true);
            
 
 $("#duallistbox_demo2").change(function(){    
     var equipmentName = $('#duallistbox_demo2 :selected').text();
     var equipmentValue = $("#duallistbox_demo2").val();   
     console.log(equipmentName,equipmentValue);
-    $('#duallistbox_demo2 :selected').remove();
-
-    $('#SelectedValues').append($('<option>', {
-    value: equipmentValue,
-    text: equipmentName
-    }));
+    $('#duallistbox_demo2 option:selected').remove().appendTo('#SelectedValues').removeAttr('selected');
 });
 
 $("#SelectedValues").change(function(){    
     var equipmentName = $('#SelectedValues :selected').text();    
     var equipmentValue = $("#SelectedValues").val();   
-    console.log(equipmentName,equipmentValue);
-    $('#SelectedValues :selected').remove();
-
-    $('#duallistbox_demo2').append($('<option>', {
-    value: equipmentValue,
-    text: equipmentName
-    }));
+    console.log(equipmentName,equipmentValue);    
+    $('#SelectedValues option:selected').remove().appendTo('#duallistbox_demo2').removeAttr('selected');    
 });
 
 
