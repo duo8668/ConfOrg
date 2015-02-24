@@ -2,7 +2,6 @@
 
 class Pending extends Eloquent {	
 
-	public $timestamps = false;	
 	protected $primaryKey = 'pending_id';
 	protected $table = 'pending';
 

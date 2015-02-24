@@ -1,8 +1,6 @@
 <?php
 
-class Room_Equipment extends Eloquent {	
-
-	public $timestamps = false;	
+class Room_Equipment extends Eloquent {		
 
 	protected $primaryKey = 'roomEquipment_id';
 	protected $table = 'room_equipment';

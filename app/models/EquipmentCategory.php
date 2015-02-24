@@ -2,7 +2,6 @@
 
 class EquipmentCategory extends Eloquent {	
 
-	public $timestamps = false;	
 	protected $primaryKey = 'equipmentcategory_id';
 	protected $table = 'equipment_category';
 
