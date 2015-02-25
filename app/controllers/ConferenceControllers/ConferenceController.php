@@ -328,7 +328,7 @@ public function updateTopics() {
     ];
 
     //validation is using HTML5 required attribute
-  
+
     if (Auth::check()) {
     
         try {
@@ -345,11 +345,11 @@ public function updateTopics() {
                         DB::table('submission_topic')->where('topic_id', '=', $data['topic_id'][$i])->delete();
 
                         //delete the topics itself
-                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i]);
+                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i])->first();
                         if ( !empty($conf_topic) ) $conf_topic->delete();
                     } else {
                         //else, just update based on value inside the text field
-                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i]);
+                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i])->first();
                         $conf_topic->topic_name = $data['topic_name'][$i];
                         $conf_topic->modified_by = $user->user_id;
                         $conf_topic->save();

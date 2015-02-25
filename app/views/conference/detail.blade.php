@@ -590,8 +590,8 @@ $.fn.textWidth = function() {
 								@foreach ($topics as $topic)
 									<tr>
 										<td>
-											<input type="text" value="{{{ $topic->topic_name }}}" class="form-control" style="width:100%" name="topic_name[]" required
-											<input type="checkbox" name="topic_id[]" value="{{{ $topic->topic_id }}}">
+											<input type="text" value="{{{ $topic->topic_name }}}" class="form-control" style="width:100%" name="topic_name[]" required>
+											<input type="hidden" name="topic_id[]" value="{{{ $topic->topic_id }}}">
 										</td>
 									 	<td>
 									 		<label><input type="checkbox" name="delete_topic[]" value="{{{ $topic->topic_id }}}"> Mark for deletion</label>
