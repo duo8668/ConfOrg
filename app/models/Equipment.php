@@ -10,7 +10,7 @@ class Equipment extends Eloquent {
 	protected $fillable = array('equipment_name', 'equipment_remark', 'equipmentcategory_id', 'equipment_status');
 
 	public function equipmentCategory(){
-		return $this->belongsTo('equipmentCategory', 'equipmentcategory_id','equipmentcategory_id');
+		return $this->belongsTo('EquipmentCategory', 'equipmentcategory_id','equipmentcategory_id');
 		//return $this->hasone('Category','equipmentcategory_ID')->select(['equipment_ID', 'equipmentName']);
 	}
 
