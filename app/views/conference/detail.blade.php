@@ -196,6 +196,7 @@ Conference Detail
 			,"{{ URL::to('conference/conferenceEvents/getConferenceScheduleEvents/') }}");
 
 		loadEditTopic({{ $conf -> conf_id }}, "{{ URL::to('conference/management/updateTopics') }}");
+		loadAddTopic({{ $conf -> conf_id }},"{{ URL::to('conference/management/addNewTopic') }}")
 
 		$('.modal').on('shown.bs.modal',function(e){
 			if($(this).children('div:eq(1)').hasClass('modal-dialog')){
@@ -333,6 +334,7 @@ $.fn.textWidth = function() {
 						<!-- Topics -->
 						<div role="tabpanel" class="tab-pane fade" id="topics">
 							{{ Form::button('Edit Topics', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit')) }}
+							{{ Form::button('Add New Topic', array('class' => 'btn btn-success btn-sm pull-right btnEdit','id'=>'btnTopicsAdd')) }}
 							@if (count($topics) > 0)
 								<table class="table table-striped">
 									<tr>
@@ -571,7 +573,7 @@ $.fn.textWidth = function() {
 		</div>
 	</div>
 	
-	<!-- Topics -->
+	<!-- EDIT Topics -->
 	<div class="col-md-12 modal fade" id="topicsEditor" tabindex="-1" role="dialog" aria-labelledby="topicsEditor" aria-hidden="true">
 		<div class="innerModal col-md-8 modal-dialog">
 			<div class="col-md-12 modal-content">
@@ -606,6 +608,37 @@ $.fn.textWidth = function() {
 				<div class="modal-footer">
 					{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
 					{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveTopics')) }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ADD Topics -->
+	<div class="col-md-12 modal fade" id="newTopicsEditor" tabindex="-1" role="dialog" aria-labelledby="newTopicsEditor" aria-hidden="true">
+		<div class="innerModal col-md-8 modal-dialog">
+			<div class="col-md-12 modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="lblreviewPanelEditor">Add new Topic</h4>
+				</div>
+				<div class="modal-body">
+					<fieldset>
+						<form class="form-inline" id="add_topics_form">
+							<table class="table table-striped">
+								<tr>
+									<td style="width:25%"><strong>New Topic</strong></td>
+									<td>
+										<input type="text"  name="topic_name" class="form-control" id="new_topic_name" placeholder="Enter New Topic here" style="width:100%">
+										<input type="hidden" name="conf_id" value="{{{ $conf->conf_id }}}">
+									</td>
+								</tr>
+							</table>
+						</form>
+					</fieldset>	
+				</div>
+				<div class="modal-footer">
+					{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
+					{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnAddTopic')) }}
 				</div>
 			</div>
 		</div>

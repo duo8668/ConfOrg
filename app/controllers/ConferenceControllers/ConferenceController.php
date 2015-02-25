@@ -107,7 +107,7 @@ class ConferenceController extends \BaseController {
         $submissions = Submission::where('conf_id', '=', Input::get('conf_id'))->get();
 
        $topics = DB::table('conference_topic')
-                    ->join('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
+                    ->leftJoin('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
                     ->select('conference_topic.topic_id', 'conference_topic.topic_name', Db::raw('count(sub_id) as total_subs'))
                     ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
                     ->groupBy('conference_topic.topic_name')
@@ -334,7 +334,7 @@ public function updateTopics() {
         try {
             $user = Auth::user();
 
-            $result = DB::transaction(function() use ($data, $user) {
+            // $result = DB::transaction(function() use ($data, $user) {
                 //update for each conference topic
                 for ($i = 0; $i < count($data['topic_name']); $i++) {
 
@@ -356,14 +356,42 @@ public function updateTopics() {
                     }
                     
                 }
-            });
+            // });
         } catch (Exception $ex) {
             throw $ex;
         }
         
     }
 
-    return array('success' => $result);
+    return array('success' => 'Updated!');
+}
+
+public function addNewTopic() {
+    $data = [
+    'conf_id' => Input::get('conf_id')
+    , 'topic_name' => Input::get('topic_name')
+    ];
+
+    //validation is using HTML5 required attribute
+
+    if (Auth::check()) {
+    
+        try {
+            $user = Auth::user();
+
+            //add in new topic
+            $topic = ConferenceTopic::create(['topic_name' => $data['topic_name']
+                                    , 'conf_id' => $data['conf_id']
+                                    , 'created_by' => $user->user_id]);
+                
+            // });
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        
+    }
+
+    return array('success' => 'Updated!');
 }
 
 public function updateConfStaffs() {
