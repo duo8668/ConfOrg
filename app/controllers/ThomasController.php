@@ -170,7 +170,7 @@
 				Gmaps::add_marker($marker);
 				$map = Gmaps::create_map();		
 
-				$data  = room::with('Pending')->where('venue_id','=',$id)->get();				
+				$data  = Room::with('Pending')->where('venue_id','=',$id)->get();				
 
 			// show the view and pass the venue to it
 				return View::make('venue.show')
@@ -421,7 +421,7 @@
 																		
 									for($i = 0; $i < $roomCount; ++$i)
 									{										
-										$room = new room;
+										$room = new Room;
 										$room->room_name = $results[0][$i]['room_name'];
 										$room->capacity = $results[0][$i]['room_capacity'];
 										$room->venue_id = $venue->venue_id;
