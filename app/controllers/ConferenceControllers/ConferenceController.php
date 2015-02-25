@@ -215,7 +215,7 @@ class ConferenceController extends \BaseController {
                         $invoice->conf_id = $createdConf->conf_id;       
                         $invoice->save();
 
-                                //save topics
+                        //save topics
                         $topics_array = explode(",", $data['topicStr']);
                         
                         if (!empty($topics_array)) {
@@ -356,7 +356,7 @@ public function updateConfStaffs() {
                                     }
                                 }
                             } else {
-                                            // not exists, send invitation to create staff
+                                // not exists, send invitation to create staff
                             }
                         }
                     }
@@ -408,7 +408,7 @@ public function updateReviewPanels() {
                 $numRowUpdated = 0;
 
                 $result = DB::transaction(function() use ($data, $user, $originalRPs, $numRowUpdated) {
-                    $roleid = Role::ReviewPanel()->role_id;
+                    $roleid = Role::Reviewer()->role_id;
 
                                 // add all first
                     if (!empty($data['emails'])) {
@@ -427,7 +427,8 @@ public function updateReviewPanels() {
                                     }
                                 }
                             } else {
-                                            // not exists, send invitation to create staff
+                                // not exists, send invitation to create review panel
+                                $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
                             }
                         }
                     }
@@ -443,8 +444,7 @@ public function updateReviewPanels() {
                                 $numRowUpdated += $oristaff->forceDelete();
                             }
                         }
-
-                                    // return to the $result variable
+                            // return to the $result variable
                         return array('numRowUpdated' => $numRowUpdated, 'conStaffs' => ConferenceUserRole::ConferenceReviewPanels($data['conf_id']));
                     }
                 });
@@ -467,32 +467,57 @@ public function validateCreateConference() {
 }
 
 public function conf_public_list() {
-        //get all conferences sorted by begin date
+    //get all conferences sorted by begin date
     $confs = Conference::orderBy('begin_date', 'desc')->get();
     return View::make('conf_list')->with('confs', $confs);
 }
 
-     public function conf_public_detail($id) {
-        
-        $conf = Conference::where('conf_id', '=', $id)->first();
-        $chair = DB::table('users')
-                    ->join('confuserrole', 'confuserrole.user_id', '=', 'users.user_id')
-                    ->select('users.email', 'users.firstname', 'users.lastname')
-                    ->where('confuserrole.role_id', '=', 4)
-                    ->where('confuserrole.conf_id', '=', $id)
-                    ->first();
-        $topics = DB::table('conference_topic')
-                    ->join('conference', 'conference.conf_id', '=', 'conference_topic.conf_id')
-                    ->select('conference_topic.topic_name')
-                    ->where('conference_topic.conf_id', '=', $id)
-                    ->get();
+public function conf_public_detail($id) {
 
-        if (empty($conf)) {
-            return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
-        } else {
-            return View::make('conf_detail')->with('conf', $conf)->with('chair', $chair)->with('topics', $topics);
-        }
+    $conf = Conference::where('conf_id', '=', $id)->first();
+    $chair = DB::table('users')
+    ->join('confuserrole', 'confuserrole.user_id', '=', 'users.user_id')
+    ->select('users.email', 'users.firstname', 'users.lastname')
+    ->where('confuserrole.role_id', '=', 4)
+    ->where('confuserrole.conf_id', '=', $id)
+    ->first();
+    $topics = DB::table('conference_topic')
+    ->join('conference', 'conference.conf_id', '=', 'conference_topic.conf_id')
+    ->select('conference_topic.topic_name')
+    ->where('conference_topic.conf_id', '=', $id)
+    ->get();
+
+    if (empty($conf)) {
+        return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
+    } else {
+        return View::make('conf_detail')->with('conf', $conf)->with('chair', $chair)->with('topics', $topics);
     }
+}
 
+
+private function emailForInviteToConference($conf_id,$role_id,$email){
+    $code = str_random(60);
+
+    $invite = new InviteToConference();
+    $invite->code = $code;
+    $invite->email = $email;
+    $invite->role_id = $role_id;
+    $invite->conf_id = $conf_id;
+    $invite->save();
+
+    $data = array('role_name' => Role::where('role_id','=', $role_id)->firstOrFail()->rolename
+        ,'conf_title' => Conference::where('conf_id','=', $conf_id)->firstOrFail()->title);
+
+    Mail::queue('emails.auth.invite_to_conference',
+        array('link'=>URL::route('users-create', $code),
+            'role_name' => $data['role_name'] ,
+            'conf_title' => $data['conf_title'] ,
+            ), 
+        function($message) use ($email,$data)
+        {
+            $message->to($email)->subject('You are invited to join ORAFER as '. $data['role_name'] .' for Conference \''.$data['conf_title'].'\'!');
+        });
+}
 
 }
+

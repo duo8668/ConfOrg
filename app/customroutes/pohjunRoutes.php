@@ -89,7 +89,7 @@ Route::group(array('before' => 'guest'),function(){
 		/*
 		| Create account (GET)
 		*/
-		Route::get('/users/create',array(
+		Route::get('/users/create/{code?}',array(
 			'as' => 'users-create',
 			'uses' => 'UsersController@getCreate'
 			));

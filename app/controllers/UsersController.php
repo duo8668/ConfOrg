@@ -17,7 +17,24 @@ class UsersController extends \BaseController {
 	/*
 	| User sign up page 
  	*/
-	public function getCreate(){
+	public function getCreate($code = null){
+		
+		if(!empty($code)){
+
+			//* check if the person's code is valid
+			$inviteToConf = InviteToConference::where('code','=',$code)
+			->first();
+
+			if(!empty($inviteToConf) && !$inviteToConf->is_used){
+				return View::make('users.create')->with(array('inviteToConf' => $inviteToConf));
+			}else if(!empty($inviteToConf) && $inviteToConf->is_used){
+				return Redirect::route('users-create')
+				->with('message', 'Invalid Code !!!'); 				
+			}else if (empty($inviteToConf)){
+				return Redirect::route('users-create')
+				->with('message', 'Invalid Code !!!'); 
+			}
+		}
 		return View::make('users.create');
 	}
 
@@ -43,9 +60,12 @@ class UsersController extends \BaseController {
 			$first_name = Input::get('first_name');
 			$last_name = Input::get('last_name');
 			$password = Input::get('password');
+			$iCode = Input::get('iCode');
 
 			//Activiation code 
-			$code =  str_random(60);
+			$inviteToConf = InviteToConference::where('code','=',$iCode)->where('is_used','=',0)->firstOrFail();
+
+			$code =  empty($inviteToConf)? str_random(60):'';
 
 			$user = User::create(array(
 				'email' => $email,
@@ -53,21 +73,44 @@ class UsersController extends \BaseController {
 				'lastname' => $last_name,
 				'password' => Hash::make($password),
 				'code' => $code,
-				'active' => 0
+				'active' => empty($inviteToConf)? 0:1
 				));
 
 			if($user){
- 				//send email
-				Mail::send('emails.auth.activate',
-					array('link' => URL::route('users-activate',$code),'firstname' => $first_name, 'lastname' => $last_name)
-					, function($message) use ($user) 
-					{
-						$message->to($user->email, $user->firstname, $user->lastname) ->subject('Activate your new ORAFER account');
-					});
 
- 				//change the home to our homepage
-				return Redirect::route('users-create')
-				->with('message', 'Your account has been created! we have sent you an email to activate your account');
+				if(empty($inviteToConf)){
+					Mail::send('emails.auth.activate',
+						array('link' => URL::route('users-activate',$code),'firstname' => $first_name, 'lastname' => $last_name)
+						, function($message) use ($user) 
+						{
+							$message->to($user->email, $user->firstname, $user->lastname) ->subject('Activate your new ORAFER account');
+						});
+					return Redirect::route('users-create')
+					->with('message', 'Your account has been created! we have sent you an email to activate your account');
+				}else{
+
+					$role = Role::where('role_id','=', $inviteToConf->role_id)->first();
+					$conf = Conference::where ('conf_id','=', $inviteToConf->conf_id)->first();
+					$profile = new Profile();
+					$profile->user_id = $user->user_id;
+					$profile->bio = 'Hi! Thanks for accept offer to become ' . $role->rolename . ' for ' . $conf->title . ' !';
+					$profile->save();
+
+					$sysrole = new SysRole();
+					$sysrole->user_id = $user->user_id;
+					$sysrole->role_id = '1';
+					$sysrole->save();
+
+					$confUserRole = ConferenceUserRole::create(array('conf_id' => $inviteToConf->conf_id
+						, 'user_id' => $user->user_id
+						, 'role_id' => $inviteToConf->role_id ));
+
+					$inviteToConf->is_used = 1;
+					$inviteToConf->save();
+
+					return Redirect::to('/users/sign-in')
+					->with('message', 'Account created! You can now login.');
+				} 				
 			}
 
 		}
@@ -144,7 +187,7 @@ class UsersController extends \BaseController {
 
 			if($auth){
 		 				//redirect to intended page
-				 return Redirect::intended('/dashboard');
+				return Redirect::intended('/dashboard');
 				//return Redirect::to('/dashboard');
 			} 
 			else{
@@ -260,28 +303,29 @@ class UsersController extends \BaseController {
 	/*
 	| Invite Resource provider. send email to them!
  	*/
+
 	public function postInviteResource(){
 		$validator = Validator::make(Input::all(),
 			array(
-				'email' 			=> 'required|email',
+				'email' 			=> 'required|email|unique:users,email',
 				'company'			=>	'required'
 				));
 		if($validator->fails()){
  			//redirect 
- 			return Redirect::to('/admins/invite-resource')
- 					->withErrors($validator); 
- 		}
- 		else{
+			return Redirect::to('/admins/invite-resource')
+			->withErrors($validator);
+		}	
+		else{
  			//send email
 			$email = Input::get('email');
 			$company_no = Input::get('company');
- 			$company_name = DB::table('company')
-  			->where('company_id','=',$company_no)
- 			->pluck('company_name');
- 			
- 			$code = str_random(60);
+			$company_name = DB::table('company')
+			->where('company_id','=',$company_no)
+			->pluck('company_name');
 
- 			$invite = new Invite();
+			$code = str_random(60);
+
+			$invite = new Invite();
 			$invite->code = $code;
 			$invite->email = $email;
 			$invite->company = $company_name;
@@ -299,7 +343,7 @@ class UsersController extends \BaseController {
 
 			return Redirect::to('/admins/invite-resource')
 			->with('message','We had sent you an invite to the email.');
- 		}
+		}
 
 	}
 
@@ -307,8 +351,8 @@ class UsersController extends \BaseController {
 	| get Resource provider sign up page
  	*/
 	public function getResource($code){
-	$invite = Invite::Where('code','=',$code)->firstOrFail();
-	return View::make('users.resource_create')->withInvite($invite);
+		$invite = Invite::Where('code','=',$code)->firstOrFail();
+		return View::make('users.resource_create')->withInvite($invite);
 	}
 
 	/*
@@ -323,8 +367,8 @@ class UsersController extends \BaseController {
 			));
 
 		if($validator->fails()){
-			 return Redirect::back()
- 			->withErrors($validator)
+			return Redirect::back()
+			->withErrors($validator)
 			->withInput();
 		}//if		
 		else{
@@ -356,15 +400,15 @@ class UsersController extends \BaseController {
 			$company_id = DB::table('company')->where('Company_name', $company)->pluck('company_id');
 
 			DB::table('company_user')->insert(
-    		array('company_id' => $company_id, 'user_id' => $user->user_id)
-			);
+				array('company_id' => $company_id, 'user_id' => $user->user_id)
+				);
 
 			return Redirect::to('/users/sign-in')
- 			->with('message','Succesfully created! Login now!');
+			->with('message','Succesfully created! Login now!');
 			}//else
 
-		
-	}
+
+		}
 
 
 	/*
@@ -372,28 +416,28 @@ class UsersController extends \BaseController {
  	*/
 	public function postAddCompany(){
 		$validator = Validator::make(Input::all(),
- 			array(
- 				'new' 	=> 'required|unique:company,company_name'
- 			));
+			array(
+				'new' 	=> 'required|unique:company,company_name'
+				));
 
 		if($validator->fails()){
  			//redirect 
- 			return Redirect::to('/admins/invite-resource')
- 					->withErrors($validator);
- 		}
- 		else{
- 			$new = Input::get('new');
+			return Redirect::to('/admins/invite-resource')
+			->withErrors($validator);
+		}
+		else{
+			$new = Input::get('new');
 			$company = new Company();
 			$company->company_name = $new;
 			$company->save();
 
 
- 			return Redirect::to('/admins/invite-resource')
- 				->with('message', 'New company has been added');
- 				
- 				
+			return Redirect::to('/admins/invite-resource')
+			->with('message', 'New company has been added');
 
- 		} 
+
+
+		} 
 	}
 
 
@@ -534,31 +578,31 @@ class UsersController extends \BaseController {
 		}
 	}
 	
-		public function getDashboard() {
+	public function getDashboard() {
 
 		if (Auth::User()->hasSysRole('Resoure Provider')) {
 
 			$venue = Venue::where('created_by', '=', Auth::user()->user_id)->get();
 			return View::make('layouts.dashboard.index')
-				->with('venue', $venue)
-				->with('flag', 'RP');
+			->with('venue', $venue)
+			->with('flag', 'RP');
 
 		} else if (Auth::User()->hasSysRole('Admin')){
 
 			return View::make('layouts.dashboard.index')
-				->with('flag', 'SA');
+			->with('flag', 'SA');
 
 		} else {
 
 			$confs = DB::table('conference')
-						->join('confuserrole', 'conference.conf_id', '=', 'confuserrole.conf_id')
-						->join('conference_room_schedule', 'conference_room_schedule.conf_id', '=', 'conference.conf_id')
-						->join('room', 'conference_room_schedule.room_id', '=', 'room.room_id')
-						->join('venue', 'venue.venue_id', '=', 'room.venue_id')
-						->select('conference.conf_id', 'conference.title', 'conference.begin_date', 'conference.end_date', 'confuserrole.role_id', 'venue.venue_name')
-						->where('confuserrole.user_id', '=', Auth::user()->user_id)
-						->groupBy('conference.title')
-						->get();
+			->join('confuserrole', 'conference.conf_id', '=', 'confuserrole.conf_id')
+			->join('conference_room_schedule', 'conference_room_schedule.conf_id', '=', 'conference.conf_id')
+			->join('room', 'conference_room_schedule.room_id', '=', 'room.room_id')
+			->join('venue', 'venue.venue_id', '=', 'room.venue_id')
+			->select('conference.conf_id', 'conference.title', 'conference.begin_date', 'conference.end_date', 'confuserrole.role_id', 'venue.venue_name')
+			->where('confuserrole.user_id', '=', Auth::user()->user_id)
+			->groupBy('conference.title')
+			->get();
 
 			$has_participant = UtilsController::checkHasRole($confs, 8);
 			$has_chair = UtilsController::checkHasRole($confs, 4);
@@ -568,12 +612,12 @@ class UsersController extends \BaseController {
 			// return var_dump($not_participant);
 
 			return View::make('layouts.dashboard.index')
-				->with('confs', $confs)
-				->with('flag', 'NONRP')
-				->with('p_flag', $has_participant)
-				->with('c_flag', $has_chair)
-				->with('r_flag', $has_reviewer)
-				->with('s_flag', $has_staff);
+			->with('confs', $confs)
+			->with('flag', 'NONRP')
+			->with('p_flag', $has_participant)
+			->with('c_flag', $has_chair)
+			->with('r_flag', $has_reviewer)
+			->with('s_flag', $has_staff);
 
 		}
 	}

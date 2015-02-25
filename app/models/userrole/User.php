@@ -131,7 +131,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     ->where(function($query){
       $query->where('role_id','=',Role::ConferenceChair()->role_id)
       ->orWhere('role_id','=',Role::ConferenceStaff()->role_id)
-      ->orWhere('role_id','=',Role::ReviewPanel()->role_id);
+      ->orWhere('role_id','=',Role::Reviewer()->role_id);
     })
     ->select('user_id')
     ->get()->toArray();

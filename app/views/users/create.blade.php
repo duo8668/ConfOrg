@@ -21,7 +21,14 @@
 
                              <div class="form-group  @if ($errors->has('email')) has-error @endif">
                                 {{Form::label('email','Email')}}
-                                {{ Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'E-mail', 'autofocus' => 'yes')) }}
+
+                                <?php $hasInviteToConf = !empty($inviteToConf);
+                                    $aryEmailProps = array('class' => 'form-control', 'placeholder' => 'E-mail', 'autofocus' => 'yes');
+                                    if($hasInviteToConf){
+                                        array_push($aryEmailProps, 'readonly');
+                                        echo Form::hidden('iCode',$inviteToConf->code);
+                                    } ?>
+                                    {{ Form::email('email', $hasInviteToConf? $inviteToConf->email:'', $aryEmailProps) }}
                                 @if($errors->has('email'))
                                     <p class="text-danger">{{ $errors->first('email')}}</p>
                                 @endif
