@@ -252,43 +252,61 @@ $.fn.textWidth = function() {
 	<div class="col-md-12">
 		<div id="conf_id_col_{{$conf->conf_id}}" class="confclass">
 			<div class="conferencebody">
-
-				<h3 class="text-center"><u>{{ $conf->title }}</u></h2>
-					<h4 class="text-center"> {{ $conf->room()->venue()->venue_name }}  </h4>
-					<!-- <h4>  {{ $conf->room()->room_name }}  </h4> -->
-					<h4 class="text-center">  <span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
-
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2">
-							<hr>
-							<!-- Submission Title-->
-							<div class="row">
-								<label class="col-md-6 control-label text-right">Chairman</label>       
-								<div class="col-md-6">
-									@foreach($confChairUsers as $confChairUser)
-									{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
-									@endforeach
-								</div>
+				
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<!-- Conference Title-->
+						<div class="row">
+							<label class="col-md-6 control-label text-right">Conference Title</label>       
+							<div class="col-md-6">
+								{{ $conf->title }}
 							</div>
-
-							<div class="row">
-								<label class="col-md-6 control-label text-right">Submission Deadline</label>
-								<div class="col-md-6">   
-									<span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span>        
-								</div>
-							</div>
-
-							<div class="row">
-								<label class="col-md-6 control-label text-right">Minimum Acceptance Score</label> 
-								<div class="col-md-6">
-									<span  id="minScoreValue">{{ $conf->min_score }}</span>
-								</div>
-							</div>
-
 						</div>
+
+						<!-- Venue name -->
+						<div class="row">
+							<label class="col-md-6 control-label text-right">Venue</label>       
+							<div class="col-md-6">
+								{{ $conf->room()->venue()->venue_name }}
+							</div>
+						</div>
+
+						<!-- Date commence and end -->
+						<div class="row">
+							<label class="col-md-6 control-label text-right">Begin and End Date</label>       
+							<div class="col-md-6">
+								<span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}
+							</div>
+						</div>
+
+						<!-- Chairman -->
+						<div class="row">
+							<label class="col-md-6 control-label text-right">Chairman</label>       
+							<div class="col-md-6">
+								@foreach($confChairUsers as $confChairUser)
+								{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
+								@endforeach
+							</div>
+						</div>
+
+						<div class="row">
+							<label class="col-md-6 control-label text-right">Submission Deadline</label>
+							<div class="col-md-6">   
+								<span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span>        
+							</div>
+						</div>
+
+						<div class="row">
+							<label class="col-md-6 control-label text-right">Minimum Acceptance Score</label> 
+							<div class="col-md-6">
+								<span  id="minScoreValue">{{ $conf->min_score }}</span>
+							</div>
+						</div>
+
 					</div>
-					{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
-					<!-- END CHAIRMAN INFO -->
+				</div>
+				{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
+				<!-- END CHAIRMAN INFO -->
 
 				</div>
 				<div style="margin-bottom: 30px;"></div>
@@ -656,7 +674,7 @@ $.fn.textWidth = function() {
 					<fieldset>
 						<div class = 'form-horizontal'>
 							<div class="form-group">
-								{{ Form::label('lblCutOffDate', 'Cuf Off :', array('class' => 'col-md-4 control-label')) }}
+								{{ Form::label('lblCutOffDate', 'Submission Deadline', array('class' => 'col-md-4 control-label')) }}
 								<div class="col-md-4 dateContainer">
 									<div class="input-group date" id="innerCutOffDate">
 										{{ Form::text('cutoffdate',isset($value)?$value:'',array('name'=>'cutoffdate','id'=>'cutoffdate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY HH:mm')) }}
@@ -665,7 +683,7 @@ $.fn.textWidth = function() {
 								</div>
 							</div>
 							<div class="form-group">
-								{{ Form::label('lblMinScore', 'Min Score :', array('class' => 'col-md-4 control-label')) }}       
+								{{ Form::label('lblMinScore', 'Minimum Acceptance Score', array('class' => 'col-md-4 control-label')) }}       
 								<div class="col-md-4">
 									<div id="minScore">
 										<div class="necessary" id="innerMinScore">
