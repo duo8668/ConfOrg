@@ -103,7 +103,7 @@ class UsersController extends \BaseController {
 			}
 		}
 		return Redirect::to('/users/sign-in')
-		->with('message', 'We could not activate your account. Please contact the admin it144a@gmail.com');
+		->with('message', 'We could not activate your account. Please contact the admin admin@orafer.com');
 	} 	
 
 	/*
@@ -153,7 +153,7 @@ class UsersController extends \BaseController {
 			}
 		}
 		return Redirect::route('users-sign-in')
-		->with('message','There was a problem signing you in. Please contact admin it144a@gmail.com');
+		->with('message','There was a problem signing you in. Please contact admin admin@orafer.com');
 
 	}
 	
@@ -213,7 +213,7 @@ class UsersController extends \BaseController {
 			}
 		}
 		return Redirect::route('users-forget-password')
-		->with('message','Could not request new password. Please contact admin it144a@gmail.com');
+		->with('message','Could not request new password. Please contact admin admin@orafer.com');
 	}
 
 	/*
@@ -237,7 +237,7 @@ class UsersController extends \BaseController {
 		}
 
 		return Redirect::route('users-forget-password')
-		->with('message','Could not recover your account. Please contact admin it144a@gmail.com');
+		->with('message','Could not recover your account. Please contact admin admin@orafer.com');
 	}
 
 	/*
