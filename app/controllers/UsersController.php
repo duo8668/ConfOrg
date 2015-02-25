@@ -580,7 +580,7 @@ class UsersController extends \BaseController {
 	
 	public function getDashboard() {
 
-		if (Auth::User()->hasSysRole('Resoure Provider')) {
+		if (Auth::User()->hasSysRole('Resource Provider')) {
 
 			$venue = Venue::where('created_by', '=', Auth::user()->user_id)->get();
 			return View::make('layouts.dashboard.index')
