@@ -41,7 +41,7 @@ class RoomController extends \BaseController {
 			}
 			else
 			{			
-				return View::make('Room.index')->with('data',$data)->with('privilege',$privilege);
+				return View::make('room.index')->with('data',$data)->with('privilege',$privilege);
 			}
 		} else {
 			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');

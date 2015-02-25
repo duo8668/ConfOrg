@@ -14,7 +14,7 @@ class EquipmentController extends \BaseController {
 		{            
 			$privilege = true;
 		}   
-		$data = equipment::with('equipmentCategory')->get();    	
+		$data = Equipment::with('equipmentCategory')->get();    	
 		return View::make('Equipment.index')->with('data',$data)->with('privilege',$privilege);
 	}
 
