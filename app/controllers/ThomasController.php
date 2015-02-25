@@ -395,7 +395,7 @@
 							}
 							else if($numError == 0)
 							{																				
-								// $eq = equipmentCategory::where('equipmentcategory_name','=','Logistics')->first()->equipmentcategory_id;
+								// $eq = EquipmentCategory::where('equipmentcategory_name','=','Logistics')->first()->equipmentcategory_id;
 								// dd($eq);
 							
 								$results = Excel::load($file)->all();
@@ -440,7 +440,7 @@
 										{																						
 											//add or ignore category
 
-											if(is_null(equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
+											if(is_null(EquipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
 												$equipmentcategory = new EquipmentCategory;
 								                $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category']; 
 								                $equipmentcategory->created_by=Auth::user()->user_id;
@@ -460,7 +460,7 @@
 												$equipment->equipment_remark = $results[1][$i]['equipment_remarks'];
 												$equipment->created_by=Auth::user()->user_id;
 												if($eCatID == 0)
-													$eCatID = equipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
+													$eCatID = EquipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
 												$equipment->equipmentcategory_id = $eCatID;
 												$equipment->save();    																																			
 												$eID = $equipment->equipment_id;

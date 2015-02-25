@@ -101,7 +101,7 @@ class EquipmentCategoryController extends \BaseController {
         {
             $privilege = false;   
         }                   
-        $equipmentcategory = equipmentCategory::find($id);
+        $equipmentcategory = EquipmentCategory::find($id);
         $equipmentList = equipment::where('equipmentcategory_id','=',$id)->get();        
 
         // show the view and pass the nerd to it
@@ -121,7 +121,7 @@ class EquipmentCategoryController extends \BaseController {
     public function edit($id)
     {
         //
-        $equipmentcategory = equipmentCategory::find($id);
+        $equipmentcategory = EquipmentCategory::find($id);
         // show the edit form and pass the equipmentcategory
         return View::make('equipmentcategory.edit')
         ->with('equipmentcategory', $equipmentcategory);
@@ -168,7 +168,7 @@ class EquipmentCategoryController extends \BaseController {
         else {
             // store
             $updated =false;
-            $equipmentcategory = equipmentCategory::find($id);                                
+            $equipmentcategory = EquipmentCategory::find($id);                                
             if($equipmentcategory->equipmentcategory_name != Input::get('categoryName')) {
                 $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
                 $updated=true;  

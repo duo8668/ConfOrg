@@ -365,10 +365,10 @@ public function updateTopics() {
                     if ( !empty( $data['delete_topic'][$i] ) ) {
                         //if yes
                         //delete entries on conference_topics first
-                        DB::table('submission_topic')->where('topic_id', '=', $data['topic_id'][$i])->delete();
+                        DB::table('submission_topic')->where('topic_id', '=', $data['delete_topic'][$i])->delete();
 
                         //delete the topics itself
-                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i])->first();
+                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['delete_topic'][$i])->first();
                         if ( !empty($conf_topic) ) $conf_topic->delete();
                     } else {
                         //else, just update based on value inside the text field

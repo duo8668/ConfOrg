@@ -74,7 +74,7 @@ class RoomController extends \BaseController {
 	public function modify($id)
 	{
 
-		$room = room::find($id);
+		$room = Room::find($id);
 		if($room->available == 'no')        		        				
 		{
 			$room->available = 'yes';  

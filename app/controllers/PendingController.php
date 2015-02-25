@@ -16,11 +16,11 @@ class PendingController extends \BaseController {
 	}
 	public function editCategory($id)
 	{		
-		$equipmentcategory = equipmentCategory::find($id);
+		$equipmentcategory = EquipmentCategory::find($id);
         // show the edit form and pass the equipmentcategory
 		return View::make('pending.editCategory')
 		->with('equipmentcategory', $equipmentcategory);
-		// $equipmentcategory = equipmentCategory::find($id);        
+		// $equipmentcategory = EquipmentCategory::find($id);        
 		// return View::make('equipmentcategory.edit')->with('equipmentcategory', $equipmentcategory);		
 	}
 
@@ -38,7 +38,7 @@ class PendingController extends \BaseController {
 		else{
 			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
 		}			      
-		// $equipmentcategory = equipmentCategory::find($id);        
+		// $equipmentcategory = EquipmentCategory::find($id);        
 		// return View::make('equipmentcategory.edit')->with('equipmentcategory', $equipmentcategory);		
 	}
 
@@ -87,7 +87,7 @@ class PendingController extends \BaseController {
 		else {
             // store
 			$updated =false;
-			$equipmentcategory = equipmentCategory::find($id);                                
+			$equipmentcategory = EquipmentCategory::find($id);                                
 			if($equipmentcategory->equipmentcategory_name != Input::get('categoryName')) {
 				$equipmentcategory->equipmentcategory_name = Input::get('categoryName');
 				$updated=true;  
