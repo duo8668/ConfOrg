@@ -7,6 +7,7 @@ Route::group(array('before' => 'auth'),function(){
 	//-----------------------For the finance information-----------
 	Route::get('/payment', 'BillController@payment');
 	Route::post('payment', 'BillController@createInvoice');
+	
 	Route::any('/payment/actionCreateInvoice', 'BillController@actionCreateInvoice');
 	Route::any('/payment/actionCreatePayment', 'BillController@actionCreatePayment');
 
@@ -31,6 +32,7 @@ Route::group(array('before' => 'auth'),function(){
 	Route::get('pending/editCategory/{id}/edit','PendingController@editCategory');	
 	Route::get('pending/editEquipment/{id}/edit','PendingController@editEquipment');
 	Route::put('pending/{id}','PendingController@updateCategory');
+	Route::put('pending/{id}','PendingController@updateEquipment');
 	
 	Route::post('equipmentcategory/modify/{id}', 'EquipmentCategoryController@modify');
 	Route::post('equipment/modify/{id}', 'EquipmentController@modify');
@@ -41,5 +43,6 @@ Route::group(array('before' => 'auth'),function(){
 	Route::resource('equipmentcategory', 'EquipmentCategoryController');
 	Route::resource('equipment', 'EquipmentController');
 	Route::resource('room', 'RoomController');
-
+	///bella use this to as ur url customize it here to your liking. it will invoke the createInvoice funtion and redirect to the credit card payment page. 
+	Route::post('/bellaCreateConferenceURL','BillController@createInvoice');	
 });

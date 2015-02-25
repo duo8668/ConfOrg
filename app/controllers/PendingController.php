@@ -66,8 +66,7 @@ class PendingController extends \BaseController {
 		$pending->delete();
 		
 		Session::flash('message', 'Successfully deleted the venue!');
-		return Redirect::to('pending');
-
+		return Redirect::to('pending');				
 	}
 
 	public function updateCategory($id)

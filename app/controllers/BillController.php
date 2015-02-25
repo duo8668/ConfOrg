@@ -200,7 +200,7 @@ class BillController extends \BaseController {
 	{						
 		$total = Input::get('total');
 		$total = ltrim ($total, '$');
-		$total = $total * 100;		
+		$total = $total * 100;	
 		$billing = App::make('Acme\Billing\BillingInterface');
 		$customerId= $billing->charge([
 			'email' => Input::get('email'),

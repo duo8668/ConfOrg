@@ -22,7 +22,7 @@ class RoomController extends \BaseController {
 			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');				
 			$data = Room::with('Pending','venues')->whereHas('venues', function($Query) use($company_id) {
 				$Query->where('company_id', '=', $company_id); });
-			$data = $data->get();	
+		$data = $data->get();
 			$flag = true;							
 		}		
 
