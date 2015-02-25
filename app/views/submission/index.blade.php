@@ -28,7 +28,7 @@
                     <th style="width: 25%;"><input type="text" class="form-control" placeholder="Conference" disabled></th>
                     <th style="width: 14%;"><input type="text" class="form-control" placeholder="Date Submitted" disabled></th>
                     <th><input type="text" class="form-control" placeholder="Status" disabled></th>
-                    <th style="width: 25%;"></th>
+                    <th style="width: 25%;">Option</th>
                 </tr>
             </thead> 
 			@foreach ($submissions as $sub) 
