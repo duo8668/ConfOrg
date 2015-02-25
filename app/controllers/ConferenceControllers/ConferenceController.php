@@ -11,7 +11,7 @@ class ConferenceController extends \BaseController {
       |
      */
 
-      public function index() {
+    public function index() {
         $confs = Conference::where('begin_date', '>', DB::raw('curdate()'))
         ->get();
 
@@ -106,7 +106,12 @@ class ConferenceController extends \BaseController {
 
         $submissions = Submission::where('conf_id', '=', Input::get('conf_id'))->get();
 
-        $topics = DB::table('conference_topic')->select('topic_id', 'topic_name')->where('conf_id', '=', Input::get('conf_id'))->get();
+       $topics = DB::table('conference_topic')
+                    ->join('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
+                    ->select('conference_topic.topic_id', 'conference_topic.topic_name', Db::raw('count(sub_id) as total_subs'))
+                    ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
+                    ->groupBy('conference_topic.topic_name')
+                    ->get();
 
         $view = View::make('conference.detail', array('fields' => $fields, 'conf' => $conf
             , 'confChairUsers' => $confChairUsers
@@ -221,10 +226,11 @@ class ConferenceController extends \BaseController {
                         if (!empty($topics_array)) {
                             $conf_topics = array();
                             foreach ($topics_array as $topic) {
-                                array_push($conf_topics, ['topic_name' => $topic, 'conf_id' => $createdConf->conf_id, 'created_by' => $user->user_id]);
+                                $topic = ConferenceTopic::create(['topic_name' => $topic
+                                    , 'conf_id' => $createdConf->conf_id
+                                    , 'created_by' => $user->user_id]);
                             }
 
-                            DB::table('conference_topic')->insert($conf_topics);
                         }
 
                         return array('createdConf' => $createdConf, 'confRoom' => $confRoom);
@@ -308,6 +314,53 @@ public function updateParticulars() {
                 throw $ex;
             }
         }
+    }
+
+    return array('success' => $result);
+}
+
+public function updateTopics() {
+    $data = [
+    'conf_id' => Input::get('conf_id')
+    , 'topic_name' => Input::get('topic_name')
+    , 'topic_id' => Input::get('topic_id')
+    , 'delete_topic'  => Input::get('delete_topic')
+    ];
+
+    //validation is using HTML5 required attribute
+  
+    if (Auth::check()) {
+    
+        try {
+            $user = Auth::user();
+
+            $result = DB::transaction(function() use ($data, $user) {
+                //update for each conference topic
+                for ($i = 0; $i < count($data['topic_name']); $i++) {
+
+                    //check if topic marked for deletion
+                    if ( !empty( $data['delete_topic'][$i] ) ) {
+                        //if yes
+                        //delete entries on conference_topics first
+                        DB::table('submission_topic')->where('topic_id', '=', $data['topic_id'][$i])->delete();
+
+                        //delete the topics itself
+                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i]);
+                        if ( !empty($conf_topic) ) $conf_topic->delete();
+                    } else {
+                        //else, just update based on value inside the text field
+                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i]);
+                        $conf_topic->topic_name = $data['topic_name'][$i];
+                        $conf_topic->modified_by = $user->user_id;
+                        $conf_topic->save();
+                    }
+                    
+                }
+            });
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+        
     }
 
     return array('success' => $result);

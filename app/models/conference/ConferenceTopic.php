@@ -4,7 +4,7 @@ class ConferenceTopic extends Eloquent {
 
 	protected $table = 'conference_topic';
 
-	protected $fillable = array('conf_id','user_id','created_by','modified_by');
+	protected $fillable = array('conf_id', 'topic_name', 'created_by');
 	
 	protected $primaryKey = 'topic_id';
 	

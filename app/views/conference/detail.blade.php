@@ -61,6 +61,7 @@ Conference Detail
 <script src="{{ asset('js/app/conference/editReviewPanel.js') }}"></script>
 <script src="{{ asset('js/app/conference/editStaff.js') }}"></script>
 <script src="{{ asset('js/app/conference/editSchedule.js') }}"></script>
+<script src="{{ asset('js/app/conference/editTopic.js') }}"></script>
 
 <style>
 
@@ -193,6 +194,8 @@ Conference Detail
 			,{{ $conf->ConferenceRoomSchedule()->confroomschedule_id }}
 			,"{{ URL::to('conference/conferenceEvents/addConferenceScheduleEvents/') }}"
 			,"{{ URL::to('conference/conferenceEvents/getConferenceScheduleEvents/') }}");
+
+		loadEditTopic({{ $conf -> conf_id }}, "{{ URL::to('conference/management/updateTopics') }}");
 
 		$('.modal').on('shown.bs.modal',function(e){
 			if($(this).children('div:eq(1)').hasClass('modal-dialog')){
@@ -329,15 +332,23 @@ $.fn.textWidth = function() {
 
 						<!-- Topics -->
 						<div role="tabpanel" class="tab-pane fade" id="topics">
-							<ol>
-								@if (count($topics) > 0)
+							{{ Form::button('Edit Topics', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit')) }}
+							@if (count($topics) > 0)
+								<table class="table table-striped">
+									<tr>
+										<td style="width:30%"><strong>Topic Name</strong></td>
+										<td style="width:30%"><strong>No. of Submissions Under This Topic</strong></td>
+									</tr>
 									@foreach($topics as $topic)
-										<li>{{{ $topic->topic_name }}}</li>
+										<tr>
+											<td style="width:30%">{{{ $topic->topic_name }}}</td>
+											<td style="width:30%">{{{ $topic->total_subs }}}</td>
+										</tr>
 									@endforeach
-								@else
-									No topics defined
-								@endif
-							</ol>
+								</table>
+							@else
+								No topics defined
+							@endif
 						</div>
 
 						<!-- Committee -->
@@ -388,57 +399,71 @@ $.fn.textWidth = function() {
 
 						<!-- Submissions -->
 						<div role="tabpanel" class="tab-pane fade" id="submissions">
-							<div class="table-responsive">
-							  	<table class="table table-striped">   
-							  		<tr>
-										<td style="width: 25%;"><strong>Submission Title</strong></td>
-										<td style="width: 10%;"><strong>Type</strong></td>
-										<td style="width: 15%;"><strong>Date Submitted</strong></td>
-										<td style="width: 10%;"><strong>Score</strong></td>
-										<td style="width: 10%;"><strong>Status</strong></td>
-										<td><strong>Option</strong></td>
-									</tr> 
-									@foreach ($submissions as $sub) 
-										<tr>
-											<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null) }}</td>
-											<td>
-												@if ($sub->sub_type === 3)
-												    Poster
-												@elseif ($sub->sub_type === 2)
-												    Full Paper
-												@else
-												    Abstract
-												@endif
-											</td>
-											<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
+							{{ HTML::script('js/filterables.js') }}
+							<div class="row filter-row">
+							    <div class="panel panel-default filterable">
+							        <div class="panel-heading">
+							            <h3 class="panel-title"><strong>Filter Submissions</strong></h3>
+							            <div class="pull-right">
+							                <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+							            </div>
+							        </div>
+									<div class="table-responsive">
+									  	<table class="table table-striped">
+									  		<thead>
+								                <tr class="filters">
+								                    <th style="width: 25%;"><input type="text" class="form-control" placeholder="Submission Title" disabled></th>
+								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Type" disabled></th>
+								                    <th style="width: 15%;"><input type="text" class="form-control" placeholder="Date Submitted" disabled></th>
+								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Score" disabled></th>
+								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Status" disabled></th>
+								                    <th>Option</th>
+								                </tr>
+								            </thead>   
+									  		
+											@foreach ($submissions as $sub) 
+												<tr>
+													<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null) }}</td>
+													<td>
+														@if ($sub->sub_type === 3)
+														    Poster
+														@elseif ($sub->sub_type === 2)
+														    Full Paper
+														@else
+														    Abstract
+														@endif
+													</td>
+													<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 
-											<td>{{{ $sub->overall_score }}} </td>
-											<td>
-												@if ($sub->status === 1)
-												    <span class="text-success">Accepted</span>
-												@elseif ($sub->status === 9)
-												    <span class="text-danger">Rejected</span>
-												@else
-												    On review
-												@endif
-											</td>
-											<td>
-												{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
-													<div class="col-sm-9">
-														{{Form::select('chair_decision', 
-														array('1' => 'Manually Accept'
-														, '9' => 'Manually Reject'
-														, '0' => 'Need to Peer-review again')
-														, '1'
-														, ['class' => 'form-control input-sm']);}}
-													</div>
-													{{ Form::hidden('conf_id', $conf->conf_id) }}
-													{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
-												{{ Form::close() }}
-											</td>
-										</tr>
-									@endforeach
-								</table>
+													<td>{{{ $sub->overall_score }}} </td>
+													<td>
+														@if ($sub->status === 1)
+														    <span class="text-success">Accepted</span>
+														@elseif ($sub->status === 9)
+														    <span class="text-danger">Rejected</span>
+														@else
+														    On review
+														@endif
+													</td>
+													<td>
+														{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
+															<div class="col-sm-9">
+																{{Form::select('chair_decision', 
+																array('1' => 'Manually Accept'
+																, '9' => 'Manually Reject'
+																, '0' => 'Need to Peer-review again')
+																, '1'
+																, ['class' => 'form-control input-sm']);}}
+															</div>
+															{{ Form::hidden('conf_id', $conf->conf_id) }}
+															{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
+														{{ Form::close() }}
+													</td>
+												</tr>
+											@endforeach
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 
@@ -541,6 +566,46 @@ $.fn.textWidth = function() {
 				<div class="modal-footer">
 					{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
 					{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveReviewPanel')) }}
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Topics -->
+	<div class="col-md-12 modal fade" id="topicsEditor" tabindex="-1" role="dialog" aria-labelledby="topicsEditor" aria-hidden="true">
+		<div class="innerModal col-md-8 modal-dialog">
+			<div class="col-md-12 modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="lblreviewPanelEditor">Edit Topics:</h4>
+				</div>
+				<div class="modal-body">
+					<fieldset>
+						<form class="form-inline" id="edit_topics_form">
+							<table class="table table-striped">
+								<tr>
+									<td style="width:50%"><strong>Edit Topic Name</strong></td>
+									<td><strong>Delete this topic?</strong> <small>(Submissions under this topic will not be removed)</small></td>
+								</tr>
+								@foreach ($topics as $topic)
+									<tr>
+										<td>
+											<input type="text" value="{{{ $topic->topic_name }}}" class="form-control" style="width:100%" name="topic_name[]" required
+											<input type="checkbox" name="topic_id[]" value="{{{ $topic->topic_id }}}">
+										</td>
+									 	<td>
+									 		<label><input type="checkbox" name="delete_topic[]" value="{{{ $topic->topic_id }}}"> Mark for deletion</label>
+									 	</td>
+									</tr>
+								@endforeach
+							  
+							</table>
+						</form>
+					</fieldset>	
+				</div>
+				<div class="modal-footer">
+					{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
+					{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveTopics')) }}
 				</div>
 			</div>
 		</div>

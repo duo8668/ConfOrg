@@ -19,6 +19,7 @@ Route::group(array('before' => 'auth'),function(){
 	Route::get('conference/management/updateReviewPanels', 'ConferenceController@updateReviewPanels');
 	Route::get('conference/management/updateDescription', 'ConferenceController@updateDescription');
 	Route::get('conference/management/updateParticulars', 'ConferenceController@updateParticulars');
+	Route::get('conference/management/updateTopics', 'ConferenceController@updateTopics');
 	Route::get('conference/management/participate', 'ConferenceController@register');
 	Route::get('conference/detail', 'ConferenceController@detail');
 

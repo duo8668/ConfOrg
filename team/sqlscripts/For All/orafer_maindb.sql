@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 25, 2015 at 10:54 PM
+-- Generation Time: Feb 26, 2015 at 12:47 AM
 -- Server version: 5.5.42-cll
 -- PHP Version: 5.4.23
 
@@ -19,46 +19,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `orafer_maindb`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bill_component`
---
-
-DROP TABLE IF EXISTS `bill_component`;
-CREATE TABLE IF NOT EXISTS `bill_component` (
-  `billcomponent_id` int(11) NOT NULL AUTO_INCREMENT,
-  `bill_id` int(11) NOT NULL,
-  `billcomponenttype_id` int(11) NOT NULL,
-  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `amount` decimal(7,2) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`billcomponent_id`),
-  KEY `FK_BillComp_01` (`bill_id`),
-  KEY `BillComponentType` (`billcomponenttype_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bill_component_type`
---
-
-DROP TABLE IF EXISTS `bill_component_type`;
-CREATE TABLE IF NOT EXISTS `bill_component_type` (
-  `billcomponenttype_id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `is_enabled` bit(1) NOT NULL DEFAULT b'1',
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`billcomponenttype_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -153,46 +113,6 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `conference_entertainment`
---
-
-DROP TABLE IF EXISTS `conference_entertainment`;
-CREATE TABLE IF NOT EXISTS `conference_entertainment` (
-  `conference_entertainment_id` int(11) NOT NULL AUTO_INCREMENT,
-  `conf_id` int(11) NOT NULL,
-  `entertainment_id` int(11) NOT NULL,
-  `remarks` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`conference_entertainment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `conference_equipmentrequest`
---
-
-DROP TABLE IF EXISTS `conference_equipmentrequest`;
-CREATE TABLE IF NOT EXISTS `conference_equipmentrequest` (
-  `conferenceequipmentrequest_id` int(11) NOT NULL AUTO_INCREMENT,
-  `conf_id` int(11) NOT NULL,
-  `requestor_id` int(11) NOT NULL,
-  `equipmentcat_id` int(11) NOT NULL,
-  `equipment_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`conferenceequipmentrequest_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `conference_field`
 --
 
@@ -207,63 +127,6 @@ CREATE TABLE IF NOT EXISTS `conference_field` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`conferencefield_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `conference_food`
---
-
-DROP TABLE IF EXISTS `conference_food`;
-CREATE TABLE IF NOT EXISTS `conference_food` (
-  `conferencefood_id` int(11) NOT NULL,
-  `conf_id` int(11) DEFAULT NULL,
-  `food_id` int(11) DEFAULT NULL,
-  `foodprice_id` int(11) DEFAULT NULL,
-  `quantity` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `delivery_datetime` datetime DEFAULT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`conferencefood_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `conference_paymenttransaction`
---
-
-DROP TABLE IF EXISTS `conference_paymenttransaction`;
-CREATE TABLE IF NOT EXISTS `conference_paymenttransaction` (
-  `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
-  `bill_id` int(11) NOT NULL,
-  `paymenttype_id` int(11) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`transaction_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `conference_reviewpanel`
---
-
-DROP TABLE IF EXISTS `conference_reviewpanel`;
-CREATE TABLE IF NOT EXISTS `conference_reviewpanel` (
-  `conferencereviewpanel_id` int(11) NOT NULL,
-  `conf_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`conferencereviewpanel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -789,8 +652,7 @@ CREATE TABLE IF NOT EXISTS `submissions` (
   `modified_by` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`sub_id`),
-  UNIQUE KEY `submissions_subtitle_unique` (`sub_title`)
+  PRIMARY KEY (`sub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
