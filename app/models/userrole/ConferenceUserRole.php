@@ -26,7 +26,7 @@ class ConferenceUserRole extends Eloquent {
 		->where($this->table.'.role_id','=',Role::ConferenceStaff()->role_id)
 		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
 		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
-		->get();
+	 ;
 
 	}
 
@@ -35,7 +35,7 @@ class ConferenceUserRole extends Eloquent {
 		->where($this->table.'.role_id','=',Role::Reviewer()->role_id)
 		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
 		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
-		->get();
+		 ;
 
 	}
 
