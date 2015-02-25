@@ -9,7 +9,7 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+08:00";
-
+-- SET FOREIGN_KEY_CHECKS = 0;
 -- --------------------------------------------------------
 
 --
@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS `payment_cash` (
   `user_id` int(11) NOT NULL,
   `bill_id` int(11) NOT NULL,
   `amount_paid` double(7,2) NOT NULL,
-  `date_paid` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_paid` datetime NOT NULL DEFAULT 0,
   `created_by` int(11) NOT NULL,
   `modified_by` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -766,6 +766,7 @@ ALTER TABLE `confuserrole`
 -- Table structure for table `interest_field`
 --
 
+
 DROP TABLE IF EXISTS `interest_field`;
 CREATE TABLE IF NOT EXISTS `interest_field` (
   `interestfield_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -840,3 +841,5 @@ CREATE TABLE IF NOT EXISTS `pending` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE  `conference` ADD  `ticket_price` DECIMAL( 10, 2 ) NOT NULL DEFAULT  '0' AFTER  `min_score` ;
+
+SET FOREIGN_KEY_CHECKS=1;
