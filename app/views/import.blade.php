@@ -13,16 +13,16 @@ Import Venue
 @section('content')
 <!-- BREADCRUMB -->
 <ol class="breadcrumb">
-  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
-  <li class="active">Import Venues Information</li>    
+	<li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+	<li class="active">Import Venues Information</li>    
 </ol>
 <hr>
 <div Class="container">	
 	<h3>Instructions <small><button class="btn btn-xs btn-default" onclick="$('#instructions').toggle();">Show/Hide Instuctions</button></small></h3>
 	<div id="instructions">
-	<p>1. Download the excel template and replace the sample data with your data.</p>
-	<p>2. You may wish to enter name and address of the venue and preview the map to check if the address is correct and appearing correctly on the map.</p>
-	<p>3. Upload the excel template with your data and click on import.</p>
+		<p>1. Download the excel template and replace the sample data with your data.</p>
+		<p>2. You may wish to enter name and address of the venue and preview the map to check if the address is correct and appearing correctly on the map.</p>
+		<p>3. Upload the excel template with your data and click on import.</p>
 	</div>
 </div>
 <div class="row" style="margin-top:20px">	
@@ -59,22 +59,24 @@ Import Venue
 			</div>
 		</div>
 
+		<legend>Import Excel</legend>
+
+		<div class="form-group @if ($errors->has('imported_File')) has-error @endif">
+			<label class="col-md-2 control-label" for="imported_File">Upload Excel</label>
+			<div class="col-md-8">      										
+				{{ Form::file('imported_File', array('id' => 'imported_File', 'style'=> 'margin-top:10px' )) }}								
+				@if ($errors->has('imported_File')) <p class="help-block">{{ $errors->first('imported_File') }}</p> @endif					
+			</div>
+		</div>				
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="submit"></label>
+			<div class="col-md-8">      															
+				{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary')) }}
+			</div>
+		</div>	
+
 		@if(Session::has('map'))      	
-			<legend>Import Excel</legend>
-			<div class="form-group @if ($errors->has('imported_File')) has-error @endif">
-				<label class="col-md-2 control-label" for="imported_File">Upload Excel</label>
-				<div class="col-md-8">      										
-					{{ Form::file('imported_File', array('id' => 'imported_File', 'style'=> 'margin-top:10px' )) }}								
-					@if ($errors->has('imported_File')) <p class="help-block">{{ $errors->first('imported_File') }}</p> @endif					
-				</div>
-			</div>				
-			<div class="form-group">
-				<label class="col-md-2 control-label" for="submit"></label>
-				<div class="col-md-8">      															
-					{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary')) }}
-				</div>
-			</div>	
-			<center>
+		<center>
 			<div style="max-width:900px">
 				<?php echo Session::get('map')['html']; ?> 
 			</div>		
