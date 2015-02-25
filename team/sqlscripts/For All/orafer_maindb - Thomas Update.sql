@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`room` (
   CONSTRAINT `room_venue_id_foreign`
     FOREIGN KEY (`venue_id`)
     REFERENCES `conforg_db`.`venue` (`venue_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 12
@@ -391,7 +391,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`equipment` (
   CONSTRAINT `equipment_equipmentcategory_id_foreign`
     FOREIGN KEY (`equipmentcategory_id`)
     REFERENCES `conforg_db`.`equipment_category` (`equipmentcategory_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
@@ -743,12 +743,12 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`room_equipment` (
   CONSTRAINT `room_equipment_equipment_id_foreign`
     FOREIGN KEY (`equipment_id`)
     REFERENCES `conforg_db`.`equipment` (`equipment_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `room_equipment_room_id_foreign`
     FOREIGN KEY (`room_id`)
     REFERENCES `conforg_db`.`room` (`room_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
