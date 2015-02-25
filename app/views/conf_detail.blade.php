@@ -59,7 +59,7 @@
                         @elseif ($date > $conf->cutoff_time)
                             {{-- if yes, show purchase ticket --}}
                             
-                            {{ Form::open(['to' => 'payment', 'method' => 'post', 'class' => 'inline' ]) }}
+                            {{ Form::open(['url' => '/bellaCreateConferenceURL', 'method' => 'post', 'class' => 'inline' ]) }}
                                 <div class="row">
                                     <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
                                         {{ Form::hidden('conf_id', $conf->conf_id) }}

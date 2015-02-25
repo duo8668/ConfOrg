@@ -7,7 +7,8 @@
 @endif
 @stop
 @section('page-header')
-Import Venues Information
+Import Venue
+
 @stop
 @section('content')
 <!-- BREADCRUMB -->
@@ -16,12 +17,19 @@ Import Venues Information
   <li class="active">Import Venues Information</li>    
 </ol>
 <hr>
-
-<div class="row">
+<div Class="container">	
+	<h3>Instructions</h3> <button class="btn btn-xs btn-warning" onclick="$('#instructions').toggle();">Show/Hide Instuctions</button>
+	<div id="instructions">
+	<p>1. Download the excel templete and replace the sample data with your data.</p>
+	<p>2. Enter venue's name and address and preview if the map accurately pin points the venue address</p>
+	<p>3. Upload the excel template with your data and Import the data into the database. </p>
+	</div>
+</div>
+<div class="row" style="margin-top:20px">	
 	{{ Form::open(array('url' => 'importData', 'class' => 'form-horizontal', 'files' => true)) }}
 	<div class="col-md-12">
 		<div class="form-group">
-			<label class="col-md-2 control-label" for="submit"></label>
+			<label class="col-md-2 control-label" for="submit"></label>			
 			<div class="col-md-8">      
 				{{ Form::submit('Download Excel', array('name'=>'Export','class' => 'btn btn-primary')) }}
 			</div>
@@ -52,12 +60,7 @@ Import Venues Information
 			</div>
 		</div>
 
-		@if(Session::has('map'))      
-		<center>
-			<div style="max-width:900px">
-				<?php echo Session::get('map')['html']; ?> 
-			</div>		
-		</center>	
+		@if(Session::has('map'))      	
 			<div class="form-group @if ($errors->has('imported_File')) has-error @endif">
 				<label class="col-md-2 control-label" for="imported_File"></label>
 				<div class="col-md-8">      										
@@ -65,18 +68,19 @@ Import Venues Information
 					@if ($errors->has('imported_File')) <p class="help-block">{{ $errors->first('imported_File') }}</p> @endif					
 				</div>
 			</div>				
-
 			<div class="form-group">
 				<label class="col-md-2 control-label" for="submit"></label>
 				<div class="col-md-8">      															
 					{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary')) }}
 				</div>
 			</div>	
+			<center>
+			<div style="max-width:900px">
+				<?php echo Session::get('map')['html']; ?> 
+			</div>		
+		</center>	
 		@endif
 	</div>
 	{{Form::close()}}	
 </div>
-
-<script>
-</script>
 @stop
