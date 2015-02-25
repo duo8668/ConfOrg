@@ -254,35 +254,35 @@ $.fn.textWidth = function() {
 			<div class="conferencebody">
 				
 				<div class="row">
-					<div class="col-md-8 col-md-offset-2">
+					<div class="col-md-12">
 						<!-- Conference Title-->
 						<div class="row">
-							<label class="col-md-6 control-label text-right">Conference Title</label>       
-							<div class="col-md-6">
+							<label class="col-md-3 control-label text-right">Conference Title</label>       
+							<div class="col-md-9">
 								{{ $conf->title }}
 							</div>
 						</div>
 
 						<!-- Venue name -->
 						<div class="row">
-							<label class="col-md-6 control-label text-right">Venue</label>       
-							<div class="col-md-6">
+							<label class="col-md-3 control-label text-right">Venue</label>       
+							<div class="col-md-9">
 								{{ $conf->room()->venue()->venue_name }}
 							</div>
 						</div>
 
 						<!-- Date commence and end -->
 						<div class="row">
-							<label class="col-md-6 control-label text-right">Begin and End Date</label>       
-							<div class="col-md-6">
+							<label class="col-md-3 control-label text-right">Begin and End Date</label>       
+							<div class="col-md-9">
 								<span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}
 							</div>
 						</div>
 
 						<!-- Chairman -->
 						<div class="row">
-							<label class="col-md-6 control-label text-right">Chairman</label>       
-							<div class="col-md-6">
+							<label class="col-md-3 control-label text-right">Chairman</label>       
+							<div class="col-md-9">
 								@foreach($confChairUsers as $confChairUser)
 								{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
 								@endforeach
@@ -290,15 +290,15 @@ $.fn.textWidth = function() {
 						</div>
 
 						<div class="row">
-							<label class="col-md-6 control-label text-right">Submission Deadline</label>
-							<div class="col-md-6">   
+							<label class="col-md-3 control-label text-right">Submission Deadline</label>
+							<div class="col-md-9">   
 								<span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span>        
 							</div>
 						</div>
 
 						<div class="row">
-							<label class="col-md-6 control-label text-right">Minimum Acceptance Score</label> 
-							<div class="col-md-6">
+							<label class="col-md-3 control-label text-right">Minimum Acceptance Score</label> 
+							<div class="col-md-9">
 								<span  id="minScoreValue">{{ $conf->min_score }}</span>
 							</div>
 						</div>
