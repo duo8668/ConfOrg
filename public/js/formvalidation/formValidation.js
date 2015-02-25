@@ -497,7 +497,7 @@ if (typeof jQuery === 'undefined') {
                         var length = this.options.excluded.length;
                         for (var i = 0; i < length; i++) {
                             if (('string' === typeof this.options.excluded[i] && $field.is(this.options.excluded[i]))
-                                || ('function' === typeof this.options.excluded[i] && this.options.excluded[i].call(this, $field, this) === true))
+                                || ('function' === typeof this.options.excluded[i] && this.options.excluded[i].call !== undefined && this.options.excluded[i].call(this, $field, this) === true))
                             {
                                 return true;
                             }

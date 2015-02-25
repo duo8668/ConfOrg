@@ -1336,8 +1336,10 @@ picker.show = function (e) {
             }
             if (moment.isMoment(date) || date instanceof Date) {
                 picker.options.minDate = moment(date);
+                picker.date = picker.options.minDate;
             } else {
                 picker.options.minDate = moment(date, picker.format, picker.options.useStrict);
+                picker.date = picker.options.minDate;
             }
             if (picker.viewDate) {
                 update();

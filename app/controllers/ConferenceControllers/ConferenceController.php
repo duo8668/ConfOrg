@@ -92,15 +92,32 @@ class ConferenceController extends \BaseController {
         }
     }
 
+    public function RetrieveCheckboxValue($inputString) {
+        //conf_id_col_\d+$
+
+        $subject = Input::get('subject');
+
+        $pattern = '/' . '^chkField_(?P<fieldId>\d+)$' . '/';
+
+        $matching = preg_match($pattern, $inputString, $output_array);
+
+        if ($matching) {
+
+            return intval($output_array["fieldId"]);
+        } else {
+            return -9999;
+        }
+    }
+
     public function detail() {
         $fields = InterestField::select(DB::raw('interestfield_id as id, name as label'))
         ->get();
 
         $confChairUsers = ConferenceUserRole::ConferenceChair(Input::get('conf_id'))->toArray();
 
-        $allStaffs = ConferenceUserRole::ConferenceStaffs(Input::get('conf_id'))->toArray();
+        $allStaffs = ConferenceUserRole::ConferenceStaffs(Input::get('conf_id'))->get()->toArray();
 
-        $reviewPanels = ConferenceUserRole::ConferenceReviewPanels(Input::get('conf_id'))->toArray();
+        $reviewPanels = ConferenceUserRole::ConferenceReviewPanels(Input::get('conf_id'))->get()->toArray();
 
         $conf = Conference::where('conf_id', '=', Input::get('conf_id'))->first();
 
@@ -216,13 +233,19 @@ class ConferenceController extends \BaseController {
                             , 'role_id' => $role_id
                             , 'conf_id' => $createdConf->conf_id));
 
+                        foreach ($data['chkField'] as $key) {
+                            ConferenceField::create(array('interestfield_id' => $this->RetrieveCheckboxValue($key)
+                                , 'conf_id' => $createdConf->conf_id 
+                                , 'created_by' => $user->user_id ));
+                        }
+
                         $invoice = invoice::find(Input::get('invoice_id'));         
                         $invoice->conf_id = $createdConf->conf_id;       
                         $invoice->save();
 
                         //save topics
                         $topics_array = explode(",", $data['topicStr']);
-                        
+
                         if (!empty($topics_array)) {
                             $conf_topics = array();
                             foreach ($topics_array as $topic) {
@@ -415,6 +438,8 @@ public function updateConfStaffs() {
             try {
                 $user = Auth::user();
                 $originalStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id']);
+                $originalPStaffs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::ConferenceStaff()->role_id)->where('is_used','=',0)->get();
+                
                 $numRowUpdated = 0;
                 $result = DB::transaction(function() use ($data, $user, $originalStaffs, $numRowUpdated) {
 
@@ -437,25 +462,50 @@ public function updateConfStaffs() {
                                     }
                                 }
                             } else {
-                                // not exists, send invitation to create staff
+                                if (empty(InviteToConference::where(array('conf_id' => $data['conf_id']))
+                                    ->Where(array('user_id' => $targetUser->user_id))
+                                    ->first())) {
+                                        // not exists in InviteToConference, send invitation to create staff
+                                    $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
                             }
+
                         }
                     }
+                }
 
-                                // delete not exist
-                    if (!empty($originalStaffs)) {
-                        if (empty($data['emails'])) {
-                            $data['emails'] = array();
-                        }
-                        foreach ($originalStaffs as $oristaff) {
+                // delete not exist in ConfUserRole
+                if (!empty($originalStaffs)) {
+                    if (empty($data['emails'])) {
+                        $data['emails'] = array();
+                    }
+                    foreach ($originalStaffs as $oristaff) {
 
-                            if (!in_array($oristaff->email, $data['emails'], true)) {
-                                $numRowUpdated += $oristaff->forceDelete();
-                            }
+                        if (!in_array($oristaff->email, $data['emails'], true)) {
+                            $numRowUpdated += $oristaff->forceDelete();
                         }
                     }
-                    return array('numRowUpdated' => $numRowUpdated, 'conStaffs' => ConferenceUserRole::ConferenceStaffs($data['conf_id']));
-                });
+                }
+
+                // delete not exist in InviteToConference
+                if (!empty($originalPStaffs)) {
+                    if (empty($data['emails'])) {
+                        $data['emails'] = array();
+                    }
+                    foreach ($originalPStaffs as $oriPstaff) {
+
+                        if (!in_array($oriPstaff->email, $data['emails'], true)) {
+                            $numRowUpdated += $oriPstaff->forceDelete();
+                        }
+                    }
+                }
+
+                
+                return array('numRowUpdated' => $numRowUpdated
+                    , 'conStaffs' => ConferenceUserRole::ConferenceStaffs($data['conf_id'])
+                    , 'pendingConfStaffs' =>  InviteToConference::where('conf_id','=', $data['conf_id'])
+                    ->where('role_id','=',Role::ConferenceStaff()->role_id)
+                    ->where('is_used','=',0)->get());
+            });
 } catch (Exception $ex) {
     throw $ex;
 }
@@ -486,19 +536,21 @@ public function updateReviewPanels() {
             try {
                 $user = Auth::user();
                 $originalRPs = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
+                $originalPRPs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::Reviewer()->role_id)->where('is_used','=',0)->get();
+                
                 $numRowUpdated = 0;
 
-                $result = DB::transaction(function() use ($data, $user, $originalRPs, $numRowUpdated) {
+                $result = DB::transaction(function() use ($data, $user, $originalRPs,$originalPRPs, $numRowUpdated) {
                     $roleid = Role::Reviewer()->role_id;
 
-                                // add all first
+                    // add all first
                     if (!empty($data['emails'])) {
                         foreach ($data['emails'] as $email) {
 
                             $targetUser = User::where('email', '=', $email)->first();
 
                             if (!empty($targetUser)) {
-                                            // exists, directly assign the staff								 
+                                // exists, directly assign the staff								 
                                 if (empty(ConferenceUserRole::where(array('conf_id' => $data['conf_id']))
                                     ->Where(array('user_id' => $targetUser->user_id))
                                     ->first())) {
@@ -508,34 +560,59 @@ public function updateReviewPanels() {
                                     }
                                 }
                             } else {
-                                // not exists, send invitation to create review panel
-                                $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
+                                if (empty(InviteToConference::where(array('conf_id' => $data['conf_id']))
+                                    ->Where(array('user_id' => $targetUser->user_id))
+                                    ->first())) {
+                                    // not exists in InviteToConference, send invitation to create review panel
+                                    $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
                             }
+
                         }
                     }
+                }
 
-                                // delete not exist
-                    if (!empty($originalRPs)) {
-                        if (empty($data['emails'])) {
-                            $data['emails'] = array();
-                        }
-                        foreach ($originalRPs as $oristaff) {
-
-                            if (!in_array($oristaff->email, $data['emails'], true)) {
-                                $numRowUpdated += $oristaff->forceDelete();
-                            }
-                        }
-                            // return to the $result variable
-                        return array('numRowUpdated' => $numRowUpdated, 'conStaffs' => ConferenceUserRole::ConferenceReviewPanels($data['conf_id']));
+                // delete not exist in ConfUserRole
+                if (!empty($originalRPs)) {
+                    if (empty($data['emails'])) {
+                        $data['emails'] = array();
                     }
+                    foreach ($originalRPs as $oriRP) {
+
+                        if (!in_array($oriRP->email, $data['emails'], true)) {
+                            $numRowUpdated += $oriRP->forceDelete();
+                        }
+                    }
+                }
+
+                // delete not exist in InviteToConference
+              
+                if (!empty($originalPRPs)) {
+                    if (empty($data['emails'])) {
+                        $data['emails'] = array();
+                    }
+
+                    foreach ($originalPRPs as $oriPRP) {
+                         
+                        if (!in_array($oriPRP->email, $data['emails'], true)) {
+
+                            $numRowUpdated += $oriPRP->forceDelete();
+                        }
+                    }
+                }
+                return array('numRowUpdated' => $numRowUpdated
+                    , 'reviewPanels' => ConferenceUserRole::ConferenceReviewPanels($data['conf_id'])->get()
+                    , 'pendingReviewPanels' =>  InviteToConference::where('conf_id','=', $data['conf_id'])
+                    ->where('role_id','=',Role::Reviewer()->role_id)
+                    ->where('is_used','=',0)->get());
+
                 });
-} catch (Exception $ex) {
-    throw $ex;
-}
-}
-}
+            } catch (Exception $ex) {
+                throw $ex;
+            }
+        }
+    }
 
-return array('success' => $result);
+    return array('success' => $result);
 }
 
 public function validateCreateConference() {

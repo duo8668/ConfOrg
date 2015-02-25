@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-function loadEditStaff(_confId, _dataUrl, _updateUrl, _searchUrl) {
+ function loadEditStaff(_confId, _dataUrl, _updateUrl, _searchUrl) {
+    var $_emailTags = $('#staffName').find('[name=emails]');
 
     $('#btnStaffEdit').on('click', function (e) {
         $('#staffName > > [name=emails]').tagsinput('removeAll');
@@ -16,28 +17,45 @@ function loadEditStaff(_confId, _dataUrl, _updateUrl, _searchUrl) {
                     keyboard: false
                     , backdrop: 'static'});
             }
-        })
-                .done(function (data) {
+        }).done(function (data) {
 
-                    $.each(data, function (key, value) {
-                        $('#staffName > > [name=emails]').tagsinput('add', value);
-                    });
+            $.each(data, function (key, value) {
+                $_emailTags.tagsinput('add', value.email);
+
+                if(value.user_id === undefined){
+                    var sample = $('#innerStaffName').find('.tag:contains('+value.email+')');
+                    if(sample.hasClass('label-info')){
+                        sample.removeClass('label-info').addClass('label-warning');
+                        sample.attr('data-toggle','tooltip');
+                        sample.attr('data-placement','top');
+                        sample.attr('title','Pending signup, email sent.');
+                    }
+                }
+            });
+
+            setTimeout(function () {
+                $('#resultModal').modal('hide');
+                $('#staffEditor').modal({keyboard: false, backdrop: 'static', show: true});
+            }, 1000);
+        })
+        .fail(function (data) {
+            if (data.responseJSON !== undefined) {
+                if (data.responseJSON.error !== undefined) {
+                    var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
+                    $('#modalMessage').html(message);
                     setTimeout(function () {
                         $('#resultModal').modal('hide');
-                        $('#staffEditor').modal({keyboard: false, backdrop: 'static', show: true});
-                    }, 1000);
-                })
-                .fail(function (data) {
-                    if (data.responseJSON !== undefined) {
-                        if (data.responseJSON.error !== undefined) {
-                            var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
-                            $('#modalMessage').html(message);
-                            setTimeout(function () {
-                                $('#resultModal').modal('hide');
-                            }, 1500);
-                        }
-                    }
-                });
+                    }, 1500);
+                }
+            }
+        });
+    });
+
+    //* BeforeItemRemove, destroy the tooltip
+    $_emailTags.on('beforeItemRemove', function(event) {
+        // .tooltip('destroy')
+        var sample = $('#innerReviewPanel').find('.tag:contains('+event.item+')');
+        sample.tooltip('destroy');
     });
 
     $('#staffName').formValidation({
@@ -105,41 +123,51 @@ function loadEditStaff(_confId, _dataUrl, _updateUrl, _searchUrl) {
                     , backdrop: 'static'});
             }}).done(function (data) {
 //change the current
-            if (data.success !== undefined) {
-                var message = data.success.numRowUpdated + ' record(s) updated successfully !!!';
-                $('#modalMessage').html(message);
-                $('#allStaffContainer').html('');
-                if (data.success.conStaffs !== undefined) {
+if (data.success !== undefined) {
+    var message = data.success.numRowUpdated + ' record(s) updated successfully !!!';
+    $('#modalMessage').html(message);
+    $('#allStaffContainer').html('');
+    if (data.success.conStaffs !== undefined) {
 //* put back all into front page
-                    $.each(data.success.conStaffs, function (key, value) {
+$.each(data.success.conStaffs, function (key, value) {
 
-                        if (value.firstname !== undefined && value.lastname !== undefined) {
-                            $('#allStaffContainer').append('<span  class=\'staffInfo label label-info\'  style=\'color:black;margin:2px;\'>' + value.firstname + ', ' + value.lastname + '</span>');
-                        }
-                    });
-                }
-            }
+    if (value.firstname !== undefined && value.lastname !== undefined) {
+        $('#allStaffContainer').append('<span  class=\'staffInfo label label-info\'  style=\'color:black;margin:2px;\'>' + value.firstname + ', ' + value.lastname + '</span>');
+    }
+});
+}
+if (data.success.pendingConfStaffs !== undefined) {
+//* put back all into front page
+$.each(data.success.pendingConfStaffs, function (key, value) {
+
+    if (value.email !== undefined) {
+       $('#allStaffContainer').append('<span  class="staffInfo label label-warning" data-toggle="tooltip" data-placement="top" title="Pending signup, email sent." style"color:black;margin:2px;"">' + value.email +'</span>');
+   }
+});
+$('[data-toggle="tooltip"]').tooltip();
+}
+}
+setTimeout(function () {
+    $('#resultModal').modal('hide');
+    $('#staffEditor').modal('hide');
+}, 1000);
+}).fail(function (data) {
+
+    if (data.responseJSON !== undefined) {
+        if (data.responseJSON.error !== undefined) {
+            var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
+            $('#modalMessage').html(message);
             setTimeout(function () {
                 $('#resultModal').modal('hide');
-                $('#staffEditor').modal('hide');
-            }, 1000);
-        }).fail(function (data) {
+            }, 1500);
+        }
+    }
+});
+});
 
-            if (data.responseJSON !== undefined) {
-                if (data.responseJSON.error !== undefined) {
-                    var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
-                    $('#modalMessage').html(message);
-                    setTimeout(function () {
-                        $('#resultModal').modal('hide');
-                    }, 1500);
-                }
-            }
-        });
-    });
-
-    $('#staffName').find('[name=emails]').on('change', function () {
-        var field = $(this).attr('name');
-        $('#staffName').formValidation('revalidateField', field);
-    });
+$('#staffName').find('[name=emails]').on('change', function () {
+    var field = $(this).attr('name');
+    $('#staffName').formValidation('revalidateField', field);
+});
 }
 

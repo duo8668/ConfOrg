@@ -55,6 +55,22 @@ class Conference extends Eloquent {
         return NULL;
     }
 
+    public function scopePendingReviewPanels(){
+        $invitations = InviteToConference::where('conf_id','=', $this->conf_id)
+        ->where('role_id','=',Role::Reviewer()->role_id)
+        ->where('is_used','=',0)->get();
+
+        return $invitations;
+    }
+
+    public function scopePendingConferenceStaffs(){
+        $invitations = InviteToConference::where('conf_id','=', $this->conf_id)
+        ->where('role_id','=',Role::ConferenceStaff()->role_id)
+        ->where('is_used','=',0)->get();
+
+        return $invitations;
+    }
+
     public function scopeConferenceRoomSchedule($query) {
         $thisConferenceRoomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id);
         if (!empty($thisConferenceRoomSchedule)) {
@@ -67,15 +83,43 @@ class Conference extends Eloquent {
         return $this->hasMany('ConferenceTopic', 'conf_id', 'conf_id');
     }
 
-    public function Room() {
-        $roomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id)->first();
+    public function scopeRoom() {
+        $roomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id)->get();
+        
+        if(!empty($roomSchedule)){
 
-        $rooms = Room::where('room_id', '=', $roomSchedule->room_id)->get();
-        if (!empty($rooms)) {
-            return $rooms->first();
-        }
+            foreach ($roomSchedule as $_roomSchedule) {
+                $rooms = Room::where('room_id', '=', $_roomSchedule->room_id)->get();
+                foreach ($rooms as $room) {
 
-        return null;
+                    return $room; 
+                }
+                
+            }
+
+        }else{
+            return null;
+        } 
+    }
+
+    public function scopeConfVenue() {
+        $roomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id)->get();
+        
+        if(!empty($roomSchedule)){
+
+            foreach ($roomSchedule as $_roomSchedule) {
+                $rooms = Room::where('room_id', '=', $_roomSchedule->room_id)->get();
+                foreach ($rooms as $room) {
+                    $venues = venue::where('venue_id','=', $room->venue_id)->get();
+
+                    foreach ($venues as $venue ) {
+                        return $venue;
+                    }
+                }
+            }
+        }else{
+            return null;
+        } 
     }
 
     public function getStatusInConference() {

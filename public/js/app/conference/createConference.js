@@ -1,32 +1,64 @@
 var loadedJson;
 
-function loadDateTimePicker() {
-    $('#datetimepickerBegin').datetimepicker({useCurrent: false, pickTime: false, pickDate: true});
-    $('#datetimepickerEnd').datetimepicker({useCurrent: false, pickTime: false, pickDate: true});
-    $('#datetimepickerCutOffDate').datetimepicker({useCurrent: false, pickTime: true, pickDate: true});
+function loadDateTimePicker(_minDate, _cutOffDays,_offSetDays) {
+    var minConfDate = new moment(_minDate).add(_offSetDays,'day'); 
+
+    $('#datetimepickerBegin').datetimepicker({useCurrent: false, pickTime: false, pickDate: true, minDate:minConfDate });
+    $('#datetimepickerEnd').datetimepicker({useCurrent: false, pickTime: false, pickDate: true, minDate:minConfDate });
+    $('#datetimepickerCutOffDate').datetimepicker({useCurrent: false, pickTime: true, pickDate: true, minDate:_minDate});
+
+    $('#datetimepickerBegin').data("DateTimePicker").setViewDate(minConfDate);
+    $('#datetimepickerEnd').data("DateTimePicker").setViewDate(minConfDate);
+    $('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(_minDate);
+    $('#datetimepickerCutOffDate').data("DateTimePicker").setMinDate(new moment(_minDate.add(1,'day').toArray()).add(-1,'minute'));
     $("#datetimepickerBegin").on("dp.hide", function (e) {
         $('#datetimepickerEnd').data("DateTimePicker").setMinDate(e.date);
         $('#datetimepickerEnd').data("DateTimePicker").setViewDate(e.date);
-        $('#datetimepickerCutOffDate').data("DateTimePicker").setMinDate(e.date);
-        $('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(e.date);
+
+        $('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(new moment(e.date.add(1,'day').toArray()).add(-1,'minute'));
+        $('#frmCreateConf').formValidation('revalidateField','beginDate');
     });
     $("#datetimepickerEnd").on("dp.change", function (e) {
+        $('#datetimepickerCutOffDate').data("DateTimePicker").setMaxDate(new moment(e.date.toArray().slice(0, 3)).subtract(_cutOffDays, 'day'));
         $('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
+        $('#frmCreateConf').formValidation('revalidateField','endDate');
     });
 }
 
 function loadVenueDropDownListAction() {
+    $("#ddlVenue").selectBoxIt({
+        // Uses the jQuery 'fadeIn' effect when opening the drop down
+        showEffect: "fadeIn",
+        // Sets the jQuery 'fadeIn' effect speed to 400 milleseconds
+        showEffectSpeed: 220,
+        // Uses the jQuery 'fadeOut' effect when closing the drop down
+        hideEffect: "fadeOut",
+        // Sets the jQuery 'fadeOut' effect speed to 400 milleseconds
+        hideEffectSpeed: 110 ,
+        showFirstOption : true
+
+    }).off('change.selectBoxIt').on('change.selectBoxIt',function(evt,obj){
+
+    });
+
     $("#ddlVenue").off('change').on('change', function (event, item) {
         var field = $(this).attr('name');
-        $('#frmCreateConf').formValidation('revalidateField', field);
+        $('#frmCreateConf').formValidation('revalidateField', 'venue');
+        //$('#frmCreateConf').formValidation('disableSubmitButtons',false);
+        
         var _rentalCost = $(this).find('option:selected').data('rental_cost');
         var end = $('#datetimepickerEnd').data("DateTimePicker").getDate();
         var start = $('#datetimepickerBegin').data("DateTimePicker").getDate();
+        var days = end.add(1,'day').diff(start, 'days');
 
         $('#price').val('S$ ' + _rentalCost);
-        $('#quantity').val(end.diff(start, 'days'));
-        $('#total').val('S$ ' + (_rentalCost * end.diff(start, 'days')));
+        $('#quantity').val(days);
+        $('#total').val('S$ ' + (_rentalCost * days));
     });
+    
+    $("#ddlVenue").data("selectBox-selectBoxIt").disable();
+    $("#ddlVenue").html('');
+    $('.venueContainer').width($('#ddlVenueSelectBoxItContainer').width());
 }
 
 function loadPayNowbutton(createInvoiceUrl) {
@@ -43,6 +75,9 @@ function loadPayNowbutton(createInvoiceUrl) {
                 // Show the errors on the form
                 $form.find('.payment-errors').text(response.error.message);
                 $form.find('button').prop('disabled', false);
+                setTimeout(function () {
+                    $('#resultModal').modal('hide');
+                }, 350);
             } else {
                 // token contains id, last4, and card type
                 var token = response.id;
@@ -74,14 +109,15 @@ function loadPayNowbutton(createInvoiceUrl) {
                         });
                     }
                 });
-            }
-        });
-    });
+}
+});
+});
 }
 
 
 function loadFormValidation(availableRoomsUrl) {
     $('#frmCreateConf').formValidation({
+        excluded: [''],
         err: {
             container: 'tooltip'
         },
@@ -172,30 +208,42 @@ function loadFormValidation(availableRoomsUrl) {
             },
             venue: {
                 validators: {
-                    notEmpty: {
-                        message: 'Please select one venue'
-                    }, greaterThan: {
-                        inclusive: false,
-                        value: 0.0,
-                        message: 'This value must be greater than zero'
+                   callback: {
+                    message: 'Please select a venue',
+                    callback: function(value, validator, $field) {
+                            // Get the selected options
+                            return true;//value !== null &&  value > 0;
+                        }
                     }
                 }
             }
         }
-    }).on('err.field.fv err.validator.fv success.validator.fv', function (e, data) {
+    }).on('status.field.fv',function(e,data){
+
+        if(data.status === 'VALID'){
+            $(e.delegateTarget).formValidation('disableSubmitButtons',false);
+        }
+
+    }).on('err.form.fv', function(e) {
+
+        $(e.target).data('formValidation').disableSubmitButtons(false);
+
+    }).on('err.field.fv', function (e, data) {
         if (data.fv.getSubmitButton()) {
             data.fv.disableSubmitButtons(false);
         }
     }).on('success.field.fv', function (e, data) {
-
-        if (data.fv._cacheFields.beginDate.val() !== '' && data.fv._cacheFields.endDate.val() !== ''
-                && data.fv._cacheFields.maxSeats.val() !== '') {
-            loadVenueIntoDropDownBox(availableRoomsUrl);
-        }
-
         if (data.fv.getSubmitButton()) {
             data.fv.disableSubmitButtons(false);
         }
+        if (data.fv._cacheFields.beginDate.val() !== '' && data.fv._cacheFields.endDate.val() !== '' && data.fv._cacheFields.maxSeats.val() !== '') {
+            if(data.field !== 'venue')
+                loadVenueIntoDropDownBox(availableRoomsUrl);
+        }else if(data.fv._cacheFields.beginDate.val() === '' || data.fv._cacheFields.endDate.val() === '' || data.fv._cacheFields.maxSeats.val() === ''){
+            $("#ddlVenue").data("selectBox-selectBoxIt").remove();
+            $("#ddlVenue").data("selectBox-selectBoxIt").disable();
+        }
+
     }).on('success.form.fv', function (e, data) {
         // Prevent form submission         
         e.preventDefault();
@@ -204,7 +252,6 @@ function loadFormValidation(availableRoomsUrl) {
             keyboard: false
             , backdrop: 'static'
             , show: true});
-
     }).find('input[name="chkField[]"]').iCheck({
         checkboxClass: 'icheckbox_square-green'
     }
@@ -286,13 +333,22 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
             }
             if (canload) {
                 loadedJson = data;
-                $("#ddlVenue").empty();
-                $("#ddlVenue").append($("<option></option>").val(-1).html('-- Please Select --'));
+                //$("#ddlVenue").empty();
+                //$("#ddlVenue").append($("<option></option>").val(-1).html('-- Please Select --'));
+                $("#ddlVenue").data("selectBox-selectBoxIt").remove();
+                $("#ddlVenue").data("selectBox-selectBoxIt").add({ text:'--  Please Select Your Venue  --', value: -1 });
                 $.each(data, function (key, value) {
-                    var $_option = $("<option></option>").val(value.room_id).html(value.room_name + '(S$ ' + value.rental_cost + '/day)');
-                    $_option.data('rental_cost', value.rental_cost);
-                    $("#ddlVenue").append($_option);
+                    //var $_option = $("<option></option>").val(value.room_id).html(value.room_name + '(S$ ' + value.rental_cost + '/day)');
+                    // $_option.data('rental_cost', value.rental_cost);
+                    // $("#ddlVenue").append($_option);
+
+                    $("#ddlVenue").data("selectBox-selectBoxIt").add({ text: value.room_name + '(S$ ' + value.rental_cost + '/day)'
+                        , value: value.room_id });
+                    $("#ddlVenue option").last().data('rental_cost', value.rental_cost);
+
                 });
+                $('.venueContainer').width($('#ddlVenueSelectBoxItContainer').width());
+                $("#ddlVenue").data("selectBox-selectBoxIt").enable();
             }
         }).fail(function (xhr, stat, msg) {
             alert(xhr.responseText);

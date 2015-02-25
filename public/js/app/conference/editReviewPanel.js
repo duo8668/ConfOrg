@@ -4,42 +4,59 @@
  * and open the template in the editor.
  */
 
-function loadEditReviewPanel(_confId, _dataUrl, _updateUrl, _searchUrl) {
+ function loadEditReviewPanel(_confId, _dataUrl, _updateUrl, _searchUrl) {
+    var $_emailTags = $('#reviewPanel').find('[name=emails]');
+    var $_resultModal = $('#resultModal');
 
     $('#btnReviewPanelEdit').on('click', function (e) {
-// raise ajax request here and set text
-        $(this).find('#reviewPanel > > [name=emails]').tagsinput('removeAll');
+        // raise ajax request here and set text
+        $_emailTags.tagsinput('removeAll');
         $.ajax({url: _dataUrl
             , data: {conf_id: _confId}
             , type: 'get'
             , beforeSend: function () {
                 $('#modalMessage').html('Loading...');
-                $('#resultModal').modal({
+                $_resultModal.modal({
                     keyboard: false
                     , backdrop: 'static'});
             }
-        })
-                .done(function (data) {
+        }).done(function (data) {
+            $.each(data, function (key, value) {
+                $_emailTags.tagsinput('add', value.email);
 
-                    $.each(data, function (key, value) {
-                        $('#reviewPanel > > [name=emails]').tagsinput('add', value);
-                    });
-                    setTimeout(function () {
-                        $('#resultModal').modal('hide');
-                        $('#reviewPanelEditor').modal({keyboard: false, backdrop: 'static', show: true});
-                    }, 1000);
-                })
-                .fail(function (data) {
-                    if (data.responseJSON !== undefined) {
-                        if (data.responseJSON.error !== undefined) {
-                            var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
-                            $('#modalMessage').html(message);
-                            setTimeout(function () {
-                                $('#resultModal').modal('hide');
-                            }, 1500);
-                        }
+                if(value.user_id === undefined){
+                    var sample = $('#innerReviewPanel').find('.tag:contains('+value.email+')');
+                    if(sample.hasClass('label-info')){
+                        sample.removeClass('label-info').addClass('label-warning');
+                        sample.attr('data-toggle','tooltip');
+                        sample.attr('data-placement','top');
+                        sample.attr('title','Pending signup, email sent.');
                     }
-                });
+                }
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+            setTimeout(function () {
+                $_resultModal.modal('hide');
+                $('#reviewPanelEditor').modal({keyboard: false, backdrop: 'static', show: true});
+            }, 1000);
+        })
+        .fail(function (data) {
+            if (data.responseJSON !== undefined) {
+                if (data.responseJSON.error !== undefined) {
+                    var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
+                    $('#modalMessage').html(message);
+                    setTimeout(function () {
+                        $_resultModal.modal('hide');
+                    }, 1500);
+                }
+            }
+        });
+    });
+    //* BeforeItemRemove, destroy the tooltip
+    $_emailTags.on('beforeItemRemove', function(event) {
+        // .tooltip('destroy')
+        var sample = $('#innerReviewPanel').find('.tag:contains('+event.item+')');
+        sample.tooltip('destroy');
     });
     //* Validate
     $('#reviewPanel').formValidation({
@@ -88,7 +105,7 @@ function loadEditReviewPanel(_confId, _dataUrl, _updateUrl, _searchUrl) {
             source: function (query) {
 
                 return $.ajax({url: _searchUrl
-                    , data: {partialname: query, conf_id: _conf_id}
+                    , data: {partialname: query, conf_id: _confId}
                     , type: 'get'});
             }
         }
@@ -101,27 +118,39 @@ function loadEditReviewPanel(_confId, _dataUrl, _updateUrl, _searchUrl) {
             , type: 'get'
             , beforeSend: function () {
                 $('#modalMessage').html('Loading...');
-                $('#resultModal').modal({
+                $_resultModal.modal({
                     keyboard: false
                     , backdrop: 'static'});
-            }}).done(function (data) {
-//change the current
+            }
+        }).done(function (data) {
+            //change the current
             if (data.success !== undefined) {
                 var message = data.success.numRowUpdated + ' record(s) updated successfully !!!';
                 $('#modalMessage').html(message);
                 $('#allReviewPanelContainer').html('');
-                if (data.success.conStaffs !== undefined) {
-//* put back all into front page
-                    $.each(data.success.conStaffs, function (key, value) {
+                if (data.success.reviewPanels !== undefined) {
+                    //* put back all into front page
+                    $.each(data.success.reviewPanels, function (key, value) {
 
                         if (value.firstname !== undefined && value.lastname !== undefined) {
                             $('#allReviewPanelContainer').append('<span  class=\'staffInfo label label-info\'  style=\'color:black;margin:2px;\'>' + value.firstname + ', ' + value.lastname + '</span>');
                         }
                     });
                 }
+                if (data.success.pendingReviewPanels !== undefined) {
+                    //* put back all into front page
+                    $.each(data.success.pendingReviewPanels, function (key, value) {
+
+                        if (value.email !== undefined) {
+                            $('#allReviewPanelContainer').append('<span  class="staffInfo label label-warning" data-toggle="tooltip" data-placement="top" title="Pending signup, email sent." style"color:black;margin:2px;"">' + value.email +'</span>');
+
+                        }
+                    });
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
             }
             setTimeout(function () {
-                $('#resultModal').modal('hide');
+                $_resultModal.modal('hide');
                 $('#reviewPanelEditor').modal('hide');
             }, 1000);
         }).fail(function (data) {
@@ -131,15 +160,15 @@ function loadEditReviewPanel(_confId, _dataUrl, _updateUrl, _searchUrl) {
                     var message = data.responseJSON.error.type + ' : ' + data.responseJSON.error.message;
                     $('#modalMessage').html(message);
                     setTimeout(function () {
-                        $('#resultModal').modal('hide');
+                        $_resultModal.modal('hide');
                     }, 1500);
                 }
             }
         });
     });
 
-    $('#reviewPanel').find('[name=emails]').on('change', function () {
-        var field = $(this).attr('name');
-        $('#reviewPanel').formValidation('revalidateField', field);
-    });
+$_emailTags.on('change', function () {
+    var field = $(this).attr('name');
+    $('#reviewPanel').formValidation('revalidateField', field);
+});
 }

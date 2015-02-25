@@ -533,15 +533,21 @@ class UsersController extends \BaseController {
 		else{
 
 			$allStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id']);
+			$pendingStaffs = InviteToConference::where('conf_id','=', $data['conf_id'])
+			->where('role_id','=',Role::ConferenceStaff()->role_id)->where('is_used','=',0)
+			->select(DB::raw('email'))
+			->get();
 
-
-			$overall = null;
+			$overall = null; $overallPending = null;
 			if(!empty($allStaffs)){
 
-				$overall = $allStaffs->lists('email'); 
+				$overall = $allStaffs->select(DB::raw('users.user_id, users.email'))->get()->toArray();
 			}
+			if(!empty($pendingStaffs)){
 
-			return $overall;
+				$overallPending = $pendingStaffs->toArray(); 
+			}
+			return array_merge( $overall, $overallPending);
 
 		}
 	}
@@ -565,16 +571,22 @@ class UsersController extends \BaseController {
 		else{
 
 			$reviewPanels = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
+			$pendingReviewPanels = InviteToConference::where('conf_id','=', $data['conf_id'])
+			->where('role_id','=',Role::Reviewer()->role_id)->where('is_used','=',0)
+			->select(DB::raw('email'))
+			->get();
 
-
-			$overall = null;
+			$overall = null; $overallPending = null;
 			if(!empty($reviewPanels)){
 
-				$overall = $reviewPanels->lists('email'); 
+				$overall = $reviewPanels->select(DB::raw('users.user_id, users.email'))->get()->toArray();
+			}
+			if(!empty($pendingReviewPanels)){
+
+				$overallPending = $pendingReviewPanels->toArray(); 
 			}
 
-			return $overall;
-
+			return array_merge( $overall, $overallPending);
 		}
 	}
 	

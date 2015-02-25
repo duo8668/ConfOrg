@@ -6,21 +6,41 @@ Add New Conference
 
 <!-- extraScripts Section -->
 @section('extraScripts')
-
+<!--===================================================================================-->
+<!--================================     CSS     ======================================-->
+<link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+<!-- Bootstrap DatePicker -->
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
+<!-- Bootstrap Checbox -->
 <link href="{{ asset('css/icheck/square/green.css') }}" rel="stylesheet" type="text/css">
+<!-- Bootstrap selectboxit -->
+<link href="{{ asset('css/selectboxit/selectboxit.css') }}" rel="stylesheet" type="text/css">
+
 <link href="{{ asset('css/formvalidation/formValidation.css') }}" rel="stylesheet" type="text/css">
+
+<!--===================================================================================-->
+<!--===========================     JAVASCRIPT     ====================================-->
+<script src="{{ asset('js/fullcalendar/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('js/lib/moment.min.js') }}"></script>
+
+<!-- Bootstrap DatePicker -->
 <script src="{{ asset('js/datetimepicker/bootstrap-datetimepicker.js') }}"></script>
+
+<!-- Bootstrap Checbox -->
 <script src="{{ asset('js/icheck/icheck.js') }}"></script>
+
+<!-- Bootstrap selectboxit -->
+<script src="{{ asset('js/selectboxit/selectboxit.js') }}"></script>
+
+<!-- Bootstrap FormValidation -->
 <script src="{{ asset('js/formvalidation/formValidation.js') }}"></script>
 <script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
 
 <!-- STRIPE payment processor  -->
 <script src="https://js.stripe.com/v2/"></script>
-<script src="{{ asset('js/stripe.js') }}"></script>
 
 <script src="{{ asset('js/app/conference/createConference.js') }}"></script>
+
 <style>
 
 	body {
@@ -58,6 +78,11 @@ Add New Conference
 		top: 0;
 		right: -15px;
 	}
+
+	.resizeTransition{
+		transition-property: top;
+		transition-duration: 250ms;
+	}
 </style>
 
 @stop
@@ -68,7 +93,8 @@ Add New Conference
 
 	$(document).ready(function () {
 
-		loadDateTimePicker();
+		var curDate = new moment(new moment().format('YYYY-MM-DD'));
+		loadDateTimePicker(curDate, 15, 30);
 
 		loadFormValidation("{{ URL::to('conference/roomSchedule/availableRooms') }}");
 
@@ -108,7 +134,31 @@ Add New Conference
         }
     };
 
-    //StripeBilling.init();
+    $('.modal').on('shown.bs.modal',function(e){
+    	if($(this).children('div:eq(1)').hasClass('modal-dialog')){
+    		$(this).children('div:eq(1)').removeClass('modal-dialog');
+    	}
+    	var $innerModal = $(this).find('.innerModal');
+    	if(!$innerModal.hasClass('resizeTransition')){
+    		$innerModal.addClass('resizeTransition');
+    	}
+
+    	$innerModal.css('top',($(window).height()-$innerModal.height())/2);
+    	$innerModal.css('left',($(window).width()-$innerModal.outerWidth())/2);
+    });
+
+    $('.modal').on('show.bs.modal',function(e){
+    	var $innerModal = $(this).find('.innerModal');
+
+    	$innerModal.css('top',($(window).height()-$innerModal.height())/2); 
+    	$innerModal.css('left',($(window).width()-$innerModal.outerWidth())/2);
+    });
+
+    $('.modal').on('hide.bs.modal',function(e){
+    	if(!$(this).children('div:eq(1)').hasClass('modal-dialog')){
+    		$(this).children('div:eq(1)').addClass('modal-dialog');
+    	}
+    }); 
 
 });
 

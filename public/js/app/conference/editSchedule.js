@@ -22,7 +22,17 @@
  		currdate = moment($('#ddlscheduleConferenceDate').val());
  		$('#calendar').fullCalendar('gotoDate',$('#ddlscheduleConferenceDate').val()); 
  	});
-
+	
+	$('.selectboxit-list > li').off('mouseenter').on('mouseenter',function(evt,obj){
+		console.log('=====   mouseenter   =====');
+ 		  
+		 console.log($(evt.currentTarget).find('a').text());
+ 	}).off('mouseleave').on('mouseleave',function(evt,obj){
+		console.log('=====   mouseleave   =====');
+ 		  
+		 console.log($(evt.currentTarget).find('a').text());
+ 	});
+	
  	$('#btnEditSchedule').off('click').on('click', function (e) {
  		$.ajax({
  			url: urlGetAvailableConferenceScheduleEvents,
@@ -38,7 +48,7 @@
  			}
  		});
 
- 		$('#external-events').html($('#external-events').children().first()); 
+ 		//$('#external-events').html($('#external-events').children().first()); 
  		$('#scheduleEditor').modal({
  			keyboard: false
  			, backdrop: 'static'

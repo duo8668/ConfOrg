@@ -1675,7 +1675,7 @@
 
                 openClass = self.openClass = obj.open;
 
-            self.selectedClass = "selectboxit-selected";
+            //self.selectedClass = "selectboxit-selected";
 
             self.downArrow.addClass(self.selectBox.attr("data-downarrow") || self.options["downArrowIcon"] || arrowClass);
 

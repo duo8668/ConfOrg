@@ -17,7 +17,7 @@ function loadEditParticular(_confId, _updateUrl) {
         $('#innerMinScore > input').val($('#minScoreValue').html());
         $('#particularEditor').modal({keyboard: false, backdrop: 'static', show: true});
     });
-//* Validation
+    //* Validation
     $('#confParticularField').formValidation({
         framework: 'bootstrap',
         excluded: ':disabled',

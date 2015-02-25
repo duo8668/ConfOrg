@@ -7,7 +7,7 @@ Conference Detail
 @section('extraScripts')
 
 <!--===================================================================================-->
-<!--===========================     CSS     ====================================-->
+<!--================================     CSS     ======================================-->
 <!-- Bootstrap DatePicker -->
 <link href="{{ asset('css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">
 <!-- Bootstrap Checbox -->
@@ -61,7 +61,6 @@ Conference Detail
 <script src="{{ asset('js/app/conference/editReviewPanel.js') }}"></script>
 <script src="{{ asset('js/app/conference/editStaff.js') }}"></script>
 <script src="{{ asset('js/app/conference/editSchedule.js') }}"></script>
-<script src="{{ asset('js/app/conference/editTopic.js') }}"></script>
 
 <style>
 
@@ -153,7 +152,7 @@ Conference Detail
 		height:400px;
 	}
 
-	.glyphicon {
+	.glyphicon-trash {
 		margin-top: 10px;
 		margin-bottom: 10px;
 		font-size: 1.5em;
@@ -172,6 +171,11 @@ Conference Detail
 
 	.alert:hover {
 		border: 2px solid;
+	}
+
+	.resizeTransition{
+		transition-property: top;
+		transition-duration: 250ms;
 	}
 
 </style>
@@ -195,25 +199,25 @@ Conference Detail
 			,"{{ URL::to('conference/conferenceEvents/addConferenceScheduleEvents/') }}"
 			,"{{ URL::to('conference/conferenceEvents/getConferenceScheduleEvents/') }}");
 
-		loadEditTopic({{ $conf -> conf_id }}, "{{ URL::to('conference/management/updateTopics') }}");
-		loadAddTopic({{ $conf -> conf_id }},"{{ URL::to('conference/management/addNewTopic') }}")
+		 $('[data-toggle="tooltip"]').tooltip();
 
 		$('.modal').on('shown.bs.modal',function(e){
 			if($(this).children('div:eq(1)').hasClass('modal-dialog')){
 				$(this).children('div:eq(1)').removeClass('modal-dialog');
 			}
 			var $innerModal = $(this).find('.innerModal');
-			$innerModal.css('top',($(window).height()-$innerModal.height())/2);
+			if(!$innerModal.hasClass('resizeTransition')){
+				$innerModal.addClass('resizeTransition');
+			}
 
-			var widthPercent = $innerModal.css('width');
+			$innerModal.css('top',($(window).height()-$innerModal.height())/2);
 			$innerModal.css('left',($(window).width()-$innerModal.outerWidth())/2);
 		});
 
 		$('.modal').on('show.bs.modal',function(e){
 			var $innerModal = $(this).find('.innerModal');
-			$innerModal.css('top',($(window).height()-$innerModal.height())/2);
 
-			var widthPercent = $innerModal.css('width');
+			$innerModal.css('top',($(window).height()-$innerModal.height())/2); 
 			$innerModal.css('left',($(window).width()-$innerModal.outerWidth())/2);
 		});
 
@@ -222,9 +226,6 @@ Conference Detail
 				$(this).children('div:eq(1)').addClass('modal-dialog');
 			}
 		}); 
-
-
-
 });
 
 $.fn.textWidth = function() {
@@ -252,61 +253,51 @@ $.fn.textWidth = function() {
 	<div class="col-md-12">
 		<div id="conf_id_col_{{$conf->conf_id}}" class="confclass">
 			<div class="conferencebody">
-				
-				<div class="row">
-					<div class="col-md-12">
-						<!-- Conference Title-->
-						<div class="row">
-							<label class="col-md-3 control-label text-right">Conference Title</label>       
-							<div class="col-md-9">
-								{{ $conf->title }}
-							</div>
-						</div>
 
-						<!-- Venue name -->
-						<div class="row">
-							<label class="col-md-3 control-label text-right">Venue</label>       
-							<div class="col-md-9">
-								{{ $conf->room()->venue()->venue_name }}
-							</div>
-						</div>
+				<h3 class="text-center"><u>{{ $conf->title }}</u></h2>
+					<h4 class="text-center"> {{ $conf->room()->venue()->venue_name }}  </h4>
+					<!-- <h4>  {{ $conf->room()->room_name }}  </h4> -->
+					<h4 class="text-center">  <span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
 
-						<!-- Date commence and end -->
-						<div class="row">
-							<label class="col-md-3 control-label text-right">Begin and End Date</label>       
-							<div class="col-md-9">
-								<span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}
-							</div>
+					<!-- SUBMIT PAPER BUTTON  -->
+					<div class="row">
+						<div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+							<a href="{{ URL::route('submission.add', ['conf_id' => $conf->conf_id]) }}" class="btn btn-primary btn-block" role="button">Submit Paper</a>
 						</div>
-
-						<!-- Chairman -->
-						<div class="row">
-							<label class="col-md-3 control-label text-right">Chairman</label>       
-							<div class="col-md-9">
-								@foreach($confChairUsers as $confChairUser)
-								{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
-								@endforeach
-							</div>
-						</div>
-
-						<div class="row">
-							<label class="col-md-3 control-label text-right">Submission Deadline</label>
-							<div class="col-md-9">   
-								<span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span>        
-							</div>
-						</div>
-
-						<div class="row">
-							<label class="col-md-3 control-label text-right">Minimum Acceptance Score</label> 
-							<div class="col-md-9">
-								<span  id="minScoreValue">{{ $conf->min_score }}</span>
-							</div>
-						</div>
-
 					</div>
-				</div>
-				{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
-				<!-- END CHAIRMAN INFO -->
+					<!-- BELOW INFO ONLY VISIBLE TO CHAIRMAN -->
+
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<hr>
+							<!-- Submission Title-->
+							<div class="row">
+								<label class="col-md-6 control-label text-right">Chairman</label>       
+								<div class="col-md-6">
+									@foreach($confChairUsers as $confChairUser)
+									{{  $confChairUser['firstname'] }},  {{ $confChairUser['lastname'] }}
+									@endforeach
+								</div>
+							</div>
+
+							<div class="row">
+								<label class="col-md-6 control-label text-right">Submission Deadline</label>
+								<div class="col-md-6">   
+									<span id="cutOffValue">{{ date_format(new DateTime($conf->cutoff_time), 'd-M-Y H:i') }}</span>        
+								</div>
+							</div>
+
+							<div class="row">
+								<label class="col-md-6 control-label text-right">Minimum Acceptance Score</label> 
+								<div class="col-md-6">
+									<span  id="minScoreValue">{{ $conf->min_score }}</span>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
+					<!-- END CHAIRMAN INFO -->
 
 				</div>
 				<div style="margin-bottom: 30px;"></div>
@@ -351,24 +342,15 @@ $.fn.textWidth = function() {
 
 						<!-- Topics -->
 						<div role="tabpanel" class="tab-pane fade" id="topics">
-							{{ Form::button('Edit Topics', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit')) }}
-							{{ Form::button('Add New Topic', array('class' => 'btn btn-success btn-sm pull-right btnEdit','id'=>'btnTopicsAdd')) }}
-							@if (count($topics) > 0)
-								<table class="table table-striped">
-									<tr>
-										<td style="width:30%"><strong>Topic Name</strong></td>
-										<td style="width:30%"><strong>No. of Submissions Under This Topic</strong></td>
-									</tr>
+							<ol>
+								@if (count($topics) > 0)
 									@foreach($topics as $topic)
-										<tr>
-											<td style="width:30%">{{{ $topic->topic_name }}}</td>
-											<td style="width:30%">{{{ $topic->total_subs }}}</td>
-										</tr>
+										<li>{{{ $topic->topic_name }}}</li>
 									@endforeach
-								</table>
-							@else
-								No topics defined
-							@endif
+								@else
+									No topics defined
+								@endif
+							</ol>
 						</div>
 
 						<!-- Committee -->
@@ -386,6 +368,11 @@ $.fn.textWidth = function() {
 											@foreach($allStaffs as $staff)
 											<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
 												{{  $staff['firstname'] }},  {{ $staff['lastname'] }}
+											</span>
+											@endforeach
+											@foreach($conf->PendingConferenceStaffs() as $pending)
+											<span  class='staffInfo label label-warning' data-toggle="tooltip" data-placement="top" title="Pending signup, email sent."  style='color:brown;margin:2px;'>
+												{{  $pending['email'] }}
 											</span>
 											@endforeach
 										</div>
@@ -411,6 +398,11 @@ $.fn.textWidth = function() {
 												{{  $reviewpanel['firstname'] }},  {{ $reviewpanel['lastname'] }}
 											</span>
 											@endforeach
+											@foreach($conf->PendingReviewPanels() as $pending)
+											<span  class='staffInfo label label-warning' data-toggle="tooltip" data-placement="top" title="Pending signup, email sent."  style='color:brown;margin:2px;'>
+												{{  $pending['email'] }}
+											</span>
+											@endforeach
 										</div>
 									</td>
 								</tr>
@@ -419,71 +411,57 @@ $.fn.textWidth = function() {
 
 						<!-- Submissions -->
 						<div role="tabpanel" class="tab-pane fade" id="submissions">
-							{{ HTML::script('js/filterables.js') }}
-							<div class="row filter-row">
-							    <div class="panel panel-default filterable">
-							        <div class="panel-heading">
-							            <h3 class="panel-title"><strong>Filter Submissions</strong></h3>
-							            <div class="pull-right">
-							                <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
-							            </div>
-							        </div>
-									<div class="table-responsive">
-									  	<table class="table table-striped">
-									  		<thead>
-								                <tr class="filters">
-								                    <th style="width: 25%;"><input type="text" class="form-control" placeholder="Submission Title" disabled></th>
-								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Type" disabled></th>
-								                    <th style="width: 15%;"><input type="text" class="form-control" placeholder="Date Submitted" disabled></th>
-								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Score" disabled></th>
-								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Status" disabled></th>
-								                    <th>Option</th>
-								                </tr>
-								            </thead>   
-									  		
-											@foreach ($submissions as $sub) 
-												<tr>
-													<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null) }}</td>
-													<td>
-														@if ($sub->sub_type === 3)
-														    Poster
-														@elseif ($sub->sub_type === 2)
-														    Full Paper
-														@else
-														    Abstract
-														@endif
-													</td>
-													<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
+							<div class="table-responsive">
+							  	<table class="table table-striped">   
+							  		<tr>
+										<td style="width: 25%;"><strong>Submission Title</strong></td>
+										<td style="width: 10%;"><strong>Type</strong></td>
+										<td style="width: 15%;"><strong>Date Submitted</strong></td>
+										<td style="width: 10%;"><strong>Score</strong></td>
+										<td style="width: 10%;"><strong>Status</strong></td>
+										<td><strong>Option</strong></td>
+									</tr> 
+									@foreach ($submissions as $sub) 
+										<tr>
+											<td>{{ link_to_route('submission.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
+											<td>
+												@if ($sub->sub_type === 3)
+												    Poster
+												@elseif ($sub->sub_type === 2)
+												    Full Paper
+												@else
+												    Abstract
+												@endif
+											</td>
+											<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 
-													<td>{{{ $sub->overall_score }}} </td>
-													<td>
-														@if ($sub->status === 1)
-														    <span class="text-success">Accepted</span>
-														@elseif ($sub->status === 9)
-														    <span class="text-danger">Rejected</span>
-														@else
-														    On review
-														@endif
-													</td>
-													<td>
-														{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
-															<div class="col-sm-9">
-																{{Form::select('chair_decision', 
-																array('1' => 'Manually Accept'
-																, '9' => 'Manually Reject'
-																, '0' => 'Need to Peer-review again')
-																, '1'
-																, ['class' => 'form-control input-sm']);}}
-															</div>
-															{{ Form::hidden('conf_id', $conf->conf_id) }}
-															{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
-														{{ Form::close() }}
-													</td>
-												</tr>
-											@endforeach
-										</table>
-									</div>
-								</div>
+											<td>{{{ $sub->overall_score }}} </td>
+											<td>
+												@if ($sub->status === 1)
+												    <span class="text-success">Accepted</span>
+												@elseif ($sub->status === 9)
+												    <span class="text-danger">Rejected</span>
+												@else
+												    On review
+												@endif
+											</td>
+											<td>
+												{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
+													<div class="col-sm-9">
+														{{Form::select('chair_decision', 
+														array('1' => 'Manually Accept'
+														, '9' => 'Manually Reject'
+														, '0' => 'Need to Peer-review again')
+														, '1'
+														, ['class' => 'form-control input-sm']);}}
+													</div>
+													{{ Form::hidden('conf_id', $conf->conf_id) }}
+													{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
+												{{ Form::close() }}
+											</td>
+										</tr>
+									@endforeach
+								</table>
 							</div>
 						</div>
 
@@ -590,77 +568,6 @@ $.fn.textWidth = function() {
 			</div>
 		</div>
 	</div>
-	
-	<!-- EDIT Topics -->
-	<div class="col-md-12 modal fade" id="topicsEditor" tabindex="-1" role="dialog" aria-labelledby="topicsEditor" aria-hidden="true">
-		<div class="innerModal col-md-8 modal-dialog">
-			<div class="col-md-12 modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="lblreviewPanelEditor">Edit Topics:</h4>
-				</div>
-				<div class="modal-body">
-					<fieldset>
-						<form class="form-inline" id="edit_topics_form">
-							<table class="table table-striped">
-								<tr>
-									<td style="width:50%"><strong>Edit Topic Name</strong></td>
-									<td><strong>Delete this topic?</strong> <small>(Submissions under this topic will not be removed)</small></td>
-								</tr>
-								@foreach ($topics as $topic)
-									<tr>
-										<td>
-											<input type="text" value="{{{ $topic->topic_name }}}" class="form-control" style="width:100%" name="topic_name[]" required>
-											<input type="hidden" name="topic_id[]" value="{{{ $topic->topic_id }}}">
-										</td>
-									 	<td>
-									 		<label><input type="checkbox" name="delete_topic[]" value="{{{ $topic->topic_id }}}"> Mark for deletion</label>
-									 	</td>
-									</tr>
-								@endforeach
-							  
-							</table>
-						</form>
-					</fieldset>	
-				</div>
-				<div class="modal-footer">
-					{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
-					{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnSaveTopics')) }}
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- ADD Topics -->
-	<div class="col-md-12 modal fade" id="newTopicsEditor" tabindex="-1" role="dialog" aria-labelledby="newTopicsEditor" aria-hidden="true">
-		<div class="innerModal col-md-8 modal-dialog">
-			<div class="col-md-12 modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="lblreviewPanelEditor">Add new Topic</h4>
-				</div>
-				<div class="modal-body">
-					<fieldset>
-						<form class="form-inline" id="add_topics_form">
-							<table class="table table-striped">
-								<tr>
-									<td style="width:25%"><strong>New Topic</strong></td>
-									<td>
-										<input type="text"  name="topic_name" class="form-control" id="new_topic_name" placeholder="Enter New Topic here" style="width:100%">
-										<input type="hidden" name="conf_id" value="{{{ $conf->conf_id }}}">
-									</td>
-								</tr>
-							</table>
-						</form>
-					</fieldset>	
-				</div>
-				<div class="modal-footer">
-					{{ Form::button('Cancel', array('class' => 'btn btn-default btn-sm','data-dismiss' => 'modal')) }}
-					{{ Form::button('Save', array('class' => 'btn btn-primary btn-sm','id'=>'btnAddTopic')) }}
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<!-- Particular -->
 	<div class="col-md-12 modal fade" id="particularEditor" tabindex="-1" role="dialog" aria-labelledby="particularEditor" aria-hidden="true">
@@ -674,7 +581,7 @@ $.fn.textWidth = function() {
 					<fieldset>
 						<div class = 'form-horizontal'>
 							<div class="form-group">
-								{{ Form::label('lblCutOffDate', 'Submission Deadline', array('class' => 'col-md-4 control-label')) }}
+								{{ Form::label('lblCutOffDate', 'Cuf Off :', array('class' => 'col-md-4 control-label')) }}
 								<div class="col-md-4 dateContainer">
 									<div class="input-group date" id="innerCutOffDate">
 										{{ Form::text('cutoffdate',isset($value)?$value:'',array('name'=>'cutoffdate','id'=>'cutoffdate','readonly', 'class' => 'form-control necessary', 'data-date-format'=>'DD-MM-YYYY HH:mm')) }}
@@ -683,7 +590,7 @@ $.fn.textWidth = function() {
 								</div>
 							</div>
 							<div class="form-group">
-								{{ Form::label('lblMinScore', 'Minimum Acceptance Score', array('class' => 'col-md-4 control-label')) }}       
+								{{ Form::label('lblMinScore', 'Min Score :', array('class' => 'col-md-4 control-label')) }}       
 								<div class="col-md-4">
 									<div id="minScore">
 										<div class="necessary" id="innerMinScore">

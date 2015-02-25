@@ -1,6 +1,6 @@
 <?php
 
-class Company_User extends Eloquent {	
+class CompanyUser extends Eloquent {	
 
 	public $timestamps = false;	
 

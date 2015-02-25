@@ -7,9 +7,11 @@ class ConferenceRoomSchedule extends Eloquent {
     protected $guarded = array('confroomschedule_id');
     public $timestamps = true;
 
-    public function Room() {
+    public function scopeRoom() {
         $thisRoom = Room::where('room_id', '=', $this->room_id)->get();
+
         if (!empty($thisRoom)) {
+            
             return $thisRoom->first();
         }
         return NULL;
