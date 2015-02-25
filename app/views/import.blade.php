@@ -28,11 +28,7 @@ Import Venue
 <div class="row" style="margin-top:20px">	
 	{{ Form::open(array('url' => 'importData', 'class' => 'form-horizontal', 'files' => true)) }}
 	<div class="col-md-12">
-		<div class="form-group">		
-			<div class="col-md-12">      
-				{{ Form::submit('Download Excel', array('name'=>'Export','class' => 'btn btn-primary btn-sm')) }}
-			</div>
-		</div>
+		
 		<legend>Check Venue Name and Address</legend>
 		<div class="form-group @if ($errors->has('venue_name')) has-error @endif">
 			<label class="col-md-2 control-label" for="venue_name">Venue Name</label>  
@@ -55,12 +51,16 @@ Import Venue
 		<div class="form-group">
 			<label class="col-md-2 control-label" for="submit"></label>
 			<div class="col-md-8">      
-				{{ Form::submit('Preview Map!', array('name'=>'Preview','class' => 'btn btn-primary')) }}
+				{{ Form::submit('Preview Map!', array('name'=>'Preview','class' => 'btn btn-default  btn-sm')) }}
 			</div>
 		</div>
 
 		<legend>Import Excel</legend>
-
+		<div class="form-group">		
+			<div class="col-md-8 col-md-offset-2">      
+				{{ Form::submit('Download Excel File', array('name'=>'Export','class' => 'btn btn-primary btn-sm')) }}
+			</div>
+		</div>
 		<div class="form-group @if ($errors->has('imported_File')) has-error @endif">
 			<label class="col-md-2 control-label" for="imported_File">Upload Excel</label>
 			<div class="col-md-8">      										
@@ -71,7 +71,7 @@ Import Venue
 		<div class="form-group">
 			<label class="col-md-2 control-label" for="submit"></label>
 			<div class="col-md-8">      															
-				{{ Form::submit('Import Excel', array('name'=>'Import','class' => 'btn btn-primary')) }}
+				{{ Form::submit('Upload Excel File', array('name'=>'Import','class' => 'btn btn-primary  btn-sm')) }}
 			</div>
 		</div>	
 
