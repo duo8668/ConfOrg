@@ -130,7 +130,7 @@ class EquipmentCategoryController extends \BaseController {
     public function modify($id)
     {
         //delete pending here
-        $equipmentcategory = equipmentcategory::find($id);
+        $equipmentcategory = Equipmentcategory::find($id);
 
         $equipmentcategory->status = 'Approved';  
         $equipmentcategory->save();
@@ -227,7 +227,7 @@ class EquipmentCategoryController extends \BaseController {
     public function destroy($id)
     {
         //
-        $equipmentcategory = equipmentcategory::find($id);
+        $equipmentcategory = Equipmentcategory::find($id);
         $equipmentcategory->delete();       
         // redirect
         Session::flash('message', 'Successfully deleted the Category!');
