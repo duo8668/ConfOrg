@@ -34,23 +34,58 @@
                 <h3 class="text-center">{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</h3>
 
                 <!-- SUBMIT PAPER BUTTON  -->
+                <?php 
+                    $dt = new DateTime("now"); 
+                    $date = $dt->format('Y-m-d H:i:s');
+                ?>
                 @if (Auth::check())
+                    {{-- if conf chair or staff, show edit button  --}}
+                    @if (Auth::user()->hasConfRole($conf->conf_id, 'Conference Chair') || Auth::user()->hasConfRole($conf->conf_id, 'Conference Staff') || Auth::user()->hasConfRole($conf->conf_id, 'Reviewer') )
+                        <div class="row">
+                                <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+                                    <a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}" class="btn btn-default btn-block" role="button">Edit Conference Info</a>
+                                </div>
+                            </div>
 
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
-                        <a href="{{ URL::route('submission.add', ['conf_id' => $conf->conf_id]) }}" class="btn btn-primary btn-block" role="button">Submit Paper</a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
-                        <a href="#" class="btn btn-success btn-block" role="button">Purchase Tickets</a>
-                    </div>
-                </div>
+                    {{-- otherwise, check if now() > cut_off time --}}
+                    @else
+                        @if ($date < $conf->cutoff_time)
+                            {{-- else, show submit paper --}}
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+                                    <a href="{{ URL::route('submission.add', ['conf_id' => $conf->conf_id]) }}" class="btn btn-primary btn-block" role="button">Submit Paper</a>
+                                </div>
+                            </div>
+                        @elseif ($date > $conf->cutoff_time)
+                            {{-- if yes, show purchase ticket --}}
+                            
+                            {{ Form::open(['to' => 'payment', 'method' => 'post', 'class' => 'inline' ]) }}
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+                                        {{ Form::hidden('conf_id', $conf->conf_id) }}
+                                        {{ Form::hidden('ticket_price', $conf->ticket_price) }}
+                                        {{ Form::button('Purchase Tickets', ['type' => 'submit', 'class' => '"btn btn-success btn-block'])}}
+                                     </div>
+                                </div>
+                            {{ Form::close() }}
+                               
+                        @else
+                            <h5 class="text-center well" style="margin-top:40px;">
+                                This conference has been concluded.
+                            </h5>
+                        @endif
+                    @endif
 
                 @else
-                <h5 class="text-center well" style="margin-top:40px;">
-                    Please {{ link_to_route('users-sign-in', 'sign in') }} or {{ link_to_route('users-create', 'create an account') }} before submitting papers or purchasing tickets to this conference
-                </h5>
+                     @if ($date < $conf->end_date)
+                        <h5 class="text-center well" style="margin-top:40px;">
+                            Please {{ link_to_route('users-sign-in', 'sign in') }} or {{ link_to_route('users-create', 'create an account') }} before submitting papers or purchasing tickets to this conference
+                        </h5>
+                    @else
+                        <h5 class="text-center well" style="margin-top:40px;">
+                            This conference has been concluded.
+                        </h5>
+                    @endif
                 @endif
 
             </div>

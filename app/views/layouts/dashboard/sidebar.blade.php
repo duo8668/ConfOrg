@@ -25,7 +25,7 @@
                             <li><a href="{{ URL::route('equipmentcategory.index') }}"><i class="fa fa-sitemap fa-fw"></i> Category</a></li>
                             <li><a href="{{ URL::route('equipment.index') }}"><i class="fa fa-cogs fa-fw"></i> Equipment</a></li>
                             <li><a href="{{ URL::route('room.index') }}"><i class="fa fa-location-arrow fa-fw"></i> Room</a></li>     
-                            <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import</a></li> 
+                            <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import Venue</a></li> 
 
                         @elseif (Auth::user()->hasSysRole('Admin'))
 
@@ -33,8 +33,9 @@
                             <li><a href="{{ URL::route('equipmentcategory.index') }}"><i class="fa fa-sitemap fa-fw"></i> Category</a></li>
                             <li><a href="{{ URL::route('equipment.index') }}"><i class="fa fa-cogs fa-fw"></i> Equipment</a></li>
                             <li><a href="{{ URL::route('room.index') }}"><i class="fa fa-location-arrow fa-fw"></i> Room</a></li>     
-                            <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import</a></li>  
+                            <li><a href="{{ URL::to('/import') }}"><i class="fa fa-upload fa-fw"></i> Import Venue</a></li>  
                             <li><a href="{{ URL::route('invoice.index') }}"><i class="fa fa-ticket fa-fw"></i> Invoices </a></li>
+                            <li><a href="{{ URL::to('/pending') }}"><i class="fa fa-check-square-o"></i> Pending Confirmation </a></li>
                             <li><a href="{{ URL::route('users-invite-friend') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Friend</a></li>
                             <li><a href="{{ URL::route('admins-invite-resource') }}"><i class="fa fa-user-plus fa-fw"></i> Invite a Resource Provider</a></li> 
 

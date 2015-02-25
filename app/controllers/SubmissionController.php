@@ -65,9 +65,25 @@ class SubmissionController extends \BaseController {
 	public function add($conf_id)
 	{
 		$conference = Conference::where('conf_id' , '=', $conf_id)->get()->first();
+
 		if (!empty($conference)) {
-			$topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
-			return View::make('submission.create')->with('topics', $topics)->with('conference', $conference);
+
+			//check if user not chair/staff/reviewer of said conference
+			if (!Auth::user()->hasConfRole($conference->conf_id, 'Conference Chair') || !Auth::user()->hasConfRole($conference->conf_id, 'Conference Staff') || !Auth::user()->hasConfRole($conference->conf_id, 'Reviewer') ) {
+
+				return Redirect::to('/dashboard')->with('message', 'You are not allowed to enter a submission to this conference');
+
+			} else {
+				// otherwise, check if conference still ongoing 
+				$dt = new DateTime("now");
+				if ($conference->cut_off > $dt) {
+					$topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
+					return View::make('submission.create')->with('topics', $topics)->with('conference', $conference);		
+				} else {
+					return Redirect::to('/dashboard')->with('message', 'This conference is no longer accepting submissions.');
+				}
+			}
+
 		} else {
 			return Redirect::to('/dashboard')->with('message', 'The conference does not exist!');
 		}
@@ -213,13 +229,13 @@ class SubmissionController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//check if submission belongs to use, then check if status still on review
 		$submission = Submission::where('sub_id' , '=', $id)->get()->first();
+
+		//check if submission belongs to user, then check if status still on review
 		if (!empty($submission) && $submission->user_id == Auth::user()->user_id) {
 			if ($submission->status == 0 ) {
 				$keywords = $submission->keywords()->get();
 
-				//TODO: get topics of current conference
 				$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
 				$topics = DB::table('submission_topic')
 				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')

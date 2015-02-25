@@ -15,8 +15,9 @@
                     </div>
                     <div class="panel-body">
                         @if(Session::has('message'))
-                            {{Session::get('message')}} 
-                        @endif
+                        
+                            <p class="text-center text-warning"><strong> {{{ Session::get('message') }}} </strong></p>
+                         @endif
                         {{ Form::open(array('route' => 'users-sign-in-post', 'method' => 'post')) }}
                             <fieldset>
                                 <div class="form-group @if ($errors->has('email')) has-error @endif">

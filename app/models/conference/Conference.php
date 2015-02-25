@@ -3,7 +3,7 @@
 class Conference extends Eloquent {
 
     protected $table = 'conference';
-    protected $fillable = array('title', 'description', 'begin_date', 'begin_time', 'end_date', 'end_time', 'is_free', 'cutoff_time', 'min_score', 'created_by', 'modified_by');
+    protected $fillable = array('title', 'description', 'begin_date', 'begin_time', 'end_date', 'end_time', 'is_free', 'cutoff_time', 'min_score', 'ticket_price', 'created_by', 'modified_by');
     protected $guarded = array('conf_id');
     protected $primaryKey = 'conf_id';
     public $timestamps = true;

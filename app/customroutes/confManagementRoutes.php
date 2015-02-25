@@ -8,10 +8,11 @@
 |
 |
 */
+Route::get('conference/', 'ConferenceController@conf_public_list');
+Route::get('conference/index', 'ConferenceController@conf_public_list');
+
 Route::group(array('before' => 'auth'),function(){
-	
-	Route::get('conference/', 'ConferenceController@index');
-	Route::get('conference/index', 'ConferenceController@index');
+		
 	Route::get('conference/confParticular', 'ConferenceController@theConf');
 	Route::get('conference/management/create', 'ConferenceController@create');
 	Route::get('conference/management/updateConfStaffs', 'ConferenceController@updateConfStaffs');
