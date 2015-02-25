@@ -254,14 +254,6 @@ $.fn.textWidth = function() {
 					<!-- <h4>  {{ $conf->room()->room_name }}  </h4> -->
 					<h4 class="text-center">  <span id="beginDate">{{ date_format(new DateTime($conf->begin_date), 'd-M-Y')  }}</span> <b>&nbsp;&nbsp;~&nbsp;&nbsp;</b> {{ date_format(new DateTime($conf->end_date), 'd-M-Y') }}  </h4>
 
-					<!-- SUBMIT PAPER BUTTON  -->
-					<div class="row">
-						<div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
-							<a href="{{ URL::route('submission.add', ['conf_id' => $conf->conf_id]) }}" class="btn btn-primary btn-block" role="button">Submit Paper</a>
-						</div>
-					</div>
-					<!-- BELOW INFO ONLY VISIBLE TO CHAIRMAN -->
-
 					<div class="row">
 						<div class="col-md-8 col-md-offset-2">
 							<hr>
@@ -408,7 +400,7 @@ $.fn.textWidth = function() {
 									</tr> 
 									@foreach ($submissions as $sub) 
 										<tr>
-											<td>{{ link_to_route('submission.show', $sub->sub_title, [$sub->sub_id], null)}}</td>
+											<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null) }}</td>
 											<td>
 												@if ($sub->sub_type === 3)
 												    Poster

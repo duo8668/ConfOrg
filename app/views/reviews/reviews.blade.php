@@ -4,12 +4,21 @@
 @stop
 @section('content')
 <!-- BREADCRUMB -->
-<ol class="breadcrumb">
-  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
-  <li><a href="{{ URL::route('review.index') }}">Reviews</a></li>
-  <li class="active">Submission Reviews</li>
-</ol>
-<hr>
+@if (Auth::user()->hasConfRole($submission->conf_id, 'Conference Chair'))
+	<ol class="breadcrumb">
+	  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+	  <li><a href="{{ URL::to('/conference/detail?conf_id=' . $submission->conf_id) }}">Conference Detail</a></li>
+	  <li class="active">Submission Reviews</li>
+	</ol>
+	<hr>
+@else
+	<ol class="breadcrumb">
+	  <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
+	  <li><a href="{{ URL::route('review.index') }}">Reviews</a></li>
+	  <li class="active">Submission Reviews</li>
+	</ol>
+	<hr>
+@endif
 
 	@include('reviews._reviewpartials')
 <?php
@@ -22,7 +31,7 @@
 		@foreach ($reviews as $rev)
 			<hr>
 			<div class="row">
-				<div class="col-md-12">{{{ $rev->internal_comment }}}</div>
+				<div class="col-md-12"><p><strong>{{{ $rev->firstname }}} {{{ $rev->lastname }}} commented:</strong></p> {{{ $rev->internal_comment }}}</div>
 			</div>
 		@endforeach
 	@else 

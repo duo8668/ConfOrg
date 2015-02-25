@@ -8,7 +8,7 @@
   <li class="active">Dashboard</li>
 </ol>
 <hr>
-
+{{ HTML::script('js/filterables.js') }}
 <!-- 
     NON-RESOURCE PROVIDER VIEW START 
 -->
@@ -32,23 +32,36 @@
       @if ($p_flag == false)
         <p class="text-center">You are not a participant in any conferences</p>
       @else
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tr>
-                <td><strong>Conference Title</strong></td>
-                <td><strong>Date</strong></td>
-                <td><strong>Location</strong></td>
-            </tr> 
-            @foreach ($confs as $conf)
-              @if ($conf->role_id == 8)
-                <tr>
-                  <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
-                  <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>{{{ $conf->venue_name }}}</td>
-              </tr> 
-              @endif
-            @endforeach
-          </table>
+        <div class="row filter-row">
+          <div class="panel panel-default filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title"><strong>Filter Conference</strong></h3>
+                <div class="pull-right">
+                    <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="filters">
+                      <th style="width: 40%;"><input type="text" class="form-control" placeholder="Conference Title" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Date" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Location" disabled></th>
+                  </tr>
+                </thead> 
+                
+                @foreach ($confs as $conf)
+                  @if ($conf->role_id == 8)
+                    <tr>
+                      <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
+                      <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
+                      <td>{{{ $conf->venue_name }}}</td>
+                  </tr> 
+                  @endif
+                @endforeach
+              </table>
+            </div>
+          </div>
         </div>
       @endif
     </div>
@@ -56,23 +69,36 @@
       @if ($r_flag == false)
         <p class="text-center">You are not a reviewer in any conferences</p>
       @else
-        <div class="table-responsive">
-          <table class="table table-striped">
-           <tr>
-                <td><strong>Conference Title</strong></td>
-                <td><strong>Date</strong></td>
-                <td><strong>Location</strong></td>
-            </tr> 
-            @foreach ($confs as $conf)
-              @if ($conf->role_id == 7)
-                <tr>
-                  <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
-                  <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>{{{ $conf->venue_name }}}</td>
-              </tr> 
-              @endif
-            @endforeach
-          </table>
+        <div class="row filter-row">
+          <div class="panel panel-default filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title"><strong>Filter Conference</strong></h3>
+                <div class="pull-right">
+                    <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="filters">
+                      <th style="width: 40%;"><input type="text" class="form-control" placeholder="Conference Title" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Date" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Location" disabled></th>
+                  </tr>
+                </thead> 
+                
+                @foreach ($confs as $conf)
+                  @if ($conf->role_id == 7)
+                    <tr>
+                      <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
+                      <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
+                      <td>{{{ $conf->venue_name }}}</td>
+                  </tr> 
+                  @endif
+                @endforeach
+              </table>
+            </div>
+          </div>
         </div>
       @endif
     </div>
@@ -80,23 +106,36 @@
       @if ($s_flag == false)
         <p class="text-center">You are not a staff committee in any conferences</p>
       @else
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tr>
-                <td><strong>Conference Title</strong></td>
-                <td><strong>Date</strong></td>
-                <td><strong>Location</strong></td>
-            </tr> 
-            @foreach ($confs as $conf)
-              @if ($conf->role_id == 5)
-                <tr>
-                  <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
-                  <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>{{{ $conf->venue_name }}}</td>
-              </tr> 
-              @endif
-            @endforeach
-          </table>
+        <div class="row filter-row">
+          <div class="panel panel-default filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title"><strong>Filter Conference</strong></h3>
+                <div class="pull-right">
+                    <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="filters">
+                      <th style="width: 40%;"><input type="text" class="form-control" placeholder="Conference Title" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Date" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Location" disabled></th>
+                  </tr>
+                </thead> 
+                
+                @foreach ($confs as $conf)
+                  @if ($conf->role_id == 5)
+                    <tr>
+                      <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
+                      <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
+                      <td>{{{ $conf->venue_name }}}</td>
+                  </tr> 
+                  @endif
+                @endforeach
+              </table>
+            </div>
+          </div>
         </div>
       @endif
     </div>
@@ -104,23 +143,36 @@
       @if ($c_flag == false)
         <p class="text-center">You are not a chairman in any conferences</p>
       @else
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tr>
-                <td><strong>Conference Title</strong></td>
-                <td><strong>Date</strong></td>
-                <td><strong>Location</strong></td>
-            </tr> 
-            @foreach ($confs as $conf)
-              @if ($conf->role_id == 4)
-                <tr>
-                  <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
-                  <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
-                  <td>{{{ $conf->venue_name }}}</td>
-              </tr> 
-              @endif
-            @endforeach
-          </table>
+        <div class="row filter-row">
+          <div class="panel panel-default filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title"><strong>Filter Conference</strong></h3>
+                <div class="pull-right">
+                    <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="filters">
+                      <th style="width: 40%;"><input type="text" class="form-control" placeholder="Conference Title" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Date" disabled></th>
+                      <th style="width: 30%;"><input type="text" class="form-control" placeholder="Location" disabled></th>
+                  </tr>
+                </thead> 
+                
+                @foreach ($confs as $conf)
+                  @if ($conf->role_id == 4)
+                    <tr>
+                      <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
+                      <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
+                      <td>{{{ $conf->venue_name }}}</td>
+                  </tr> 
+                  @endif
+                @endforeach
+              </table>
+            </div>
+          </div>
         </div>
        @endif
     </div>

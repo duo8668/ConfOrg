@@ -296,9 +296,7 @@ CREATE TABLE IF NOT EXISTS `conference_room_schedule` (
 
 INSERT INTO `conference_room_schedule` (`confroomschedule_id`, `conf_id`, `room_id`, `description`, `date_start`, `date_end`, `begin_time`, `end_time`, `remarks`, `created_by`, `modified_by`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 'Testing', '2015-04-02', '2015-04-03', '2015-04-02 03:00:00', '2015-04-03 15:00:00', NULL, 0, NULL, '2015-02-15 00:46:09', '2015-02-18 16:12:56'),
-(2, 2, 1, 'Testing', '2015-04-02', '2015-04-03', '2015-04-02 03:00:00', '2015-04-03 15:00:00', NULL, 0, NULL, '2015-02-15 00:46:09', '2015-02-18 16:12:56'),
-(3, 3, 1, 'Testing', '2015-04-02', '2015-04-03', '2015-04-02 03:00:00', '2015-04-03 15:00:00', NULL, 0, NULL, '2015-02-15 00:46:09', '2015-02-18 16:12:56'),
-(7, 1, 4, NULL, '2015-02-23', '2015-02-27', NULL, NULL, NULL, 31, NULL, '2015-02-01 14:03:04', '2015-02-01 14:03:04');
+(2, 2, 4, 'Testing', '2015-04-02', '2015-04-03', '2015-04-02 03:00:00', '2015-04-03 15:00:00', NULL, 0, NULL, '2015-02-15 00:46:09', '2015-02-18 16:12:56');
 
 -- --------------------------------------------------------
 
@@ -351,8 +349,8 @@ CREATE TABLE IF NOT EXISTS `confuserrole` (
 --
 
 INSERT INTO `confuserrole` (`confuserrole_id`, `role_id`, `user_id`, `conf_id`) VALUES
-(3, 4, 1, 1),
-(4, 4, 1, 2);
+(1, 4, 1, 1),
+(2, 4, 2, 2);
 
 -- --------------------------------------------------------
 

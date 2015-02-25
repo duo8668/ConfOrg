@@ -231,27 +231,24 @@ class ReviewController extends \BaseController {
 		$is_reviewer = DB::table('confuserrole')
 						->select('role_id')
 						->where('conf_id', '=', $conf->conf_id)
-						->where('role_id', '=', 7)
+						->whereIn('role_id', array(7, 4))
 						->where('user_id', '=', Auth::user()->user_id)
 						->first();
 		if ($is_reviewer != null) {
-			//check if submissions status = on review
-			if ($submission->status == 0 ) {
-				$keywords = $submission->keywords()->get();
-				$authors = $submission->authors()->get();
-				$reviews = $submission->reviews()->get();
-				$sub_topics = DB::table('submission_topic')
-				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
-				->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
+			$keywords = $submission->keywords()->get();
+			$authors = $submission->authors()->get();
+			// $reviews = $submission->reviews()->get();
+			$reviews = DB::table('reviews')->join('users', 'reviews.user_id', '=', 'users.user_id')
+						->select('users.firstname', 'users.lastname', 'reviews.comment', 'reviews.internal_comment', 'reviews.quality_score', 'reviews.significance_score', 'reviews.presentation_score', 'reviews.relevance_score', 'reviews.originality_score')->get();
+			$sub_topics = DB::table('submission_topic')
+			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
+			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
 
-				return View::make('reviews.reviews')->withSubmission($submission)
-				->with('sub_authors', $authors)
-				->with('sub_topics', $sub_topics)
-				->withReviews($reviews)
-				->withKeyword($keywords);
-			} else {
-				return Redirect::route('reviews.index')->withMessage('Sorry! You can no longer review this submission. The committe decision has been finalized!');
-			}
+			return View::make('reviews.reviews')->withSubmission($submission)
+			->with('sub_authors', $authors)
+			->with('sub_topics', $sub_topics)
+			->withReviews($reviews)
+			->withKeyword($keywords);
 		} else {
 			return Redirect::route('reviews.index')->withMessage('You do not have access to this page!');
 		}				
