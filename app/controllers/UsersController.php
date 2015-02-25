@@ -597,12 +597,14 @@ class UsersController extends \BaseController {
 			$venue = Venue::where('created_by', '=', Auth::user()->user_id)->get();
 			return View::make('layouts.dashboard.index')
 			->with('venue', $venue)
-			->with('flag', 'RP');
+			->with('flag', 'RP')
+			->with('privilege',false);
 
 		} else if (Auth::User()->hasSysRole('Admin')){
 
 			return View::make('layouts.dashboard.index')
-			->with('flag', 'SA');
+			->with('flag', 'SA')
+			->with('privilege',true);
 
 		} else {
 
