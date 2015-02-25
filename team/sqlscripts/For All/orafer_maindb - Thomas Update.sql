@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`company` (
   `Company_name` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   PRIMARY KEY (`Company_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`users` (
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `users_email_unique` (`email` ASC))
 ENGINE = InnoDB
-AUTO_INCREMENT = 8
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`company_user` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`conference` (
   PRIMARY KEY (`conf_id`),
   UNIQUE INDEX `Title` (`title` ASC))
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`interest_field` (
   `updated_at` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`interestfield_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 11
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`venue` (
   `available` VARCHAR(45) NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`venue_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`room` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 12
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`conference_room_schedule` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 11
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`roles` (
   PRIMARY KEY (`role_id`),
   UNIQUE INDEX `roles_rolename_unique` (`rolename` ASC))
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`confuserrole` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_bin;
 
@@ -347,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`countries` (
   `calling_code` VARCHAR(8) NULL DEFAULT NULL,
   PRIMARY KEY (`country_id`))
 ENGINE = MyISAM
-AUTO_INCREMENT = 251
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -399,7 +399,7 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `conforg_db`.`invitation`
+-- Table `conforg_db`.`invitation` 0 remove user_id`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `conforg_db`.`invitation` ;
 
@@ -408,16 +408,9 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`invitation` (
   `code` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `email` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `company` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
-  `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`invite_id`),
-  INDEX `invitation_user_id_foreign_idx` (`user_id` ASC),
-  CONSTRAINT `invitation_user_id_foreign`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `conforg_db`.`users` (`user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -544,7 +537,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`payment` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -620,7 +613,7 @@ COLLATE = utf8_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `conforg_db`.`profiles`
+-- Table `conforg_db`.`profiles` -removed the country_id` 
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `conforg_db`.`profiles` ;
 
@@ -634,8 +627,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`profiles` (
   `updated_at` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
   `bio` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `location` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
-  `photo` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
-  `country_id` INT(11) NOT NULL,
+  `photo` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL, 
   PRIMARY KEY (`profile_id`),
   INDEX `profiles_user_id_foreign_idx` (`user_id` ASC),
   INDEX `profiles_country_id_foreign_idx` (`country_id` ASC),
@@ -644,13 +636,8 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`profiles` (
     REFERENCES `conforg_db`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `profiles_country_id_foreign`
-    FOREIGN KEY (`country_id`)
-    REFERENCES `conforg_db`.`countries` (`country_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 8
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -689,7 +676,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`reviews` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -728,7 +715,7 @@ COLLATE = utf8_unicode_ci;
 DROP TABLE IF EXISTS `conforg_db`.`room_equipment` ;
 
 CREATE TABLE IF NOT EXISTS `conforg_db`.`room_equipment` (
-  `roomequipment_id` INT(11) NOT NULL,
+  `roomequipment_id` INT(11) NOT NULL AUTO_INCREMENT,
   `room_id` INT(11) NULL DEFAULT NULL,
   `equipment_id` INT(11) NULL DEFAULT NULL,
   `quantity` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
@@ -835,7 +822,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`sysrole` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
