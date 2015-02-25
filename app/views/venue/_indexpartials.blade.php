@@ -2,10 +2,10 @@
     <table class="table">   
         <tr>
             <td style="width:15%"><strong>Venue Name</strong></td>
-            <td style="width:30%"><strong>Address</strong></td>
+            <td style="width:25%"><strong>Address</strong></td>
             <td style="width:10%"><strong>Number of Room</strong></td>
             <td style="width:20%"><strong>Available for Booking</strong></td>
-            <td style="width:25%"><strong>Option</strong></td>
+            <td style="width:30%"><strong>Option</strong></td>
         </tr> 
     @foreach($venue as $value)
         <tr>
@@ -35,7 +35,18 @@
                     {{ Form::hidden('_method', 'DELETE') }}
                     {{ Form::submit('Delete this venue', array('class' => 'btn btn-danger btn-xs')) }}
                 {{ Form::close() }}
+                @else  
+                    @if(is_null($value->pending))                               
+                    {{ Form::open(array('url' => 'venue/deleterequest/' . $value->venue_id, 'class' => 'pull-right')) }}
+                        {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
+                    {{ Form::close() }} 
+                    @else
+                    {{ Form::open(array('url' => 'venue/deleterequest/' . $value->venue_id, 'class' => 'pull-right')) }}
+                        {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
+                    {{ Form::close() }} 
+                    @endif                           
                 @endif
+
             </td>
         </tr>
     @endforeach  

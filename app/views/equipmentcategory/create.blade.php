@@ -21,16 +21,6 @@
           @if ($errors->has('categoryName')) <p class="help-block">{{ $errors->first('categoryName') }}</p> @endif        
         </div>    
       </div>
-
-      <div class="form-group  @if ($errors->has('categoryRemarks')) has-error @elseif (Session::has('message')) has-error @endif">
-        <label class="col-md-2 control-label" for="categoryRemarks">Category Remarks</label>
-        <div class="col-md-10">                     
-          {{ Form::text('categoryRemarks', Input::old('categoryRemarks'), array('class' => 'form-control input-md')) }}
-           @if ($errors->has('categoryRemarks')) <p class="help-block">{{ $errors->first('categoryRemarks') }}</p> 
-           @elseif (Session::has('message')) <p class="help-block">{{ Session::get('message') }}</p> 
-           @endif
-        </div>
-      </div>
       
       <hr>
       <div class="row">  

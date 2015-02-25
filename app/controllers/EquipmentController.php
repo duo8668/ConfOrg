@@ -25,9 +25,12 @@ class EquipmentController extends \BaseController {
 
 		$Equipment->equipment_status = 'Approved';  
 		$Equipment->save();
-		Session::flash('message', 'Approved Equipment!');  
+		Session::flash('message', 'Approved Equipment!');
 
-		return Redirect::to('equipment');
+		$pending = Pending::where('equipment_id','=',$id);
+        $pending->delete();
+
+		return Redirect::back();
 	}
 
 	/**
@@ -38,7 +41,8 @@ class EquipmentController extends \BaseController {
 	public function create()
 	{
 		//
-		$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name, " - ", equipmentcategory_remark) AS full_name'))->lists('full_name', 'equipmentcategory_id');
+		//$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name, " - ", equipmentcategory_remark) AS full_name'))->lists('full_name', 'equipmentcategory_id');
+		$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');
 		return View::make('equipment.create')
 		->with('categories', $categories);	    
 	}
@@ -53,7 +57,7 @@ class EquipmentController extends \BaseController {
 	{
 		//
 		$rules = array(
-			'equipmentName'      => 'required',
+			'equipmentName'      => 'required|unique:equipment,equipment_name',			
 			'equipmentRemarks'   => 'required',            
 			'equipmentcategory'  =>'required',
 			);
@@ -74,7 +78,14 @@ class EquipmentController extends \BaseController {
 			$equipment->created_by = Auth::user()->user_id;
 			if(Auth::User()->hasSysRole('Admin'))           
 				$equipment->equipment_status='Approved';  
-			$equipment->save();          
+			$equipment->save();   
+
+			if(!Auth::User()->hasSysRole('Admin'))
+            $pending = new Pending;
+            $pending->user_id = Auth::user()->user_id;         
+            $pending->equipment_id = $equipment->equipment_id;
+            $pending->status = 'Pending';
+            $pending->save();       
 
             // redirect
 			Session::flash('message', 'Equipment Successfully Created!');
@@ -92,21 +103,7 @@ class EquipmentController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		// $data = DB::table('equipment')
-  //       ->join('equipmentcategory', function($join) use($id)
-  //       {
-  //           $join->on('equipmentcategory.ID', '=', 'equipment.equipmentcategory_id')
-  //                ->where('equipment.ID', '=', $id);
-  //       })
-  //       ->get(array('equipmentcategory.Remarks', 'equipmentcategory.Name'));  
-    	//dd($equipment2);
-		$equipment = Equipment::find($id);
-		$equipmentcategory = EquipmentCategory::find($equipment->equipmentCategory_id);
-		$cat = $equipmentcategory->Name .' - '. $equipmentcategory->Remarks;
-
-		return View::make('equipment.show')->with('equipment', $equipment)->with('cat',$cat);
-
-
+		//not used!
 	}
 
 
@@ -118,10 +115,9 @@ class EquipmentController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		// show the edit form and pass the equipment
 		$equipment = Equipment::find($id);
-		$categories = EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name) AS full_name'))->lists('full_name', 'equipmentcategory_id');
-        // show the edit form and pass the equipment
+		$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');	        
 		return View::make('equipment.edit')
 		->with('equipment', $equipment)
 		->with('categories', $categories);	  			      
@@ -137,7 +133,7 @@ class EquipmentController extends \BaseController {
 	public function update($id)
 	{
 		$rules = array(
-			'equipmentName'       => 'required',
+			'equipmentName'       => 'required|unique:equipment,equipment_name,'.$id.',equipment_id',
 			'equipmentRemarks'    => 'required',            
 			'equipmentcategory'   =>'required',
 			);
@@ -168,19 +164,39 @@ class EquipmentController extends \BaseController {
 			if($updated==true)
 			{
 				$equipment->modified_by = Auth::user()->user_id;
-
-				if(Auth::User()->hasSysRole('Admin'))           
+				
+				if(Auth::User()->hasSysRole('Admin'))
+				{
 					$equipment->equipment_status='Approved';
-				else
-					$equipment->equipment_status='Pending';        			
-
+					$pending = Pending::where('equipment_id','=',$id);
+					$pending->delete();
+				}           				
+				else {
+					$equipment->equipment_status='Pending';					
+					if(empty(Pending::where('equipment_id','=',$equipment->equipment_id)->get()->toArray()))
+					{
+                        //create a pending notification to inform the admin on this needing attention!
+						$pending = new Pending;
+						$pending->user_id = Auth::user()->user_id;         
+						$pending->equipment_id = $id;
+						$pending->status = 'Pending';
+						$pending->save();    
+					}
+					else
+					{
+						$pending = Pending::where('equipment_id','=',$equipment->equipment_id)->first();
+						$pending->user_id = Auth::user()->user_id;
+						$pending->equipment_id = $id;       
+						$pending->status = 'Pending';
+						$pending->touch();
+						$pending->save();    
+					}											
+				}									
 				Session::flash('message', 'Equipment Successfully Edited!');
-			}
-
+			}			    		              
 			$equipment->save();            
 
-            // redirect
-			
+            // redirect			
 			return Redirect::to('equipment');
 		} 
 

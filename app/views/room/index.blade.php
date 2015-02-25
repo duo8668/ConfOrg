@@ -21,7 +21,7 @@
         </tr> 
     @foreach($data as $key => $value)
         <tr>            
-            <td>{{ link_to_route('venue.show', $value->venue_name, ['id' => $value->venue_id]) }}</td>
+            <td>{{ link_to_route('venue.show', $value->venues->venue_name, ['id' => $value->venue_id]) }}</td>
             <td>{{ link_to_route('room.show', $value->room_name .' (Capacity:'. $value->capacity .' )', ['id' => $value->room_id]) }}</td>             
             <td>${{ $value->rental_cost}}</td>             
             <!-- we will also add show, edit, and delete buttons -->
@@ -40,13 +40,23 @@
                 {{ Form::open(array('url' => 'room/modify/' . $value->room_id, 'class' => 'inline')) }}                    
                     {{ Form::submit('Make Room Unavailable', array('class' => 'btn btn-danger btn-xs')) }}
                 {{ Form::close() }}
-                @endif
+                @endif            
 
                 @if($privilege)
                 {{ Form::open(array('url' => 'room/' . $value->room_id, 'class' => 'pull-right')) }}
-                    {{ Form::hidden('_method', 'DELETE') }} 
-                    {{ Form::submit('Delete this Room', array('class' => 'btn btn-danger btn-xs')) }}
+                    {{ Form::hidden('_method', 'DELETE') }}
+                    {{ Form::submit('Delete this room', array('class' => 'btn btn-danger btn-xs')) }}
                 {{ Form::close() }}
+                @else  
+                    @if(is_null($value->pending))                               
+                    {{ Form::open(array('url' => 'room/deleterequest/' . $value->room_id, 'class' => 'pull-right')) }}
+                        {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
+                    {{ Form::close() }} 
+                    @else
+                    {{ Form::open(array('url' => 'room/deleterequest/' . $value->room_id, 'class' => 'pull-right')) }}
+                        {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
+                    {{ Form::close() }} 
+                    @endif                           
                 @endif
           
             </td>

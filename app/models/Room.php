@@ -8,7 +8,6 @@ class Room extends Eloquent {
 	protected $guarded = array('room_id');
 
 	public function Venue(){
-
 		// return $this->belongsTo('Venue','venue_id','venue_id');
 		return Venue::where('venue_id','=',$this->venue_id)->first();
 	}
@@ -17,5 +16,12 @@ class Room extends Eloquent {
 		return $this->belongsToMany('Equipment', 'room_equipment', 'room_id', 'equipment_id')->withPivot('quantity','roomequipment_id');	
 	}
 
+	public function Pending(){	
+		return $this->belongsTo('Pending','room_id','room_id');
+	}
+
+	public function Venues(){
+		return $this->belongsTo('Venue','venue_id','venue_id');
+	}
 
 }

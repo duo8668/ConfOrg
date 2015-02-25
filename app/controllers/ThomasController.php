@@ -8,11 +8,11 @@
 			public function index()
 			{  	
 				//retrieve venue that only belongs to company
-				$privilege = false;
+				$privilege = false;				
 				if(Auth::User()->hasSysRole('Admin'))
 				{
 					$venue = Venue::with('Rooms')->all();													
-					$privilege = true;
+					$privilege = true;					
 					// load the view and pass the venue				
 					return View::make('venue.index')
 					->with('venue', $venue)
@@ -21,7 +21,7 @@
 				else if(Auth::User()->hasSysRole('Resource Provider'))
 				{
 					$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
-					$venue = Venue::with('Rooms')->where('company_id', $company_id)->get();
+					$venue = Venue::with('Rooms','Pending')->where('company_id', $company_id)->get();					
 					// load the view and pass the venue				
 					return View::make('venue.index')
 					->with('venue', $venue)
@@ -30,6 +30,23 @@
 					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
 				}	
 				
+			}
+
+			public function pendingDeleteRequest($id)
+			{			
+				if(empty(Pending::where('venue_id','=',$id)->get()->toArray())) {										
+					$pending = new Pending;
+					$pending->venue_id = $id;
+					$pending->user_id = Auth::user()->user_id;
+					$pending->save();	
+					return Redirect::back()->withMessage('Delete Request Submitted');				
+				}
+				else {
+					//if request already existed, cancel the delete request!
+					$pending = Pending::where('venue_id','=',$id);
+        			$pending->delete();
+        			return Redirect::back()->withMessage('Delete Request Cancelled');
+				}								
 			}
 
 			public function modify($id)
@@ -47,8 +64,8 @@
 					Session::flash('message', 'Venue Made Available!');
 				}
 				$venue->save();    
-				
-				return Redirect::to('venue');
+				//Redirect::back()->withMessage('Profile saved!')
+				return Redirect::back();
 			}
 
 			/**
@@ -152,7 +169,7 @@
 				Gmaps::add_marker($marker);
 				$map = Gmaps::create_map();		
 
-				$data  = room::where('venue_id','=',$id)->get();				
+				$data  = room::with('Pending')->where('venue_id','=',$id)->get();				
 
 			// show the view and pass the venue to it
 				return View::make('venue.show')
@@ -428,6 +445,11 @@
 								                $equipmentcategory->created_by=Auth::user()->user_id;
 								                $equipmentcategory->save();
 								                $eCatID = $equipmentcategory->equipmentcategory_id;
+
+								                $pending = new Pending();
+								                $pending->user_id = Auth::user()->user_id;
+								                $pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
+								                $pending->save();
 											}
 
 											//add or ignore equipment
@@ -441,6 +463,11 @@
 												$equipment->equipmentcategory_id = $eCatID;
 												$equipment->save();    																																			
 												$eID = $equipment->equipment_id;
+
+												$pending = new Pending();
+								                $pending->user_id = Auth::user()->user_id;
+								                $pending->equipment_id = $eID;
+								                $pending->save();
 											}
 											else
 											{

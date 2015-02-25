@@ -13,15 +13,15 @@ All Equipments
 <div class="table-responsive">
     <table class="table">   
         <tr>
-            <td style="width:15%"><strong>Equipment</strong></td>
-            <td style="width:30%"><strong>Category</strong></td>
-            <td style="width:15%"><strong>Status</strong></td>
+            <td style="width:20%"><strong>Equipment</strong></td>
+            <td style="width:20%"><strong>Category</strong></td>
+            <td style="width:20%"><strong>Status</strong></td>
             <td style="width:40%"><strong>Option</strong></td>
         </tr> 
         @foreach($data as $key => $value)
         <tr>
             <td>{{ $value->equipment_name }}</td> 
-            <td>{{ link_to_route('equipmentcategory.show', $value->equipmentCategory->equipmentcategory_name .' - '. $value->equipmentCategory->equipmentcategory_remark, ['id' => $value->equipmentCategory->equipmentcategory_id]) }}</td>
+            <td>{{ link_to_route('equipmentcategory.show', $value->equipmentCategory->equipmentcategory_name, ['id' => $value->equipmentCategory->equipmentcategory_id]) }}</td>
             <td>{{ $value->equipment_status }}</td> 
             <!-- we will also add show, edit, and delete buttons -->            
             <td>    
@@ -39,7 +39,7 @@ All Equipments
                 {{ Form::close() }}  
                 @endif   
                 <!-- edit this nerd (uses the edit method found at GET /nerds/{equipment_id}/edit -->
-                <a class="btn btn-small btn-info btn-xs" href="{{ URL::to('equipment/' . $value->equipment_id . '/edit') }}">Edit this Equipment</a>                
+                <a class="btn btn-small btn-info btn-xs" href="{{ URL::to('equipment/' . $value->equipment_id . '/edit') }}">Edit Equipment</a>                
             </td>
         </tr>
         @endforeach

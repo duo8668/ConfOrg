@@ -10,23 +10,19 @@ class RoomController extends \BaseController {
 	public function index()
 	{				
 		$privilege = false;
-		$flag = false;
+		$flag = false;		
 		if(Auth::User()->hasSysRole('Admin'))
-		{			
-			$data = DB::table('room')
-			->join('venue', 'venue.venue_id', '=', 'room.venue_id')			
-			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
+		{						
+			$data = Room::with('venues','Pending')->get();			
 			$privilege = true;
 			$flag = true;
 		}
 		else if(Auth::User()->hasSysRole('Resource Provider'))
 		{
-			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');		
-			$data = DB::table('room')
-			->join('venue', 'venue.venue_id', '=', 'room.venue_id')
-			->where('venue.company_id', '=', $company_id)
-			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));		
-
+			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');				
+			$data = Room::with('Pending','venues')->whereHas('venues', function($Query) use($company_id) {
+				$Query->where('company_id', '=', $company_id); });
+			$data = $data->get();	
 			$flag = true;							
 		}		
 
@@ -52,7 +48,6 @@ class RoomController extends \BaseController {
 		}
 		
 	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -92,7 +87,24 @@ class RoomController extends \BaseController {
 		}
 		$room->save();    
 
-		return Redirect::to('room');
+		return Redirect::back();
+	}
+
+	public function pendingDeleteRequest($id)
+	{			
+		if(empty(Pending::where('room_id','=',$id)->get()->toArray())) {										
+			$pending = new Pending;
+			$pending->room_id = $id;
+			$pending->user_id = Auth::user()->user_id;
+			$pending->save();	
+			return Redirect::back()->withMessage('Delete Request Submitted');				
+		}
+		else {
+					//if request already existed, cancel the delete request!
+			$pending = Pending::where('room_id','=',$id);
+			$pending->delete();
+			return Redirect::back()->withMessage('Delete Request Cancelled');
+		}								
 	}
 
 	/**
@@ -102,9 +114,12 @@ class RoomController extends \BaseController {
 	 */
 	public function store()
 	{		
-		//dd(Input::all());
+		//dd(Input::all());		
+		$test = Input::get('venue');
 		$rules = array(
-			'room_name'       => 'required|unique:room',
+			'room_name'       => 'required|unique:room',			
+			// 'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',
+			// 'email' => 'unique:users,email_address,NULL,id,account_id,1',
 			'roomCapacity'      => 'required|Integer',			                      
 			'roomCost'      => 'required|Integer',	
 			'venue' 				=>'required',
@@ -132,6 +147,7 @@ class RoomController extends \BaseController {
 			$room->capacity = Input::get('roomCapacity');
 			$room->venue_id = Input::get('venue');
 			$room->rental_cost = Input::get('roomCost');
+			$room->created_by = Auth::user()->user_id;
 			$room->save();            
 			
 			$SelectedValues = Input::get('SelectedValues');			
@@ -157,9 +173,24 @@ class RoomController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
-		$room = Room::find($id);
-		$venue = venue::find($room->venue_id);    	    	
+		$privilege = false;		
+		if(Auth::User()->hasSysRole('Admin'))
+		{			
+			$data = DB::table('room')
+			->join('venue', 'venue.venue_id', '=', 'room.venue_id')			
+			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
+			$privilege = true;			
+		}
+		
+		$room = Room::with('equipments')->where('room_id','=',$id)->first();		
+		$created_by = User::find($room->created_by);				
+		$modified_by = User::find($room->modified_by);
+		//$role->pivot->created_at
+		// foreach($room->equipments as $room)
+		// {
+		// 	dd($room->pivot->quantity);
+		// }
+		$venue = venue::find($room->venue_id);		
 
 		$geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
@@ -174,7 +205,13 @@ class RoomController extends \BaseController {
 		$marker['position'] = $geoLocation;
 		Gmaps::add_marker($marker);
 		$map = Gmaps::create_map();						    	
-		return View::make('room.show')->with('room', $room)->with('venue',$venue)->with('map',$map);
+		return View::make('room.show')
+		->with('room', $room)
+		->with('venue',$venue)
+		->with('created_By',$created_by)
+		->with('modified_By',$modified_by)
+		->with('privilege',$privilege)
+		->with('map',$map);
 	}
 
 
@@ -247,6 +284,7 @@ class RoomController extends \BaseController {
 			$room->capacity = Input::get('roomCapacity');	            
 			$room->venue_id = Input::get('venue');
 			$room->rental_cost = Input::get('roomCost');
+			$room->updated_by = Auth::user()->user_id;
 			$room->save();            
 
 			$room->equipments()->detach();

@@ -10,6 +10,9 @@ class EquipmentCategoryController extends \BaseController {
     {        
         // $equipmentcategory = EquipmentCategory::with('equipments')->count();
         // dd($equipmentcategory);
+
+        // $pending = Pending::with('equipmentcategory')->where('equipmentcategory_id','=','7')->get();
+        // dd($pending->toArray());
         $user_id = Auth::user()->user_id;
         $privilege = false;
         if(Auth::User()->hasSysRole('Admin'))
@@ -45,31 +48,38 @@ class EquipmentCategoryController extends \BaseController {
     public function store()
     {
         $rules = array(
-                'categoryName'       => 'required'
+            'categoryName'       => 'required|unique:equipment_category,equipmentcategory_name'
                 //'categoryRemarks'      => 'required',            
             );
-            $validator = Validator::make(Input::all(), $rules);
+        $validator = Validator::make(Input::all(), $rules);
 
             // process the login
-            if ($validator->fails()) {
-                return Redirect::to('equipmentcategory/create')
-                    ->withErrors($validator)
-                    ->withInput(Input::all());
-            }           
-            else {
+        if ($validator->fails()) {
+            return Redirect::to('equipmentcategory/create')
+            ->withErrors($validator)
+            ->withInput(Input::all());
+        }           
+        else {
                 // store               
-                $equipmentcategory = new EquipmentCategory;
-                $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
-                $equipmentcategory->created_by = Auth::user()->user_id;
-                if(Auth::User()->hasSysRole('Admin'))           
+            $equipmentcategory = new EquipmentCategory;
+            $equipmentcategory->equipmentcategory_name = Input::get('categoryName');
+            $equipmentcategory->created_by = Auth::user()->user_id;
+            if(Auth::User()->hasSysRole('Admin'))           
                 $equipmentcategory->status='Approved';  
-                //$equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');               
-                $equipmentcategory->save();            
+                //$equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');           
+            $equipmentcategory->save();            
+
+            if(!Auth::User()->hasSysRole('Admin'))
+                $pending = new Pending;
+            $pending->user_id = Auth::user()->user_id;         
+            $pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
+            $pending->status = 'Pending';
+            $pending->save();
 
                 // redirect
-                Session::flash('message', 'Category Successfully Created!');
-                return Redirect::to('equipmentcategory');
-            } 
+            Session::flash('message', 'Category Successfully Created!');
+            return Redirect::to('equipmentcategory');
+        } 
     }
 
 
@@ -96,9 +106,9 @@ class EquipmentCategoryController extends \BaseController {
 
         // show the view and pass the nerd to it
         return View::make('equipmentcategory.show')
-            ->with('equipmentcategory', $equipmentcategory)
-            ->with('equipmentList',$equipmentList)
-            ->with('privilege',$privilege);
+        ->with('equipmentcategory', $equipmentcategory)
+        ->with('equipmentList',$equipmentList)
+        ->with('privilege',$privilege);
     }
 
 
@@ -114,16 +124,19 @@ class EquipmentCategoryController extends \BaseController {
         $equipmentcategory = equipmentCategory::find($id);
         // show the edit form and pass the equipmentcategory
         return View::make('equipmentcategory.edit')
-            ->with('equipmentcategory', $equipmentcategory);
+        ->with('equipmentcategory', $equipmentcategory);
     }
 
     public function modify($id)
     {
-
+        //delete pending here
         $equipmentcategory = equipmentcategory::find($id);
 
         $equipmentcategory->status = 'Approved';  
         $equipmentcategory->save();
+
+        $pending = Pending::where('equipmentcategory_id','=',$id);
+        $pending->delete();
         Session::flash('message', 'Approved Equipment Category!');  
 
         return Redirect::to('equipmentcategory');
@@ -141,16 +154,16 @@ class EquipmentCategoryController extends \BaseController {
     {
         //
         $rules = array(
-            'categoryName'       => 'required',
+            'categoryName'       => 'required|unique:equipment_category,equipmentcategory_name,'.$id.',equipmentcategory_id',
         //    'categoryRemarks'      => 'required',            
-        );
+            );
         $validator = Validator::make(Input::all(), $rules);
 
         // process the login
         if ($validator->fails()) {
             return Redirect::to('equipmentcategory/' .$id. '/edit')
-                ->withErrors($validator)
-                ->withInput(Input::all());              
+            ->withErrors($validator)
+            ->withInput(Input::all());              
         }         
         else {
             // store
@@ -161,22 +174,47 @@ class EquipmentCategoryController extends \BaseController {
                 $updated=true;  
             }            
             if($updated==true)
-            {
+            {                
                 $equipmentcategory->modified_by = Auth::user()->user_id;
-
+                
                 if(Auth::User()->hasSysRole('Admin'))           
+                {
+                    dd('realy');
                     $equipmentcategory->status='Approved';
+                    if(!empty(Pending::where('equipmentcategory_id','=',$equipmentcategory->equipmentcategory_id)->get()->toArray()))
+                    {
+                        $pending = Pending::where('equipmentcategory_id','=',$id);
+                        $pending->delete();
+                    }
+                }                           
+                else {                
+                 $equipmentcategory->status='Pending';                                      
+                 if(empty(Pending::where('equipmentcategory_id','=',$equipmentcategory->equipmentcategory_id)->get()->toArray()))
+                 {
+                            //create a pending notification to inform the admin on this needing attention!
+                    $pending = new Pending;
+                    $pending->user_id = Auth::user()->user_id;         
+                    $pending->equipmentcategory_id = $id;
+                    $pending->status = 'Pending';
+                    $pending->save();    
+                }
                 else
-                    $equipmentcategory->status='Pending';                 
-
-                Session::flash('message', 'Equipment Category Successfully Edited!');
+                {
+                    $pending = Pending::where('equipmentcategory_id','=',$equipmentcategory->equipmentcategory_id)->first();
+                    $pending->user_id = Auth::user()->user_id;
+                    $pending->equipmentcategory_id = $id;       
+                    $pending->status = 'Pending';
+                    $pending->touch();
+                    $pending->save();    
+                }                  
             }
-
-            $equipmentcategory->save();
+            Session::flash('message', 'Equipment Category Successfully Edited!');
+        }
+        $equipmentcategory->save();
             // redirect
-            Session::flash('message', 'Category Successfully Updated!');
-            return Redirect::to('equipmentcategory');
-        } 
+            //Session::flash('message', 'Category Successfully Updated!');
+        return Redirect::to('equipmentcategory');
+    } 
 }
 
 

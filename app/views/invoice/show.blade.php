@@ -46,9 +46,11 @@
             <h2>Details</h2>
             <p>Invoice <strong>#{{$invoice->invoice_id}}</strong></p>
             @if(!is_null($invoice->updated_at))
-            <p>Purchased on <strong>{{ date("d F Y",strtotime($invoice->updated_at)) }} at {{ date("g:ha",strtotime($invoice->updated_at)) }}</strong></p>
+            <p>Purchase on <strong>  {{ date('D m Y  H:i', strtotime($invoice->updated_at)) }} </strong></p>                        
+            <p>Purchased on <strong>{{ date("d F Y",strtotime($invoice->updated_at)) }} at {{ date("g:i:s A",strtotime($invoice->updated_at)) }}</strong></p>            
             @else
-            <p>Purchased on <strong>{{ date("d F Y",strtotime($invoice->created_at)) }} at {{ date("g:ha",strtotime($invoice->created_at)) }}</strong></p>
+            <p>Purchased on <strong>{{ date("d F Y",strtotime($invoice->created_at)) }} at {{ date("g:i:s A",strtotime($invoice->created_at)) }}</strong></p>
+            <p>Purchase on <strong>  {{ date('D m Y  H:i', strtotime($invoice->created_at)) }} </strong></p>                        
             @endif
             </div>
           </div><!--/col-->   

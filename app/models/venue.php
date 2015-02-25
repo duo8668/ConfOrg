@@ -11,4 +11,7 @@ class Venue extends Eloquent {
 	public function Rooms(){
 		return $this->hasMany('Room','venue_id','venue_id');
 	}
+	public function Pending(){	
+		return $this->belongsTo('Pending','venue_id','venue_id');
+	}
 }

@@ -1,17 +1,5 @@
 <?php
 
-// Route::get('/', 'ThomasController@home');
-
-// Route::get('/venue', 'ThomasController@venue');
-// Route::post('/venue', array('as' => 'venue', 'uses'=>'ThomasController@venue'));
-// Route::get('/venue2', 'ThomasController@venue2');
-// Route::post('/venue2', array('as' => 'venue2', 'uses'=>'ThomasController@venue2'));
-// Route::get('/venue2/test', 'ThomasController@test');
-// Route::post('/about', array('as' => 'about', 'uses'=>'ThomasController@test'));
-
-// Route::get('/invoice', 'BillController@index');
-// Route::get('/invoice/{id}', 'BillController@show');
-
 Route::group(array('before' => 'auth'),function(){
 	//-----------------------SHIN's Route--------------------------
 	Route::get('/conferenceFinance/{id}','BillController@populate');
@@ -32,6 +20,18 @@ Route::group(array('before' => 'auth'),function(){
 	Route::post('importData', array('uses' => 'ThomasController@importData'));
 	Route::post('previewMap', array('uses' => 'ThomasController@previewMap'));
 
+	//----------pending -> Resource Provider -> Submit/Cancel delete request -------------------	
+	Route::post('venue/deleterequest/{id}', 'ThomasController@pendingDeleteRequest');
+	Route::post('room/deleterequest/{id}', 'RoomController@pendingDeleteRequest');
+
+	//----------pending -> show -------------------	
+	Route::get('pending','PendingController@index');
+	Route::post('pending/removeVenue/{id}','PendingController@removeVenue');
+	Route::post('pending/removeRoom/{id}','PendingController@removeRoom');
+	Route::get('pending/editCategory/{id}/edit','PendingController@editCategory');	
+	Route::get('pending/editEquipment/{id}/edit','PendingController@editEquipment');
+	Route::put('pending/{id}','PendingController@updateCategory');
+	
 	Route::post('equipmentcategory/modify/{id}', 'EquipmentCategoryController@modify');
 	Route::post('equipment/modify/{id}', 'EquipmentController@modify');
 	Route::post('room/modify/{id}', 'RoomController@modify');
@@ -43,26 +43,3 @@ Route::group(array('before' => 'auth'),function(){
 	Route::resource('room', 'RoomController');
 
 });
-
-// Route::get('/payment', 'BillController@payment');
-// Route::get('/charges', 'BillController@charges');
-// Route::get('/payment/charges', 'BillController@charges');
-// Route::post('/payment/charges', 'BillController@charges');
-
-// Route::post('/payment/charges/process', function(){		
-// 		$billing = App::make('Acme\Billing\BillingInterface');
-// 		$customerId= $billing->charge([
-// 			'email' => Input::get('email'),
-// 			'token' => Input::get('stripe-token')
-// 			]);		
-		
-// 		if(array_key_exists('error', $customerId))		
-// 		return Redirect::refresh()->withMessage($customerId['message'])->withInput(Input::all());
-// 		// $user::User::first();
-// 		// $user->billingID
-// 		else
-// 		{
-// 			return Redirect::refresh()->withMessage('Charge was successful!');				
-// 		}	
-		
-// });

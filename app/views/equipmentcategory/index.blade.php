@@ -19,8 +19,8 @@ All Categories
             <td style="width:30%"><strong>Option</strong></td>
         </tr> 
     @foreach($equipmentcategory as $key => $value)
-        <tr>
-            <td>{{ $value->equipmentcategory_name }}</td>                                 
+        <tr>            
+            <td>{{ link_to_route('equipmentcategory.show', $value->equipmentcategory_name, ['id' => $value->equipmentcategory_id]) }}</td>                               
             <td>{{ $value->equipments->count() }}</td>
             <td>{{ $value->status }}</td>
             <!-- we will also add show, edit, and delete buttons -->
