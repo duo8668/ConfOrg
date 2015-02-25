@@ -21,7 +21,8 @@
 				else if(Auth::User()->hasSysRole('Resource Provider'))
 				{
 					$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
-					$venue = Venue::with('Rooms','Pending')->where('company_id', $company_id)->get();					
+					$venue = Venue::with('Rooms','Pending')->where('company_id', $company_id)->get();
+					$privilege = false;					
 					// load the view and pass the venue				
 					return View::make('venue.index')
 					->with('venue', $venue)
