@@ -118,9 +118,7 @@ class RoomController extends \BaseController {
 		//dd(Input::all());		
 		$test = Input::get('venue');
 		$rules = array(
-			'room_name'       => 'required|unique:room',			
-			// 'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',
-			// 'email' => 'unique:users,email_address,NULL,id,account_id,1',
+			'room_name'       => 'required|unique:room,room_name,NULL,room_id,venue_id,'.Input::get('venue'),			
 			'roomCapacity'      => 'required|Integer',			                      
 			'roomCost'      => array('required', 'regex:/^\d*(\.\d{2})?$/'),	
 			'venue' 				=>'required',
@@ -273,7 +271,10 @@ class RoomController extends \BaseController {
 	public function update($id)
 	{		 	
 		$rules = array(
-			'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',			
+			// unique:table,fieldToValidate,:id:,id,extraField1,:extraFieldValue1:,extraField2,:extraFieldValue2:,extraField3,:extraFieldValue3:
+			// unique:room,fieldToValidate,:id:,id,extraField1,:extraFieldValue1:,extraField2,:extraFieldValue2:,extraField3,:extraFieldValue3:
+			// unique:table,column,except,idColumn		
+			'room_name'       => 'required|unique:room,room_name,'.$id.',room_id,venue_id,'.Input::get('venue'),				
 			'roomCapacity'      => 'required|Integer',			                      
 			'roomCost'      => array('required', 'regex:/^\d*(\.\d{2})?$/'),	
 			'venue' 				=>'required',
