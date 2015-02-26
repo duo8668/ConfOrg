@@ -123,6 +123,8 @@ class ConferenceController extends \BaseController {
 
         $submissions = Submission::where('conf_id', '=', Input::get('conf_id'))->get();
 
+        $invoices= Invoice::where('status','=','Paid')->where('conf_id','=', Input::get('conf_id'))->get();
+
        $topics = DB::table('conference_topic')
                     ->leftJoin('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
                     ->select('conference_topic.topic_id', 'conference_topic.topic_name', Db::raw('count(sub_id) as total_subs'))
@@ -135,6 +137,7 @@ class ConferenceController extends \BaseController {
             , 'allStaffs' => $allStaffs
             , 'reviewPanels' => $reviewPanels 
             , 'submissions' => $submissions
+            , 'invoices' => $invoices
             , 'topics' => $topics));
 
         // SET SESSION
