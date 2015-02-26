@@ -130,7 +130,7 @@ class EquipmentController extends \BaseController {
 		} 	        
 		else {
             // store	           
-			$equipment = new equipment;
+			$equipment = new Equipment;
 			$equipment->equipment_name = Input::get('equipmentName');
 			$equipment->equipment_remark = Input::get('equipmentRemarks');	            
 			$equipment->equipmentcategory_id = Input::get('equipmentcategory');
