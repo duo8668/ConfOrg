@@ -9,7 +9,7 @@
   <li class="active">Venues</li>
 </ol>
 <hr>
-
+	{{ HTML::script('js/filterables.js') }}
     @include('venue._indexpartials')
 
 @stop

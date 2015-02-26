@@ -1,4 +1,4 @@
-{{ HTML::script('js/filterables.js') }}
+
 <div class="row filter-row">
     <div class="panel panel-default filterable">
         <div class="panel-heading">
@@ -13,9 +13,9 @@
                     <tr class="filters">
                         <th style="width: 20%;"><input type="text" class="form-control" placeholder="Venue Name" disabled></th>
                         <th style="width: 25%;"><input type="text" class="form-control" placeholder="Address" disabled></th>
-                        <th style="width: 8%;"><input type="text" class="form-control" placeholder="Number of Room" disabled></th>
-                        <th style="width: 14%;"><input type="text" class="form-control" placeholder="Available for Booking" disabled></th>
-                        <th style="width: 25%;">Option</th>
+                        <th style="width: 10%;"><input type="text" class="form-control" placeholder="No. of Room" disabled></th>
+                        <th style="width: 10%;"><input type="text" class="form-control" placeholder="Available?" disabled></th>
+                        <th>Option</th>
                     </tr>
                 </thead>  
             @foreach($venue as $value)
@@ -42,17 +42,17 @@
                         {{ Form::close() }}
                         @endif
                         @if($privilege)
-                        {{ Form::open(array('url' => 'venue/' . $value->venue_id, 'class' => 'pull-right')) }}
+                        {{ Form::open(array('url' => 'venue/' . $value->venue_id, 'class' => 'inline')) }}
                             {{ Form::hidden('_method', 'DELETE') }}
                             {{ Form::submit('Delete this venue', array('class' => 'btn btn-danger btn-xs')) }}
                         {{ Form::close() }}
                         @else  
                             @if(is_null($value->pending))                               
-                            {{ Form::open(array('url' => 'venue/deleterequest/' . $value->venue_id, 'class' => 'pull-right')) }}
+                            {{ Form::open(array('url' => 'venue/deleterequest/' . $value->venue_id, 'class' => 'inline')) }}
                                 {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
                             {{ Form::close() }} 
                             @else
-                            {{ Form::open(array('url' => 'venue/deleterequest/' . $value->venue_id, 'class' => 'pull-right')) }}
+                            {{ Form::open(array('url' => 'venue/deleterequest/' . $value->venue_id, 'class' => 'inline')) }}
                                 {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
                             {{ Form::close() }} 
                             @endif                           
