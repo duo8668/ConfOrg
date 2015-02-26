@@ -92,7 +92,7 @@ Add New Room
    <div class="row">  
       <div class="col-md-8 col-md-offset-2">
         <!-- Button -->        
-        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'Add')) }}        
+        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'btnThugLife')) }}        
       </div>
     </div>  
    
@@ -177,7 +177,7 @@ $("#btnRemove").click(function(e) {
   $('#number option').attr('selected', false);   
 });
 
-$("#btnEdit").click(function(e) {
+$("#btnThugLife").click(function(e) {
   e.preventDefault();
   var equipmentName = $("#duallistbox_demo2 option:selected").text();
   var number =  $("#number").val();     
