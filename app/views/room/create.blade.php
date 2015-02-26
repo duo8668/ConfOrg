@@ -214,7 +214,7 @@ $("#SelectedValues").click(function() {
   $('#number').val($.trim(arr[2]));    
 });
 
-$('#Add').click( function() {         
+$('#btnThugLife').click( function() {         
 
   var values = [];
   var room_name = $('input[name=room_name]').val();          
