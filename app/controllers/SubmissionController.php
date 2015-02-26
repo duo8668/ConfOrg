@@ -69,7 +69,7 @@ class SubmissionController extends \BaseController {
 		if (!empty($conference)) {
 
 			//check if user not chair/staff/reviewer of said conference
-			if (!Auth::user()->hasConfRole($conference->conf_id, 'Conference Chair') || !Auth::user()->hasConfRole($conference->conf_id, 'Conference Staff') || !Auth::user()->hasConfRole($conference->conf_id, 'Reviewer') ) {
+			if (Auth::user()->hasConfRole($conference->conf_id, 'Conference Chair') || Auth::user()->hasConfRole($conference->conf_id, 'Conference Staff') || Auth::user()->hasConfRole($conference->conf_id, 'Reviewer') ) {
 
 				return Redirect::to('/dashboard')->with('message', 'You are not allowed to enter a submission to this conference');
 
