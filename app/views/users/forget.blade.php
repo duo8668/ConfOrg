@@ -15,8 +15,8 @@
                     </div>
                     <div class="panel-body">
                         @if(Session::has('message'))
-                            {{Session::get('message')}} 
-                        @endif
+                            <p class="text-center">{{Session::get('message')}} </p>
+                        @else
                         {{ Form::open(array('route' => 'users-forget-password-post', 'method' => 'post')) }}
                             <fieldset>
                                 <div class="form-group">
@@ -35,6 +35,7 @@
                                  <a href="{{ URL::route('users-sign-in') }}" class="pull-right"><p class="text-danger"><i class="fa fa-arrow-left"></i> Back to Login</p></a>
                             </fieldset>
                         {{ Form::close() }}
+                        @endif
                     </div>
                 </div>
             </div>
