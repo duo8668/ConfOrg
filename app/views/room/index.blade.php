@@ -55,17 +55,17 @@
                         @endif            
 
                         @if($privilege)
-                        {{ Form::open(array('url' => 'room/' . $value->room_id, 'class' => 'pull-right')) }}
+                        {{ Form::open(array('url' => 'room/' . $value->room_id, 'class' => 'inline')) }}
                             {{ Form::hidden('_method', 'DELETE') }}
                             {{ Form::submit('Delete this room', array('class' => 'btn btn-danger btn-xs')) }}
                         {{ Form::close() }}
                         @else  
                             @if(is_null($value->pending))                               
-                            {{ Form::open(array('url' => 'room/deleterequest/' . $value->room_id, 'class' => 'pull-right')) }}
+                            {{ Form::open(array('url' => 'room/deleterequest/' . $value->room_id, 'class' => 'inline')) }}
                                 {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
                             {{ Form::close() }} 
                             @else
-                            {{ Form::open(array('url' => 'room/deleterequest/' . $value->room_id, 'class' => 'pull-right')) }}
+                            {{ Form::open(array('url' => 'room/deleterequest/' . $value->room_id, 'class' => 'inline')) }}
                                 {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
                             {{ Form::close() }} 
                             @endif                           

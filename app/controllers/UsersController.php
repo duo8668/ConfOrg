@@ -594,7 +594,8 @@ class UsersController extends \BaseController {
 
 		if (Auth::User()->hasSysRole('Resource Provider')) {
 
-			$venue = Venue::where('created_by', '=', Auth::user()->user_id)->get();
+			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');
+			$venue = Venue::with('Rooms','Pending')->where('company_id', $company_id)->get();
 			return View::make('layouts.dashboard.index')
 			->with('venue', $venue)
 			->with('flag', 'RP')

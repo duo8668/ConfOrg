@@ -12,13 +12,16 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-                @if (!Auth::user()->hasSysRole('Resource Provider') || !Auth::user()->hasSysRole('Admin')) 
+                @if (Auth::user()->hasSysRole('Resource Provider') || Auth::user()->hasSysRole('Admin'))
+
+                @else
                     <li class="dropdown">
                         <a class="dropdown-toggle"  href="{{ url('conference/management/create') }}">
                             <i class="fa fa-plus-circle fa-fw"></i>  Add New Conference
                         </a>
                     </li>
                 @endif
+
                 <!-- USER PROFILE -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">

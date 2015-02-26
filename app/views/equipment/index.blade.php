@@ -44,7 +44,7 @@ All Equipments
                         {{ Form::close() }}                
                         @endif
                         @if($privilege)
-                        {{ Form::open(array('url' => 'equipment/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                        {{ Form::open(array('url' => 'equipment/' . $value->equipment_id, 'class' => 'inline')) }}
                         {{ Form::hidden('_method', 'DELETE') }}
                         {{ Form::submit('Delete Equipment', array('class' => 'btn btn-danger btn-xs')) }}
                         {{ Form::close() }}  
@@ -52,18 +52,18 @@ All Equipments
                         @if(!$privilege)
                             @if(is_null($value->pending))
                             <!--send delete request-->
-                            {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                            {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'inline')) }}
                                 {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
                             {{ Form::close() }} 
                             @else <!--pending exist, check if its for a delete request-->
                                 @if($value->pending->delete=='false')
                                 <!--send delete request-->
-                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'inline')) }}
                                     {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
                                 {{ Form::close() }} 
                                 @else
                                 <!--cancel delete request-->
-                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'inline')) }}
                                     {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
                                 {{ Form::close() }} 
                                 @endif

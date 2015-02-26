@@ -50,7 +50,7 @@ All Categories
                             {{ Form::submit('Approve Category', array('class' => 'btn btn-success btn-xs')) }}
                         {{ Form::close() }}                
                         @endif
-                        {{ Form::open(array('url' => 'equipmentcategory/' . $value->equipmentcategory_id, 'class' => 'pull-right')) }}
+                        {{ Form::open(array('url' => 'equipmentcategory/' . $value->equipmentcategory_id, 'class' => 'inline')) }}
                             {{ Form::hidden('_method', 'DELETE') }}
                             {{ Form::submit('Delete Category', array('class' => 'btn btn-danger btn-xs')) }}
                         {{ Form::close() }}

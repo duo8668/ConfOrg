@@ -3,7 +3,7 @@
     .desc { font-weight:400;}
     .ellipsis { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 </style>
-<script src="https://github.com/stidges/jquery-searchable/blob/master/dist/jquery.searchable-ie-1.1.0.min.js"></script> 
+{{ HTML::script('js/searchable-ie.js') }}
 <script type="text/javascript">
 $(function () {
     // $( '#table' ).searchable({
@@ -16,7 +16,7 @@ $(function () {
     $( '#searchable-container' ).searchable({
         searchField: '#container-search',
         selector: '.row',
-        childSelector: '.portfolio-item',
+        childSelector: '.target',
         show: function( elem ) {
             elem.slideDown(100);
         },
