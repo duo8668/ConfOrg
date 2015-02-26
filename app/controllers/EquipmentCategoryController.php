@@ -8,23 +8,26 @@ class EquipmentCategoryController extends \BaseController {
      */
     public function index()
     {        
-        // $equipmentcategory = EquipmentCategory::with('equipments')->count();
-        // dd($equipmentcategory);
-
-        // $pending = Pending::with('equipmentcategory')->where('equipmentcategory_id','=','7')->get();
-        // dd($pending->toArray());
-        $user_id = Auth::user()->user_id;
-        $privilege = false;
-        if(Auth::User()->hasSysRole('Admin'))
-        {                        
-            $privilege = true;
+        
+        if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+        {
+            $user_id = Auth::user()->user_id;
+            $privilege = false;
+            if(Auth::User()->hasSysRole('Admin'))
+            {                        
+                $privilege = true;
+            }        
+            $equipmentcategory = EquipmentCategory::with('equipments')->get();        
+            // load the view and pass the venue
+            return View::make('equipmentcategory.index')
+            ->with('equipmentcategory', $equipmentcategory)
+            ->with('privilege',$privilege)
+            ->with('user_id',$user_id);
+        }
+        else
+        {
+            return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
         }        
-        $equipmentcategory = EquipmentCategory::with('equipments')->get();        
-        // load the view and pass the venue
-        return View::make('equipmentcategory.index')
-        ->with('equipmentcategory', $equipmentcategory)
-        ->with('privilege',$privilege)
-        ->with('user_id',$user_id);
     }
 
 
@@ -35,8 +38,15 @@ class EquipmentCategoryController extends \BaseController {
      */
     public function create()
     {
-        //
-        return View::make('equipmentcategory.create');
+        if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+        {
+            return View::make('equipmentcategory.create');
+        }
+        else
+        {
+            return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+        }
+        
     }
 
 
@@ -73,7 +83,6 @@ class EquipmentCategoryController extends \BaseController {
                 $pending = new Pending;
             $pending->user_id = Auth::user()->user_id;         
             $pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
-            $pending->status = 'Pending';
             $pending->save();
 
                 // redirect
@@ -91,24 +100,31 @@ class EquipmentCategoryController extends \BaseController {
      */
     public function show($id)
     {
-        //get this equipmentcategory
-        $privilege = false;
-        if(Auth::User()->hasSysRole('Admin'))
-        {            
-            $privilege = true;
+        if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+        {
+            $privilege = false;
+            if(Auth::User()->hasSysRole('Admin'))
+            {            
+                $privilege = true;
+            }
+            else
+            {
+                $privilege = false;   
+            }                   
+            $equipmentcategory = EquipmentCategory::find($id);
+            $equipmentList = Equipment::with('Pending')->where('equipmentcategory_id','=',$id)->get();        
+
+            // show the view and pass the nerd to it
+            return View::make('equipmentcategory.show')
+            ->with('equipmentcategory', $equipmentcategory)
+            ->with('equipmentList',$equipmentList)
+            ->with('privilege',$privilege);
         }
         else
         {
-            $privilege = false;   
-        }                   
-        $equipmentcategory = EquipmentCategory::find($id);
-        $equipmentList = equipment::where('equipmentcategory_id','=',$id)->get();        
-
-        // show the view and pass the nerd to it
-        return View::make('equipmentcategory.show')
-        ->with('equipmentcategory', $equipmentcategory)
-        ->with('equipmentList',$equipmentList)
-        ->with('privilege',$privilege);
+            return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+        }
+        //get this equipmentcategory        
     }
 
 
@@ -121,10 +137,17 @@ class EquipmentCategoryController extends \BaseController {
     public function edit($id)
     {
         //
-        $equipmentcategory = EquipmentCategory::find($id);
-        // show the edit form and pass the equipmentcategory
-        return View::make('equipmentcategory.edit')
-        ->with('equipmentcategory', $equipmentcategory);
+        if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+        {
+            $equipmentcategory = EquipmentCategory::find($id);
+            // show the edit form and pass the equipmentcategory
+            return View::make('equipmentcategory.edit')
+            ->with('equipmentcategory', $equipmentcategory);
+        }
+        else
+        {
+            return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+        }        
     }
 
     public function modify($id)
@@ -195,7 +218,6 @@ class EquipmentCategoryController extends \BaseController {
                     $pending = new Pending;
                     $pending->user_id = Auth::user()->user_id;         
                     $pending->equipmentcategory_id = $id;
-                    $pending->status = 'Pending';
                     $pending->save();    
                 }
                 else
@@ -203,7 +225,6 @@ class EquipmentCategoryController extends \BaseController {
                     $pending = Pending::where('equipmentcategory_id','=',$equipmentcategory->equipmentcategory_id)->first();
                     $pending->user_id = Auth::user()->user_id;
                     $pending->equipmentcategory_id = $id;       
-                    $pending->status = 'Pending';
                     $pending->touch();
                     $pending->save();    
                 }                  

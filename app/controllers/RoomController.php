@@ -8,7 +8,8 @@ class RoomController extends \BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{				
+	{						
+		$data = Room::with('Pending','venues')->get();
 		$privilege = false;
 		$flag = false;		
 		if(Auth::User()->hasSysRole('Admin'))
@@ -121,7 +122,7 @@ class RoomController extends \BaseController {
 			// 'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',
 			// 'email' => 'unique:users,email_address,NULL,id,account_id,1',
 			'roomCapacity'      => 'required|Integer',			                      
-			'roomCost'      => 'required|Integer',	
+			'roomCost'      => array('required', 'regex:/^\d*(\.\d{2})?$/'),	
 			'venue' 				=>'required',
 			);
 
@@ -173,45 +174,53 @@ class RoomController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$privilege = false;		
-		if(Auth::User()->hasSysRole('Admin'))
-		{			
-			$data = DB::table('room')
-			->join('venue', 'venue.venue_id', '=', 'room.venue_id')			
-			->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
-			$privilege = true;			
-		}
-		
-		$room = Room::with('equipments')->where('room_id','=',$id)->first();		
-		$created_by = User::find($room->created_by);				
-		$modified_by = User::find($room->modified_by);
+		if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$privilege = false;		
+			if(Auth::User()->hasSysRole('Admin'))
+			{			
+				$data = DB::table('room')
+				->join('venue', 'venue.venue_id', '=', 'room.venue_id')			
+				->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));									
+				$privilege = true;			
+			}
+
+			$room = Room::with('equipments','equipments.Pending')->where('room_id','=',$id)->first();		
+			$created_by = User::find($room->created_by);
+
+			$modified_by = User::find($room->modified_by);
 		//$role->pivot->created_at
 		// foreach($room->equipments as $room)
 		// {
 		// 	dd($room->pivot->quantity);
 		// }
-		$venue = venue::find($room->venue_id);		
+			$venue = venue::find($room->venue_id);		
 
-		$geoLocation = $venue->latitude.' , '.$venue->longitude;        
+			$geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
   //       list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));		
 		// $geoLocation = ((string) $lat).' , '.((string) $lng);
 
-		$config['center'] = $geoLocation;
-		$config['zoom'] = 'auto';
-		Gmaps::initialize($config);
-		
-		$marker = array();
-		$marker['position'] = $geoLocation;
-		Gmaps::add_marker($marker);
-		$map = Gmaps::create_map();						    	
-		return View::make('room.show')
-		->with('room', $room)
-		->with('venue',$venue)
-		->with('created_By',$created_by)
-		->with('modified_By',$modified_by)
-		->with('privilege',$privilege)
-		->with('map',$map);
+			$config['center'] = $geoLocation;
+			$config['zoom'] = 'auto';
+			Gmaps::initialize($config);
+
+			$marker = array();
+			$marker['position'] = $geoLocation;
+			Gmaps::add_marker($marker);
+			$map = Gmaps::create_map();						    	
+			return View::make('room.show')
+			->with('room', $room)
+			->with('venue',$venue)
+			->with('created_By',$created_by)
+			->with('modified_By',$modified_by)
+			->with('privilege',$privilege)
+			->with('map',$map);
+		}
+		else
+		{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}
 	}
 
 
@@ -223,27 +232,35 @@ class RoomController extends \BaseController {
 	 */
 	public function edit($id)
 	{		
-		$room = Room::find($id);		
-		$selectedEquipment = $room->equipments;
-		$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');	
-		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
-		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
-		->where('equipment_status', '=', 'Approved')
-		->orWhere('equipment.created_by', '=', Auth::user()->user_id)
-		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-		->lists('full_name', 'id');
+		if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$room = Room::find($id);		
+			$selectedEquipment = $room->equipments;
+			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');	
+			$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
+			$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+			->where('equipment_status', '=', 'Approved')
+			->orWhere('equipment.created_by', '=', Auth::user()->user_id)
+			->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+			->lists('full_name', 'id');
 
-		$eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
-		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
-		->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
-		->where('room_equipment.room_id', '=', $id)
-		->lists('fullname');	    
+			$eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
+			->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
+			->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
+			->where('room_equipment.room_id', '=', $id)
+			->lists('fullname');	    
 
-		return View::make('room.edit')
-		->with('venues', $venues)
-		->with('equipments', $equipments)
-		->with('room',$room)
-		->with('eqfullname', $eqfullname);	
+			return View::make('room.edit')
+			->with('venues', $venues)
+			->with('equipments', $equipments)
+			->with('room',$room)
+			->with('eqfullname', $eqfullname);	
+		}
+		else
+		{
+		return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}
+		
 	}	
 
 
@@ -258,7 +275,7 @@ class RoomController extends \BaseController {
 		$rules = array(
 			'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',			
 			'roomCapacity'      => 'required|Integer',			                      
-			'roomCost'      => 'required|Integer',	
+			'roomCost'      => array('required', 'regex:/^\d*(\.\d{2})?$/'),	
 			'venue' 				=>'required',
 			);
 
@@ -284,7 +301,7 @@ class RoomController extends \BaseController {
 			$room->capacity = Input::get('roomCapacity');	            
 			$room->venue_id = Input::get('venue');
 			$room->rental_cost = Input::get('roomCost');
-			$room->updated_by = Auth::user()->user_id;
+			$room->modified_by = Auth::user()->user_id;
 			$room->save();            
 
 			$room->equipments()->detach();

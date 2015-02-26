@@ -34,7 +34,7 @@
 			}
 
 			public function pendingDeleteRequest($id)
-			{			
+			{							
 				if(empty(Pending::where('venue_id','=',$id)->get()->toArray())) {										
 					$pending = new Pending;
 					$pending->venue_id = $id;
@@ -52,21 +52,28 @@
 
 			public function modify($id)
 			{
-
-				$venue = Venue::find($id);
-				if($venue->available == 'no')        		        				
+				if(Auth::User()->hasSysRole('Admin'))
 				{
-					$venue->available = 'yes';  
-					Session::flash('message', 'Venue Made Unavailable!');
+					$venue = Venue::find($id);
+					if($venue->available == 'no')        		        				
+					{
+						$venue->available = 'yes';  
+						Session::flash('message', 'Venue Made Unavailable!');
+					}
+					else        
+					{
+						$venue->available = 'no';  
+						Session::flash('message', 'Venue Made Available!');
+					}
+					$venue->save();    
+					//Redirect::back()->withMessage('Profile saved!')
+					return Redirect::back();	
 				}
-				else        
+				else
 				{
-					$venue->available = 'no';  
-					Session::flash('message', 'Venue Made Available!');
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
 				}
-				$venue->save();    
-				//Redirect::back()->withMessage('Profile saved!')
-				return Redirect::back();
+				
 			}
 
 			/**
@@ -75,8 +82,15 @@
 			* @return Response
 			*/
 			public function create()
-			{							
-				return View::make('venue.create');
+			{										
+				if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+				{
+					return View::make('venue.create');	
+				}
+				else
+				{
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+				}
 			}
 
 			/**
@@ -150,36 +164,44 @@
 			*/
 			public function show($id)
 			{
-				// get the venue
-				$privilege = false;
-				if(Auth::User()->hasSysRole('Admin'))
-				{														
-					$privilege = true;
-				}				
-				$venue = Venue::find($id);				
-				$created_by = User::find($venue->created_by);				
-				$modified_by = User::find($venue->modified_by);
-				$geoLocation = $venue->latitude.' , '.$venue->longitude;        
+				if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+				{
+					$privilege = false;
+					if(Auth::User()->hasSysRole('Admin'))
+					{														
+						$privilege = true;
+					}				
+					$venue = Venue::find($id);				
+					$created_by = User::find($venue->created_by);				
+					$modified_by = User::find($venue->modified_by);
+					$geoLocation = $venue->latitude.' , '.$venue->longitude;        
 
-				$config['center'] = $geoLocation;
-				$config['zoom'] = 'auto';
-				Gmaps::initialize($config);
+					$config['center'] = $geoLocation;
+					$config['zoom'] = 'auto';
+					Gmaps::initialize($config);
 
-				$marker = array();
-				$marker['position'] = $geoLocation;
-				Gmaps::add_marker($marker);
-				$map = Gmaps::create_map();		
+					$marker = array();
+					$marker['position'] = $geoLocation;
+					Gmaps::add_marker($marker);
+					$map = Gmaps::create_map();		
 
-				$data  = Room::with('Pending')->where('venue_id','=',$id)->get();				
+					$data  = Room::with('Pending')->where('venue_id','=',$id)->get();				
 
 			// show the view and pass the venue to it
-				return View::make('venue.show')
-				->with('venue', $venue)
-				->with('data',$data)
-				->with('map',$map)
-				->with('privilege',$privilege)
-				->with('created_By',$created_by)
-				->with('modified_By',$modified_by);
+					return View::make('venue.show')
+					->with('venue', $venue)
+					->with('data',$data)
+					->with('map',$map)
+					->with('privilege',$privilege)
+					->with('created_By',$created_by)
+					->with('modified_By',$modified_by);
+				}
+				else
+				{
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+				}
+				// get the venue
+				
 			}
 
 
@@ -191,11 +213,17 @@
 			*/
 			public function edit($id)
 			{
-			// get the nerd
-				$venue = Venue::find($id);
-			// show the edit form and pass the venue
-				return View::make('venue.edit')
-				->with('venue', $venue);
+				if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+				{
+					$venue = Venue::find($id);
+					// show the edit form and pass the venue
+					return View::make('venue.edit')
+					->with('venue', $venue);
+				}
+				else
+				{
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+				}
 			}
 
 
@@ -308,97 +336,106 @@
 			}
 
 			public function import()
-			{
-				return View::make('import');
+			{				
+				if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+				{
+					return View::make('import');
+				}
+				else
+				{
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+				}
 			}
 
 			public static $valid =true;
 						
 
 			public function importData()
-			{									
-				if(Input::get('Export')) {
-				$this->exportTemplate();
-				Session::flash('message', 'Successful!');
-				return Redirect::to('import');		
-				}
-				elseif(Input::get('Preview'))
-				{										
-					$rules = array(						
-						'venue_name'       => 'required|unique:venue',
-						'venue_address'      => 'required',            
-						);
-					$validator = Validator::make(Input::all(), $rules);
-
-					if ($validator->fails()) {											
-						return Redirect::to('import')
-						->withErrors($validator)
-						->withInput(Input::all());	
+			{				
+				if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+				{
+					if(Input::get('Export')) {
+						$this->exportTemplate();
+						Session::flash('message', 'Successful!');
+						return Redirect::to('import');		
 					}
+					elseif(Input::get('Preview'))
+					{										
+						$rules = array(						
+							'venue_name'       => 'required|unique:venue',
+							'venue_address'      => 'required',            
+							);
+						$validator = Validator::make(Input::all(), $rules);
 
-					else if(!$this->validateLocation(Input::get('venue_address')))
-					{																
-						Session::flash('message2', 'Invalid Address!');
-						return Redirect::to('import')            
-						->withInput(Input::all());
-					}
+						if ($validator->fails()) {											
+							return Redirect::to('import')
+							->withErrors($validator)
+							->withInput(Input::all());	
+						}
 
-					else {
+						else if(!$this->validateLocation(Input::get('venue_address')))
+						{																
+							Session::flash('message2', 'Invalid Address!');
+							return Redirect::to('import')            
+							->withInput(Input::all());
+						}
+
+						else {
 						// store
-						$map = $this->makeMap(Input::get('venue_address'));				
-						return Redirect::to('import')            
-						->withInput(Input::all())->with('map',$map);
-					} 	
-				}
-				elseif(Input::get('Import')){
+							$map = $this->makeMap(Input::get('venue_address'));				
+							return Redirect::to('import')            
+							->withInput(Input::all())->with('map',$map);
+						} 	
+					}
+					elseif(Input::get('Import')){
 					//dd(Input::all())					
 
-					$rules = array(
-						'venue_name'       => 'required|unique:venue',
-						'venue_address'      => 'required',
-						'imported_File'            => 'required|mimes:xlsx,xls',
-						);					
+						$rules = array(
+							'venue_name'       => 'required|unique:venue',
+							'venue_address'      => 'required',
+							'imported_File'            => 'required|mimes:xlsx,xls',
+							);					
 
-					$validator = Validator::make(Input::all(), $rules);					
-					if ($validator->fails()) {					
-						$map = $this->makeMap(Input::get('venue_address'));
-						return Redirect::to('import')
-						->withErrors($validator)
-						->withInput(Input::except('imported_File'))
-						->with('map',$map);	
-					}
+						$validator = Validator::make(Input::all(), $rules);					
+						if ($validator->fails()) {					
+							$map = $this->makeMap(Input::get('venue_address'));
+							return Redirect::to('import')
+							->withErrors($validator)
+							->withInput(Input::except('imported_File'))
+							->with('map',$map);	
+						}
 
-					else if(!$this->validateLocation(Input::get('venue_address')))
-					{																
-						Session::flash('message2', 'Invalid Address!');
-						return Redirect::to('import')            
-						->withInput(Input::all());
-					}
+						else if(!$this->validateLocation(Input::get('venue_address')))
+						{																
+							Session::flash('message2', 'Invalid Address!');
+							return Redirect::to('import')            
+							->withInput(Input::all());
+						}
 
-					else 
-					{
-						$file = Input::file('imported_File');					
-						$name = time() . '-' . $file->getClientOriginalName();
-						//$name = preg_replace("/\([^)]+\)/","",$name);
-						$file = $file->move(public_path().'/laravel/public/Excel', $name); 
-
-						if (strpos($name,'Venue-Room Details') === false) {
-							echo 'Invalid File Name. Please download and import the template Venue-Room Details.xlsx provided.';
-						}		
 						else 
-						{ 										
-							$allError = $this->validateExcel($file);							
-							$numError = count($allError);
-							if($numError!=0)
-							{							
-								return View::make('venue.importError')->with('allError',$allError) ->with('numError',$numError);	
-							}
-							else if($numError == 0)
-							{																				
+						{
+							$file = Input::file('imported_File');					
+							$name = time() . '-' . $file->getClientOriginalName();
+						//$name = preg_replace("/\([^)]+\)/","",$name);
+							$file = $file->move(public_path().'/laravel/public/Excel', $name); 
+
+							if (strpos($name,'Venue-Room Details') === false) {
+								echo 'Invalid File Name. Please download and import the template Venue-Room Details.xlsx provided.';
+							}		
+							else 
+							{ 										
+								$allError = $this->validateExcel($file);							
+								$numError = count($allError);
+								if($numError!=0)
+								{							
+									return View::make('venue.importError')->with('allError',$allError) ->with('numError',$numError);	
+								}
+								else if($numError == 0)
+								{																				
 								// $eq = EquipmentCategory::where('equipmentcategory_name','=','Logistics')->first()->equipmentcategory_id;
 								// dd($eq);
-							
-								$results = Excel::load($file)->all();
+
+									$results = Excel::load($file)->all();
 									$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
 									$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3									
 									//room
@@ -418,7 +455,7 @@
 									$venue->created_by = Auth::user()->user_id;
 									$venue->company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');      
 									$venue->save();    
-																		
+
 									for($i = 0; $i < $roomCount; ++$i)
 									{										
 										$room = new Room;
@@ -442,15 +479,15 @@
 
 											if(is_null(EquipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
 												$equipmentcategory = new EquipmentCategory;
-								                $equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category']; 
-								                $equipmentcategory->created_by=Auth::user()->user_id;
-								                $equipmentcategory->save();
-								                $eCatID = $equipmentcategory->equipmentcategory_id;
+												$equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category']; 
+												$equipmentcategory->created_by=Auth::user()->user_id;
+												$equipmentcategory->save();
+												$eCatID = $equipmentcategory->equipmentcategory_id;
 
-								                $pending = new Pending();
-								                $pending->user_id = Auth::user()->user_id;
-								                $pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
-								                $pending->save();
+												$pending = new Pending();
+												$pending->user_id = Auth::user()->user_id;
+												$pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
+												$pending->save();
 											}
 
 											//add or ignore equipment
@@ -466,15 +503,15 @@
 												$eID = $equipment->equipment_id;
 
 												$pending = new Pending();
-								                $pending->user_id = Auth::user()->user_id;
-								                $pending->equipment_id = $eID;
-								                $pending->save();
+												$pending->user_id = Auth::user()->user_id;
+												$pending->equipment_id = $eID;
+												$pending->save();
 											}
 											else
 											{
 												//attach the equipment id to something
 												if($eID==0)
-												$eID = equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first()->equipment_id;
+													$eID = equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first()->equipment_id;
 											}											
 										}																								
 										$room = Room::where('venue_id','=',$venue->venue_id)->where('room_name','=',$results[1][$i]['room_name'])->first();										
@@ -485,8 +522,14 @@
 								}
 							}
 						}
-					}	
+					}
 				}
+				else
+				{
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+				}
+			}
+
 	public function exportTemplate()
 	{
 		Excel::create('Venue-Room Details', function($excel) {
@@ -843,17 +886,6 @@
 		return $allError;
 	}
 
-	public function ImportRoom($file)
-	{	
-		$results = Excel::load($file)->all();
-		$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
-		$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3
-		//room
-		$roomName = $results[0][$i]['room_name'];						
-		$roomCapacity = $results[0][$i]['room_capacity'];
-		$roomCost = $results[0][$i]['room_cost'];
-		$remarks = $results[0][$i]['remarks'];	
-	}
 	public function ifRoomExist($array, $value)
 	{
 		// if(in_array(strtolower($roomName), $roomList[0]))
@@ -869,6 +901,5 @@
 		}
 		return $exist;
 	}
-
 }					
 ?>

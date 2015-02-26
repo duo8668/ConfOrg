@@ -31,6 +31,9 @@ AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
+INSERT INTO `company` (`Company_id`, `Company_name`) VALUES
+(1, 'Expo');
+
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`users`
@@ -56,6 +59,16 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
+
+INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `email`, `email_temp`, `password`, `password_temp`, `remember_token`, `code`, `active`, `created_at`, `updated_at`) VALUES
+(1, 'Bella', 'Ratmelia', 'bella.ratmelia@gmail.com', NULL, '$2y$10$zk0eNrBzSo1E83QVyESrm.2.MVlTz2aQiFMKBEPWfTFLhVfv1hMxG', NULL, 'QKb8qBIktNpLxh5M2gHtNkpXCaM17uokcPYyEvRQEHZcyqkcDCtL2wPnKzlX', '', 1, '2015-02-25 09:39:34', '2015-02-25 09:41:27'),
+(2, 'Noverinda', 'Bella', 'bella.ratmelia@hotmail.com', NULL, '$2y$10$VnvQKbqSNcwGwBMH.y0rXe/vyJ91MfVLDSKL/JTEJQQoBoY3I/18S', NULL, 'yX4RMHllzUbFXO38wmpn1tytNCvv2nRbE1ugDJZK8TH6psh4ub94kSyoccUK', '', 1, '2015-02-25 09:41:44', '2015-02-25 09:42:29'),
+(3, 'Reviewer', 'Thomas', 'batmanray@live.com.sg', NULL, '$2y$10$alAVwg4moSwWGlXYfM.lsu6XGguF1V9XuffI.ShKN3.CrCgM4ovzu', NULL, 'ZGytiNEwuVO1xir74zgPCcgieiCq0hxHItgs7R6g1zkdDVATe1Rpj86TSQC3', '', 1, '2015-02-25 09:42:27', '2015-02-25 09:54:18'),
+(4, 'Resource Provider', 'Poh Jun', 'pohjun.ng@hotmail.sg', NULL, '$2y$10$8fqu6qMH1EVpzX2Gv58dbOAO7OLaGiSptpBuAMLXURURwoi0H3vOW', NULL, NULL, NULL, 1, '2015-02-25 09:54:47', '2015-02-25 09:54:47'),
+(5, 'Participant', 'Thomas', 'thomas.leera@gmail.com', NULL, '$2y$10$OCHmGIUjfj/ENHp2j7kWSe55O40ASD6ZZ9VEASaazAA4BI8KS2xXm', NULL, 'jkqxTBl8vvvkQVpIqrex4M1oX0asD7TawWRlcRfdaWRkKjtOCE2i8Qk7Z2fH', '', 1, '2015-02-25 09:57:17', '2015-02-25 09:57:46'),
+(6, 'admin', 'orafer', 'admin@orafer.com', NULL, '$2y$10$kX/HtiXsmoojqsfy9.Q5zeGt9EjodjK1SerS7iE4EH542w5r7vdUu', NULL, NULL, '', 1, '2015-02-25 09:58:48', '2015-02-25 09:59:34'),
+(7, 'Author', 'Poh Jun', 'pohjun.ng@gmail.com', NULL, '$2y$10$x8mmQ4BF/IAoGMSNZ3BkjegqeUen8j/mQRAXV6aJJj29tqrH8BAOq', NULL, 'sgIVoLrXmqTehyRUtaeSryotB9kFhI74eVVIHPlL4HrLdpRnwWMzhe0I0cbI', '', 1, '2015-02-25 10:15:30', '2015-02-25 14:32:34');
+
 
 
 -- -----------------------------------------------------
@@ -86,6 +99,10 @@ DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
 
+INSERT INTO `company_user` (`company_user_id`, `company_id`, `user_id`) VALUES
+(1, 1, 4);
+
+
 -- -----------------------------------------------------
 -- Table `conforg_db`.`conference`
 -- -----------------------------------------------------
@@ -114,6 +131,9 @@ AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
+INSERT INTO `conference` (`conf_id`, `title`, `description`, `begin_date`, `begin_time`, `end_date`, `end_time`, `is_free`, `cutoff_time`, `min_score`, `ticket_price`, `created_by`, `modified_by`, `created_at`, `updated_at`) VALUES
+(1, '8th Annual International Conference on Computer Games Multimedia and Allied Technologies (CGAT 2015)', '						<p style="text-align: justify; margin-bottom: 14px; padding: 0px;"><span style="color: rgb(0, 0, 0); font-family: Arial, Helvetica, sans; font-size: 11px; line-height: 14px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi varius sed', '2015-06-01', '2015-06-01 08:30:00', '2015-06-02', '2015-06-02 16:00:00', b'0', '2015-04-30 00:00:00', 60, '110.00', 1, 1, '2015-01-17 04:25:10', '2015-02-17 13:08:30'),
+(2, '6th Annual International Conference on ICT: Big Data, Cloud and Security ', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2015-05-04', '2015-05-04 09:00:00', '2015-05-05', '2015-05-05 17:00:00', b'0', '2015-03-31 00:00:00', 70, '150.00', 2, 1, '2015-01-17 04:25:58', '2015-02-18 16:12:55');
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`interest_field`
@@ -133,6 +153,18 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
+
+INSERT INTO `interest_field` (`interestfield_id`, `name`, `remarks`, `created_by`, `modified_by`, `created_at`, `updated_at`) VALUES
+(1, 'Computer Science', NULL, 0, NULL, '2015-01-14 06:48:26', NULL),
+(2, 'Artificial Intelligence', NULL, 0, NULL, '2015-01-14 06:48:35', NULL),
+(3, 'Databases', NULL, 0, NULL, '2015-01-14 06:48:45', NULL),
+(4, 'Human-Computer Interaction', NULL, 0, NULL, '2015-01-14 06:48:57', NULL),
+(5, 'Computer Security', NULL, 0, NULL, '2015-01-14 06:49:03', NULL),
+(6, 'Internet Technology', NULL, 0, NULL, '2015-01-14 06:49:08', NULL),
+(7, 'Open Source', NULL, 0, NULL, '2015-01-14 06:49:28', NULL),
+(8, 'E-commerce', NULL, 0, NULL, '2015-01-14 06:49:38', NULL),
+(9, 'Networking', NULL, 0, NULL, '2015-01-14 06:49:38', NULL),
+(10, 'Mobile Technology', NULL, 0, NULL, '2015-01-14 06:49:38', NULL);
 
 
 -- -----------------------------------------------------
@@ -190,6 +222,12 @@ AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
+INSERT INTO `venue` (`venue_id`, `venue_name`, `venue_address`, `latitude`, `longitude`, `created_by`, `modified_by`, `created_at`, `updated_at`) VALUES
+(1, 'Sands Expo and Convention Centre', '10 Bayfront Avenue Singapore 018956', '1.283676', ' 103.860341', 1, NULL, '2015-01-24 04:28:23', '2015-02-18 16:12:57',1,'yes'),
+(2, 'Singapore Expo ', '1 Expo Drive Singapore 486150', '1.332875', '103.9590039', 1, NULL, '2015-02-01 02:21:03', '2015-02-23 00:16:16',1,'yes'),
+(3, 'Suntec Singapore Convention & Exhibition Cent', '1 Raffles Boulevard Singapore 039593', '1.293493', '103.857059', 1, NULL, '2015-02-01 02:21:03', '2015-02-18 16:12:57',1,'yes'),
+(4, 'The Star Performing Arts Centre', '1 Vista Exchange Green\r\nSingapore 138617', '1.306839', '103.788440', 1, NULL, '2015-02-01 02:21:03', '2015-02-18 16:12:57',1,'yes');
+
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`room`
@@ -206,6 +244,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`room` (
   `modified_by` INT(11) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT NULL,
+  `available` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`room_id`, `venue_id`),
   INDEX `room_venue_id_foreign_idx` (`venue_id` ASC),
   CONSTRAINT `room_venue_id_foreign`
@@ -218,6 +257,18 @@ AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
+INSERT INTO `room` (`room_id`, `venue_id`, `room_name`, `capacity`, `rental_cost`, `created_by`, `modified_by`, `created_at`, `updated_at`) VALUES
+(1, 2, 'Hall 1', 500, '500.00', 1, NULL, '2015-01-16 05:23:07', '2015-02-18 16:12:56','yes'),
+(2, 2, 'Hall 2', 450, '550.00', 1, NULL, '2015-01-16 05:23:22', '2015-02-18 16:12:56','yes'),
+(3, 2, 'Hall 3', 550, '600.00', 1, NULL, '2015-01-16 05:23:36', '2015-02-18 16:12:56','yes'),
+(4, 2, 'Hall 4', 500, '1200.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(5, 3, 'Summit 1 (Level 3)', 600, '1000.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(6, 3, 'Summit 2 (Level 3)', 500, '1800.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(7, 3, 'Auditorium (Level 6)', 1000, '2000.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(8, 1, 'Hall A', 2500, '3300.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(9, 1, 'Jasmine Ballroom', 800, '1100.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(10, 4, 'The Star Theater', 800, '1100.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes'),
+(11, 4, 'The Star Gallery', 800, '1100.00', 1, NULL, '2015-02-01 02:23:18', '2015-02-18 16:12:56','yes');
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`conference_room_schedule`
@@ -334,6 +385,12 @@ AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_bin;
 
+INSERT INTO `confuserrole` (`confuserrole_id`, `role_id`, `user_id`, `conf_id`) VALUES
+(1, 4, 1, 1),
+(2, 4, 2, 2),
+(3, 7, 3, 1),
+(4, 7, 3, 2),
+(5, 7, 1, 2);
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`countries`
@@ -364,6 +421,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`equipment_category` (
   `modified_by` INT(11) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT NULL,
+  `status` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Pending',
   PRIMARY KEY (`equipmentcategory_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
@@ -408,12 +466,14 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`invitation` (
   `code` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `email` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `company` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
-  PRIMARY KEY (`invite_id`),
+  PRIMARY KEY (`invite_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
+INSERT INTO `invitation` (`invite_id`, `code`, `email`, `company`) VALUES
+(5, 'PGevFfZcgdOffwuVS24g6HQdQdTIOQVw9du44Vb83e8kgObNLmbkeREvqd6l', 'pohjun.ng@hotmail.sg', 'Expo');
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`invoice`
@@ -438,12 +498,12 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`invoice` (
   CONSTRAINT `invoice_conf_id_foreign`
     FOREIGN KEY (`conf_id`)
     REFERENCES `conforg_db`.`conference` (`conf_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `invoice_user_id_foreign`
     FOREIGN KEY (`user_id`)
     REFERENCES `conforg_db`.`users` (`user_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
@@ -473,21 +533,22 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`submissions` (
   `updated_at` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`sub_id`),
   UNIQUE INDEX `submissions_subtitle_unique` (`sub_title` ASC),
+  INDEX `submission_conf_id_foreign_idx` (`conf_id` ASC),
+  INDEX `submission_user_id_foreign_idx` (`user_id` ASC),
   CONSTRAINT `submission_conf_id_foreign`
-    FOREIGN KEY ()
-    REFERENCES `conforg_db`.`conference` ()
+    FOREIGN KEY (`conf_id`)
+    REFERENCES `conforg_db`.`conference` (`conf_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `submission_user_id_foreign`
-    FOREIGN KEY ()
-    REFERENCES `conforg_db`.`users` ()
+    FOREIGN KEY (`user_id`)
+    REFERENCES `conforg_db`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
-
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`keywords`
@@ -553,9 +614,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`pending` (
   `equipment_id` INT(11) NULL DEFAULT NULL,
   `equipmentcategory_id` INT(11) NULL DEFAULT NULL,
   `room_id` INT(11) NULL DEFAULT NULL,
-  `venue_id` INT(11) NULL DEFAULT NULL,
-  `status` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
-  `avaliable` INT(11) NOT NULL,
+  `venue_id` INT(11) NULL DEFAULT NULL, 
   `modified_by` INT(11) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT NULL,
@@ -573,22 +632,22 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`pending` (
   CONSTRAINT `pending_equipment_id_foreign`
     FOREIGN KEY (`equipment_id`)
     REFERENCES `conforg_db`.`equipment` (`equipment_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `pending_equipmentcategory_id_foreign`
     FOREIGN KEY (`equipmentcategory_id`)
     REFERENCES `conforg_db`.`equipment_category` (`equipmentcategory_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `pending_room_id_foreign`
     FOREIGN KEY (`room_id`)
     REFERENCES `conforg_db`.`room` (`room_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `pending_venue_id_foreign`
     FOREIGN KEY (`venue_id`)
     REFERENCES `conforg_db`.`venue` (`venue_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
@@ -623,23 +682,32 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`profiles` (
   `user_id` INT(11) NOT NULL,
   `uid` BIGINT(20) UNSIGNED NOT NULL,
   `access_token` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `bio` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `location` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL,
   `photo` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL, 
   PRIMARY KEY (`profile_id`),
-  INDEX `profiles_user_id_foreign_idx` (`user_id` ASC),
-  INDEX `profiles_country_id_foreign_idx` (`country_id` ASC),
+  INDEX `profiles_user_id_foreign_idx` (`user_id` ASC),  
   CONSTRAINT `profiles_user_id_foreign`
     FOREIGN KEY (`user_id`)
     REFERENCES `conforg_db`.`users` (`user_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
+
+INSERT INTO `profiles` (`profile_id`, `fb_email`, `user_id`, `uid`, `access_token`, `created_at`, `updated_at`, `bio`, `location`, `photo`) VALUES
+(1, '', 1, 0, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, NULL),
+(2, '', 2, 0, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, NULL),
+(3, '', 3, 0, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, NULL),
+(4, '', 4, 0, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, NULL),
+(5, '', 5, 0, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, NULL),
+(6, '', 6, 0, '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, NULL),
+(7, 'pohjun.ng@gmail.com', 7, 10152916861920967, 'CAAV2KrdSapcBAOaIiG4F7eGmwVC5XpMUFSWWshHKR84zpJfpz7MPMUG9zucZCOAsGZA7zRsKersHdUVyC0vLTXngE3YYDo0IgrIZCkfGthrJpAnzZCgZBFbNr4ioAwEWUaVIVHwhRsZAdHj3YWL4L1jZBkTBZBcteklZBeJyw3jEZA9nbrDfO9o0K5xRZCuMxd8TqTKobmmSKTqKqjTCo8vL37l', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', NULL, 'https://graph.facebook.com/10152916861920967/picture?type=normal');
+
 
 
 -- -----------------------------------------------------
@@ -724,6 +792,7 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`room_equipment` (
   `modified_by` INT(11) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT NULL,
+  `equipment_status` varchar(45) NOT NULL DEFAULT 'Pending',
   PRIMARY KEY (`roomequipment_id`),
   INDEX `room_equipment_equipment_id_foreign_idx` (`equipment_id` ASC),
   INDEX `room_equipment_roomt_id_foreign_idx` (`room_id` ASC),
@@ -826,6 +895,14 @@ AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
+INSERT INTO `sysrole` (`sysrole_id`, `user_id`, `role_id`) VALUES
+(2, 1, 1),
+(3, 2, 1),
+(4, 3, 1),
+(5, 4, 2),
+(6, 5, 1),
+(7, 6, 3),
+(8, 7, 1);
 
 -- -----------------------------------------------------
 -- Table `conforg_db`.`conference_schedule_event`
@@ -856,6 +933,10 @@ CREATE TABLE IF NOT EXISTS `conforg_db`.`conference_schedule_event` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
+
+INSERT INTO `conference_room_schedule` (`confroomschedule_id`, `conf_id`, `room_id`, `description`, `date_start`, `date_end`, `begin_time`, `end_time`, `remarks`, `created_by`, `modified_by`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'Testing', '2015-04-02', '2015-04-03', '2015-04-02 03:00:00', '2015-04-03 15:00:00', NULL, 0, NULL, '2015-02-14 13:46:09', '2015-02-18 16:12:56'),
+(2, 2, 4, 'Testing', '2015-04-02', '2015-04-03', '2015-04-02 03:00:00', '2015-04-03 15:00:00', NULL, 0, NULL, '2015-02-14 13:46:09', '2015-02-18 16:12:56');
 
 
 -- -----------------------------------------------------

@@ -9,26 +9,80 @@ class EquipmentController extends \BaseController {
 	 */
 	public function index()
 	{		
-		$privilege = false;
-		if(Auth::User()->hasSysRole('Admin'))
-		{            
-			$privilege = true;
-		}   
-		$data = Equipment::with('equipmentCategory')->get();    	
-		return View::make('equipment.index')->with('data',$data)->with('privilege',$privilege);
+		if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$privilege = false;
+			if(Auth::User()->hasSysRole('Admin'))
+			{            
+				$privilege = true;
+			}   
+			$data = Equipment::with('equipmentCategory','Pending')->get();    	
+			//dd($data->toArray());
+			return View::make('equipment.index')->with('data',$data)->with('privilege',$privilege);
+		}
+		else
+		{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}		
+	}
+
+
+	public function pendingDeleteRequest($id)
+	{			
+		if(empty(Pending::where('equipment_id','=',$id)->first())) {										
+			$pending = new Pending;
+			$pending->equipment_id = $id;			
+			$pending->user_id = Auth::user()->user_id;
+			$pending->delete = 'true';
+			$pending->save();	
+			return Redirect::back()->withMessage('Delete Request Submitted');				
+		}		
+		else {
+			//if pending already existed check if its a delete request.			
+			$pending = Pending::where('equipment_id','=',$id)->first();									
+			if($pending->delete == 'false')
+			{
+				$pending->delete = 'true';
+				$pending->save();
+			}
+			else
+			{
+				$Equipment = Equipment::find($id);
+				if($Equipment->status=='Pending')
+				{
+					//edit delete request to false if pending status = Pending
+					$pending->delete = 'false';
+					$pending->save();
+				}
+				else
+				{					
+					//delete if pending is approved!
+					$pending->delete();	
+				}				
+			}			
+			return Redirect::back()->withMessage('Delete Request Cancelled');
+		}								
 	}
 
 	public function modify($id)
 	{
-
+		//approve without deleting equipment
+		$pending = Pending::where('equipment_id','=',$id)->first();
 		$Equipment = Equipment::find($id);
-
-		$Equipment->equipment_status = 'Approved';  
-		$Equipment->save();
+		if($pending->delete=='true')
+		{
+			//dont delete
+			$Equipment->equipment_status = 'Approved';				
+			$Equipment->save();									
+		}
+		else
+		{
+			$pending->delete();
+			//delete
+		}
+				
 		Session::flash('message', 'Approved Equipment!');
-
-		$pending = Pending::where('equipment_id','=',$id);
-        $pending->delete();
+        
 
 		return Redirect::back();
 	}
@@ -40,11 +94,16 @@ class EquipmentController extends \BaseController {
 	 */
 	public function create()
 	{
-		//
-		//$categories = ['' => ''] + EquipmentCategory::select('equipmentcategory_id', DB::raw('CONCAT(equipmentcategory_name, " - ", equipmentcategory_remark) AS full_name'))->lists('full_name', 'equipmentcategory_id');
-		$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');
-		return View::make('equipment.create')
-		->with('categories', $categories);	    
+		if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');
+			return View::make('equipment.create')
+			->with('categories', $categories);	    
+		}
+		else
+		{
+		return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}				
 	}
 
 
@@ -84,7 +143,6 @@ class EquipmentController extends \BaseController {
             $pending = new Pending;
             $pending->user_id = Auth::user()->user_id;         
             $pending->equipment_id = $equipment->equipment_id;
-            $pending->status = 'Pending';
             $pending->save();       
 
             // redirect
@@ -103,7 +161,16 @@ class EquipmentController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//not used!
+		//show equipments with room attached to it.
+		if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$equipmentRoomList = RoomEquipment::where('equipment_id','=',$id)->get();
+			dd($equipmentRoomList->toArray());
+		}
+		else
+		{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}
 	}
 
 
@@ -116,11 +183,19 @@ class EquipmentController extends \BaseController {
 	public function edit($id)
 	{
 		// show the edit form and pass the equipment
-		$equipment = Equipment::find($id);
-		$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');	        
-		return View::make('equipment.edit')
-		->with('equipment', $equipment)
-		->with('categories', $categories);	  			      
+		
+		if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$equipment = Equipment::find($id);
+			$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');	        
+			return View::make('equipment.edit')
+			->with('equipment', $equipment)
+			->with('categories', $categories);	
+		}
+		else
+		{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}  			      
 	}
 
 
@@ -178,16 +253,14 @@ class EquipmentController extends \BaseController {
                         //create a pending notification to inform the admin on this needing attention!
 						$pending = new Pending;
 						$pending->user_id = Auth::user()->user_id;         
-						$pending->equipment_id = $id;
-						$pending->status = 'Pending';
+						$pending->equipment_id = $id;						
 						$pending->save();    
 					}
 					else
 					{
 						$pending = Pending::where('equipment_id','=',$equipment->equipment_id)->first();
 						$pending->user_id = Auth::user()->user_id;
-						$pending->equipment_id = $id;       
-						$pending->status = 'Pending';
+						$pending->equipment_id = $id;       						
 						$pending->touch();
 						$pending->save();    
 					}											

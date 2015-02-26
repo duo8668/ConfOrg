@@ -5,7 +5,7 @@ class Pending extends Eloquent {
 	protected $primaryKey = 'pending_id';
 	protected $table = 'pending';
 
-	protected $fillable = array('equipmentcategory_name', 'status');
+	protected $fillable = array('delete','status');
 
 	public function user() {
 		return $this->belongsTo('User','user_id');

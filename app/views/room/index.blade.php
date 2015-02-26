@@ -35,7 +35,7 @@
                 <tr>            
                     <td>{{ link_to_route('venue.show', $value->venues->venue_name, ['id' => $value->venue_id]) }}</td>
                     <td>{{ link_to_route('room.show', $value->room_name .' (Capacity:'. $value->capacity .' )', ['id' => $value->room_id]) }}</td>             
-                    <td>${{ $value->rental_cost}}</td>             
+                    <td>${{ $value->rental_cost}}</td>
                     <!-- we will also add show, edit, and delete buttons -->
                     <td>
                         <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->

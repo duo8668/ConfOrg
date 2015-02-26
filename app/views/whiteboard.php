@@ -1,275 +1,276 @@
-<?php
+@extends('layouts.dashboard.master')
+@section('page-header')
+Edit {{ $room->room_name }}
+@stop
+@section('content')
 
-class RoomController extends \BaseController {
+{{ Form::model($room, array('route' => array('room.update', $room->room_id), 'method' => 'PUT', 'class' => 'form-horizontal')) }}
+<fieldset>
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index()
-  {       
-    $privilege = false;
-    if(Auth::User()->hasSysRole('Admin'))
-    {     
-      $data = DB::table('room')
-      ->join('venue', 'venue.venue_id', '=', 'room.venue_id')     
-      ->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));                  
-      $privilege = true;
-    }
-    else if(Auth::User()->hasSysRole('Resource Provider'))
-    {
-      $company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');   
-      $data = DB::table('room')
-      ->join('venue', 'venue.venue_id', '=', 'room.venue_id')
-      ->where('venue.company_id', '=', $company_id)
-      ->get(array('room.room_id','room.room_name', 'room.capacity', 'venue.venue_name','room.available','room.rental_cost','venue.venue_id'));                  
-    }   
-    if (Session::has('edit'))
-    {     
-      session::forget('edit');
-      Session::flash('message', 'Room Successfully Updated!');
-      return Redirect::to('room');
-    }
-    else if (Session::has('create'))
-    {     
-      session::forget('create');
-      Session::flash('message', 'Room Successfully Created!');
-      return Redirect::to('room');  
-    }
-    else
-    {     
-      return View::make('Room.index')->with('data',$data)->with('privilege',$privilege);
-    }
-  }
+  <div id="venue-group" class="form-group" >
+    <label class="col-md-4 control-label" for="venue">Venue</label>  
+    <div class="col-md-4">        
+      {{ Form::select('venue', $venues, $room->venue_id, array('class'=>'form-control input-md')) }}            
+    </div>
+  </div>
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  { 
-    //where created by this user and approved by owner
-    Session::forget('message');
-    $company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id'); 
-    $venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
-    $equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
-    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-    ->where('equipment_status', '=', 'Approved')
-    ->orWhere('equipment.created_by', '=', Auth::user()->user_id)
-    ->lists('full_name', 'id');
+  <div id="room_name-group" class="form-group">
+    <label class="col-md-4 control-label" for="room_name">Room Name</label>  
+    <div class="col-md-4">                      
+      {{ Form::text('room_name', $room->room_name, array('class' => 'form-control input-md','id' => 'room_name')) }}       
+    </div>    
+  </div>   
 
-    //dd($equipments->toArray());
-    return View::make('room.create')
-    ->with('venues', $venues)
-    ->with('equipments', $equipments);      
-  }
+  <div id="roomCapacity-group" class-"form-group">
+    <label class="col-md-4 control-label" for="roomCapacity">Room Capacity</label>
+    <div class="col-md-1">                     
+      {{ Form::text('roomCapacity', $room->capacity, array('class' => 'form-control input-md')) }}      
+    </div>
+  </div>
 
-  public function modify($id)
-  {
+  <div id="roomCost-group" class="form-group">
+    <label class="col-md-1 control-label" for="roomCost">Room Cost</label>
+    <div class="col-md-1">                     
+      {{ Form::text('roomCost', $room->rental_cost, array('class' => 'form-control input-md')) }}      
+    </div>
+  </div>
 
-    $room = room::find($id);
-    if($room->available == 'no')                            
-    {
-      $room->available = 'yes';  
-      Session::flash('message', 'Room Made Unavailable!');
-    }
-    else        
-    {
-      $room->available = 'no';  
-      Session::flash('message', 'Room Made Available!');
-    }
-    $room->save();    
+  <div class="form-group">  
+    <div class= "row">    
+      <label class="col-md-4 control-label"></label>  
+      <div class="col-md-2">                     
+        <label class="control-label" for="venue">Search Euipment</label>  
+      </div>
+      <div class="col-md-2">                     
+        <label class="control-label" for="venue">Search Quantity (Key only numbers)</label>  
+      </div>
+    </div>
 
-    return Redirect::to('room');
-  }
+    <div class="form-group">      
+      <label class="col-md-4 control-label"></label>  
+      <div class="col-md-2">                     
+        {{ Form::text('searchbox', null, array('class' => 'form-control input-md','id'=>'searchbox')) }}        
+      </div>
+      <div class="col-md-2">                     
+        {{ Form::text('quantity', null, array('class' => 'form-control input-md','id'=>'quantity')) }}  
+      </div>
+    </div>
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store()
-  {   
-    //dd(Input::all());
-    $rules = array(
-      'room_name'       => 'required|unique:room',
-      'roomCapacity'      => 'required|Integer',                            
-      'roomCost'      => 'required|Integer',  
-      'venue'         =>'required',
-      );
+    <div class="form-group">
+      <label class="col-md-4 control-label"></label>  
+      <div class="col-md-2">                                
+        {{Form::select('duallistbox_demo2[]',$equipments,null,array('class' => 'form-control','id'=>'duallistbox_demo2','size' =>'5')) }}              
+      </div>
+      <div class="col-md-2">                                
+        {{ Form::selectRange('number', 1, 1000, null, ['class' => 'field', 'size' => '5','class' => 'form-control','id'=>'number']) }}      
+      </div>
+    </div>     
+    <!--   <select multiple="1" class="form-control" id="duallistbox_demo2" size="5" name="duallistbox_demo2[]"><option value="1">Audio - Speaker</option><option value="2">Logistics - Chairs</option></select>               -->
 
-        //run validation rules        
-    $validation = Validator::make(Input::all(), $rules);
+    <div class="form-group">
+      <label class="col-md-4 control-label"></label>  
+      <div class="col-md-4">  
+       <button id="btnCombine" class="btn btn-primary" style="margin-bottom:10px;">Combine Value</button>                              
+       <button id="btnRemove" class="btn btn-primary" style="margin-bottom:10px;">Remove Value</button>                              
+       <button id="btnEdit" class="btn btn-primary" style="margin-bottom:10px;">Edit Value</button>                                                         
+     </div>
+   </div> 
 
-    if ( ! $validation->passes()) {
-      $response_values = array(
-        'validation_failed' => 1,
-        'errors' => $validation->errors()->toArray());
-      return Response::json($response_values);
+   <div class="form-group">
+    <label class="col-md-4 control-label"></label>  
+    <div class="col-md-4">  
+     <label class="control-label">Equipments in {{$room->room_name}}</label>  
+     {{Form::select('SelectedValues[]',$eqfullname,null,array('class' => 'form-control','id'=>'SelectedValues','size' =>'5')) }}              
+   </div>
+ </div> 
 
-    }     
-    else {            
+ <div class="form-group">
+  <label class="col-md-4 control-label" for="submit"></label>
+  <div class="col-md-4">                   
+    {{ Form::submit('Edit Room!', array('name'=>'Create','class' => 'btn btn-primary', 'id'=>'Edit')) }}      
+  </div>
+</div>
+</fieldset>
+{{ Form::close() }} 
 
-      $data['success'] = true;
-      $data['redirect']  = '/laravel/public/room';      
-      
-      Session::put('create', 'create');
 
-      $room = new room;
-      $room->room_name = Input::get('room_name');
-      $room->capacity = Input::get('roomCapacity');
-      $room->venue_id = Input::get('venue');
-      $room->rental_cost = Input::get('roomCost');
-      $room->save();            
-      
-      $SelectedValues = Input::get('SelectedValues');     
 
-      if(!empty($SelectedValues))
-      {
-        foreach($SelectedValues as $SelectedValue)
-        {                       
-          $breakDown = explode("-", $SelectedValue);                
-          $eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();          
-          $room->equipments()->attach($eID, array('quantity' => $breakDown[2]));
+
+<script>
+jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
+  return this.each(function() {
+    var select = this;
+    var options = [];
+    $(select).find('option').each(function() {
+      options.push({
+        value: $(this).val(),
+        text: $(this).text()
+      }); 
+    });
+    $(select).data('options', options);
+    $(textbox).bind('change keyup', function() {
+      var options = $(select).empty().data('options');
+      var search = $.trim($(this).val());
+      var regex = new RegExp(search, "gi");
+      $.each(options, function(i) {
+        var option = options[i];
+        if (option.text.match(regex) !== null) {
+          $(select).append(
+            $('<option>').text(option.text).val(option.value)
+            );
         }
+      });
+      if (selectSingleMatch === true && $(select).children().length === 1) {
+        $(select).children().get(0).selected = true;
       }
-      return json_encode($data);
-    }           
+    })
+  });
+};
+
+$(function() {
+  $('#duallistbox_demo2').filterByText($('#searchbox'), true);
+  $('#number').filterByText($('#quantity'), true);
+            //called when key is pressed in textbox
+            $("#quantity").keypress(function(e) {
+              //if the letter is not digit then display error and don't type anything
+              if (e.which !== 8 && e.which !== 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                $("#errmsg").html("Digits Only").show().fadeOut("slow");
+                return false;
+              }
+            });  
+
+            $("#btnCombine").click(function(e) {
+              e.preventDefault();
+              var equipmentName = $("#duallistbox_demo2 option:selected").text();
+              var number =  $("#number").val();     
+
+              if (!$('#duallistbox_demo2').val()) {
+                alert("Please Select An Equipment");
+              } 
+              else if (!$('#number').val()) {
+                alert("Please Select a Quantity");
+              } 
+              else {
+                if ($('#SelectedValues option:contains("' + equipmentName + '")').length) {
+                  alert("Equipment Already Selected!");
+                }
+                else{
+                  $("#SelectedValues").append("<option selected>" + $('#duallistbox_demo2 :selected').text() + " - " +number);
+                  $('#quantity').val("");
+                  $('#quantity').trigger("change");                  
+                  $('#searchbox').val("");
+                  $('#searchbox').trigger("change");
+                }
+              }
+            }); 
+
+$("#btnRemove").click(function(e) {
+  e.preventDefault();
+  $("#SelectedValues option:selected").remove();
+  $('#duallistbox_demo2 option').attr('selected', false);    
+  $('#number option').attr('selected', false);   
+});
+
+$("#btnEdit").click(function(e) {
+  e.preventDefault();
+  var equipmentName = $("#duallistbox_demo2 option:selected").text();
+  var number =  $("#number").val();     
+
+  if(!$("#SelectedValues option").length) {    
+    alert("There are no avaliable Room Equipments for editing");
   }
-  
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show($id)
-  {
-    //
-    $room = Room::find($id);
-    $venue = venue::find($room->venue_id);            
-
-    $geoLocation = $venue->latitude.' , '.$venue->longitude;        
-
-  //       list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venueAddress'));   
-    // $geoLocation = ((string) $lat).' , '.((string) $lng);
-
-    $config['center'] = $geoLocation;
-    $config['zoom'] = 'auto';
-    Gmaps::initialize($config);
-    
-    $marker = array();
-    $marker['position'] = $geoLocation;
-    Gmaps::add_marker($marker);
-    $map = Gmaps::create_map();                 
-    return View::make('room.show')->with('room', $room)->with('venue',$venue)->with('map',$map);
+  else if(!$('#SelectedValues').val()) {
+    alert("Please Select A Room Equipment you want to Edit");
   }
-
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {   
-    $room = Room::find($id);    
-    $selectedEquipment = $room->equipments;
-    $company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id'); 
-    $venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
-    $equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
-    ->where('equipment_status', '=', 'Approved')
-    ->orWhere('equipment.created_by', '=', Auth::user()->user_id)
-    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-    ->lists('full_name', 'id');
-
-    $eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
-    ->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')    
-    ->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
-    ->where('room_equipment.room_id', '=', $id)
-    ->lists('fullname');      
-
-    return View::make('room.edit')
-    ->with('venues', $venues)
-    ->with('equipments', $equipments)
-    ->with('room',$room)
-    ->with('eqfullname', $eqfullname);  
-  } 
-
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {     
-    $rules = array(
-      'room_name'       => 'required|unique:room,room_name,'.$id.',room_id',      
-      'roomCapacity'      => 'required|Integer',                            
-      'roomCost'      => 'required|Integer',  
-      'venue'         =>'required',
-      );
-
-        //run validation rules        
-    $validation = Validator::make(Input::all(), $rules);
-
-    if ( ! $validation->passes()) {
-      $response_values = array(
-        'validation_failed' => 1,
-        'errors' => $validation->errors()->toArray());
-      return Response::json($response_values);
-
+  else {
+    if (!$('#duallistbox_demo2').val()) {
+      alert("Please Select An Equipment");
     } 
-    else {            
-
-      $data['success'] = true;
-      $data['redirect']  = '/laravel/public/room';      
-      
-      Session::put('edit', 'edit');
-
-      $room = Room::find($id);
-      $room->room_name = Input::get('room_name');
-      $room->capacity = Input::get('roomCapacity');             
-      $room->venue_id = Input::get('venue');
-      $room->rental_cost = Input::get('roomCost');
-      $room->save();            
-
-      $room->equipments()->detach();
-      $SelectedValues = Input::get('SelectedValues');     
-
-      if(!empty($SelectedValues))
-      {
-        foreach($SelectedValues as $SelectedValue)
-        {                       
-          $breakDown = explode("-", $SelectedValue);                
-          $eID = Equipment::where('equipment_name' , '=', trim($breakDown[1]))->select('equipment_id')->first();                    
-          $room->equipments()->attach($eID, array('quantity' => trim($breakDown[2])));
-        }
-      }
-      return json_encode($data);
-    }        
-  }   
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($id)
-  {
-    //
-    $room = Room::find($id);
-    $room->delete();       
-        // redirect
-    Session::flash('message', 'Successfully deleted the Room!');
-    return Redirect::to('room');
+    else if (!$('#number').val()) {
+      alert("Please Select a Quantity");
+    } 
+    else {      
+      $("#SelectedValues option:selected").remove();
+      $("#SelectedValues").append("<option selected>" + $('#duallistbox_demo2 :selected').text() + " - " +number);
+      $('#quantity').val("");
+      $('#quantity').trigger("change");                  
+      $('#searchbox').val("");
+      $('#searchbox').trigger("change");
+    }
   }
+});
 
+$("#SelectedValues").click(function() {
 
-}
+  var formatted = $('#SelectedValues option:selected').text();  
+  var arr = formatted.split(' - ');      
+  $('#duallistbox_demo2>option:contains(' + arr[1] + ')').prop('selected', true);
+  $('#number').val($.trim(arr[2]));    
+});
+
+$('#Edit').click( function() {         
+
+  var values = [];
+  var room_name = $('input[name=room_name]').val();          
+  var venue = $('select[name=venue]').val();
+  var roomCapacity = $('input[name=roomCapacity]').val();
+  var token = $('input[name=_token]').val();      
+  var roomID = {{$room->room_id}};
+  $('#SelectedValues option').each(function() {
+    values.push($(this).text());
+  });
+  var formData = {
+   "room_name": $('input[name=room_name]').val(),
+   "venue" : $('select[name=venue]').val(),
+   "roomCapacity" : $('input[name=roomCapacity]').val(),
+   "roomCost" : $('input[name=roomCost]').val(),
+   "SelectedValues" : values,
+ };               
+
+ $.ajax({      
+  type: 'put',
+  url: '/laravel/public/room/'+ roomID,
+  data : formData,        
+  dataType: 'json',
+  beforeSend: function()
+  {
+    $('#ajax-loading').show();
+    $(".form-group" ).removeClass("has-error");        
+    $(".help-block").hide();
+  }
+})
+
+ .done(function(data) {
+              // log data to the console so we can see
+              console.log(data);               
+              // if ( ! data.success) {
+                if (data.validation_failed == 1)
+                {
+                  var arr = data.errors;
+                  $.each(arr, function(index, value)
+                  {
+                    if (value.length != 0)                      
+                    {
+                      console.log("#" + index);
+                      $('#'+index+'-group').addClass('has-error'); 
+                      $("[name="+index+"]").after('<div class="help-block">' + value + '</div>');                                            
+                    }
+                  });
+                  $('#ajax-loading').hide();
+                }  
+                else
+                {          
+                  if( data.success)
+                   window.location.href = '/laravel/public/room';                   
+               }
+             });
+
+  event.preventDefault();    
+});
+
+});
+</script>
+
+@stop
 

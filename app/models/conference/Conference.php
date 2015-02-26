@@ -137,4 +137,8 @@ class Conference extends Eloquent {
         }
     }
 
+    public function venue(){
+        return $this->belongsTo('Venue','venue_id');
+    }
+
 }

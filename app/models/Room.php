@@ -3,7 +3,8 @@
 class Room extends Eloquent {	
 
 	protected $table = 'room';
-	//protected $primaryKey = 'room_id';
+//why remove my $primaryKey. Please dont if not my part wont work. -Thomas
+	protected $primaryKey = 'room_id';
 	protected $fillable = array('room_name', 'capacity', 'venue_id', 'available');
 	protected $guarded = array('room_id');
 
@@ -19,7 +20,7 @@ class Room extends Eloquent {
 	public function Pending(){	
 		return $this->belongsTo('Pending','room_id','room_id');
 	}
-
+	
 	public function Venues(){
 		return $this->belongsTo('Venue','venue_id','venue_id');
 	}

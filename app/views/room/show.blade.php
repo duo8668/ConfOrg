@@ -77,7 +77,27 @@
                             {{ Form::hidden('_method', 'DELETE') }}
                             {{ Form::submit('Delete Equipment', array('class' => 'btn btn-danger btn-xs')) }}
                             {{ Form::close() }}
-                            @endif   
+                            @endif
+                            @if(!$privilege)
+                                @if(is_null($value->pending))
+                                <!--send delete request-->
+                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                    {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
+                                {{ Form::close() }} 
+                                @else <!--pending exist, check if its for a delete request-->
+                                    @if($value->pending->delete=='false')
+                                    <!--send delete request-->
+                                    {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                        {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
+                                    {{ Form::close() }} 
+                                    @else
+                                    <!--cancel delete request-->
+                                    {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                        {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
+                                    {{ Form::close() }} 
+                                    @endif
+                                @endif
+                            @endif 
                             <!-- edit this nerd (uses the edit method found at GET /nerds/{equipment_id}/edit -->
                             <a class="btn btn-small btn-info btn-xs" href="{{ URL::to('equipment/' . $value->equipment_id . '/edit') }}">Edit this Equipment</a>                
                         </td>

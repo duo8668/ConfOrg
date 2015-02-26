@@ -1,21 +1,6 @@
 <?php		
 class BillController extends \BaseController {
 
-	// public function charges()
-	// {  	
-	// 	dd(Input::all());
-	// 	$ticketPrice = Input::get('TicketPrice');			
-	// 	$conference = Conference::find(Input::get('conf_id'));
-	// 	$user = User::find(Auth::user()->user_id);	
-	// 	return Redirect::to('payment/charges')->with(Input::all())->with('user',$user)->with('conference',$conference)->with(Input::all());	
-	// 	//return View::make('charges.charge');
-	// }
-
-// 	Route::get('/payment', 'BillController@payment');
-// Route::post('payment', 'BillController@paymentCharges');
-
-// Route::get('/payment/charges', 'BillController@charges');
-// Route::post('/payment/charges', 'BillController@chargeUser');
 	public function index()
 	{  					
 		$privilege = false;
@@ -26,7 +11,7 @@ class BillController extends \BaseController {
 			$data= invoice::all();			
 			$privilege = true;
 		}
-		else if(!Auth::User()->hasSysRole('Resource Provider'))
+		else
 		{
 			$user = Auth::user()->firstname . ', ' . Auth::user()->lastname;
 			$data = invoice::with('conference','user')->where('user_id', '=', Auth::user()->user_id)->orderBy('created_at','Desc')->get();		

@@ -24,15 +24,22 @@ Route::group(array('before' => 'auth'),function(){
 	//----------pending -> Resource Provider -> Submit/Cancel delete request -------------------	
 	Route::post('venue/deleterequest/{id}', 'ThomasController@pendingDeleteRequest');
 	Route::post('room/deleterequest/{id}', 'RoomController@pendingDeleteRequest');
+	Route::post('equipment/deleterequest/{id}', 'EquipmentController@pendingDeleteRequest');
 
 	//----------pending -> show -------------------	
 	Route::get('pending','PendingController@index');
 	Route::post('pending/removeVenue/{id}','PendingController@removeVenue');
 	Route::post('pending/removeRoom/{id}','PendingController@removeRoom');
+	Route::post('pending/removeEquipment/{id}','PendingController@removeEquipment');
+	Route::post('pending/removeEquipmentCategory/{id}','PendingController@removeCategory');
 	Route::get('pending/editCategory/{id}/edit','PendingController@editCategory');	
 	Route::get('pending/editEquipment/{id}/edit','PendingController@editEquipment');
 	Route::put('pending/{id}','PendingController@updateCategory');
 	Route::put('pending/{id}','PendingController@updateEquipment');
+	
+
+
+
 	
 	Route::post('equipmentcategory/modify/{id}', 'EquipmentCategoryController@modify');
 	Route::post('equipment/modify/{id}', 'EquipmentController@modify');

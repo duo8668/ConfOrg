@@ -16,12 +16,18 @@ class PendingController extends \BaseController {
 	}
 	public function editCategory($id)
 	{		
-		$equipmentcategory = EquipmentCategory::find($id);
-        // show the edit form and pass the equipmentcategory
-		return View::make('pending.editCategory')
-		->with('equipmentcategory', $equipmentcategory);
-		// $equipmentcategory = EquipmentCategory::find($id);        
-		// return View::make('equipmentcategory.edit')->with('equipmentcategory', $equipmentcategory);		
+		if(Auth::User()->hasSysRole('Admin'))
+		{
+			$equipmentcategory = EquipmentCategory::find($id);
+			
+			return View::make('pending.editCategory')
+			->with('equipmentcategory', $equipmentcategory); 
+		}
+		else{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}
+		
+		
 	}
 
 	public function editEquipment($id)	
@@ -29,7 +35,7 @@ class PendingController extends \BaseController {
 		if(Auth::User()->hasSysRole('Admin'))
 		{
 			$categories = ['' => ''] + DB::table('equipment_category')->lists('equipmentcategory_name','equipmentcategory_id');	        
-			$equipment = equipment::find($id);
+			$equipment = Equipment::find($id);
         // show the edit form and pass the equipment
 			return View::make('pending.editEquipment')
 			->with('equipment', $equipment)
@@ -60,13 +66,54 @@ class PendingController extends \BaseController {
 
 	public function removeVenue($id)
 	{		
-		$venue = venue::find($id);
-		$venue->delete();               
-		$pending = Pending::where('venue_id','=',$id);
-		$pending->delete();
+		if(Auth::User()->hasSysRole('Admin'))
+		{
+			$venue = Venue::find($id);
+			$venue->delete();               
+			$pending = Pending::where('venue_id','=',$id);
+			$pending->delete();
+			
+			Session::flash('message', 'Successfully deleted the venue!');
+			return Redirect::to('pending');	
+		}
+		else{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}					
+	}
+
+	public function removeEquipment($id)
+	{		
+		if(Auth::User()->hasSysRole('Admin'))
+		{
+			$Equipment = Equipment::find($id);
+			$Equipment->delete();               
+			$pending = Pending::where('Equipment_id','=',$id);
+			$pending->delete();
+			
+			Session::flash('message', 'Successfully deleted the Equipment!');
+			return Redirect::to('pending');				
+		}
+		else{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}			
+	}
+
+	public function removeCategory($id)
+	{		
+		if(Auth::User()->hasSysRole('Admin'))
+		{
+			$equipmentcategory = EquipmentCategory::find($id);
+			$equipmentcategory->delete();               
+			$pending = Pending::where('equipmentcategory_id','=',$id);
+			$pending->delete();
+			
+			Session::flash('message', 'Successfully deleted the Category!');
+			return Redirect::to('pending');				
+		}
+		else{
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+		}
 		
-		Session::flash('message', 'Successfully deleted the venue!');
-		return Redirect::to('pending');				
 	}
 
 	public function updateCategory($id)

@@ -177,7 +177,7 @@ $("#btnRemove").click(function(e) {
   $('#number option').attr('selected', false);   
 });
 
-$("#btnEdit").click(function(e) {
+$("#btnCreate").click(function(e) {
   e.preventDefault();
   var equipmentName = $("#duallistbox_demo2 option:selected").text();
   var number =  $("#number").val();     
@@ -239,7 +239,7 @@ $('#Edit').click( function() {
   data : formData,        
   dataType: 'json',
   beforeSend: function()
-  {
+  {    
     $('#ajax-loading').show();
     $(".form-group" ).removeClass("has-error");        
     $(".help-block").hide();

@@ -38,7 +38,7 @@ All Equipments
                     <td>    
                         <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->
                         <!-- we will add this later since its a little more complicated than the other two buttons -->
-                        @if($privilege==true && $value->equipment_status=='Pending')    
+                        @if($privilege && $value->equipment_status=='Pending')    
                         {{ Form::open(array('url' => 'equipment/modify/' . $value->equipment_id, 'class' => 'inline')) }}                                     
                         {{ Form::submit('Approve Equipment', array('class' => 'btn btn-success btn-xs')) }} 
                         {{ Form::close() }}                
@@ -49,7 +49,27 @@ All Equipments
                         {{ Form::submit('Delete Equipment', array('class' => 'btn btn-danger btn-xs')) }}
                         {{ Form::close() }}  
                         @endif   
-                        <!-- edit this nerd (uses the edit method found at GET /nerds/{equipment_id}/edit -->
+                        @if(!$privilege)
+                            @if(is_null($value->pending))
+                            <!--send delete request-->
+                            {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
+                            {{ Form::close() }} 
+                            @else <!--pending exist, check if its for a delete request-->
+                                @if($value->pending->delete=='false')
+                                <!--send delete request-->
+                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                    {{ Form::submit('Send Delete Request', array('class' => 'btn btn-danger btn-xs')) }}
+                                {{ Form::close() }} 
+                                @else
+                                <!--cancel delete request-->
+                                {{ Form::open(array('url' => 'equipment/deleterequest/' . $value->equipment_id, 'class' => 'pull-right')) }}
+                                    {{ Form::submit('Cancel Delete Request', array('class' => 'btn btn-success btn-xs')) }}
+                                {{ Form::close() }} 
+                                @endif
+                            @endif
+                        @endif 
+                        <!-- edit this nerd (uses the edit method found at GET /nerds/{equipment_id}/edit -->                        
                         <a class="btn btn-small btn-info btn-xs" href="{{ URL::to('equipment/' . $value->equipment_id . '/edit') }}">Edit Equipment</a>                
                     </td>
                 </tr>

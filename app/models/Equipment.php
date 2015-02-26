@@ -17,4 +17,8 @@ class Equipment extends Eloquent {
 	public function rooms(){
 		return $this->belongsToMany('Room', 'Room_Equipment', 'equipment_id', 'room_id')->withPivot('quantity');	
 	}
+
+	public function Pending(){	
+		return $this->belongsTo('Pending','equipment_id','equipment_id');
+	}
 }
