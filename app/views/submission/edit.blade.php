@@ -118,6 +118,7 @@
         <div style="margin-bottom:30px;"></div>
         <div class="row">  
           <div class="col-md-4 col-md-offset-2">
+            {{ Form::hidden('conf_id', $submission->conf_id) }}
             {{ Form::submit('Update Submission', array('class' => 'btn btn-primary btn-md btn-block')) }}
           </div>
           <div class="col-md-4 col-md-offset-6" style="margin-left:0;">
