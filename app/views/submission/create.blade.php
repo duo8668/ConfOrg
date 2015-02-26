@@ -19,7 +19,7 @@
         <div class="form-group">
           <label class="col-md-2 control-label">Submitting To</label>
           <div class="col-md-10">
-            <p class="form-control-static"><strong>{{ link_to('conference/detail?conf_id='. $conference->conf_id, $conference->title) }}</strong></p>
+            <p class="form-control-static"><strong>{{ link_to_route('conference.public_detail', $conference->title, ['conf_id' => $conference->conf_id]) }}</strong></p>
           </div>
         </div>
         <!-- Submission Type -->
