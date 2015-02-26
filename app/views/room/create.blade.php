@@ -92,7 +92,7 @@ Add New Room
    <div class="row">  
       <div class="col-md-8 col-md-offset-2">
         <!-- Button -->        
-        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'btnThugLife')) }}        
+        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'btnWork')) }}        
       </div>
     </div>  
    
@@ -177,7 +177,7 @@ $("#btnRemove").click(function(e) {
   $('#number option').attr('selected', false);   
 });
 
-$("#btnThugLife").click(function(e) {
+$("#btnCreate").click(function(e) {
   e.preventDefault();
   var equipmentName = $("#duallistbox_demo2 option:selected").text();
   var number =  $("#number").val();     
@@ -214,7 +214,7 @@ $("#SelectedValues").click(function() {
   $('#number').val($.trim(arr[2]));    
 });
 
-$('#btnThugLife').click( function() {         
+$('#btnWork').click( function() {         
 
   var values = [];
   var room_name = $('input[name=room_name]').val();          

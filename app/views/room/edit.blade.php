@@ -92,7 +92,7 @@ Edit {{ $room->room_name }}
       <hr>
       <div class="row">  
         <div class="col-md-8 col-md-offset-2">             
-          {{ Form::submit('Edit Room', array('name'=>'Create','class' => 'btn btn-primary btn-md btn-block', 'id'=>'Edit')) }}      
+          {{ Form::submit('Edit Room', array('name'=>'Create','class' => 'btn btn-primary btn-md btn-block', 'id'=>'btnWork')) }}      
         </div>
       </div> 
    </div>
@@ -214,7 +214,7 @@ $("#SelectedValues").click(function() {
   $('#number').val($.trim(arr[2]));    
 });
 
-$('#Edit').click( function() {         
+$('#btnWork').click( function() {         
 
   var values = [];
   var room_name = $('input[name=room_name]').val();          
