@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 
-                <a href="{{ URL::to('/dashboard') }}">{{ HTML::image('img/logo.png', 'ORAFER', ['class' => 'logo']) }}</a>
+                <a href="{{ URL::to('/') }}">{{ HTML::image('img/logo.png', 'ORAFER', ['class' => 'logo']) }}</a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
