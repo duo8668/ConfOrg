@@ -52,28 +52,20 @@
 
 			public function modify($id)
 			{
-				if(Auth::User()->hasSysRole('Admin'))
+				$venue = Venue::find($id);
+				if($venue->available == 'no')        		        				
 				{
-					$venue = Venue::find($id);
-					if($venue->available == 'no')        		        				
-					{
-						$venue->available = 'yes';  
-						Session::flash('message', 'Venue Made Unavailable!');
-					}
-					else        
-					{
-						$venue->available = 'no';  
-						Session::flash('message', 'Venue Made Available!');
-					}
-					$venue->save();    
+					$venue->available = 'yes';  
+					Session::flash('message', 'Venue Made Unavailable!');
+				}
+				else        
+				{
+					$venue->available = 'no';  
+					Session::flash('message', 'Venue Made Available!');
+				}
+				$venue->save();    
 					//Redirect::back()->withMessage('Profile saved!')
-					return Redirect::back();	
-				}
-				else
-				{
-					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
-				}
-				
+				return Redirect::back();					
 			}
 
 			/**
