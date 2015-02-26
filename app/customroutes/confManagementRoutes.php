@@ -10,6 +10,10 @@
 */
 Route::get('conference/', 'ConferenceController@conf_public_list');
 Route::get('conference/index', 'ConferenceController@conf_public_list');
+Route::get('/conference_detail/{conf_id}', array(
+    'as'    => 'conference.public_detail',
+    'uses'  => 'ConferenceController@conf_public_detail'
+));
 
 Route::group(array('before' => 'auth'),function(){
 		

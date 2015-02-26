@@ -40,8 +40,7 @@ class BillController extends \BaseController {
 	}
 
 	public function populateFilter()
-	{
-		//$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
+	{		
 		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
 		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
 		->where('equipment_status', '=', 'Approved')		
@@ -62,7 +61,7 @@ class BillController extends \BaseController {
 
 	public function charges($id)
 	{  	
-		$invoice =invoice::find($id);			
+		$invoice =invoice::find($id);					
 		return View::make('charges.charge')->with('invoice',$invoice);	
 		//return View::make('charges.charge');		
 	}	
@@ -78,17 +77,15 @@ class BillController extends \BaseController {
 		if($this->invoiceExsit(Input::get('user_id'),Input::get('conf_id')))
 		{						
 			$invoice = invoice::with('conference','user')->where('user_id','=',Input::get('user_id'))->where('conf_id','=',Input::get('conf_id'))->first();
-			return Redirect::to('payment/charges/'.$invoice->invoice_id);
-			//redirect invalid with message. redirect to invoice index		
-			// Session::flash('message', 'Please pay or delete the existing invoice before attempting to make payment.');
-			// return Redirect::to('invoice');
+			return Redirect::to('payment/charges/'.$invoice->invoice_id);			
 		}
 		else
 		{
 			$invoice = new invoice;
-			$invoice->user_id = Input::get('user_id');
+			$invoice->user_id = Auth::user()->user_id;
 			$invoice->conf_id = Input::get('conf_id');			
-			$invoice->created_by = Input::get('user_id');
+			$invoice->price = Input::get('ticket_price');
+			$invoice->created_by = Auth::user()->user_id;
 			$invoice->save();
 
 			$invoice2 = Invoice::with('conference','user')->where('invoice_id', '=', $invoice->invoice_id)->first();

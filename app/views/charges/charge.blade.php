@@ -32,7 +32,7 @@
         <div class="form-group @if ($errors->has('sub_type')) has-error @endif">
           <label class="col-md-2 control-label">Ticket Price</label>
           <div class="col-md-10">
-            <p class="form-control-static" id="ticketPrice"><strong>{{$invoice->$price}}</strong></p>
+            <p class="form-control-static" id="ticketPrice"><strong>{{$invoice->price}}</strong></p>
           </div>
         </div>
        

@@ -51,5 +51,5 @@ Route::group(array('before' => 'auth'),function(){
 	Route::resource('equipment', 'EquipmentController');
 	Route::resource('room', 'RoomController');
 	///bella use this to as ur url customize it here to your liking. it will invoke the createInvoice funtion and redirect to the credit card payment page. 	
-	Route::post('/bellaCreateConferenceURL','BillController@createInvoice');
+	Route::post('conferencePurchaseTicket','BillController@createInvoice');
 });

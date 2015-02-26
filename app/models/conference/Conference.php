@@ -141,4 +141,8 @@ class Conference extends Eloquent {
         return $this->belongsTo('Venue','venue_id');
     }
 
+    public function confRoom(){
+        return $this->belongsTo('Room','room_id');
+    }
+
 }

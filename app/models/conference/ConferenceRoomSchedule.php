@@ -26,6 +26,15 @@ class ConferenceRoomSchedule extends Eloquent {
         return NULL;
     }
 
+    public function Conferences(){
+        return $this->belongsTo('Conference','conf_id');
+    }
+
+    public function Rooms(){
+        return $this->belongsTo('Room','room_id');
+    }
+
+
     public function scopeScheduleDates($query) {
 
         $results = DB::select(DB::raw("SELECT

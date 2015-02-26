@@ -626,13 +626,18 @@ public function validateCreateConference() {
 
 public function conf_public_list() {
     //get all conferences sorted by begin date
-    $confs = Conference::orderBy('begin_date', 'desc')->get();
+    //$confs = Conference::with('confRoom')->orderBy('begin_date', 'desc')->get();
+    $confs = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->get();
+    // dd($data->first()->toArray());
     return View::make('conf_list')->with('confs', $confs);
+    
 }
 
 public function conf_public_detail($id) {
 
-    $conf = Conference::where('conf_id', '=', $id)->first();
+    $conf = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->where('conf_id', '=', $id)->first();
+    //dd($conf->toArray());
+    //$conf = Conference::where('conf_id', '=', $id)->first();
     $chair = DB::table('users')
     ->join('confuserrole', 'confuserrole.user_id', '=', 'users.user_id')
     ->select('users.email', 'users.firstname', 'users.lastname')
@@ -643,7 +648,7 @@ public function conf_public_detail($id) {
     ->join('conference', 'conference.conf_id', '=', 'conference_topic.conf_id')
     ->select('conference_topic.topic_name')
     ->where('conference_topic.conf_id', '=', $id)
-    ->get();
+    ->get();    
 
     if (empty($conf)) {
         return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
