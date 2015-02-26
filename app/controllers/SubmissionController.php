@@ -76,7 +76,8 @@ class SubmissionController extends \BaseController {
 			} else {
 				// otherwise, check if conference still ongoing 
 				$dt = new DateTime("now");
-				if ($conference->cut_off > $dt) {
+				$date = $dt->format('Y-m-d H:i:s');
+				if ($conference->cutoff_time > $dt) {
 					$topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
 					return View::make('submission.create')->with('topics', $topics)->with('conference', $conference);		
 				} else {
