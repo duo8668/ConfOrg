@@ -171,14 +171,13 @@ $(function() {
             }); 
 
 $("#btnRemove").click(function(e) {
-  
+  e.preventDefault();
   $("#SelectedValues option:selected").remove();
   $('#duallistbox_demo2 option').attr('selected', false);    
   $('#number option').attr('selected', false);   
-  e.preventDefault();
 });
 
-$("#Add").click(function(e) {
+$("#btnEdit").click(function(e) {
   e.preventDefault();
   var equipmentName = $("#duallistbox_demo2 option:selected").text();
   var number =  $("#number").val();     
