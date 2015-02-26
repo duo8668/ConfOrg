@@ -92,7 +92,7 @@ Add New Room
    <div class="row">  
       <div class="col-md-8 col-md-offset-2">
         <!-- Button -->        
-        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'btnWork')) }}        
+        {{ Form::submit('Create Room', array('class' => 'btn btn-primary btn-md btn-block','id'=>'btnPleaseWork')) }}        
       </div>
     </div>  
    
@@ -214,7 +214,7 @@ $("#SelectedValues").click(function() {
   $('#number').val($.trim(arr[2]));    
 });
 
-$('#btnWork').click( function() {         
+$('#btnPleaseWork').click( function() {         
 
   var values = [];
   var room_name = $('input[name=room_name]').val();          
