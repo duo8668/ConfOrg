@@ -11,7 +11,7 @@
 				$privilege = false;				
 				if(Auth::User()->hasSysRole('Admin'))
 				{
-					$venue = Venue::with('Rooms')->all();													
+					$venue = Venue::with('Rooms')->get();													
 					$privilege = true;					
 					// load the view and pass the venue				
 					return View::make('venue.index')
