@@ -143,7 +143,7 @@ class RoomController extends \BaseController {
 			
 			Session::put('create', 'create');
 
-			$room = new room;
+			$room = new Room;
 			$room->room_name = Input::get('room_name');
 			$room->capacity = Input::get('roomCapacity');
 			$room->venue_id = Input::get('venue');
