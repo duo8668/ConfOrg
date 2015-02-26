@@ -177,7 +177,7 @@ $("#btnRemove").click(function(e) {
   $('#number option').attr('selected', false);   
 });
 
-$("#btnEdit").click(function(e) {
+$("#Add").click(function(e) {
   e.preventDefault();
   var equipmentName = $("#duallistbox_demo2 option:selected").text();
   var number =  $("#number").val();     
