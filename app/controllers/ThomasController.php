@@ -56,12 +56,12 @@
 				if($venue->available == 'no')        		        				
 				{
 					$venue->available = 'yes';  
-					Session::flash('message', 'Venue Made Unavailable!');
+					Session::flash('message', 'The venue is now available!');
 				}
 				else        
 				{
 					$venue->available = 'no';  
-					Session::flash('message', 'Venue Made Available!');
+					Session::flash('message', 'The venue is now unavailable!');
 				}
 				$venue->save();    
 					//Redirect::back()->withMessage('Profile saved!')
