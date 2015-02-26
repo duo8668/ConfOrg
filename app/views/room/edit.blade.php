@@ -72,7 +72,7 @@ Edit {{ $room->room_name }}
             {{ Form::selectRange('number', 1, 1000, null, ['class' => 'field', 'size' => '5','class' => 'form-control','id'=>'number']) }}      
           </div>
         </div>     
-        <!--   <select multiple="1" class="form-control" id="duallistbox_demo2" size="5" name="duallistbox_demo2[]"><option value="1">Audio - Speaker</option><option value="2">Logistics - Chairs</option></select>               -->
+        <!--   added this comment so i can update this file!               -->
 
         <div class="form-group">
           <div class="col-md-6 col-md-offset-3 text-center">   
