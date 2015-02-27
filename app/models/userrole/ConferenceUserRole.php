@@ -57,5 +57,14 @@ class ConferenceUserRole extends Eloquent {
 
 	}
 
+	public function scopeResourceProviders($query,$conf_id){
+		return $query->where($this->table.'.conf_id', '=', $conf_id)
+		->where($this->table.'.role_id','=',Role::ResourceProvider()->role_id)
+		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
+		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
+		;
+
+	}
+
 
 }

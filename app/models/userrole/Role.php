@@ -38,4 +38,10 @@ class Role extends Eloquent {
         return $this->where('rolename', '=', 'Review Panel')->first();
     }
 
+    public function scopeResourceProvider() {
+        # code...
+        return $this->where('rolename', '=', 'Resource Provider')->first();
+    }
+
+
 }

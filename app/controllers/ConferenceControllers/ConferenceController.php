@@ -131,14 +131,15 @@ class ConferenceController extends \BaseController {
         ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
         ->groupBy('conference_topic.topic_name')
         ->get();
-        
+
         $view = View::make('conference.detail', array('fields' => $fields, 'conf' => $conf
             , 'confChairUsers' => $confChairUsers
             , 'allStaffs' => $allStaffs
             , 'reviewPanels' => $reviewPanels 
             , 'submissions' => $submissions
             , 'invoices' => $invoices
-            , 'topics' => $topics));
+            , 'topics' => $topics
+            , 'isCancel' => !empty($conf->ConferenceCancel()->get()->toArray())));
 
         // SET SESSION
         Session::put('orafer_conf_id', Input::get('conf_id'));
@@ -768,39 +769,49 @@ public function cancelConference() {
 
                 $result = DB::transaction(function() use ($data, $user) {
 
-                    $confCancel = new ConferenceCancel();
-                    $confCancel->conf_id = $data['conf_id'];
-                    $confCancel->created_by = $user->user_id;
-                    $updateResult = $confCancel->save();
+
 
                     //* email to add review panel inform of cancellation
-                    $endUsers = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
+                    $endUsers = ConferenceUserRole::ConferenceReviewPanels($data['conf_id'])->get();
+                    
                     foreach ($endUsers as $endUser) {
                         # code...
                         $this->emailForCancelConference($data['conf_id'], $endUser);
                     }
 
                     //* email to all conference staff inform cancellation
-                    $endUsers = ConferenceUserRole::ConferenceStaffs($data['conf_id']);
+                    $endUsers = ConferenceUserRole::ConferenceStaffs($data['conf_id'])->get();
                     foreach ($endUsers as $endUser) {
                         # code...
                         $this->emailForCancelConference($data['conf_id'], $endUser);
                     }
 
                     //* email to all author inform cancellation
-                    $endUsers = ConferenceUserRole::ConferenceAuthors($data['conf_id']);                    
+                    $endUsers = ConferenceUserRole::ConferenceAuthors($data['conf_id'])->get();                    
                     foreach ($endUsers as $endUser) {
                         # code...
                         $this->emailForCancelConference($data['conf_id'], $endUser);
                     }
 
                     //* email to all participants inform cancellation
-                    $endUsers = ConferenceUserRole::Conferenceparticipants($data['conf_id']);
+                    $endUsers = ConferenceUserRole::Conferenceparticipants($data['conf_id'])->get();
                     foreach ($endUsers as $endUser) {
                         # code...
                         $this->emailForCancelConference($data['conf_id'], $endUser);
                     }
 
+                    //* email to resource provider telling about the cancellation
+                    $endUsers = ConferenceUserRole::ResourceProviders($data['conf_id'])->get();
+                    foreach ($endUsers as $endUser) {
+                        # code...
+                        $this->emailForCancelConference($data['conf_id'], $endUser);
+                    }
+
+                    $confCancel = new ConferenceCancel();
+                    $confCancel->conf_id = $data['conf_id'];
+                    $confCancel->created_by = $user->user_id;
+                    $updateResult = $confCancel->save();
+                    
                     return array('updateResult' => $updateResult);
                 });
 } catch (Exception $ex) {
@@ -812,19 +823,20 @@ public function cancelConference() {
 return array('success' => $result);
 }
 
-private function emailForCancelConference($conf_id,$endUser,$email){
+private function emailForCancelConference($conf_id,$endUser){
 
     $data = array('peoplename' => $endUser->firstname .', '. $endUser->lastname
         ,'conference_name' => Conference::where('conf_id','=', $conf_id)->firstOrFail()->title);
     // http://localhost:5080/laravel/public/conference_detail/18
-    Mail::queue('emails.auth.cancel-conference',
+    Mail::queue('emails.auth.conference_cancel',
         array('link'=>URL::to('conference_detail').'/'.$conf_id,
             'peoplename' => $data['peoplename'] ,
             'conference_name' => $data['conference_name']
             ), 
         function($message) use ($endUser,$data)
-        {
+        {  
             $message->to($endUser->email)->subject('Information : Cancallation of \''. $data['conference_name'] .'\' conference !');
+            Log::info('Sending email to :: '. $endUser->email);
         });
 }
 
