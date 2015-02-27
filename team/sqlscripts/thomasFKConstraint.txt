@@ -1,0 +1,53 @@
+  ALTER TABLE `conforg_db`.`equipment`
+  ADD CONSTRAINT `equipment_equipmentcategory_id_foreign`
+    FOREIGN KEY (`equipmentcategory_id`)
+    REFERENCES `conforg_db`.`equipment_category` (`equipmentcategory_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+		
+	ALTER TABLE `conforg_db`.`room_equipment`
+    CONSTRAINT `room_equipment_equipment_id_foreign`
+    FOREIGN KEY (`equipment_id`)
+    REFERENCES `conforg_db`.`equipment` (`equipment_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `room_equipment_room_id_foreign`
+    FOREIGN KEY (`room_id`)
+    REFERENCES `conforg_db`.`room` (`room_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+		
+    ALTER TABLE `conforg_db`.`room`
+	ADD  CONSTRAINT `room_venue_id_foreign`
+    FOREIGN KEY (`venue_id`)
+    REFERENCES `conforg_db`.`venue` (`venue_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+	
+   ALTER TABLE `conforg_db`.`pending`
+   ADD CONSTRAINT `pending_user_id_foreign`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `conforg_db`.`users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `pending_equipment_id_foreign`
+    FOREIGN KEY (`equipment_id`)
+    REFERENCES `conforg_db`.`equipment` (`equipment_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `pending_equipmentcategory_id_foreign`
+    FOREIGN KEY (`equipmentcategory_id`)
+    REFERENCES `conforg_db`.`equipment_category` (`equipmentcategory_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `pending_room_id_foreign`
+    FOREIGN KEY (`room_id`)
+    REFERENCES `conforg_db`.`room` (`room_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `pending_venue_id_foreign`
+    FOREIGN KEY (`venue_id`)
+    REFERENCES `conforg_db`.`venue` (`venue_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+	
