@@ -101,6 +101,11 @@ Conference Detail
 		border: 1px solid #ccc;
 		background: #eee;
 		text-align: left;
+		max-height: 20em;	
+		margin-top: 4em;
+		margin-bottom: 0px;
+		overflow: scroll;
+		z-index: 10;
 	}
 
 	#external-events:hover {
@@ -162,8 +167,11 @@ Conference Detail
 	#eventTrash{
 		text-align: center;
 		margin-top:1px;
-
+		padding: 0px;
+		padding-bottom: 5px;
+		z-index: 8;
 	}
+
 	.alert-warning:hover {
 		color: #8a6d3b;
 		background-color: #fcf8e3;

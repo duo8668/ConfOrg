@@ -88,6 +88,12 @@ class BillController extends \BaseController {
       $invoice->created_by = Auth::user()->user_id;
       $invoice->save();
 
+      $confUserRole = new ConferenceUserRole();
+      $confUserRole->role_id = Role::Participant()->role_id;
+      $confUserRole->user_id = Auth::user()->user_id;
+      $confUserRole->confId = $confId;
+      $confUserRole->save();
+      
       $invoice2 = Invoice::with('conference','user')->where('invoice_id', '=', $invoice->invoice_id)->first();
       return Redirect::to('payment/charges/'.$invoice->invoice_id);     
       //redirect to payment/charges page
