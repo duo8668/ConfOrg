@@ -23,7 +23,7 @@ class RoomController extends \BaseController {
 			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');				
 			$data = Room::with('Pending','venues')->whereHas('venues', function($Query) use($company_id) {
 				$Query->where('company_id', '=', $company_id); });
-		$data = $data->get();
+			$data = $data->get();
 			$flag = true;							
 		}		
 
@@ -60,11 +60,21 @@ class RoomController extends \BaseController {
 		Session::forget('message');
 		$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');	
 		$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
-		$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
-		->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-		->where('equipment_status', '=', 'Approved')
-		->orWhere('equipment.created_by', '=', Auth::user()->user_id)
-		->lists('full_name', 'id');
+		if(Auth::User()->hasSysRole('Admin'))
+		{
+			$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+			->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')			
+			->lists('full_name', 'id');	
+		}
+		else if (Auth::User()->hasSysRole('Resource Provider'))
+		{
+			$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+			->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+			->where('equipment_status', '=', 'Approved')
+			->orWhere('equipment.created_by', '=', Auth::user()->user_id)
+			->lists('full_name', 'id');	
+		}
+		
 
 		//dd($equipments->toArray());
 		return View::make('room.create')
@@ -236,17 +246,26 @@ class RoomController extends \BaseController {
 			$selectedEquipment = $room->equipments;
 			$company_id = CompanyUser::where('user_id','=',Auth::user()->user_id)->pluck('company_id');	
 			$venues = ['' => ''] + Venue::select('venue_id', DB::raw('CONCAT(venue_name, " - ", venue_address) AS full_name'))->where('company_id','=',$company_id)->lists('full_name', 'venue_id');
-			$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
-			->where('equipment_status', '=', 'Approved')
-			->orWhere('equipment.created_by', '=', Auth::user()->user_id)
-			->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
-			->lists('full_name', 'id');
+			if(Auth::User()->hasSysRole('Admin'))
+			{
+				$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+				->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')			
+				->lists('full_name', 'id');	
+			}
+			else if (Auth::User()->hasSysRole('Resource Provider'))
+			{
+				$equipments = Equipment::selectRaw('equipment_id as id, concat(equipmentcategory_name, " - ", equipment_name) as full_name')
+				->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')
+				->where('equipment_status', '=', 'Approved')
+				->orWhere('equipment.created_by', '=', Auth::user()->user_id)
+				->lists('full_name', 'id');	
+			}			
 
 			$eqfullname = Equipment::join('room_equipment', 'equipment.equipment_id', '=', 'room_equipment.equipment_id')
 			->join('equipment_category', 'equipment.equipmentcategory_id', '=', 'equipment_category.equipmentcategory_id')		
 			->selectRaw("concat_ws(' - ', equipment_category.equipmentcategory_name, equipment.equipment_name, room_equipment.quantity) as fullname")
 			->where('room_equipment.room_id', '=', $id)
-			->lists('fullname');	    
+			->lists('fullname');
 
 			return View::make('room.edit')
 			->with('venues', $venues)

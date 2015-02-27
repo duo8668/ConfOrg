@@ -68,15 +68,17 @@ class EquipmentController extends \BaseController {
 	{
 		//approve without deleting equipment
 		$pending = Pending::where('equipment_id','=',$id)->first();
-		$Equipment = Equipment::find($id);
+		$Equipment = Equipment::find($id);		
 		if($pending->delete=='true')
 		{
-			//dont delete
+			//dont delete pending			
 			$Equipment->equipment_status = 'Approved';				
 			$Equipment->save();									
 		}
 		else
 		{
+			$Equipment->equipment_status = 'Approved';				
+			$Equipment->save();	
 			$pending->delete();
 			//delete
 		}

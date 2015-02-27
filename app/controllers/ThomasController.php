@@ -7,8 +7,7 @@
 			*/
 			public function index()
 			{  	
-				//retrieve venue that only belongs to company
-				$privilege = false;
+				$privilege = false;				
 				if(Auth::User()->hasSysRole('Admin'))
 				{
 					$venue = Venue::with('Rooms')->get();													
@@ -28,9 +27,20 @@
 					->with('venue', $venue)
 					->with('privilege',$privilege);
 				} else {
-					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!')->with('privilege',$privilege);;
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
 				}	
 				
+			}
+
+			public function ifRoomExistOnDB($value)
+			{					
+
+				if(empty(Room::where('room_name','=',$value)->get()->toArray()))
+				{
+					return 'dont exist';
+				}
+				else
+					return 'exist';		
 			}
 
 			public function pendingDeleteRequest($id)
@@ -430,16 +440,13 @@
 									$results = Excel::load($file)->all();
 									$roomCount = sizeof($results[0]);//number of row in the Rooms sheet //example 2							
 									$roomEquipmentCount = sizeof($results[1]);//number of row in the Room Equipment sheet //example 3									
-									//room
-									$currentEquipmentNameList = Equipment::get(array('equipment_name'))->toArray();
+									//room									
+									//database records									
 									//only same equipmentName and Remarks can pass the validation screening
-									foreach($currentEquipmentNameList as &$value)
-									{
-										$value['equipment_name'] = strtolower($value['equipment_name']);  																
-									}									
+									
 
 									list($lat, $lng, $error) = Gmaps::get_lat_long_from_address(Input::get('venue_address'));
-									$venue = new venue;
+									$venue = new Venue;
 									$venue->venue_name = Input::get('venue_name');
 									$venue->venue_address = Input::get('venue_address');
 									$venue->latitude = $lat;
@@ -465,11 +472,12 @@
 										$eCatID = 0;
 										$eID = 0;
 										$equipmentName = strtolower($results[1][$i]['equipment_name']);										
-										if(!in_array(array($equipmentName), $currentEquipmentNameList))	
-										{																						
+//										if(!in_array(array($equipmentName), $currentEquipmentNameList))//if not in the database
+//										{								
+										$equipmentcategorycurrent = EquipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first();
+										$equipmentcurrent = Equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first();
 											//add or ignore category
-
-											if(is_null(EquipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first())) {
+											if(is_null($equipmentcategorycurrent)) {
 												$equipmentcategory = new EquipmentCategory;
 												$equipmentcategory->equipmentcategory_name = $results[1][$i]['equipment_category']; 
 												$equipmentcategory->created_by=Auth::user()->user_id;
@@ -480,16 +488,16 @@
 												$pending->user_id = Auth::user()->user_id;
 												$pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
 												$pending->save();
+											}	
+											else {
+												$eCatID = $equipmentcategorycurrent->equipmentcategory_id;
 											}
-
 											//add or ignore equipment
-											if(is_null(equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first())) {
-												$equipment = new equipment;
+											if(is_null($equipmentcurrent)) {
+												$equipment = new Equipment;
 												$equipment->equipment_name = $results[1][$i]['equipment_name'];
 												$equipment->equipment_remark = $results[1][$i]['equipment_remarks'];
-												$equipment->created_by=Auth::user()->user_id;
-												if($eCatID == 0)
-													$eCatID = EquipmentCategory::where('equipmentcategory_name','=',$results[1][$i]['equipment_category'])->first()->equipmentcategory_id;
+												$equipment->created_by=Auth::user()->user_id;												
 												$equipment->equipmentcategory_id = $eCatID;
 												$equipment->save();    																																			
 												$eID = $equipment->equipment_id;
@@ -502,14 +510,15 @@
 											else
 											{
 												//attach the equipment id to something
-												if($eID==0)
-													$eID = equipment::where('equipment_name','=',$results[1][$i]['equipment_name'])->first()->equipment_id;
+												$eID = $equipmentcurrent->equipment_id;
 											}											
-										}																								
+										//}
+
 										$room = Room::where('venue_id','=',$venue->venue_id)->where('room_name','=',$results[1][$i]['room_name'])->first();										
-										$room->equipments()->attach($eID, array('quantity' => $results[1][$i]['quantity']));
-										//attach equipment id, quantity 										
+										$room->equipments()->attach($eID, array('quantity' => $results[1][$i]['quantity']));															
 									}
+
+									
 									return Redirect::to('venue');
 								}
 							}
