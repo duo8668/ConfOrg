@@ -8,7 +8,7 @@
 			public function index()
 			{  	
 				//retrieve venue that only belongs to company
-				$privilege = false;				
+				$privilege = false;
 				if(Auth::User()->hasSysRole('Admin'))
 				{
 					$venue = Venue::with('Rooms')->get();													
@@ -28,7 +28,7 @@
 					->with('venue', $venue)
 					->with('privilege',$privilege);
 				} else {
-					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+					return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!')->with('privilege',$privilege);;
 				}	
 				
 			}

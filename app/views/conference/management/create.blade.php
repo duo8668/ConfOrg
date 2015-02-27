@@ -36,6 +36,10 @@ Add New Conference
 <script src="{{ asset('js/formvalidation/formValidation.js') }}"></script>
 <script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
 
+<!-- Bootstrap TypeAhead -->
+<script src="{{ asset('js/bootstrap3-typeahead.js') }}"></script>
+<script src="{{ asset('js/bloodhound.js') }}"></script>
+
 <!-- STRIPE payment processor  -->
 <script src="https://js.stripe.com/v2/"></script>
 
@@ -160,6 +164,8 @@ Add New Conference
     	}
     }); 
 
+
+
 });
 
 
@@ -188,14 +194,14 @@ Add New Conference
 
 			<div class="col-md-10">
 				@foreach ($fields as $field)
-				<div class="checkbox">
+				<div class="checkbox col-md-4">
 					<label> 
 						{{Form::checkbox('chkField[]', 'chkField_'. $field->id,false ,array('id' => 'chkField_'. $field->id ))}}
 						{{Form::label('chkField_'. $field->id, $field->label)}}
 					</label>
 				</div>
 				@endforeach
-				<p class="help-block">Categorizing your conference will help in making your conference visible in ORAFER search result</p>
+				<p class="help-block col-md-12">Categorizing your conference will help in making your conference visible in ORAFER search result</p>
 			</div>
 		</div> 
 

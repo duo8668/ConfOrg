@@ -102,5 +102,5 @@ function loadAddTopic(_confId, _updateUrl) {
 }
 // refresh current location when ajax finishes
 $(document).ajaxStop(function(){
-    window.location.reload();
+    //window.location.reload();
 });

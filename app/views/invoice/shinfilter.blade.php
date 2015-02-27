@@ -89,14 +89,14 @@ $(function() {
   $('#duallistbox_demo2').filterByText($('#searchbox'), true);
            
 
-$("#duallistbox_demo2").change(function(){    
+$("#duallistbox_demo2").on('dblclick',function(){    
     var equipmentName = $('#duallistbox_demo2 :selected').text();
     var equipmentValue = $("#duallistbox_demo2").val();   
     console.log(equipmentName,equipmentValue);
     $('#duallistbox_demo2 option:selected').remove().appendTo('#SelectedValues').removeAttr('selected');
 });
 
-$("#SelectedValues").change(function(){    
+$("#SelectedValues").on('dblclick',function(){    
     var equipmentName = $('#SelectedValues :selected').text();    
     var equipmentValue = $("#SelectedValues").val();   
     console.log(equipmentName,equipmentValue);    

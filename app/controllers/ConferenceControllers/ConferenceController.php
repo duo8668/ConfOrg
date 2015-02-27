@@ -11,7 +11,7 @@ class ConferenceController extends \BaseController {
       |
      */
 
-    public function index() {
+      public function index() {
         $confs = Conference::where('begin_date', '>', DB::raw('curdate()'))
         ->get();
 
@@ -125,12 +125,12 @@ class ConferenceController extends \BaseController {
 
         $invoices= Invoice::where('status','=','Paid')->where('conf_id','=', Input::get('conf_id'))->get();
 
-       $topics = DB::table('conference_topic')
-                    ->leftJoin('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
-                    ->select('conference_topic.topic_id', 'conference_topic.topic_name', Db::raw('count(sub_id) as total_subs'))
-                    ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
-                    ->groupBy('conference_topic.topic_name')
-                    ->get();
+        $topics = DB::table('conference_topic')
+        ->leftJoin('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
+        ->select('conference_topic.topic_id', 'conference_topic.topic_name', Db::raw('count(sub_id) as total_subs'))
+        ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
+        ->groupBy('conference_topic.topic_name')
+        ->get();
 
         $view = View::make('conference.detail', array('fields' => $fields, 'conf' => $conf
             , 'confChairUsers' => $confChairUsers
@@ -310,12 +310,14 @@ public function updateParticulars() {
     'conf_id' => Input::get('conf_id')
     , 'cutOffDate' => date("Y-m-d H:i", strtotime(Input::get('cutOffDate')))
     , 'minScore' => Input::get('minScore')
+    , 'ticketPrice' => str_replace ('S$','',Input::get('ticketPrice'))
     ];
 
     $rules = [
     'conf_id' => 'required|numeric'
     , 'cutOffDate' => 'date'
-    , 'minScore' => 'numeric|min:1'
+    , 'minScore' => 'numeric|min:0'
+    , 'ticketPrice' => 'numeric'
     ];
 
     $validator = Validator::make($data, $rules);
@@ -332,7 +334,8 @@ public function updateParticulars() {
                     $numRowUpdated = Conference::where('conf_id', '=', $data['conf_id'])
                     ->update(array('cutoff_time' => $data['cutOffDate']
                         , 'min_score' => $data['minScore']
-                        , 'modified_by' => $user->user_id));
+                        , 'modified_by' => $user->user_id
+                        , 'ticket_price' => $data['ticketPrice'] ));
                     $conf = Conference::where('conf_id', '=', $data['conf_id'])->first();
                     return array('numRowUpdated' => $numRowUpdated, 'conf' => $conf);
                 });
@@ -356,32 +359,32 @@ public function updateTopics() {
     //validation is using HTML5 required attribute
 
     if (Auth::check()) {
-    
+
         try {
             $user = Auth::user();
 
             // $result = DB::transaction(function() use ($data, $user) {
                 //update for each conference topic
-                for ($i = 0; $i < count($data['topic_name']); $i++) {
+            for ($i = 0; $i < count($data['topic_name']); $i++) {
 
                     //check if topic marked for deletion
-                    if ( !empty( $data['delete_topic'][$i] ) ) {
+                if ( !empty( $data['delete_topic'][$i] ) ) {
                         //if yes
                         //delete entries on conference_topics first
-                        DB::table('submission_topic')->where('topic_id', '=', $data['delete_topic'][$i])->delete();
+                    DB::table('submission_topic')->where('topic_id', '=', $data['delete_topic'][$i])->delete();
 
                         //delete the topics itself
-                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['delete_topic'][$i])->first();
-                        if ( !empty($conf_topic) ) $conf_topic->delete();
-                    } else {
+                    $conf_topic = ConferenceTopic::where('topic_id', '=', $data['delete_topic'][$i])->first();
+                    if ( !empty($conf_topic) ) $conf_topic->delete();
+                } else {
                         //else, just update based on value inside the text field
-                        $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i])->first();
-                        $conf_topic->topic_name = $data['topic_name'][$i];
-                        $conf_topic->modified_by = $user->user_id;
-                        $conf_topic->save();
-                    }
-                    
+                    $conf_topic = ConferenceTopic::where('topic_id', '=', $data['topic_id'][$i])->first();
+                    $conf_topic->topic_name = $data['topic_name'][$i];
+                    $conf_topic->modified_by = $user->user_id;
+                    $conf_topic->save();
                 }
+
+            }
             // });
         } catch (Exception $ex) {
             throw $ex;
@@ -401,15 +404,15 @@ public function addNewTopic() {
     //validation is using HTML5 required attribute
 
     if (Auth::check()) {
-    
+
         try {
             $user = Auth::user();
 
             //add in new topic
             $topic = ConferenceTopic::create(['topic_name' => $data['topic_name']
-                                    , 'conf_id' => $data['conf_id']
-                                    , 'created_by' => $user->user_id]);
-                
+                , 'conf_id' => $data['conf_id']
+                , 'created_by' => $user->user_id]);
+
             // });
         } catch (Exception $ex) {
             throw $ex;
@@ -588,14 +591,14 @@ public function updateReviewPanels() {
                 }
 
                 // delete not exist in InviteToConference
-              
+
                 if (!empty($originalPRPs)) {
                     if (empty($data['emails'])) {
                         $data['emails'] = array();
                     }
 
                     foreach ($originalPRPs as $oriPRP) {
-                         
+
                         if (!in_array($oriPRP->email, $data['emails'], true)) {
 
                             $numRowUpdated += $oriPRP->forceDelete();
@@ -608,14 +611,14 @@ public function updateReviewPanels() {
                     ->where('role_id','=',Role::Reviewer()->role_id)
                     ->where('is_used','=',0)->get());
 
-                });
-            } catch (Exception $ex) {
-                throw $ex;
-            }
-        }
-    }
+            });
+} catch (Exception $ex) {
+    throw $ex;
+}
+}
+}
 
-    return array('success' => $result);
+return array('success' => $result);
 }
 
 public function validateCreateConference() {
@@ -630,10 +633,69 @@ public function validateCreateConference() {
 public function conf_public_list() {
     //get all conferences sorted by begin date
     //$confs = Conference::with('confRoom')->orderBy('begin_date', 'desc')->get();
-    $confs = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->get();
-    // dd($data->first()->toArray());
-    return View::make('conf_list')->with('confs', $confs);
+    // $this->RetrieveCheckboxValue($key)
+
+    $searchList = Input::get('chkField');
+    $item = array();
+
+    if(!empty($searchList)){
+        foreach($searchList as $searchItem)
+        {
+            $item[] = $this->RetrieveCheckboxValue($searchItem);
+        }
+    }    
+
+    $data = ConferenceRoomSchedule::with('Conferences.ConferenceFields','Rooms.venues')->whereHas('Conferences.ConferenceFields', function($Query) use($item) {
+        if(!empty($item))
+            $Query->whereIn('interestfield_id', $item);
+    });
+
+    $datas = $data->get();
+
+    $confs = $this->filterConferences();
+
+    $fields = InterestField::select(DB::raw('interestfield_id as id, name as label'))
+    ->get();
     
+    return View::make('conf_list')->with(array('fields' => $fields,'datas' => $datas));
+
+}
+
+public function filterConferencesByTitle(){
+
+    //$confTitle = Conference::where('title','LIKE','%abc%')->get();
+
+    $value = Input::get('iTitle');
+
+    $data = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->whereHas('conferences', function($Query) use($value) {
+        $Query->where('title', 'LIKE', '%'.$value.'%');
+    });
+
+    $datas = $data->get();
+
+    $titleList = array();
+
+    foreach($datas as $data)
+    {
+        $title = $data->Conference()->title;
+        $titleList[] = array('title' => $title); 
+    }
+
+    return $titleList;
+}
+
+public function filterConferences(){
+
+    //$confTitle = Conference::where('title','LIKE','%abc%')->get();
+    $value = Input::get('iTitle');
+    $data = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->whereHas('conferences', function($Query) use($value) {
+        $Query->where('title', 'LIKE', '%'.$value.'%');
+    });
+
+    $data = $data->get();
+    //dd($data->toArray());
+
+    return $data;
 }
 
 public function conf_public_detail($id) {

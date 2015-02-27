@@ -8,7 +8,10 @@
 |
 |
 */
-Route::get('conference/', 'ConferenceController@conf_public_list');
+Route::any('conference/', 'ConferenceController@conf_public_list');
+Route::get('conference/getConferences', 'ConferenceController@filterConferences');
+Route::get('conference/filterConferencesByTitle', 'ConferenceController@filterConferencesByTitle');
+
 Route::get('conference/index', 'ConferenceController@conf_public_list');
 Route::get('/conference_detail/{conf_id}', array(
     'as'    => 'conference.public_detail',

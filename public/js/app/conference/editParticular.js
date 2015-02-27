@@ -15,6 +15,7 @@ function loadEditParticular(_confId, _updateUrl) {
         d.setDate(d.getDate() - 5);
         $('#innerCutOffDate').data('DateTimePicker').setMaxDate(d);
         $('#innerMinScore > input').val($('#minScoreValue').html());
+        $('#innerTicketPrice > input').val($('#ticketPriceValue').html());
         $('#particularEditor').modal({keyboard: false, backdrop: 'static', show: true});
     });
     //* Validation
@@ -59,9 +60,10 @@ function loadEditParticular(_confId, _updateUrl) {
         $.ajax({
             url: _updateUrl,
             data: {
-                conf_id: _confId,
-                cutOffDate: $("#innerCutOffDate").data("DateTimePicker").getDate().format('DD-MMM-YYYY HH:mm'),
-                minScore: $('#innerMinScore > input').val()
+                conf_id: _confId
+                ,cutOffDate: $("#innerCutOffDate").data("DateTimePicker").getDate().format('DD-MMM-YYYY HH:mm')
+                ,minScore: $('#innerMinScore > input').val()
+                ,ticketPrice: $('#innerTicketPrice > input').val()
             },
             type: 'get',
             beforeSend: function () {
@@ -76,16 +78,13 @@ function loadEditParticular(_confId, _updateUrl) {
             if (data.success !== undefined) {
                 var message = data.success.numRowUpdated + ' record(s) updated successfully !!!';
                 $('#modalMessage').html(message);
-                $('#cutOffValue').html('');
-                $('#minScoreValue').html('');
                 if (data.success.conf !== undefined) {
 //* put back all into front page
-
                     if (data.success.conf.cutoff_time !== undefined && data.success.conf.min_score !== undefined) {
-                        $('#cutOffValue').append(new moment(data.success.conf.cutoff_time).format('DD-MMM-YYYY HH:mm'));
-                        $('#minScoreValue').append(data.success.conf.min_score);
+                        $('#cutOffValue').html(new moment(data.success.conf.cutoff_time).format('DD-MMM-YYYY HH:mm'));
+                        $('#minScoreValue').html(data.success.conf.min_score);
+                        $('#ticketPriceValue').html(data.success.conf.ticket_price);
                     }
-
                 }
             }
             setTimeout(function () {

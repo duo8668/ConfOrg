@@ -153,7 +153,7 @@ Conference Detail
 		height:400px;
 	}
 
-	.glyphicon {
+	.glyphicon-trash {
 		margin-top: 10px;
 		margin-bottom: 10px;
 		font-size: 1.5em;
@@ -225,7 +225,7 @@ Conference Detail
 
 
 
-});
+	});
 
 $.fn.textWidth = function() {
 	var html_org = $(this).html();
@@ -303,183 +303,190 @@ $.fn.textWidth = function() {
 							</div>
 						</div>
 
+						<div class="row">
+							<label class="col-md-3 control-label text-right">Ticket Price</label> 
+							<div class="col-md-9">
+								<span  id="ticketPriceValue"> S$ {{ $conf->ticket_price }}</span>
+							</div>
+						</div>
+
 					</div>
 				</div>
 				{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
 				<!-- END CHAIRMAN INFO -->
 
-				</div>
-				<div style="margin-bottom: 30px;"></div>
+			</div>
+			<div style="margin-bottom: 30px;"></div>
 
 
-				<div role="tabpanel">
+			<div role="tabpanel">
 
-					<!-- Nav tabs -->
-					<ul class="nav nav-tabs" role="tablist">
-						<li role="presentation"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
-						<li role="presentation" class="active"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Schedule</a></li>
-						<li role="presentation"><a href="#topics" aria-controls="topics" role="tab" data-toggle="tab">Topics</a></li>
-						<li role="presentation"><a href="#committee" aria-controls="committee" role="tab" data-toggle="tab">Committee</a></li>
-						<li role="presentation"><a href="#reviewer" aria-controls="reviewer" role="tab" data-toggle="tab">Reviewers</a></li>
-						<li role="presentation"><a href="#submissions" aria-controls="submissions" role="tab" data-toggle="tab">Submissions</a></li>
-						<li role="presentation"><a href="#participants" aria-controls="participants" role="tab" data-toggle="tab">Participants</a></li>
-					</ul>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+					<li role="presentation" class="active"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Schedule</a></li>
+					<li role="presentation"><a href="#topics" aria-controls="topics" role="tab" data-toggle="tab">Topics</a></li>
+					<li role="presentation"><a href="#committee" aria-controls="committee" role="tab" data-toggle="tab">Committee</a></li>
+					<li role="presentation"><a href="#reviewer" aria-controls="reviewer" role="tab" data-toggle="tab">Reviewers</a></li>
+					<li role="presentation"><a href="#submissions" aria-controls="submissions" role="tab" data-toggle="tab">Submissions</a></li>
+					<li role="presentation"><a href="#participants" aria-controls="participants" role="tab" data-toggle="tab">Participants</a></li>
+				</ul>
 
-					<!-- Tab panes -->
-					<div class="tab-content">
+				<!-- Tab panes -->
+				<div class="tab-content">
 
-						<!-- Description -->
-						<div role="tabpanel" class="tab-pane fade" id="description">
-							{{ Form::button('Edit Conference Description', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditDescription')) }}
-							<div class="clearfix"></div>
+					<!-- Description -->
+					<div role="tabpanel" class="tab-pane fade" id="description">
+						{{ Form::button('Edit Conference Description', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditDescription')) }}
+						<div class="clearfix"></div>
 
-							<div id='descriptionContent'>
-								{{ $conf->description  }}
-							</div>	
-						</div>
+						<div id='descriptionContent'>
+							{{ $conf->description  }}
+						</div>	
+					</div>
 
-						<!-- Schedule -->
-						<div role="tabpanel" class="tab-pane fade in active" id="schedule">
-							{{ Form::button('Edit Schedule', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditSchedule')) }}
-							<div class="clearfix"></div>
+					<!-- Schedule -->
+					<div role="tabpanel" class="tab-pane fade in active" id="schedule">
+						{{ Form::button('Edit Schedule', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditSchedule')) }}
+						<div class="clearfix"></div>
 
-							<div id='scheduleContent'>
+						<div id='scheduleContent'>
 							<div id='publicCalendar'></div>
 
-							</div>	
-						</div>
+						</div>	
+					</div>
 
-						<!-- Topics -->
-						<div role="tabpanel" class="tab-pane fade" id="topics">
-							{{ Form::button('Edit Topics', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit')) }}
-							{{ Form::button('Add New Topic', array('class' => 'btn btn-success btn-sm pull-right btnEdit','id'=>'btnTopicsAdd')) }}
-							@if (count($topics) > 0)
-								<table class="table table-striped">
-									<tr>
-										<td style="width:30%"><strong>Topic Name</strong></td>
-										<td style="width:30%"><strong>No. of Submissions Under This Topic</strong></td>
-									</tr>
-									@foreach($topics as $topic)
+					<!-- Topics -->
+					<div role="tabpanel" class="tab-pane fade" id="topics">
+						{{ Form::button('Edit Topics', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit')) }}
+						{{ Form::button('Add New Topic', array('class' => 'btn btn-success btn-sm pull-right btnEdit','id'=>'btnTopicsAdd')) }}
+						@if (count($topics) > 0)
+						<table class="table table-striped">
+							<tr>
+								<td style="width:30%"><strong>Topic Name</strong></td>
+								<td style="width:30%"><strong>No. of Submissions Under This Topic</strong></td>
+							</tr>
+							@foreach($topics as $topic)
+							<tr>
+								<td style="width:30%">{{{ $topic->topic_name }}}</td>
+								<td style="width:30%">{{{ $topic->total_subs }}}</td>
+							</tr>
+							@endforeach
+						</table>
+						@else
+						No topics defined
+						@endif
+					</div>
+
+					<!-- Committee -->
+					<div role="tabpanel" class="tab-pane fade" id="committee">
+						{{ Form::button('Edit Committee', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnStaffEdit')) }}
+						<div class="clearfix"></div>
+
+						<table class="table table-striped">
+							<tr>
+								<td class='col-md-2'>
+									<b>Committee Members</b>
+								</td>
+								<td class='col-md-8'>
+									<div id="allStaffContainer">
+										@foreach($allStaffs as $staff)
+										<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
+											{{  $staff['firstname'] }},  {{ $staff['lastname'] }}
+										</span>
+										@endforeach
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Reviewer -->
+					<div role="tabpanel" class="tab-pane fade" id="reviewer">
+						{{ Form::button('Edit Reviewers', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
+						<div class="clearfix"></div>
+
+						<table class="table table-striped">
+							<tr>
+								<td class='col-md-2'>
+									<b>Peer Reviewers</b>
+								</td>
+								<td class='col-md-8'>
+									<div id="allReviewPanelContainer">
+										@foreach($reviewPanels as $reviewpanel)
+										<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
+											{{  $reviewpanel['firstname'] }},  {{ $reviewpanel['lastname'] }}
+										</span>
+										@endforeach
+									</div>
+								</td>
+							</tr>
+						</table>	
+					</div>
+
+					<!-- Submissions -->
+					<div role="tabpanel" class="tab-pane fade" id="submissions">
+
+						<div class="row filter-row">
+							<div class="panel panel-default filterable">
+								<div class="panel-heading">
+									<h3 class="panel-title"><strong>Filter Submissions</strong></h3>
+									<div class="pull-right">
+										<button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+									</div>
+								</div>
+								<div class="table-responsive">
+									<table class="table table-striped">
+										<thead>
+											<tr class="filters">
+												<th style="width: 25%;"><input type="text" class="form-control" placeholder="Submission Title" disabled></th>
+												<th style="width: 10%;"><input type="text" class="form-control" placeholder="Type" disabled></th>
+												<th style="width: 15%;"><input type="text" class="form-control" placeholder="Date Submitted" disabled></th>
+												<th style="width: 10%;"><input type="text" class="form-control" placeholder="Score" disabled></th>
+												<th style="width: 10%;"><input type="text" class="form-control" placeholder="Status" disabled></th>
+												<th>Option</th>
+											</tr>
+										</thead>   
+
+										@foreach ($submissions as $sub) 
 										<tr>
-											<td style="width:30%">{{{ $topic->topic_name }}}</td>
-											<td style="width:30%">{{{ $topic->total_subs }}}</td>
-										</tr>
-									@endforeach
-								</table>
-							@else
-								No topics defined
-							@endif
-						</div>
+											<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null) }}</td>
+											<td>
+												@if ($sub->sub_type === 3)
+												Poster
+												@elseif ($sub->sub_type === 2)
+												Full Paper
+												@else
+												Abstract
+												@endif
+											</td>
+											<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
 
-						<!-- Committee -->
-						<div role="tabpanel" class="tab-pane fade" id="committee">
-							{{ Form::button('Edit Committee', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnStaffEdit')) }}
-							<div class="clearfix"></div>
-
-							<table class="table table-striped">
-								<tr>
-									<td class='col-md-2'>
-										<b>Committee Members</b>
-									</td>
-									<td class='col-md-8'>
-										<div id="allStaffContainer">
-											@foreach($allStaffs as $staff)
-											<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
-												{{  $staff['firstname'] }},  {{ $staff['lastname'] }}
-											</span>
-											@endforeach
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
-
-						<!-- Reviewer -->
-						<div role="tabpanel" class="tab-pane fade" id="reviewer">
-							{{ Form::button('Edit Reviewers', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
-							<div class="clearfix"></div>
-
-							<table class="table table-striped">
-								<tr>
-									<td class='col-md-2'>
-										<b>Peer Reviewers</b>
-									</td>
-									<td class='col-md-8'>
-										<div id="allReviewPanelContainer">
-											@foreach($reviewPanels as $reviewpanel)
-											<span  class='staffInfo label label-info'  style='color:black;margin:2px;'>
-												{{  $reviewpanel['firstname'] }},  {{ $reviewpanel['lastname'] }}
-											</span>
-											@endforeach
-										</div>
-									</td>
-								</tr>
-							</table>	
-						</div>
-
-						<!-- Submissions -->
-						<div role="tabpanel" class="tab-pane fade" id="submissions">
-							
-							<div class="row filter-row">
-							    <div class="panel panel-default filterable">
-							        <div class="panel-heading">
-							            <h3 class="panel-title"><strong>Filter Submissions</strong></h3>
-							            <div class="pull-right">
-							                <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
-							            </div>
-							        </div>
-									<div class="table-responsive">
-									  	<table class="table table-striped">
-									  		<thead>
-								                <tr class="filters">
-								                    <th style="width: 25%;"><input type="text" class="form-control" placeholder="Submission Title" disabled></th>
-								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Type" disabled></th>
-								                    <th style="width: 15%;"><input type="text" class="form-control" placeholder="Date Submitted" disabled></th>
-								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Score" disabled></th>
-								                    <th style="width: 10%;"><input type="text" class="form-control" placeholder="Status" disabled></th>
-								                    <th>Option</th>
-								                </tr>
-								            </thead>   
-									  		
-											@foreach ($submissions as $sub) 
-												<tr>
-													<td>{{ link_to_route('review.show', $sub->sub_title, [$sub->sub_id], null) }}</td>
-													<td>
-														@if ($sub->sub_type === 3)
-														    Poster
-														@elseif ($sub->sub_type === 2)
-														    Full Paper
-														@else
-														    Abstract
-														@endif
-													</td>
-													<td>{{ date("d F Y",strtotime($sub->created_at)) }} at {{ date("g:ha",strtotime($sub->created_at)) }}</td>
-
-													<td>{{{ $sub->overall_score }}} </td>
-													<td>
-														@if ($sub->status === 1)
-														    <span class="text-success">Accepted</span>
-														@elseif ($sub->status === 9)
-														    <span class="text-danger">Rejected</span>
-														@else
-														    On review
-														@endif
-													</td>
-													<td>
-														{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
-															<div class="col-sm-9">
-																{{Form::select('chair_decision', 
-																array('1' => 'Manually Accept'
-																, '9' => 'Manually Reject'
-																, '0' => 'Need to Peer-review again')
-																, '1'
-																, ['class' => 'form-control input-sm']);}}
-															</div>
-															{{ Form::hidden('conf_id', $conf->conf_id) }}
-															{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
-														{{ Form::close() }}
-													</td>
-												</tr>
+											<td>{{{ $sub->overall_score }}} </td>
+											<td>
+												@if ($sub->status === 1)
+												<span class="text-success">Accepted</span>
+												@elseif ($sub->status === 9)
+												<span class="text-danger">Rejected</span>
+												@else
+												On review
+												@endif
+											</td>
+											<td>
+												{{ Form::open(['route' => ['submission.veto', $sub->sub_id], 'method' => 'put', 'class' => 'horizontal' ]) }}
+												<div class="col-sm-9">
+													{{Form::select('chair_decision', 
+														array('1' => 'Manually Accept'
+															, '9' => 'Manually Reject'
+															, '0' => 'Need to Peer-review again')
+														, '1'
+														, ['class' => 'form-control input-sm']);}}
+													</div>
+													{{ Form::hidden('conf_id', $conf->conf_id) }}
+													{{ Form::button('change', ['type' => 'submit', 'class' => 'btn btn-default btn-sm'])}}
+													{{ Form::close() }}
+												</td>
+											</tr>
 											@endforeach
 										</table>
 									</div>
@@ -490,31 +497,31 @@ $.fn.textWidth = function() {
 						<!-- Participants -->
 						<div role="tabpanel" class="tab-pane fade" id="participants">
 							<div class="row filter-row">
-							    <div class="panel panel-default filterable">
-							        <div class="panel-heading">
-							            <h3 class="panel-title"><strong>Filter Participants</strong></h3>
-							            <div class="pull-right">
-							                <button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
-							            </div>
-							        </div>
+								<div class="panel panel-default filterable">
+									<div class="panel-heading">
+										<h3 class="panel-title"><strong>Filter Participants</strong></h3>
+										<div class="pull-right">
+											<button class="btn btn-primary btn-xs btn-filter"><i class="fa fa-filter"></i> Filter</button>
+										</div>
+									</div>
 									<div class="table-responsive">
-									  	<table class="table table-striped">
-									  		<thead>
-								                <tr class="filters">
-								                    <th style="width: 15%;"><input type="text" class="form-control" placeholder="Invoice # " disabled></th>
-								                    <th style="width: 25%;"><input type="text" class="form-control" placeholder="Participant Name" disabled></th>
-								                    <th style="width: 15%;"><input type="text" class="form-control" placeholder="No. of Tickets" disabled></th>
-								                    <th style="width: 15%;"><input type="text" class="form-control" placeholder="Total Amount" disabled></th>
-								                </tr>
-								            </thead>   
-									  		
-											@foreach ($invoices as $$inv) 
-												<tr>
-													<td>{{{ $inv->invoice_id}}}</td>
-													<td>{{{ $inv->user()->firstname }}} {{{ $inv->user()->lastname }}}</td>
-													<td>${{{ $inv->quantity }}}</td>
-													<td>${{{ $inv->total }}}</td>
+										<table class="table table-striped">
+											<thead>
+												<tr class="filters">
+													<th style="width: 15%;"><input type="text" class="form-control" placeholder="Invoice # " disabled></th>
+													<th style="width: 25%;"><input type="text" class="form-control" placeholder="Participant Name" disabled></th>
+													<th style="width: 15%;"><input type="text" class="form-control" placeholder="No. of Tickets" disabled></th>
+													<th style="width: 15%;"><input type="text" class="form-control" placeholder="Total Amount" disabled></th>
 												</tr>
+											</thead>   
+
+											@foreach ($invoices as $$inv) 
+											<tr>
+												<td>{{{ $inv->invoice_id}}}</td>
+												<td>{{{ $inv->user()->firstname }}} {{{ $inv->user()->lastname }}}</td>
+												<td>${{{ $inv->quantity }}}</td>
+												<td>${{{ $inv->total }}}</td>
+											</tr>
 											@endforeach
 										</table>
 									</div>
@@ -638,17 +645,17 @@ $.fn.textWidth = function() {
 									<td><strong>Delete this topic?</strong> <small>(Submissions under this topic will not be removed)</small></td>
 								</tr>
 								@foreach ($topics as $topic)
-									<tr>
-										<td>
-											<input type="text" value="{{{ $topic->topic_name }}}" class="form-control" style="width:100%" name="topic_name[]" required>
-											<input type="hidden" name="topic_id[]" value="{{{ $topic->topic_id }}}">
-										</td>
-									 	<td>
-									 		<label><input type="checkbox" name="delete_topic[]" value="{{{ $topic->topic_id }}}"> Mark for deletion</label>
-									 	</td>
-									</tr>
+								<tr>
+									<td>
+										<input type="text" value="{{{ $topic->topic_name }}}" class="form-control" style="width:100%" name="topic_name[]" required>
+										<input type="hidden" name="topic_id[]" value="{{{ $topic->topic_id }}}">
+									</td>
+									<td>
+										<label><input type="checkbox" name="delete_topic[]" value="{{{ $topic->topic_id }}}"> Mark for deletion</label>
+									</td>
+								</tr>
 								@endforeach
-							  
+
 							</table>
 						</form>
 					</fieldset>	
@@ -723,6 +730,16 @@ $.fn.textWidth = function() {
 
 								</div>
 							</div>
+							<div class="form-group">
+								{{ Form::label('lblTicketPrice', 'Ticket Price', array('class' => 'col-md-4 control-label')) }}  
+								<div class="col-md-4">
+									<div id="ticketPrice">
+										<div class="necessary" id="innerTicketPrice">
+											<input type="text" name="ticketPrice" class="form-control"/>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</fieldset>	
 				</div>
@@ -746,28 +763,32 @@ $.fn.textWidth = function() {
 				<div class="modal-body" id="confScheduleField">
 					<fieldset>
 						<div class = 'form-horizontal'>
-							<div class="form-group">
-								{{ Form::label('lblDates', 'Conference Date :', array('class' => 'col-md-4 control-label')) }}
-								<div class="col-md-6">
-									<div id="scheduleConferenceDate">
-										<div class="necessary" id="innerScheduleDate">                                    
-											{{ Form::select('scheduleConferenceDate', $conf->ConferenceRoomSchedule()->ScheduleDates(),null,array('id'=>'ddlscheduleConferenceDate','class' => 'form-control col-md-3 necessary')) }}
+							<div class="form-group">								
+								<div class="col-md-12">
+									<div class="center-block" style="width:auto;"> 
+										{{ Form::label('lblDates', 'Conference Date :', array('class' => 'col-md-4 control-label')) }}
+										<div id="scheduleConferenceDate">
+											<div class="necessary" id="innerScheduleDate">                                    
+												{{ Form::select('scheduleConferenceDate', $conf->ConferenceRoomSchedule()->ScheduleDates(),null,array('id'=>'ddlscheduleConferenceDate','class' => 'form-control col-md-3 necessary')) }}
+											</div>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-3">
-									<div id='external-events'class="alert alert-success" role="alert">
-										<h4>Available Submissions</h4>
+								<div class="col-md-12">
+									<div class="col-md-3">
+										<div id='external-events'class="col-md-12 alert alert-success" role="alert">
+											<h4>Available Submissions</h4>
+										</div>
+										<div class="clearfix"></div>
+										<div id="eventTrash" class="col-md-12 alert alert-warning" role="alert">
+											<span class="glyphicon glyphicon-trash"></span>
+										</div>									
 									</div>
-									<div id="eventTrash" class="alert alert-warning" role="alert">
-										<span class="glyphicon glyphicon-trash"></span>
-									</div>									
-								</div> 
-								<div class="col-md-9">
-									<div id="calendar"></div>
+
+									<div class="col-md-9">
+										<div id="calendar"></div>
+									</div>
 								</div>
-
-
 							</div>
 						</div>
 					</fieldset>	

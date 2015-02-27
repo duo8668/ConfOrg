@@ -12,10 +12,15 @@
     <title>ORAFER - Welcome!</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{{ asset('css/landing-page.css') }}" rel="stylesheet">
+    
+    <link href="{{ asset('css/jqueryui/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap Checbox -->
+    <link href="{{ asset('css/icheck/square/green.css') }}" rel="stylesheet" type="text/css">
 
     <!-- Custom Fonts -->
     <link href="{{ asset('font-awesome-4.3.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
@@ -27,41 +32,52 @@
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <![endif]-->
 
-</head>
+        <!-- jQuery -->
+        <script src="{{ asset('js/jquery.js') }}"></script>
 
-<body>
-    <div id="top"></div>
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                
-                <a href="{{ URL::to('/') }}">{{ HTML::image('img/logo.png', 'ORAFER', ['class' => 'logo']) }}</a>
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">                    
-                    <li><a href="{{ URL::to('/#features') }}" class="features">Features</a></li>  
-                    <li><a href="{{ URL::to('/contact') }}" class="contact_us">Contact</a></li> 
-                    <li><a href="{{ URL::route('conference.public_list') }}">Conferences</a></li> 
-                    @if (Auth::check() == true) 
+        <!-- Bootstrap Core JavaScript -->
+        <script src="{{ asset('js/bootstrap.js') }}"></script>
+
+        <script src="{{ asset('js/landing-page.js') }}"></script>
+
+        <!-- Bootstrap Checbox -->
+        <script src="{{ asset('js/icheck/icheck.js') }}"></script>
+
+    </head>
+
+    <body>
+        <div id="top"></div>
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+
+                    <a href="{{ URL::to('/') }}">{{ HTML::image('img/logo.png', 'ORAFER', ['class' => 'logo']) }}</a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">                    
+                        <li><a href="{{ URL::to('/#features') }}" class="features">Features</a></li>  
+                        <li><a href="{{ URL::to('/contact') }}" class="contact_us">Contact</a></li> 
+                        <li><a href="{{ URL::route('conference.public_list') }}">Conferences</a></li> 
+                        @if (Auth::check() == true) 
                         <li><a href="{{ URL::route('users-sign-in') }}">Hello, {{{ Auth::user()->firstname }}} {{{ Auth::user()->lastname }}}</a></li> 
-                    @else             
+                        @else             
                         <li><a href="{{ URL::route('users-sign-in') }}">Sign in</a></li>
                         <li><a href="{{ URL::route('users-create') }}">Sign Up</a></li>
-                    @endif
-                </ul>
+                        @endif
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
             </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+            <!-- /.container -->
+        </nav>

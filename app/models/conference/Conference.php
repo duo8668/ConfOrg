@@ -83,6 +83,11 @@ class Conference extends Eloquent {
         return $this->hasMany('ConferenceTopic', 'conf_id', 'conf_id');
     }
 
+    public function ConferenceFields() {
+        return $this->hasMany('ConferenceField', 'conf_id', 'conf_id');
+    }
+
+
     public function scopeRoom() {
         $roomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id)->get();
         
