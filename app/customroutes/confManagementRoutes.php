@@ -14,12 +14,12 @@ Route::get('conference/filterConferencesByTitle', 'ConferenceController@filterCo
 
 Route::get('conference/index', 'ConferenceController@conf_public_list');
 Route::get('/conference_detail/{conf_id}', array(
-    'as'    => 'conference.public_detail',
-    'uses'  => 'ConferenceController@conf_public_detail'
-));
+	'as'    => 'conference.public_detail',
+	'uses'  => 'ConferenceController@conf_public_detail'
+	));
 
 Route::group(array('before' => 'auth'),function(){
-		
+
 	Route::get('conference/confParticular', 'ConferenceController@theConf');
 	Route::get('conference/management/create', 'ConferenceController@create');
 	Route::get('conference/management/updateConfStaffs', 'ConferenceController@updateConfStaffs');
@@ -30,6 +30,7 @@ Route::group(array('before' => 'auth'),function(){
 	Route::get('conference/management/addNewTopic', 'ConferenceController@addNewTopic');
 	Route::get('conference/management/participate', 'ConferenceController@register');
 	Route::get('conference/detail', 'ConferenceController@detail');
+	Route::any('conference/management/cancel', 'ConferenceController@cancelConference');
 
 	Route::get('conference/management/conferenceevents/{beginTime}/{endTime}', 'ConferenceController@conferenceEvents');
 

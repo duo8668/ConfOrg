@@ -22,17 +22,17 @@
  		currdate = moment($('#ddlscheduleConferenceDate').val());
  		$('#calendar').fullCalendar('gotoDate',$('#ddlscheduleConferenceDate').val()); 
  	});
-	
-	$('.selectboxit-list > li').off('mouseenter').on('mouseenter',function(evt,obj){
-		console.log('=====   mouseenter   =====');
- 		  
-		 console.log($(evt.currentTarget).find('a').text());
+ 	
+ 	$('.selectboxit-list > li').off('mouseenter').on('mouseenter',function(evt,obj){
+ 		console.log('=====   mouseenter   =====');
+ 		
+ 		console.log($(evt.currentTarget).find('a').text());
  	}).off('mouseleave').on('mouseleave',function(evt,obj){
-		console.log('=====   mouseleave   =====');
- 		  
-		 console.log($(evt.currentTarget).find('a').text());
+ 		console.log('=====   mouseleave   =====');
+ 		
+ 		console.log($(evt.currentTarget).find('a').text());
  	});
-	
+ 	
  	$('#btnEditSchedule').off('click').on('click', function (e) {
  		$.ajax({
  			url: urlGetAvailableConferenceScheduleEvents,
@@ -254,12 +254,14 @@ function loadCalendar(urlGetConferenceScheduleEvents, confroomschedule_id){
                 		success: function(doc) {
                 			var arrayToProcess = [];
 
-                			$.each(doc.conferenceScheduleEvents,function(index,value){                				 
-                				value.id = value.eventId;
-                				arrayToProcess.push(value);
-                			});
+                			if(doc.conferenceScheduleEvents !== undefined){
+                				$.each(doc.conferenceScheduleEvents,function(index,value){                				 
+                					value.id = value.eventId;
+                					arrayToProcess.push(value);
+                				});
 
-                			callback(arrayToProcess);
+                				callback(arrayToProcess);
+                			}	
                 		}
                 	});
                 }

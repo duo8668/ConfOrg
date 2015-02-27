@@ -26,7 +26,7 @@ class ConferenceUserRole extends Eloquent {
 		->where($this->table.'.role_id','=',Role::ConferenceStaff()->role_id)
 		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
 		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
-	 ;
+		;
 
 	}
 
@@ -35,7 +35,25 @@ class ConferenceUserRole extends Eloquent {
 		->where($this->table.'.role_id','=',Role::Reviewer()->role_id)
 		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
 		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
-		 ;
+		;
+
+	}
+
+	public function scopeConferenceparticipants($query,$conf_id){
+		return $query->where($this->table.'.conf_id', '=', $conf_id)
+		->where($this->table.'.role_id','=',Role::Participant()->role_id)
+		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
+		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
+		;
+
+	}
+
+	public function scopeConferenceAuthors($query,$conf_id){
+		return $query->where($this->table.'.conf_id', '=', $conf_id)
+		->where($this->table.'.role_id','=',Role::Author()->role_id)
+		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
+		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
+		;
 
 	}
 

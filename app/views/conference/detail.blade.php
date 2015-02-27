@@ -53,6 +53,8 @@ Conference Detail
 <!-- FullCalendar -->
 <script src="{{ asset('js/fullcalendar/fullcalendar.js') }}"></script>
 
+<!-- FullCalendar -->
+<script src="{{ asset('js/bootbox.js') }}"></script>
 
 
 <!-- Custom App Javascript -->
@@ -229,11 +231,71 @@ Conference Detail
 			if(!$(this).children('div:eq(1)').hasClass('modal-dialog')){
 				$(this).children('div:eq(1)').addClass('modal-dialog');
 			}
-		}); 
+		});
+
+		$('#btnCancelConf').on('click',function(evt){
+
+			bootbox.confirm("Are you sure you want to cancel this conference? </br> </br> <strong>The action is not revertable ! </strong>", function(result) {
+				$.post("{{ URL::to('conference/management/cancel') }}", {conf_id: {{ $conf->conf_id }} }, function (result) {
+					console.log(result);
+					if(result.success.updateResult){
+						location.reload();
+					}
+				});
+
+			});
+		});
+
+		// initialize public calendar
+		var $publicCalendar = $('#publicCalendar');
+		//* publicCalendar
+		$publicCalendar.fullCalendar({
+			timezone: 'local',
+			header: {
+				left:'',
+				center: 'title',
+				right:''
+			},
+			allDaySlot: false,
+			slotEventOverlap: true,
+			height:400,
+			eventOverlapping: true,
+			selectable: false,
+			defaultView: 'agendaDay',
+			editable: false,
+			events: function(start, end, timezone, callback) {
+
+				$.ajax({
+					url: "{{ URL::to('conference/conferenceEvents/getAvailableConferenceScheduleEvents/') }}",
+					data:{ scheduleId: {{ $conf->ConferenceRoomSchedule()->confroomschedule_id }} },
+					success: function(doc) {
+						var arrayToProcess = [];
+						if(doc.conferenceScheduleEvents !== undefined){
+							$.each(doc.conferenceScheduleEvents,function(index,value){                				 
+								value.id = value.eventId;
+								arrayToProcess.push(value);
+							});
+
+							callback(arrayToProcess);
+						}						
+					}
+				});
+			}
+		});
+		var $ddlPublicSchedule = $("#ddlPublicSchedule");
+
+		$ddlPublicSchedule.selectBoxIt({
+			showEffect: "fadeIn",
+ 			showEffectSpeed: 200,
+ 			hideEffect: "fadeOut",
+ 			hideEffectSpeed: 200
+ 		}).off('change.selectBoxIt').on('change.selectBoxIt',function(evt,obj){
+ 			$publicCalendar.fullCalendar('gotoDate',$ddlPublicSchedule.val()); 
+ 		});
+ 		$publicCalendar.fullCalendar('gotoDate',$('#ddlPublicSchedule').val());
 
 
-
-	});
+ 	});
 
 $.fn.textWidth = function() {
 	var html_org = $(this).html();
@@ -317,10 +379,30 @@ $.fn.textWidth = function() {
 								<span  id="ticketPriceValue"> S$ {{ $conf->ticket_price }}</span>
 							</div>
 						</div>
+						<div class="row">
+							<label class="col-md-12"></label> 
+							<div class="col-md-12">
+								<span id="cancelConference" class="col-md-3 center-block">
+									<?php
+									$btnAttributes =  array('id'=>'btnCancelConf','class' => 'btn btn-primary btn-md btn-block');
+									if($conf->has('ConferenceCancel')){
+										$btnAttributes[] = 'disabled';
+									}				  
+									?>
+									{{ Form::button('Cancel Conference', $btnAttributes) }}
+								</span>
+							</div>
+						</div>
 
 					</div>
 				</div>
-				{{ Form::button('Edit Conference Details', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular')) }}
+				<?php
+				$btnAttributes =  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditParticular');
+				if($conf->has('ConferenceCancel')){
+					$btnAttributes[] = 'disabled';
+				}				  
+				?>
+				{{ Form::button('Edit Conference Details', $btnAttributes) }}
 				<!-- END CHAIRMAN INFO -->
 
 			</div>
@@ -345,7 +427,13 @@ $.fn.textWidth = function() {
 
 					<!-- Description -->
 					<div role="tabpanel" class="tab-pane fade" id="description">
-						{{ Form::button('Edit Conference Description', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditDescription')) }}
+						<?php
+						$btnAttributes =  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditDescription');
+						if($conf->has('ConferenceCancel')){
+							$btnAttributes[] = 'disabled';
+						}				  
+						?>
+						{{ Form::button('Edit Conference Description', $btnAttributes) }}
 						<div class="clearfix"></div>
 
 						<div id='descriptionContent'>
@@ -355,7 +443,22 @@ $.fn.textWidth = function() {
 
 					<!-- Schedule -->
 					<div role="tabpanel" class="tab-pane fade in active" id="schedule">
-						{{ Form::button('Edit Schedule', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditSchedule')) }}
+						<div class="center-block" style="width:auto;"> 
+							{{ Form::label('lblDates', 'Conference Date :', array('class' => 'col-md-4 control-label')) }}
+							<div id="publicSchedule">
+								<div class="necessary" id="innerPublicSchedule">                                    
+									{{ Form::select('ddlPublicSchedule', $conf->ConferenceRoomSchedule()->ScheduleDates(),null,array('id'=>'ddlPublicSchedule','class' => 'form-control col-md-3 necessary')) }}
+								</div>
+							</div>
+						</div>
+						<?php
+						$btnAttributes =  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditSchedule');
+						if($conf->has('ConferenceCancel')){
+							$btnAttributes[] = 'disabled';
+						}				  
+						?>
+						<div class="clearfix"></div>
+						{{ Form::button('Edit Schedule', $btnAttributes) }}
 						<div class="clearfix"></div>
 
 						<div id='scheduleContent'>
@@ -366,8 +469,20 @@ $.fn.textWidth = function() {
 
 					<!-- Topics -->
 					<div role="tabpanel" class="tab-pane fade" id="topics">
-						{{ Form::button('Edit Topics', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit')) }}
-						{{ Form::button('Add New Topic', array('class' => 'btn btn-success btn-sm pull-right btnEdit','id'=>'btnTopicsAdd')) }}
+						<?php
+						$btnAttributes =  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnTopicsEdit');
+						if($conf->has('ConferenceCancel')){
+							$btnAttributes[] = 'disabled';
+						}				  
+						?>
+						{{ Form::button('Edit Topics',$btnAttributes ) }}
+						<?php
+						$btnAttributes =  array('class' => 'btn btn-success btn-sm pull-right btnEdit','id'=>'btnTopicsAdd');
+						if($conf->has('ConferenceCancel')){
+							$btnAttributes[] = 'disabled';
+						}				  
+						?>
+						{{ Form::button('Add New Topic',$btnAttributes ) }}
 						@if (count($topics) > 0)
 						<table class="table table-striped">
 							<tr>
@@ -388,7 +503,13 @@ $.fn.textWidth = function() {
 
 					<!-- Committee -->
 					<div role="tabpanel" class="tab-pane fade" id="committee">
-						{{ Form::button('Edit Committee', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnStaffEdit')) }}
+						<?php
+						$btnAttributes =  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnStaffEdit');
+						if($conf->has('ConferenceCancel')){
+							$btnAttributes[] = 'disabled';
+						}				  
+						?>
+						{{ Form::button('Edit Committee',$btnAttributes ) }}
 						<div class="clearfix"></div>
 
 						<table class="table table-striped">
@@ -411,7 +532,13 @@ $.fn.textWidth = function() {
 
 					<!-- Reviewer -->
 					<div role="tabpanel" class="tab-pane fade" id="reviewer">
-						{{ Form::button('Edit Reviewers', array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnReviewPanelEdit')) }}
+						<?php
+						$btnAttributes =  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnReviewPanelEdit');
+						if($conf->has('ConferenceCancel')){
+							$btnAttributes[] = 'disabled';
+						}				  
+						?>
+						{{ Form::button('Edit Reviewers',$btnAttributes ) }}
 						<div class="clearfix"></div>
 
 						<table class="table table-striped">
@@ -825,5 +952,5 @@ $.fn.textWidth = function() {
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> 
 	@stop
