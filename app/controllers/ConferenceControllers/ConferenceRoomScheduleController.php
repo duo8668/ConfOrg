@@ -4,9 +4,9 @@ class ConferenceRoomScheduleController extends BaseController {
 
     public function conferenceEvents($begin, $end) {
         $confs = Conference::where('BeginTime', '>=', $begin)
-                ->where('EndTime', '<=', $end)
-                ->select(DB::raw('conf_id as id ,title as title ,DATE_FORMAT(begin_date, "%Y-%m-%d") as start ,DATE_FORMAT(end_date,"%Y-%m-%d") as end'))
-                ->get();
+        ->where('EndTime', '<=', $end)
+        ->select(DB::raw('conf_id as id ,title as title ,DATE_FORMAT(begin_date, "%Y-%m-%d") as start ,DATE_FORMAT(end_date,"%Y-%m-%d") as end'))
+        ->get();
 
         //dd($confs[1]);
         //dd(DB::getQueryLog());
@@ -34,8 +34,8 @@ class ConferenceRoomScheduleController extends BaseController {
 
     public function allRoomSchedules() {
         $confRoomSchedule = ConferenceRoomSchedule::
-                select(DB::raw('DATE_FORMAT(date_start, "%m/%d/%Y") as start ,DATE_FORMAT(date_end,"%m/%d/%Y") as end'))
-                ->get();
+        select(DB::raw('DATE_FORMAT(date_start, "%m/%d/%Y") as start ,DATE_FORMAT(date_end,"%m/%d/%Y") as end'))
+        ->get();
 
         return $confRoomSchedule;
     }
@@ -45,7 +45,7 @@ class ConferenceRoomScheduleController extends BaseController {
       where date_start < '2015-02-06' And date_end > '2015-02-01'
      */
 
-    public function availableRooms() {
+      public function availableRooms() {
 
         //select(DB::raw('DATE_FORMAT(date_start, "%Y-%m-%d") as start ,DATE_FORMAT(date_end,"%Y-%m-%d") as end'))
 
@@ -53,8 +53,8 @@ class ConferenceRoomScheduleController extends BaseController {
             if (Utility::checkIsAValidDate(Input::get('date_start')) && Utility::checkIsAValidDate(Input::get('date_end'))) {
 
                 $used = ConferenceRoomSchedule::where('date_start', '<', date('Y-m-d', strtotime(Input::get('date_end'))))
-                        ->where('date_end', '>', date('Y-m-d', strtotime(Input::get('date_start'))))
-                        ->get();
+                ->where('date_end', '>', date('Y-m-d', strtotime(Input::get('date_start'))))
+                ->get();
 
                 $listUsed = $used->lists(DB::raw('room_id'));
 
@@ -64,16 +64,20 @@ class ConferenceRoomScheduleController extends BaseController {
                 }
 
                 if (!empty($listUsed)) {
-                    $available = Room::whereNotIn('room_id', $listUsed)
-                            ->where('available','=','yes')
-                            ->where('capacity','>=',$maxSeat)
-                            ->select('room_id', 'room_name', 'rental_cost')
-                            ->get();
+                    $available = Room::join('Venue','room.venue_id','=','Venue.venue_id')
+                    ->whereNotIn('room_id', $listUsed)
+                    ->where('room.available','=','yes')
+                    ->where('capacity','>=',$maxSeat)
+                    ->select('room_id', 'room_name', 'venue_name','rental_cost','capacity')
+                    ->orderBy('capacity')
+                    ->get();
                 } else {
-                    $available = Room::select('room_id', 'room_name', 'rental_cost')
-                            ->where('available','=','yes')
-                            ->where('capacity','>=',$maxSeat)
-                            ->get();
+                    $available = Room::join('Venue','room.venue_id','=','Venue.venue_id')
+                    ->where('room.available','=','yes')
+                    ->where('capacity','>=',$maxSeat)
+                    ->select('room_id', 'room_name', 'venue_name', 'rental_cost','capacity')
+                    ->orderBy('capacity')
+                    ->get();
                 }
                 return $available;
             }

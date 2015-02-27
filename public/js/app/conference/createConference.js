@@ -26,19 +26,13 @@ function loadDateTimePicker(_minDate, _cutOffDays,_offSetDays) {
 }
 
 function loadVenueDropDownListAction() {
+
     $("#ddlVenue").selectBoxIt({
-        // Uses the jQuery 'fadeIn' effect when opening the drop down
         showEffect: "fadeIn",
-        // Sets the jQuery 'fadeIn' effect speed to 400 milleseconds
         showEffectSpeed: 220,
-        // Uses the jQuery 'fadeOut' effect when closing the drop down
         hideEffect: "fadeOut",
-        // Sets the jQuery 'fadeOut' effect speed to 400 milleseconds
         hideEffectSpeed: 110 ,
         showFirstOption : true
-
-    }).off('change.selectBoxIt').on('change.selectBoxIt',function(evt,obj){
-
     });
 
     $("#ddlVenue").off('change').on('change', function (event, item) {
@@ -55,9 +49,7 @@ function loadVenueDropDownListAction() {
         $('#quantity').val(days);
         $('#total').val('S$ ' + (_rentalCost * days));
     });
-    
-    $("#ddlVenue").data("selectBox-selectBoxIt").disable();
-    $("#ddlVenue").html('');
+
     $('.venueContainer').width($('#ddlVenueSelectBoxItContainer').width());
 }
 
@@ -240,8 +232,8 @@ function loadFormValidation(availableRoomsUrl) {
             if(data.field !== 'venue')
                 loadVenueIntoDropDownBox(availableRoomsUrl);
         }else if(data.fv._cacheFields.beginDate.val() === '' || data.fv._cacheFields.endDate.val() === '' || data.fv._cacheFields.maxSeats.val() === ''){
-            $("#ddlVenue").data("selectBox-selectBoxIt").remove();
-            $("#ddlVenue").data("selectBox-selectBoxIt").disable();
+            //$("#ddlVenue").data("selectBox-selectBoxIt").remove();
+            //$("#ddlVenue").data("selectBox-selectBoxIt").disable();
         }
 
     }).on('success.form.fv', function (e, data) {
@@ -333,22 +325,44 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
             }
             if (canload) {
                 loadedJson = data;
-                //$("#ddlVenue").empty();
-                //$("#ddlVenue").append($("<option></option>").val(-1).html('-- Please Select --'));
-                $("#ddlVenue").data("selectBox-selectBoxIt").remove();
-                $("#ddlVenue").data("selectBox-selectBoxIt").add({ text:'--  Please Select Your Venue  --', value: -1 });
-                $.each(data, function (key, value) {
-                    //var $_option = $("<option></option>").val(value.room_id).html(value.room_name + '(S$ ' + value.rental_cost + '/day)');
-                    // $_option.data('rental_cost', value.rental_cost);
-                    // $("#ddlVenue").append($_option);
 
-                    $("#ddlVenue").data("selectBox-selectBoxIt").add({ text: value.room_name + '(S$ ' + value.rental_cost + '/day)'
-                        , value: value.room_id });
-                    $("#ddlVenue option").last().data('rental_cost', value.rental_cost);
+                console.log(data);
+
+                var curGroup = '', _optgroup = null;
+                $("#ddlVenue").empty();
+                $("#ddlVenue").append($("<option></option>").val(-1).html('-- Please Select Your Venue --'));
+                $.each(data, function (key, value) {
+
+                    if(_optgroup === null){
+                        _optgroup = $('<optgroup>');                        
+                        _optgroup.attr('label',value.venue_name);
+                        curGroup = value.venue_name; 
+                    }else{
+                        if(curGroup !== value.venue_name){
+                            if(_optgroup !== null){
+                                $("#ddlVenue").append(_optgroup);
+                                _optgroup = $('<optgroup>');                        
+                                _optgroup.attr('label',value.venue_name);
+                                curGroup = value.venue_name; 
+                            }
+                        }
+                    }                    
+
+                    var $option = $("<option></option>").val(value.room_id).text(value.room_name + '(S$ ' + value.rental_cost + '/day)');
+                    $option.data('rental_cost', value.rental_cost);
+                    _optgroup.append($option);                        
 
                 });
+                $("#ddlVenue").data("selectBox-selectBoxIt").destroy();
+
+                $("#ddlVenue").selectBoxIt({
+                    showEffect: "fadeIn",
+                    showEffectSpeed: 220,
+                    hideEffect: "fadeOut",
+                    hideEffectSpeed: 110 ,
+                    showFirstOption : true
+                });
                 $('.venueContainer').width($('#ddlVenueSelectBoxItContainer').width());
-                $("#ddlVenue").data("selectBox-selectBoxIt").enable();
             }
         }).fail(function (xhr, stat, msg) {
             alert(xhr.responseText);
