@@ -657,7 +657,7 @@ public function conf_public_list() {
     $fields = InterestField::select(DB::raw('interestfield_id as id, name as label'))
     ->get();
     
-    return View::make('conf_list')->with(array('fields' => $fields,'datas' => $datas));
+    return View::make('conf_list')->with(array('fields' => $fields,'datas' => $datas , 'items' => json_encode($item)));
 
 }
 

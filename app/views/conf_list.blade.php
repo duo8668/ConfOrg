@@ -8,31 +8,20 @@
 
 <script type="text/javascript">
   $(function () {
-    // $( '#table' ).searchable({
-    //     striped: true,
-    //     oddRow: { 'background-color': '#f5f5f5' },
-    //     evenRow: { 'background-color': '#fff' },
-    //     searchType: 'fuzzy'
-    // });
-    /*
-    $( '#searchable-container' ).searchable({
-        searchField: '#container-search',
-        selector: '.row',
-        childSelector: '.target',
-        show: function( elem ) {
-            elem.slideDown(100);
-        },
-        hide: function( elem ) {
-            elem.slideUp( 100 );
-        }
-    });
-  */
 
-  $(document).find('input[name="chkField[]"]').iCheck({
-    checkboxClass: 'icheckbox_square-green'
-  }
-  )
-});
+    $(document).find('input[name="chkField[]"]').iCheck({
+      checkboxClass: 'icheckbox_square-green'
+    });
+
+    var chkFields = {{ $items }};
+
+    $.each(chkFields,function(index,value){
+
+      $('#chkField_' + value).iCheck('check');
+
+    });
+
+  });
 </script>
 <!-- Header -->
 <div class="jumbotron" style="background-image: url({{asset('img/conflist-bg.jpg')}}); background-size:cover;">
