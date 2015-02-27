@@ -42,6 +42,7 @@ Add New Conference
 
 <!-- STRIPE payment processor  -->
 <script src="https://js.stripe.com/v2/"></script>
+<script src="{{ asset('js/stripe.js') }}"></script>
 
 <script src="{{ asset('js/app/conference/createConference.js') }}"></script>
 
@@ -106,7 +107,7 @@ Add New Conference
 
 		loadPayNowbutton("{{ URL::to('/payment/actionCreateInvoice') }}");
 
-		Stripe.setPublishableKey('pk_test_hZuusSMMVDm0qEuF6dvPTARV');
+		//Stripe.setPublishableKey('pk_test_hZuusSMMVDm0qEuF6dvPTARV');
 
 		var StripeBilling = {
 			init: function () {

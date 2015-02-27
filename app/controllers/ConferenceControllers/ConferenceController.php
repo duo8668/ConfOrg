@@ -15,6 +15,7 @@ class ConferenceController extends \BaseController {
         $confs = Conference::where('begin_date', '>', DB::raw('curdate()'))
         ->get();
 
+
         $view = View::make('conference.index', array('confs' => $confs));
 
         return $view;
@@ -123,7 +124,10 @@ class ConferenceController extends \BaseController {
 
         $submissions = Submission::where('conf_id', '=', Input::get('conf_id'))->get();
 
-        $invoices= Invoice::where('status','=','Paid')->where('conf_id','=', Input::get('conf_id'))->get();
+        $invoices= Invoice::where('status','=','Paid')
+        ->where('conf_id','=', Input::get('conf_id'))
+        ->where('user_id','<>', array_fetch($confChairUsers, 'user_id'))
+        ->get();
 
         $topics = DB::table('conference_topic')
         ->leftJoin('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
@@ -131,6 +135,8 @@ class ConferenceController extends \BaseController {
         ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
         ->groupBy('conference_topic.topic_name')
         ->get();
+
+        //dd($confChairUsers);
 
         $view = View::make('conference.detail', array('fields' => $fields, 'conf' => $conf
             , 'confChairUsers' => $confChairUsers
@@ -702,6 +708,8 @@ public function filterConferences(){
 public function conf_public_detail($id) {
 
     $conf = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->where('conf_id', '=', $id)->first();
+
+    $remaining = $conf->rooms->capacity - Invoice::where('conf_id','=', $id)->sum('quantity');
     //dd($conf->toArray());
     //$conf = Conference::where('conf_id', '=', $id)->first();
     $chair = DB::table('users')
@@ -716,10 +724,15 @@ public function conf_public_detail($id) {
     ->where('conference_topic.conf_id', '=', $id)
     ->get();    
 
+      //$participants = ConferenceUserRole::Conferenceparticipants($conf->conf_id)->get();
+ 
     if (empty($conf)) {
         return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
     } else {
-        return View::make('conf_detail')->with('conf', $conf)->with('chair', $chair)->with('topics', $topics);
+        return View::make('conf_detail')->with('conf', $conf)
+        ->with('chair', $chair)
+        ->with('topics', $topics)
+        ->with('remaining',$remaining);
     }
 }
 

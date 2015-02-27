@@ -30,8 +30,11 @@ Invoice & Payment
                         <th style="width: 25%;">Option</th>
                     </tr>
                 </thead> 
-                
+               
                 @foreach ($data as $invoice)
+ 
+                @if(!empty($invoice))
+
                 <tr>            
                     <td>#{{ $invoice->invoice_id }}</td>                        
                     <!-- add a link to the conference -->
@@ -50,12 +53,14 @@ Invoice & Payment
                         <!-- we will add this later since its a little more complicated than the other two buttons -->
                         @if($invoice->status=='unpaid')                
                         {{ Form::open(array('url' => 'invoice/' . $invoice->invoice_id, 'class' => 'inline')) }}
-                            {{ Form::hidden('_method', 'DELETE') }}
-                            {{ Form::submit('Cancel Purchase', array('class' => 'btn btn-danger btn-xs')) }}
+                        {{ Form::hidden('_method', 'DELETE') }}
+                        {{ Form::submit('Cancel Purchase', array('class' => 'btn btn-danger btn-xs')) }}
                         {{ Form::close() }}                
                         @endif
                     </td>
                 </tr>
+                @endif
+
                 @endforeach
             </table> 
         </div>

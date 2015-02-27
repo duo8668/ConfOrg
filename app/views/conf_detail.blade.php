@@ -58,6 +58,19 @@
                         @elseif ($date > $conf->conferences->cutoff_time)
                             {{-- if yes, show purchase ticket --}}
                             
+                            @if($remaining  < 1)
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+                                        {{ Form::button('SOLD OUT', ['type' => 'button', 'class' => '"btn btn-warning btn-block', 'disabled'])}}
+                                     </div>
+                                </div>
+                            @elseif($conf->conferences->ticket_price == 0)
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+                                        {{ Form::button('NOT OPEN FOR SALES AT THE MOMENT', ['type' => 'button', 'class' => '"btn btn-warning btn-block', 'disabled'])}}
+                                     </div>
+                                </div>
+                            @else
                             {{ Form::open(['url' => '/conferencePurchaseTicket', 'method' => 'post', 'class' => 'inline' ]) }}
                                 <div class="row">
                                     <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
@@ -67,6 +80,9 @@
                                      </div>
                                 </div>
                             {{ Form::close() }}
+
+                            @endif
+
                                
                         @else
                             <h5 class="text-center well" style="margin-top:40px;">

@@ -16,7 +16,7 @@ class BillController extends \BaseController {
       $user = Auth::user()->firstname . ', ' . Auth::user()->lastname;
       $data = invoice::with('conference','user')->where('user_id', '=', Auth::user()->user_id)->orderBy('created_at','Desc')->get();    
     }
-    
+
     return View::make('invoice.index')    
     ->with('user', $user)
     ->with('data', $data)
@@ -81,6 +81,7 @@ class BillController extends \BaseController {
     }
     else
     {
+
       $invoice = new invoice;
       $invoice->user_id = Auth::user()->user_id;
       $invoice->conf_id = Input::get('conf_id');      
@@ -91,7 +92,7 @@ class BillController extends \BaseController {
       $confUserRole = new ConferenceUserRole();
       $confUserRole->role_id = Role::Participant()->role_id;
       $confUserRole->user_id = Auth::user()->user_id;
-      $confUserRole->confId = $confId;
+      $confUserRole->conf_id = Input::get('conf_id');
       $confUserRole->save();
       
       $invoice2 = Invoice::with('conference','user')->where('invoice_id', '=', $invoice->invoice_id)->first();
@@ -163,7 +164,8 @@ class BillController extends \BaseController {
     $invoice->quantity = Input::get('quantity'); 
 
     $invoice->price = $price;
-    $invoice->total = $total;
+    $invoice->total = $total/100;
+    $invoice->status = 'paid';
     $invoice->created_by = Auth::user()->user_id;
     $invoice->save();
     if(array_key_exists('error', $customerId))
@@ -199,7 +201,7 @@ class BillController extends \BaseController {
     $invoice = invoice::find($id);      
     $invoice->quantity = Input::get('quantity');      
     $invoice->price = ltrim(Input::get('price'),'$');
-    $invoice->total = $total;
+    $invoice->total = $total/100;
     $invoice->created_by = Auth::user()->user_id;
     $invoice->save();
 
