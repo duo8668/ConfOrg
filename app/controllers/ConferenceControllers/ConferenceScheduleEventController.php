@@ -173,7 +173,7 @@ public function getAvailableConferenceScheduleEvents() {
 
                     $confSubmissions = $confRoomSchedule->Conference()->ConferenceSubmissions()
                     ->join('users','users.user_id','=',$submissionTableName.'.user_id')
-                    ->where('is_accepted','=',1)
+                    ->where('status','=',1)
                     ->whereNotIn('sub_id',$createdSubmissions)
                     ->select(DB::raw('CONCAT(sub_title,": ", users.firstname,", ", users.lastname) as title, sub_id'))
                     ->get();
