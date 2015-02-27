@@ -204,7 +204,7 @@ function loadFormValidation(availableRoomsUrl) {
                     message: 'Please select a venue',
                     callback: function(value, validator, $field) {
                             // Get the selected options
-                            return true;//value !== null &&  value > 0;
+                            return  value !== null &&  value > 0;
                         }
                     }
                 }
@@ -348,7 +348,7 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
                         }
                     }                    
 
-                    var $option = $("<option></option>").val(value.room_id).text(value.room_name + '(S$ ' + value.rental_cost + '/day)');
+                    var $option = $("<option></option>").val(value.room_id).text(value.room_name + '(S$ ' + value.rental_cost + '/day, capacity: '+ value.capacity +')');
                     $option.data('rental_cost', value.rental_cost);
                     _optgroup.append($option);                        
 
