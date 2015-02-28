@@ -162,7 +162,7 @@ class EquipmentCategoryController extends \BaseController {
         $pending->delete();
         Session::flash('message', 'Approved Equipment Category!');  
 
-        return Redirect::to('equipmentcategory');
+        return Redirect::back();
     }
 
 

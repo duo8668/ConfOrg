@@ -72,7 +72,7 @@ Edit {{ $room->room_name }}
             {{ Form::selectRange('number', 1, 1000, null, ['class' => 'field', 'size' => '5','class' => 'form-control','id'=>'number']) }}      
           </div>
         </div>     
-        <!--   added this comment so i can update this file!               -->
+        <!--   added this comment so i can update this file!   -->
 
         <div class="form-group">
           <div class="col-md-6 col-md-offset-3 text-center">   

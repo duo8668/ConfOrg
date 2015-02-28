@@ -32,17 +32,6 @@
 				
 			}
 
-			public function ifRoomExistOnDB($value)
-			{					
-
-				if(empty(Room::where('room_name','=',$value)->get()->toArray()))
-				{
-					return 'dont exist';
-				}
-				else
-					return 'exist';		
-			}
-
 			public function pendingDeleteRequest($id)
 			{							
 				if(empty(Pending::where('venue_id','=',$id)->get()->toArray())) {										
@@ -687,8 +676,7 @@
 
 					if(empty($roomName) && empty($roomCapacity) && empty($roomCost) && empty($remarks))
 					{										
-						$emptyRow = true;										
-						$allError[] = array('Sheet'=>'Excel Sheet: '.$results[0]->getTitle(),'column'=>'Entire Row','Row'=>'Row: '.$i2, 'error'=>'Empty Row');											
+						$emptyRow = true;																							
 					}
 					if($emptyRow!=true)
 					{

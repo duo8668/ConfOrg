@@ -34,8 +34,8 @@ Route::group(array('before' => 'auth'),function(){
 	Route::post('pending/removeEquipmentCategory/{id}','PendingController@removeCategory');
 	Route::get('pending/editCategory/{id}/edit','PendingController@editCategory');	
 	Route::get('pending/editEquipment/{id}/edit','PendingController@editEquipment');
-	Route::put('pending/{id}','PendingController@updateCategory');
-	Route::put('pending/{id}','PendingController@updateEquipment');
+	Route::put('pending/editCategory/{id}','PendingController@updateCategory');
+	Route::put('pending/editEquipment/{id}','PendingController@updateEquipment');
 	
 
 

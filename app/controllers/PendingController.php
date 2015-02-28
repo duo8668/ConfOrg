@@ -15,11 +15,10 @@ class PendingController extends \BaseController {
 		}
 	}
 	public function editCategory($id)
-	{		
+	{				
 		if(Auth::User()->hasSysRole('Admin'))
 		{
-			$equipmentcategory = EquipmentCategory::find($id);
-			
+			$equipmentcategory = EquipmentCategory::find($id);						
 			return View::make('pending.editCategory')
 			->with('equipmentcategory', $equipmentcategory); 
 		}
@@ -118,7 +117,7 @@ class PendingController extends \BaseController {
 
 	public function updateCategory($id)
 	{
-        //
+        //        
 		$rules = array(
 			'categoryName'       => 'required|unique:equipment_category,equipmentcategory_name,'.$id.',equipmentcategory_id',
         //    'categoryRemarks'      => 'required',            

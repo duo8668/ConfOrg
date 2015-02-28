@@ -10,8 +10,7 @@
   <li class="active">Edit Category</li>
 </ol>
 <hr>
-
-{{ Form::open(array($equipmentcategory, 'url' => 'pending/'. $equipmentcategory->equipmentcategory_id, 'method' => 'PUT', 'class' => 'form-horizontal')) }}     
+{{ Form::open(array($equipmentcategory, 'url' => 'pending/editCategory/'. $equipmentcategory->equipmentcategory_id, 'method' => 'PUT', 'class' => 'form-horizontal')) }}     
     <fieldset>
     <div class="form-group @if ($errors->has('categoryName')) has-error @endif">
       <label class="col-md-4 control-label" for="categoryName">Category Name</label>  
