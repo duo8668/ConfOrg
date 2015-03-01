@@ -31,7 +31,11 @@
           @if ($errors->any())
               <div class="alert alert-danger alert-dismissible" role="alert" style="margin-top:15px;">
                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <p class="text-danger"><Strong>There are some errors with the form input!</strong></p>
+                  @if(empty($errors->first()) || $errors->first() == '')
+                  <p class="text-danger"><Strong> There are some error with the form input !!! </strong></p>
+                  @else 
+                    <p class="text-danger"><Strong>{{ $errors->first() }}</strong></p>
+                  @endif   
               </div>
           @endif       
 

@@ -61,7 +61,11 @@ class BillController extends \BaseController {
 
   public function charges($id)
   {   
-    $invoice =invoice::find($id);         
+    $invoice = invoice::find($id);
+    if(empty($invoice)){
+      return Redirect::to('/dashboard')->withErrors(['Invalid Invoice ! Don\' try to prank me !!!']);
+    }
+
     return View::make('charges.charge')->with('invoice',$invoice);  
     //return View::make('charges.charge');    
   } 
@@ -189,6 +193,9 @@ class BillController extends \BaseController {
   public function chargeUser($id)
   { 
     $invoice = invoice::find($id);
+    if(empty($invoice)){
+      return Redirect::to('/dashboard')->with('message','Invalid Invoice ! Don\' try to prank me !!!');
+    }
 
     $conf = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->where('conf_id', '=', $invoice->conf_id)->first();
 

@@ -532,15 +532,6 @@ public function conf_public_detail($id) {
     if (empty($conf)) {
         return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
     } else {
-        if (Session::has('PurchaseTicketSession'))
-        {
-            Session::forget('PurchaseTicketSession');
-        }
-        Session::put('PurchaseTicketSession',array('currentConference' => $conf->conferences->get()->toArray(), 'remaining'=>$remaining ));
-
-        $stored = Session::pull('PurchaseTicketSession');
-        dd($stored['remaining']);
-        //dd(array_get($stored['currentConference'],'0.ticket_price'));
         return View::make('conf_detail')->with('conf', $conf)
         ->with('chair', $chair)
         ->with('topics', $topics)
