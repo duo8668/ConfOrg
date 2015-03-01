@@ -22,6 +22,7 @@ class ConferenceUserRoleController extends \BaseController {
 
 				return array('invalidFields' => $validator->errors());
 			} else {
+
 				try {
 					$user = Auth::user();
 					$originalStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id'])->get();
@@ -34,7 +35,7 @@ class ConferenceUserRoleController extends \BaseController {
 
                       $roleid = Role::ConferenceStaff()->role_id;
 
-                                // add all first
+                      // add all first
                       if (!empty($data['emails'])) {
                          foreach ($data['emails'] as $email) {
 
@@ -54,17 +55,19 @@ class ConferenceUserRoleController extends \BaseController {
                                 } 
                             } else {
                                 $inviteToConference = InviteToConference::where(array('conf_id' => $data['conf_id']))
-                                ->Where(array('user_id' => $data['user_id']))
+                                ->Where('email','=', $email)
                                 ->first();
-                                if (empty($inviteToConference)) {
-                                        // not exists in InviteToConference, send invitation to create staff
-                                    $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
+
+                                $sentSaved  = $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
+
+                                if($sentSaved){
+                                    $numRowUpdated ++;
                                 }
                             }
                         }
                     }
 
-                        // delete not exist in ConfUserRole
+                    // delete not exist in ConfUserRole
                     if (!empty($originalStaffs)) {
                       if (empty($data['emails'])) {
                        $data['emails'] = array();
@@ -77,7 +80,7 @@ class ConferenceUserRoleController extends \BaseController {
                 }
             }
 
-                // delete not exist in InviteToConference
+            // delete not exist in InviteToConference
             if (!empty($originalPStaffs)) {
               if (empty($data['emails'])) {
                $data['emails'] = array();
@@ -152,17 +155,21 @@ public function updateReviewPanels() {
                                 $conferenceUserRole->created_by = $user->user_id;
                                 $saved = $conferenceUserRole->save(); 
 
-                                if (!empty($saved)) {
+                                if ($saved) {
                                     $numRowUpdated ++;
                                 } 
                             } else {
                                 $inviteToConference = InviteToConference::where(array('conf_id' => $data['conf_id']))
-                                ->Where(array('user_id' => $data['user_id']))
+                                ->Where('email','=', $email)
                                 ->first();
 
                                 if (empty($inviteToConference)) {
                                     // not exists in InviteToConference, send invitation to create review panel
-                                    $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
+                                    $sentSaved  = $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
+
+                                    if($sentSaved){
+                                        $numRowUpdated ++;
+                                    }
                                 }
 
                             }
@@ -212,7 +219,7 @@ public function updateReviewPanels() {
 
 return array('success' => $result);
 }
-
+    //**    emailForInviteToConference
 private function emailForInviteToConference($conf_id,$role_id,$email){
     $code = str_random(60);
 
@@ -221,20 +228,19 @@ private function emailForInviteToConference($conf_id,$role_id,$email){
     $invite->email = $email;
     $invite->role_id = $role_id;
     $invite->conf_id = $conf_id;
-    $invite->save();
+    $saved = $invite->save();
 
-    $data = array('role_name' => Role::where('role_id','=', $role_id)->firstOrFail()->rolename
-        ,'conf_title' => Conference::where('conf_id','=', $conf_id)->firstOrFail()->title);
+    $data = array('role_name' => Role::where('role_id','=', $role_id)->firstOrFail()->rolename ,'conf_title' => Conference::where('conf_id','=', $conf_id)->firstOrFail()->title);
 
-    Mail::queue('emails.auth.invite_to_conference',
-        array('link'=>URL::route('users-create', $code),
-            'role_name' => $data['role_name'] ,
-            'conf_title' => $data['conf_title'] ,
-            ), 
-        function($message) use ($email,$data)
-        {
-            $message->to($email)->subject('You are invited to join ORAFER as '. $data['role_name'] .' for Conference \''.$data['conf_title'].'\'!');
-        });
+    Mail::queue('emails.auth.invite_to_conference', array('link'=>URL::route('users-create', $code)
+        , 'role_name' => $data['role_name']
+        , 'conf_title' => $data['conf_title']) ,  function($message) use ($email,$data)
+    {
+        $message->to($email)->subject('You are invited to join ORAFER as '. $data['role_name'] .' for Conference \''.$data['conf_title'].'\'!');
+    });
+
+    //* return result
+    return $saved;
 }
 
 }
