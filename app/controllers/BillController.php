@@ -66,6 +66,8 @@ class BillController extends \BaseController {
       return Redirect::to('/dashboard')->withErrors('Invalid Invoice ! Don\' try to prank me !!!');
     }else if($invoice->item_type != 'ticket'){
       return Redirect::to('/dashboard')->withErrors('I\'m sorry but you can\'t do that !!!');
+    }else if($invoice->status == 'paid'){
+      return Redirect::to('/dashboard')->withErrors('I\'m sorry you have paid and why still want to pay ??!!');
     }
 
     return View::make('charges.charge')->with('invoice',$invoice);  
