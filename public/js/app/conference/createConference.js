@@ -106,7 +106,7 @@ function loadPayNowbutton(createInvoiceUrl) {
 });
 }
 
-
+var _loadVenueIntoDropDownBox;
 function loadFormValidation(availableRoomsUrl) {
     $('#frmCreateConf').formValidation({
         excluded: [''],
@@ -200,7 +200,7 @@ function loadFormValidation(availableRoomsUrl) {
             },
             venue: {
                 validators: {
-                   callback: {
+                 callback: {
                     message: 'Please select a venue',
                     callback: function(value, validator, $field) {
                             // Get the selected options
@@ -229,8 +229,12 @@ function loadFormValidation(availableRoomsUrl) {
             data.fv.disableSubmitButtons(false);
         }
         if (data.fv._cacheFields.beginDate.val() !== '' && data.fv._cacheFields.endDate.val() !== '' && data.fv._cacheFields.maxSeats.val() !== '') {
-            if(data.field !== 'venue')
-                loadVenueIntoDropDownBox(availableRoomsUrl);
+            if(data.field !== 'venue'){
+                clearTimeout(_loadVenueIntoDropDownBox);
+                _loadVenueIntoDropDownBox = setTimeout(function(){
+                    loadVenueIntoDropDownBox(availableRoomsUrl);
+                },500);                
+            }
         }else if(data.fv._cacheFields.beginDate.val() === '' || data.fv._cacheFields.endDate.val() === '' || data.fv._cacheFields.maxSeats.val() === ''){
             //$("#ddlVenue").data("selectBox-selectBoxIt").remove();
             //$("#ddlVenue").data("selectBox-selectBoxIt").disable();
@@ -312,6 +316,7 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
     var endDate = $("#datetimepickerEnd").data("DateTimePicker").getDate().format('DD-MM-YYYY');
     var maxSeats = $("#maxSeats").val();
     if (beginDate !== undefined && endDate !== undefined) {
+
         $.ajax({
             type: "GET",
             url: availableRoomsUrl,
@@ -329,8 +334,11 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
                 console.log(data);
 
                 var curGroup = '', _optgroup = null;
-                $("#ddlVenue").empty();
-                $("#ddlVenue").append($("<option></option>").val(-1).html('-- Please Select Your Venue --'));
+                var optGroups = [];
+                var ddlVenue = $("#ddlVenue");
+                ddlVenue.html('');
+                ddlVenue.append($("<option></option>").val(-1).html('-- Please Select Your Venue --'));
+                //* Loop to create option groups and options
                 $.each(data, function (key, value) {
 
                     if(_optgroup === null){
@@ -340,7 +348,7 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
                     }else{
                         if(curGroup !== value.venue_name){
                             if(_optgroup !== null){
-                                $("#ddlVenue").append(_optgroup);
+                                optGroups.push(_optgroup);
                                 _optgroup = $('<optgroup>');                        
                                 _optgroup.attr('label',value.venue_name);
                                 curGroup = value.venue_name; 
@@ -353,18 +361,23 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
                     _optgroup.append($option);                        
 
                 });
-                $("#ddlVenue").data("selectBox-selectBoxIt").destroy();
+                //* check if the length of groups is == 0 and if the optgroup is not empty
+                if(optGroups.length == 0 && _optgroup !== null){
+                    // manually push the group
+                    optGroups.push(_optgroup);
+                }
 
-                $("#ddlVenue").selectBoxIt({
-                    showEffect: "fadeIn",
-                    showEffectSpeed: 220,
-                    hideEffect: "fadeOut",
-                    hideEffectSpeed: 110 ,
-                    showFirstOption : true
+                //* Loop to inject option groups into ddl
+                $.each(optGroups, function (key, value) {
+                    ddlVenue.append(value);
                 });
+                //*refresh ddl
+                ddlVenue.data("selectBox-selectBoxIt").refresh();
+
+                //* reset width               
                 $('.venueContainer').width($('#ddlVenueSelectBoxItContainer').width());
             }
-        }).fail(function (xhr, stat, msg) {
+        }).fail(function (xhr, stat, msg) { 
             alert(xhr.responseText);
         }).always(function (data) {
 
