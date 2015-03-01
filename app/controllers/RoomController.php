@@ -89,16 +89,16 @@ class RoomController extends \BaseController {
 		if($room->available == 'no')        		        				
 		{
 			$room->available = 'yes';  
-			Session::flash('message', 'Room Made Unavailable!');
+			Session::flash('message', 'Room Made Available !');
 		}
 		else        
 		{
 			$room->available = 'no';  
-			Session::flash('message', 'Room Made Available!');
+			Session::flash('message', 'Room Made Unvailable !');
 		}
 		$room->save();    
 
-		return Redirect::back();
+		return $this->index();
 	}
 
 	public function pendingDeleteRequest($id)

@@ -138,6 +138,15 @@ Add New Conference
         }
     };
 
+    $('#cardnumber').on('keyup',function()
+    {
+    	$(this).val(function(i, v)
+    	{
+    		var v = v.replace(/[^\d]/g, '').match(/.{1,4}/g);
+    		return v ? v.join('-') : '';
+    	});
+    });
+
     $('.modal').on('shown.bs.modal',function(e){
     	if($(this).children('div:eq(1)').hasClass('modal-dialog')){
     		$(this).children('div:eq(1)').removeClass('modal-dialog');

@@ -369,6 +369,14 @@ $.fn.textWidth = function() {
 							</div>
 						</div>
 
+						<!-- Room name -->
+						<div class="row">
+							<label class="col-md-3 control-label text-right">Room</label>
+							<div class="col-md-9">
+								{{ $conf->room()->room_name }}
+							</div>
+						</div>
+
 						<!-- Date commence and end -->
 						<div class="row">
 							<label class="col-md-3 control-label text-right">Begin and End Date</label>
