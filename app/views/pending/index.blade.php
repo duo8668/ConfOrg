@@ -68,17 +68,30 @@
                             {{ Form::open(array('url' => 'equipmentcategory/modify/' . $value->equipmentcategory->equipmentcategory_id, 'class' => 'inline')) }}
                             {{ Form::submit('Approve Category', array('class' => 'btn btn-success btn-xs')) }} 
                             {{ Form::close() }}
-                            {{ Form::open(array('url' => 'pending/removeEquipmentCategory/' . $value->equipmentcategory_id, 'class' => 'inline')) }}                    
+                            
+                            @if (!empty($value->pending))
+                                {{ Form::open(array('url' => 'pending/removeEquipmentCategory/' . $value->equipmentcategory_id, 'class' => 'inline')) }}                    
                                 {{ Form::submit('Delete this category', array('class' => 'btn btn-danger btn-xs')) }}
-                            {{ Form::close() }}
+                                {{ Form::close() }}
+                            @endif
+                          
                         @elseif(!is_null($value->equipment))
-                            <a class="btn btn-small btn-info btn-xs" href="{{ URL::to('pending/editEquipment/' . $value->equipment->equipment_id . '/edit') }}">Edit Equipment</a>                
-                            {{ Form::open(array('url' => 'equipment/modify/' . $value->equipment->equipment_id, 'class' => 'inline')) }}                                     
+                            
+                            <a class="btn btn-small btn-info btn-xs" href="{{ URL::to('pending/editEquipment/' . $value->equipment->equipment_id . '/edit') }}">Edit Equipment</a>
+ 
+                            @if($value->equipment->equipment_status === 'Pending' && $value->equipment->pending->delete === 'false')
+                            <!-- Approve Equipment -->
+                            {{ Form::open(array('url' => 'equipment/modify/' . $value->equipment->equipment_id, 'class' => 'inline')) }}
                             {{ Form::submit('Approve Equipment', array('class' => 'btn btn-success btn-xs')) }} 
                             {{ Form::close() }}
-                            {{ Form::open(array('url' => 'pending/removeEquipment/' . $value->equipment_id, 'class' => 'inline')) }}                    
-                                {{ Form::submit('Delete this Equipment', array('class' => 'btn btn-danger btn-xs')) }}
+                            @endif
+  
+                            @if($value->equipment->pending->delete)
+                            {{ Form::open(array('url' => 'pending/removeEquipment/' . $value->equipment_id, 'class' => 'inline')) }}
+                            {{ Form::submit('Delete this Equipment', array('class' => 'btn btn-danger btn-xs')) }}
                             {{ Form::close() }}
+                            @endif
+
                         @elseif(!is_null($value->venue))
                             {{ Form::open(array('url' => 'pending/removeVenue/' . $value->venue_id, 'class' => 'inline')) }}                    
                                 {{ Form::submit('Delete this venue', array('class' => 'btn btn-danger btn-xs')) }}

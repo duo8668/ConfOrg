@@ -54,7 +54,7 @@
   <!-- Submit Button -->
   <div class="row">  
     <div class="col-md-8 col-md-offset-2">
-      {{ Form::submit('Add New Conference', array('class' => 'btn btn-primary btn-md btn-block')) }}
+      {{ Form::submit('Search Conferences', array('class' => 'btn btn-primary btn-md btn-block')) }}
 
     </div>
   </div>

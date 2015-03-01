@@ -35,7 +35,7 @@ Route::get('/contact', function()
     return View::make('contact');
 });
 
-Route::get('/conference_list', array(
+Route::any('/conference_list', array(
     'as'    => 'conference.public_list',
     'uses'  => 'ConferenceController@conf_public_list'
 ));
