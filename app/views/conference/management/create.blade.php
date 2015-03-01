@@ -16,7 +16,7 @@ Add New Conference
 <!-- Bootstrap selectboxit -->
 <link href="{{ asset('css/selectboxit/selectboxit.css') }}" rel="stylesheet" type="text/css">
 
-<link href="{{ asset('css/formvalidation/formValidation.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('css/formvalidation/formvalidation.css') }}" rel="stylesheet" type="text/css">
 
 <!--===================================================================================-->
 <!--===========================     JAVASCRIPT     ====================================-->
@@ -33,12 +33,11 @@ Add New Conference
 <script src="{{ asset('js/selectboxit/selectboxit.js') }}"></script>
 
 <!-- Bootstrap FormValidation -->
-<script src="{{ asset('js/formvalidation/formValidation.js') }}"></script>
+<script src="{{ asset('js/formvalidation/formvalidation.js') }}"></script>
 <script src="{{ asset('js/formvalidation/framework/bootstrap.js') }}"></script>
 
 <!-- Bootstrap TypeAhead -->
 <script src="{{ asset('js/bootstrap3-typeahead.js') }}"></script>
-<script src="{{ asset('js/bloodhound.js') }}"></script>
 
 <!-- STRIPE payment processor  -->
 <script src="https://js.stripe.com/v2/"></script>
@@ -107,7 +106,8 @@ Add New Conference
 
 		loadPayNowbutton("{{ URL::to('/payment/actionCreateInvoice') }}");
 
-		//Stripe.setPublishableKey('pk_test_hZuusSMMVDm0qEuF6dvPTARV');
+		var stripeKey = $('meta[name="publishable-key"]').attr('content');
+      Stripe.setPublishableKey(stripeKey);
 
 		var StripeBilling = {
 			init: function () {

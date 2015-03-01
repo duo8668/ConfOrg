@@ -53,7 +53,7 @@
                 @foreach ($confs as $conf)
                   @if ($conf->role_id == 8)
                     <tr>
-                      <td><a href="{{ URL::to('conference/detail?conf_id=' . $conf->conf_id) }}">{{{ $conf->title }}}</a></td>
+                      <td><a href="{{ URL::to('conference_detail').'/'. $conf->conf_id }}">{{{ $conf->title }}}</a></td>
                       <td>{{ date("d F Y",strtotime($conf->begin_date)) }} to {{ date("d F Y",strtotime($conf->end_date)) }}</td>
                       <td>{{{ $conf->venue_name }}}</td>
                   </tr> 

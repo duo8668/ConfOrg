@@ -187,13 +187,14 @@ class BillController extends \BaseController {
   }
 
   public function chargeUser($id)
-  {           
+  { 	
     $total = Input::get('total');
-    $total = ltrim ($total, '$');
-    $total = $total * 100;  
+    preg_match('/[0-9]+[\.]*[0-9]*/',Input::get('total'), $match);
+    $total = $match[0] * 100;
+	
     $billing = App::make('Acme\Billing\BillingInterface');
     $customerId= $billing->charge([
-      'email' => Input::get('email'),
+      'email' => Auth::user()->email,
       'token' => Input::get('stripe-token'),
       'total' => $total
       ]);   
@@ -204,8 +205,8 @@ class BillController extends \BaseController {
     $invoice->total = $total/100;
     $invoice->created_by = Auth::user()->user_id;
     $invoice->save();
-
-    if(array_key_exists('error', $customerId))
+	
+	if(array_key_exists('error', $customerId))
     {
       // $ticketPrice = Input::get('ticketPrice');      
       // $conference = Conference::find(Input::get('conf_id'));     

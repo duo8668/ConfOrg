@@ -65,17 +65,6 @@ class ConferenceController extends \BaseController {
         return 'OK';
     }
 
-    public function theConf() {
-        $selectedConfId = $this->ValidateConference();
-
-        $conf = Conference::where('conf_id', '=', $selectedConfId)
-        ->first();
-
-        $view = View::make('conference.confview', array('selectedConfId' => $selectedConfId, 'conf' => $conf));
-
-        return $view;
-    }
-
     public function ValidateConference() {
         //conf_id_col_\d+$
 
@@ -111,41 +100,53 @@ class ConferenceController extends \BaseController {
     }
 
     public function detail() {
+        //* conf_id assign
+        $conf_id = Input::get('conf_id');
+
+        $conf = Conference::where('conf_id', '=', $conf_id)->first();
+
+        if(empty($conf)){
+            return Redirect::route('users.dashboard')->with('message', 'Conference not found!');
+        }
+
         $fields = InterestField::select(DB::raw('interestfield_id as id, name as label'))
         ->get();
 
-        $confChairUsers = ConferenceUserRole::ConferenceChair(Input::get('conf_id'))->toArray();
+        $confChairUser = ConferenceUserRole::ConferenceChair($conf_id)->first();
+        
+        $allStaffs = ConferenceUserRole::ConferenceStaffs($conf_id)->get();
 
-        $allStaffs = ConferenceUserRole::ConferenceStaffs(Input::get('conf_id'))->get()->toArray();
+        $reviewPanels = ConferenceUserRole::ConferenceReviewPanels($conf_id)->get();
 
-        $reviewPanels = ConferenceUserRole::ConferenceReviewPanels(Input::get('conf_id'))->get()->toArray();
+        
 
-        $conf = Conference::where('conf_id', '=', Input::get('conf_id'))->first();
-
-        $submissions = Submission::where('conf_id', '=', Input::get('conf_id'))->get();
-
+        $submissions = Submission::where('conf_id', '=', $conf_id)->get();
+         
         $invoices= Invoice::where('status','=','Paid')
-        ->where('conf_id','=', Input::get('conf_id'))
-        ->where('user_id','<>', array_fetch($confChairUsers, 'user_id'))
+        ->where('conf_id','=', $conf_id)
+        ->where('user_id','<>', $confChairUser->user_id)
         ->get();
 
         $topics = DB::table('conference_topic')
         ->leftJoin('submission_topic', 'conference_topic.topic_id', '=', 'submission_topic.topic_id')
         ->select('conference_topic.topic_id', 'conference_topic.topic_name', Db::raw('count(sub_id) as total_subs'))
-        ->where('conference_topic.conf_id', '=', Input::get('conf_id'))
+        ->where('conference_topic.conf_id', '=', $conf_id)
         ->groupBy('conference_topic.topic_name')
         ->get();
 
-        //dd($confChairUsers);
-
-        $view = View::make('conference.detail', array('fields' => $fields, 'conf' => $conf
-            , 'confChairUsers' => $confChairUsers
+        $view = View::make(
+            'conference.detail', array('fields' => $fields, 'conf' => $conf
+            , 'confChairUser' => $confChairUser
             , 'allStaffs' => $allStaffs
             , 'reviewPanels' => $reviewPanels 
             , 'submissions' => $submissions
             , 'invoices' => $invoices
             , 'topics' => $topics
-            , 'isCancel' => !empty($conf->ConferenceCancel()->get()->toArray())));
+            , 'isCancel' => !empty($conf->ConferenceCancel()->first())
+			, 'isChair' => ($confChairUser->user_id == Auth::user()->user_id )
+            , 'isStaff' => Auth::user()->hasConfRole($conf->conf_id, Role::ConferenceStaff()->rolename)
+            , 'isReviewer' => Auth::user()->hasConfRole($conf->conf_id, Role::Reviewer()->rolename)
+            ));
 
         // SET SESSION
         Session::put('orafer_conf_id', Input::get('conf_id'));
@@ -429,205 +430,7 @@ public function addNewTopic() {
 
     return array('success' => 'Updated!');
 }
-
-public function updateConfStaffs() {
-    $data = [
-    'conf_id' => Input::get('conf_id'),
-    'emails' => Input::get('emails'),
-    ];
-
-    $rules = [
-    'conf_id' => 'required|numeric',
-    'emails' => 'array'
-    ];
-
-    $validator = Validator::make($data, $rules);
-
-    if (Auth::check()) {
-        if ($validator->fails()) {
-
-            return array('invalidFields' => $validator->errors());
-        } else {
-            try {
-                $user = Auth::user();
-                $originalStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id']);
-                $originalPStaffs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::ConferenceStaff()->role_id)->where('is_used','=',0)->get();
-                
-                $numRowUpdated = 0;
-                $result = DB::transaction(function() use ($data, $user, $originalStaffs, $numRowUpdated) {
-
-
-                    $roleid = Role::ConferenceStaff()->role_id;
-
-                                // add all first
-                    if (!empty($data['emails'])) {
-                        foreach ($data['emails'] as $email) {
-
-                            $targetUser = User::where('email', '=', $email)->first();
-
-                            if (!empty($targetUser)) {
-                                if (empty(ConferenceUserRole::where(array('conf_id' => $data['conf_id']))
-                                    ->Where(array('user_id' => $targetUser->user_id))
-                                    ->first())) {
-
-                                    if (!empty(ConferenceUserRole::create(array('conf_id' => $data['conf_id'], 'role_id' => $roleid, 'user_id' => $targetUser->user_id, 'created_by' => $user->user_id)))) {
-                                        $numRowUpdated ++;
-                                    }
-                                }
-                            } else {
-                                if (empty(InviteToConference::where(array('conf_id' => $data['conf_id']))
-                                    ->Where(array('user_id' => $targetUser->user_id))
-                                    ->first())) {
-                                        // not exists in InviteToConference, send invitation to create staff
-                                    $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
-                            }
-
-                        }
-                    }
-                }
-
-                // delete not exist in ConfUserRole
-                if (!empty($originalStaffs)) {
-                    if (empty($data['emails'])) {
-                        $data['emails'] = array();
-                    }
-                    foreach ($originalStaffs as $oristaff) {
-
-                        if (!in_array($oristaff->email, $data['emails'], true)) {
-                            $numRowUpdated += $oristaff->forceDelete();
-                        }
-                    }
-                }
-
-                // delete not exist in InviteToConference
-                if (!empty($originalPStaffs)) {
-                    if (empty($data['emails'])) {
-                        $data['emails'] = array();
-                    }
-                    foreach ($originalPStaffs as $oriPstaff) {
-
-                        if (!in_array($oriPstaff->email, $data['emails'], true)) {
-                            $numRowUpdated += $oriPstaff->forceDelete();
-                        }
-                    }
-                }
-
-                
-                return array('numRowUpdated' => $numRowUpdated
-                    , 'conStaffs' => ConferenceUserRole::ConferenceStaffs($data['conf_id'])
-                    , 'pendingConfStaffs' =>  InviteToConference::where('conf_id','=', $data['conf_id'])
-                    ->where('role_id','=',Role::ConferenceStaff()->role_id)
-                    ->where('is_used','=',0)->get());
-            });
-} catch (Exception $ex) {
-    throw $ex;
-}
-}
-}
-
-return array('success' => $result);
-}
-
-public function updateReviewPanels() {
-    $data = [
-    'conf_id' => Input::get('conf_id'),
-    'emails' => Input::get('emails'),
-    ];
-
-    $rules = [
-    'conf_id' => 'required|numeric',
-    'emails' => 'array'
-    ];
-
-    $validator = Validator::make($data, $rules);
-
-    if (Auth::check()) {
-        if ($validator->fails()) {
-
-            return array('invalidFields' => $validator->errors());
-        } else {
-            try {
-                $user = Auth::user();
-                $originalRPs = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
-                $originalPRPs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::Reviewer()->role_id)->where('is_used','=',0)->get();
-                
-                $numRowUpdated = 0;
-
-                $result = DB::transaction(function() use ($data, $user, $originalRPs,$originalPRPs, $numRowUpdated) {
-                    $roleid = Role::Reviewer()->role_id;
-
-                    // add all first
-                    if (!empty($data['emails'])) {
-                        foreach ($data['emails'] as $email) {
-
-                            $targetUser = User::where('email', '=', $email)->first();
-
-                            if (!empty($targetUser)) {
-                                // exists, directly assign the staff								 
-                                if (empty(ConferenceUserRole::where(array('conf_id' => $data['conf_id']))
-                                    ->Where(array('user_id' => $targetUser->user_id))
-                                    ->first())) {
-
-                                    if (!empty(ConferenceUserRole::create(array('conf_id' => $data['conf_id'], 'role_id' => $roleid, 'user_id' => $targetUser->user_id, 'created_by' => $user->user_id)))) {
-                                        $numRowUpdated ++;
-                                    }
-                                }
-                            } else {
-                                if (empty(InviteToConference::where(array('conf_id' => $data['conf_id']))
-                                    ->Where(array('user_id' => $targetUser->user_id))
-                                    ->first())) {
-                                    // not exists in InviteToConference, send invitation to create review panel
-                                    $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
-                            }
-
-                        }
-                    }
-                }
-
-                // delete not exist in ConfUserRole
-                if (!empty($originalRPs)) {
-                    if (empty($data['emails'])) {
-                        $data['emails'] = array();
-                    }
-                    foreach ($originalRPs as $oriRP) {
-
-                        if (!in_array($oriRP->email, $data['emails'], true)) {
-                            $numRowUpdated += $oriRP->forceDelete();
-                        }
-                    }
-                }
-
-                // delete not exist in InviteToConference
-
-                if (!empty($originalPRPs)) {
-                    if (empty($data['emails'])) {
-                        $data['emails'] = array();
-                    }
-
-                    foreach ($originalPRPs as $oriPRP) {
-
-                        if (!in_array($oriPRP->email, $data['emails'], true)) {
-
-                            $numRowUpdated += $oriPRP->forceDelete();
-                        }
-                    }
-                }
-                return array('numRowUpdated' => $numRowUpdated
-                    , 'reviewPanels' => ConferenceUserRole::ConferenceReviewPanels($data['conf_id'])->get()
-                    , 'pendingReviewPanels' =>  InviteToConference::where('conf_id','=', $data['conf_id'])
-                    ->where('role_id','=',Role::Reviewer()->role_id)
-                    ->where('is_used','=',0)->get());
-
-            });
-} catch (Exception $ex) {
-    throw $ex;
-}
-}
-}
-
-return array('success' => $result);
-}
-
+ 
 public function validateCreateConference() {
 
     $confTitle = trim(Input::get('conferenceTitle'));

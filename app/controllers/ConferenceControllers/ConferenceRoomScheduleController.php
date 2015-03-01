@@ -64,7 +64,7 @@ class ConferenceRoomScheduleController extends BaseController {
                 }
 
                 if (!empty($listUsed)) {
-                    $available = Room::join('Venue','room.venue_id','=','Venue.venue_id')
+                    $available = Room::join('venue','room.venue_id','=','venue.venue_id')
                     ->whereNotIn('room_id', $listUsed)
                     ->where('room.available','=','yes')
                     ->where('capacity','>=',$maxSeat)
@@ -72,7 +72,7 @@ class ConferenceRoomScheduleController extends BaseController {
                     ->orderBy('capacity')
                     ->get();
                 } else {
-                    $available = Room::join('Venue','room.venue_id','=','Venue.venue_id')
+                    $available = Room::join('venue','room.venue_id','=','venue.venue_id')
                     ->where('room.available','=','yes')
                     ->where('capacity','>=',$maxSeat)
                     ->select('room_id', 'room_name', 'venue_name', 'rental_cost','capacity')

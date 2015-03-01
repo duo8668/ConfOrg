@@ -23,8 +23,8 @@ Route::group(array('before' => 'auth'),function(){
 	Route::get('conference/confParticular', 'ConferenceController@theConf');
 	Route::get('conference/management/create', 'ConferenceController@create');
 	Route::get('conference/management/updateConfStaffs', 'ConferenceController@updateConfStaffs');
-	Route::get('conference/management/updateReviewPanels', 'ConferenceController@updateReviewPanels');
-	Route::get('conference/management/updateDescription', 'ConferenceController@updateDescription');
+	Route::get('conference/management/updateReviewPanels', 'ConferenceUserRoleController@updateReviewPanels');
+	Route::get('conference/management/updateDescription', 'ConferenceUserRoleController@updateDescription');
 	Route::get('conference/management/updateParticulars', 'ConferenceController@updateParticulars');
 	Route::get('conference/management/updateTopics', 'ConferenceController@updateTopics');
 	Route::get('conference/management/addNewTopic', 'ConferenceController@addNewTopic');

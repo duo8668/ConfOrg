@@ -447,7 +447,7 @@ class UsersController extends \BaseController {
 	public function postInviteFriend(){
 		$validator = Validator::make(Input::all(),
 			array(
-				'email' 			=> 'required|email',
+				'email' 			=> 'required|email|unique:users,email',
 				'firstname'			=>	'required',
 				'lastname'			=>	'required'
 				));

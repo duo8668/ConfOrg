@@ -5,7 +5,6 @@
 @stop
 @section('extraScripts')
 <script src="https://js.stripe.com/v2/"></script>
-<script src="{{ asset('js/stripe.js') }}"></script>
 @stop
 @section('content')
 <!-- BREADCRUMB -->
@@ -71,7 +70,7 @@
         <div class="form-group @if ($errors->has('email')) has-error @endif">
           <label class="col-md-2 control-label">Card Number</label>
           <div class="col-md-6">
-               <input type="text" data-stripe="number" value="4000000000000002" class="form-control"> 
+               <input type="text" data-stripe="number" value="4000000000000002" class="form-control" id="card-number"> 
           </div>
         </div>
         <div class="clearfix"></div>
@@ -79,7 +78,7 @@
         <div class="form-group @if ($errors->has('email')) has-error @endif">
           <label class="col-md-2 control-label">CVC Number</label>
           <div class="col-md-6">
-            <input type="text" data-stripe="cvc" class="form-control">
+            <input type="text" data-stripe="cvc" class="form-control" id = "card-cvc">
           </div>
         </div>
         <div class="clearfix"></div>
@@ -88,10 +87,10 @@
           <label class="col-md-2 control-label">Expiration Date</label>
           <div class="col-md-6">
               <div class="col-md-3" style="padding-left: 0;">  
-                  {{Form::selectMonth(null, null, ['data-stripe' => 'exp-month', 'class' => 'form-control'])}}
+                  {{Form::selectMonth(null, null, ['data-stripe' => 'exp-month', 'class' => 'form-control', 'id' => 'card-expiry-month'])}}
               </div>
               <div class="col-md-3" style="padding-left: 0;">  
-                  {{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year', 'class' => 'form-control'])}}
+                  {{Form::selectYear(null,date('Y'), date('Y') + 10, null, ['data-stripe' => 'exp-year', 'class' => 'form-control', 'id' => 'card-expiry-year'])}}
               </div>
           </div>
         </div>
@@ -132,7 +131,12 @@
     sendToken: function(event){ 
       this.submitButton.val('One Moment').prop('disabled', true);
 
-      Stripe.createToken(this.form, $.proxy(this.stripeResponseHandler, this));
+      Stripe.card.createToken({
+		    number: $('#card-number').val(),
+  cvc: $('#card-cvc').val(),
+  exp_month: $('#card-expiry-month').val(),
+  exp_year: $('#card-expiry-year').val()
+	  }, $.proxy(this.stripeResponseHandler, this));
       event.preventDefault();
     },
 

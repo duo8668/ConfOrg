@@ -31,12 +31,12 @@ Invite a Friend to use ORAFER
     </div>
     <div class="clearfix"></div>
 
-    <div class="form-group @if ($errors->has('email')) has-error @endif">
-      {{ Form::label('email', 'Friend Last Name', ['class' => 'col-sm-2 control-label']) }}    
+    <div class="form-group @if ($errors->has('lastname')) has-error @endif">
+      {{ Form::label('lastname', 'Friend Last Name', ['class' => 'col-sm-2 control-label']) }}    
       <div class="col-sm-6">     
-        {{ Form::text('email', null, array('class' => 'form-control', 'required' => 'required')) }}
+        {{ Form::text('lastname', null, array('class' => 'form-control', 'required' => 'required')) }}
       </div>
-    @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
+    @if ($errors->has('lastname')) <p class="help-block">{{ $errors->first('lastname') }}</p> @endif
     </div>
     <div class="clearfix"></div>
 

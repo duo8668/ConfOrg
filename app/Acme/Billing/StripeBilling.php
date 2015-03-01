@@ -16,20 +16,22 @@ class StripeBilling implements BillingInterface {
 	public function charge(array $data){
 		try{
 
-			// $customer = Stripe_Customer::create([
-			// 	'card' => $data['token'],
-			// 	'description' => $data['email']
-			// 	]);
-			return Stripe_Charge::create([
+			$customer = Stripe_Customer::create([
+				'source' => $data['token'],
+				'description' => $data['email']
+				]);
+
+
+			$charge = Stripe_Charge::create([
 			//refer amount from the database
-				// 'customer' => $customer->id,
+				'customer' => $customer->id,
 				'amount' =>$data['total'],
 				'currency' => 'usd',
-				'description' => $data['email'],
-				'card' => $data['token']
+				'description' => $data['email']
+				//,'source' => $data['token']
 				]);	
-
-			// return $customer->id;
+				
+			return array('success' => true, 'customer'=> $charge->customer);
 		}
 		catch(Stripe_InvalidRequestError $e)
 		{
@@ -42,37 +44,6 @@ class StripeBilling implements BillingInterface {
 			$error=array('error'=>true, 'message'=>$e->getMessage());
 			return $error;			
 		}
-		catch (Stripe_AuthenticationError $e)
-		{
-            // Authentication with Stripe's API failed
-            // (maybe you changed API keys recently)
-            $error=array('error'=>true, 'message'=>$e->getMessage());
-			return $error;			
-			//$message = 'It looks like my payment processor API encountered an error. Please contact me before re-trying.';
-		}
-		catch (Stripe_ApiConnectionError $e)
-		{
-            // Network communication with Stripe failed
-			$error=array('error'=>true, 'message'=>$e->getMessage());
-			return $error;
-			//$message = 'It looks like my payment processor encountered a network error. Please contact me before re-trying.';
-		}
-		catch (Stripe_Error $e)
-		{
-            // Display a very generic error to the user, and maybe send
-            // yourself an email
-			$error=array('error'=>true, 'message'=>$e->getMessage());
-			return $error;
-			//$message = 'It looks like my payment processor encountered an error. Please contact me before re-trying.';
-		}
-		catch (Exception $e)
-		{
-            // Something else happened, completely unrelated to Stripe
-			$error=array('error'=>true, 'message'=>$e->getMessage());
-			return $error;
-			//$message = 'It appears that something went wrong with your payment. Please contact me before re-trying.';
-		}
-
 		
 	}
 }

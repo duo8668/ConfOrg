@@ -18,7 +18,7 @@ class ConferenceUserRole extends Eloquent {
 		->where($this->table.'.role_id','=',Role::ConferenceChair()->role_id)
 		->leftJoin('users', 'confuserrole.user_id', '=', 'users.user_id')
 		->leftJoin('roles', 'confuserrole.role_id', '=', 'roles.role_id')
-		->get();
+		;
 	}
 
 	public function scopeConferenceStaffs($query,$conf_id){

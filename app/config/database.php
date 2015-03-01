@@ -55,6 +55,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
+			'port'		=> '3307',
 			'database'  => 'conforg_db',
 			'username'  => 'root',
 			'password'  => '',

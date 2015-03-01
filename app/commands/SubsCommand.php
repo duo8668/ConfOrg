@@ -40,7 +40,7 @@ class SubsCommand extends ScheduledCommand {
 	 */
 	public function schedule(Schedulable $scheduler)
 	{
-		return $scheduler->everyHours(1);
+		return $scheduler;
 	}
 
 	/**
