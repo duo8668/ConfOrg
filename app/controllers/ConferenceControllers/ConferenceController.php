@@ -540,29 +540,7 @@ public function conf_public_detail($id) {
 }
 
 
-private function emailForInviteToConference($conf_id,$role_id,$email){
-    $code = str_random(60);
 
-    $invite = new InviteToConference();
-    $invite->code = $code;
-    $invite->email = $email;
-    $invite->role_id = $role_id;
-    $invite->conf_id = $conf_id;
-    $invite->save();
-
-    $data = array('role_name' => Role::where('role_id','=', $role_id)->firstOrFail()->rolename
-        ,'conf_title' => Conference::where('conf_id','=', $conf_id)->firstOrFail()->title);
-
-    Mail::queue('emails.auth.invite_to_conference',
-        array('link'=>URL::route('users-create', $code),
-            'role_name' => $data['role_name'] ,
-            'conf_title' => $data['conf_title'] ,
-            ), 
-        function($message) use ($email,$data)
-        {
-            $message->to($email)->subject('You are invited to join ORAFER as '. $data['role_name'] .' for Conference \''.$data['conf_title'].'\'!');
-        });
-}
 
 public function cancelConference() {
     $data = [
