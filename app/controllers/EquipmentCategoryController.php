@@ -8,7 +8,7 @@ class EquipmentCategoryController extends \BaseController {
      */
     public function index()
     {        
-        
+
         if(Auth::User()->hasSysRole('Admin') || Auth::User()->hasSysRole('Resource Provider'))
         {
             $user_id = Auth::user()->user_id;
@@ -79,11 +79,13 @@ class EquipmentCategoryController extends \BaseController {
                 //$equipmentcategory->equipmentcategory_remark = Input::get('categoryRemarks');           
             $equipmentcategory->save();            
 
-            if(!Auth::User()->hasSysRole('Admin'))
+            if(!Auth::User()->hasSysRole('Admin')){
+
                 $pending = new Pending;
-            $pending->user_id = Auth::user()->user_id;         
-            $pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
-            $pending->save();
+                $pending->user_id = Auth::user()->user_id;         
+                $pending->equipmentcategory_id = $equipmentcategory->equipmentcategory_id;
+                $pending->save();
+            }           
 
                 // redirect
             Session::flash('message', 'Category Successfully Created!');
@@ -211,9 +213,9 @@ class EquipmentCategoryController extends \BaseController {
                     }
                 }                           
                 else {                
-                 $equipmentcategory->status='Pending';                                      
-                 if(empty(Pending::where('equipmentcategory_id','=',$equipmentcategory->equipmentcategory_id)->get()->toArray()))
-                 {
+                   $equipmentcategory->status='Pending';                                      
+                   if(empty(Pending::where('equipmentcategory_id','=',$equipmentcategory->equipmentcategory_id)->get()->toArray()))
+                   {
                             //create a pending notification to inform the admin on this needing attention!
                     $pending = new Pending;
                     $pending->user_id = Auth::user()->user_id;         

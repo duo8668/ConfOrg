@@ -82,9 +82,9 @@ class EquipmentController extends \BaseController {
 			$pending->delete();
 			//delete
 		}
-				
+		
 		Session::flash('message', 'Approved Equipment!');
-        
+		
 
 		return Redirect::back();
 	}
@@ -104,7 +104,7 @@ class EquipmentController extends \BaseController {
 		}
 		else
 		{
-		return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
+			return Redirect::to('/dashboard')->with('message', 'You do not have access to this page!');
 		}				
 	}
 
@@ -141,11 +141,13 @@ class EquipmentController extends \BaseController {
 				$equipment->equipment_status='Approved';  
 			$equipment->save();   
 
-			if(!Auth::User()->hasSysRole('Admin'))
-            $pending = new Pending;
-            $pending->user_id = Auth::user()->user_id;         
-            $pending->equipment_id = $equipment->equipment_id;
-            $pending->save();       
+			if(!Auth::User()->hasSysRole('Admin')){
+				$pending = new Pending;
+				$pending->user_id = Auth::user()->user_id;         
+				$pending->equipment_id = $equipment->equipment_id;
+				$pending->save(); 
+			}
+			
 
             // redirect
 			Session::flash('message', 'Equipment Successfully Created!');
