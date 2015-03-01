@@ -5,7 +5,7 @@ class Invoice extends Eloquent {
 	protected $primaryKey = 'invoice_id';
 	protected $table = 'invoice';
 
-	protected $fillable = array('user_id', 'conf_id', 'quantity', 'price','created_by','total','status');
+	protected $fillable = array('user_id', 'conf_id', 'quantity', 'price','created_by','total','status','item_type');
 
 	public function payments(){
 		return $this->hasmany('Payment', 'invoice_id','invoice_id');

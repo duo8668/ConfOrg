@@ -80,8 +80,7 @@ class BillController extends \BaseController {
       return Redirect::to('payment/charges/'.$invoice->invoice_id);     
     }
     else
-    {
-
+    { 
       $invoice = new invoice;
       $invoice->user_id = Auth::user()->user_id;
       $invoice->conf_id = Input::get('conf_id');      
@@ -137,6 +136,7 @@ class BillController extends \BaseController {
     $invoice = new invoice;
     $invoice->user_id = $user_id;   
     $invoice->created_by = $user_id;
+    $invoice->item_type = 'room_booking';
     $invoice->save();
     $invoiceID = $invoice->invoice_id;
 
@@ -187,26 +187,35 @@ class BillController extends \BaseController {
   }
 
   public function chargeUser($id)
-  { 	
+  { 
+    $invoice = invoice::find($id);
+
+    $conf = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->where('conf_id', '=', $invoice->conf_id)->first();
+
+    $remaining = $conf->rooms->capacity - (Invoice::where('conf_id','=', $id)->where('item_type','=','ticket')->sum('quantity'));
+    
+    if((int)$remaining < (int)Input::get('quantity')){
+      return Redirect::to('payment/charges/'.$id)->withInput(Input::all())->with('message','You cannot buy more than '.$remaining.' tickets !');
+    }
+
     $total = Input::get('total');
     preg_match('/[0-9]+[\.]*[0-9]*/',Input::get('total'), $match);
     $total = $match[0] * 100;
-	
+
     $billing = App::make('Acme\Billing\BillingInterface');
     $customerId= $billing->charge([
       'email' => Auth::user()->email,
       'token' => Input::get('stripe-token'),
       'total' => $total
       ]);   
-
-    $invoice = invoice::find($id);      
+ 
     $invoice->quantity = Input::get('quantity');      
     $invoice->price = ltrim(Input::get('price'),'$');
     $invoice->total = $total/100;
     $invoice->created_by = Auth::user()->user_id;
     $invoice->save();
-	
-	if(array_key_exists('error', $customerId))
+
+    if(array_key_exists('error', $customerId))
     {
       // $ticketPrice = Input::get('ticketPrice');      
       // $conference = Conference::find(Input::get('conf_id'));     

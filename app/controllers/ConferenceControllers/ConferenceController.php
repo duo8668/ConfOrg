@@ -121,7 +121,7 @@ class ConferenceController extends \BaseController {
         
 
         $submissions = Submission::where('conf_id', '=', $conf_id)->get();
-         
+
         $invoices= Invoice::where('status','=','Paid')
         ->where('conf_id','=', $conf_id)
         ->where('user_id','<>', $confChairUser->user_id)
@@ -136,17 +136,17 @@ class ConferenceController extends \BaseController {
 
         $view = View::make(
             'conference.detail', array('fields' => $fields, 'conf' => $conf
-            , 'confChairUser' => $confChairUser
-            , 'allStaffs' => $allStaffs
-            , 'reviewPanels' => $reviewPanels 
-            , 'submissions' => $submissions
-            , 'invoices' => $invoices
-            , 'topics' => $topics
-            , 'isCancel' => !empty($conf->ConferenceCancel()->first())
-			, 'isChair' => ($confChairUser->user_id == Auth::user()->user_id )
-            , 'isStaff' => Auth::user()->hasConfRole($conf->conf_id, Role::ConferenceStaff()->rolename)
-            , 'isReviewer' => Auth::user()->hasConfRole($conf->conf_id, Role::Reviewer()->rolename)
-            ));
+                , 'confChairUser' => $confChairUser
+                , 'allStaffs' => $allStaffs
+                , 'reviewPanels' => $reviewPanels 
+                , 'submissions' => $submissions
+                , 'invoices' => $invoices
+                , 'topics' => $topics
+                , 'isCancel' => !empty($conf->ConferenceCancel()->first())
+                , 'isChair' => ($confChairUser->user_id == Auth::user()->user_id )
+                , 'isStaff' => Auth::user()->hasConfRole($conf->conf_id, Role::ConferenceStaff()->rolename)
+                , 'isReviewer' => Auth::user()->hasConfRole($conf->conf_id, Role::Reviewer()->rolename)
+                ));
 
         // SET SESSION
         Session::put('orafer_conf_id', Input::get('conf_id'));
@@ -430,7 +430,7 @@ public function addNewTopic() {
 
     return array('success' => 'Updated!');
 }
- 
+
 public function validateCreateConference() {
 
     $confTitle = trim(Input::get('conferenceTitle'));
@@ -512,7 +512,7 @@ public function conf_public_detail($id) {
 
     $conf = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->where('conf_id', '=', $id)->first();
 
-    $remaining = $conf->rooms->capacity - Invoice::where('conf_id','=', $id)->sum('quantity');
+    $remaining = $conf->rooms->capacity - (Invoice::where('conf_id','=', $id)->where('item_type','=','ticket')->sum('quantity'));
     //dd($conf->toArray());
     //$conf = Conference::where('conf_id', '=', $id)->first();
     $chair = DB::table('users')
@@ -528,10 +528,19 @@ public function conf_public_detail($id) {
     ->get();    
 
       //$participants = ConferenceUserRole::Conferenceparticipants($conf->conf_id)->get();
- 
+
     if (empty($conf)) {
         return Redirect::route('conference.public_list')->with('message', 'Conference not found!');
     } else {
+        if (Session::has('PurchaseTicketSession'))
+        {
+            Session::forget('PurchaseTicketSession');
+        }
+        Session::put('PurchaseTicketSession',array('currentConference' => $conf->conferences->get()->toArray(), 'remaining'=>$remaining ));
+
+        $stored = Session::pull('PurchaseTicketSession');
+        dd($stored['remaining']);
+        //dd(array_get($stored['currentConference'],'0.ticket_price'));
         return View::make('conf_detail')->with('conf', $conf)
         ->with('chair', $chair)
         ->with('topics', $topics)
