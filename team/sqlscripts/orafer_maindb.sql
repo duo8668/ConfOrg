@@ -9,7 +9,7 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
+SET FOREIGN_KEY_CHECKS=0; 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,7 +25,7 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `company`
 --
-
+drop table if exists `company`;
 CREATE TABLE IF NOT EXISTS `company` (
   `Company_id` int(11) NOT NULL AUTO_INCREMENT,
   `Company_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -36,18 +36,18 @@ CREATE TABLE IF NOT EXISTS `company` (
 -- Dumping data for table `company`
 --
 
-INSERT INTO `company` (`Company_id`, `Company_name`) VALUES
-(1, 'SingEx Venues'),
-(2, 'Rock Productions'),
-(3, 'Suntec Singapore'),
-(4, 'Marina Bay Sands');
+INSERT INTO `company` (`Company_name`) VALUES
+( 'SingEx Venues'),
+('Rock Productions'),
+( 'Suntec Singapore'),
+('Marina Bay Sands');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `company_user`
 --
-
+drop table if exists `company_user`;
 CREATE TABLE IF NOT EXISTS `company_user` (
   `company_user_id` int(11) NOT NULL AUTO_INCREMENT,
   `company_id` int(11) DEFAULT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `company_user` (
 --
 -- Table structure for table `conference`
 --
-
+drop table if exists `conference`;
 CREATE TABLE IF NOT EXISTS `conference` (
   `conf_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
@@ -102,7 +102,7 @@ DELIMITER ;
 --
 -- Table structure for table `conference_cancel`
 --
-
+drop table if exists `conference_cancel`;
 CREATE TABLE IF NOT EXISTS `conference_cancel` (
   `conference_cancel_id` int(11) NOT NULL AUTO_INCREMENT,
   `conf_id` int(11) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `conference_cancel` (
 --
 -- Table structure for table `conference_field`
 --
-
+drop table if exists `conference_field`;
 CREATE TABLE IF NOT EXISTS `conference_field` (
   `conferencefield_id` int(11) NOT NULL AUTO_INCREMENT,
   `conf_id` int(11) NOT NULL,
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `conference_field` (
 --
 -- Table structure for table `conference_room_schedule`
 --
-
+drop table if exists `conference_room_schedule`;
 CREATE TABLE IF NOT EXISTS `conference_room_schedule` (
   `confroomschedule_id` int(11) NOT NULL AUTO_INCREMENT,
   `conf_id` int(11) DEFAULT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `conference_room_schedule` (
 --
 -- Table structure for table `conference_schedule_event`
 --
-
+drop table if exists `conference_schedule_event`;
 CREATE TABLE IF NOT EXISTS `conference_schedule_event` (
   `conference_schedule_event_id` int(11) NOT NULL AUTO_INCREMENT,
   `conference_room_schedule_id` int(11) NOT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `conference_schedule_event` (
 --
 -- Table structure for table `conference_topic`
 --
-
+drop table if exists `conference_topic`;
 CREATE TABLE IF NOT EXISTS `conference_topic` (
   `topic_id` int(11) NOT NULL AUTO_INCREMENT,
   `conf_id` int(11) NOT NULL,
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `conference_topic` (
 --
 -- Table structure for table `confuserrole`
 --
-
+drop table if exists `confuserrole`;
 CREATE TABLE IF NOT EXISTS `confuserrole` (
   `confuserrole_id` int(10) NOT NULL AUTO_INCREMENT,
   `role_id` int(10) NOT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `confuserrole` (
 --
 -- Table structure for table `countries`
 --
-
+drop table if exists `countries`;
 CREATE TABLE IF NOT EXISTS `countries` (
   `country_id` int(5) NOT NULL AUTO_INCREMENT,
   `short_name` varchar(80) NOT NULL DEFAULT '',
@@ -482,7 +482,7 @@ INSERT INTO `countries` (`country_id`, `short_name`, `long_name`, `calling_code`
 --
 -- Table structure for table `equipment`
 --
-
+drop table if exists `equipment`;
 CREATE TABLE IF NOT EXISTS `equipment` (
   `equipment_id` int(11) NOT NULL AUTO_INCREMENT,
   `equipmentcategory_id` int(11) NOT NULL DEFAULT '0',
@@ -504,7 +504,7 @@ CREATE TABLE IF NOT EXISTS `equipment` (
 --
 -- Table structure for table `equipment_category`
 --
-
+drop table if exists `equipment_category`;
 CREATE TABLE IF NOT EXISTS `equipment_category` (
   `equipmentcategory_id` int(11) NOT NULL AUTO_INCREMENT,
   `equipmentcategory_name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -523,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `equipment_category` (
 --
 -- Table structure for table `interest_field`
 --
-
+drop table if exists `interest_field`;
 CREATE TABLE IF NOT EXISTS `interest_field` (
   `interestfield_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -533,7 +533,7 @@ CREATE TABLE IF NOT EXISTS `interest_field` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`interestfield_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `interest_field`
@@ -559,14 +559,14 @@ INSERT INTO `interest_field` (`interestfield_id`, `name`, `remarks`, `created_by
 (17, 'Machine Learning', NULL, 1, NULL, '2015-02-26 04:40:22', NULL),
 (18, 'Software', NULL, 1, NULL, '2015-02-26 04:41:07', NULL),
 (19, 'Visual Effects', NULL, 1, NULL, '2015-02-26 04:41:07', NULL),
-(20, 'Hacking', NULL, 1, NULL, '2015-02-26 04:42:14', NULL);
-
+(20, 'Hacking', NULL, 1, NULL, '2015-02-26 04:42:14', NULL),
+(21, 'Other', NULL, 1, NULL, '2015-02-26 04:42:14', NULL);
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `invitation`
 --
-
+drop table if exists `invitation`;
 CREATE TABLE IF NOT EXISTS `invitation` (
   `invite_id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -581,7 +581,7 @@ CREATE TABLE IF NOT EXISTS `invitation` (
 --
 -- Table structure for table `invitation_to_conference`
 --
-
+drop table if exists `invitation_to_conference`;
 CREATE TABLE IF NOT EXISTS `invitation_to_conference` (
   `invitation_to_conference_id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -599,7 +599,7 @@ CREATE TABLE IF NOT EXISTS `invitation_to_conference` (
 --
 -- Table structure for table `invoice`
 --
-
+drop table if exists `invoice`;
 CREATE TABLE IF NOT EXISTS `invoice` (
   `invoice_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -620,7 +620,7 @@ CREATE TABLE IF NOT EXISTS `invoice` (
 --
 -- Table structure for table `keywords`
 --
-
+drop table if exists `keywords`;
 CREATE TABLE IF NOT EXISTS `keywords` (
   `keyword_id` int(11) NOT NULL AUTO_INCREMENT,
   `keyword_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -638,7 +638,7 @@ CREATE TABLE IF NOT EXISTS `keywords` (
 --
 -- Table structure for table `payment`
 --
-
+drop table if exists `payment`;
 CREATE TABLE IF NOT EXISTS `payment` (
   `payment_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -654,7 +654,7 @@ CREATE TABLE IF NOT EXISTS `payment` (
 --
 -- Table structure for table `payment_cash`
 --
-
+drop table if exists `payment_cash`;
 CREATE TABLE IF NOT EXISTS `payment_cash` (
   `transaction_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -673,7 +673,7 @@ CREATE TABLE IF NOT EXISTS `payment_cash` (
 --
 -- Table structure for table `payment_creditcard`
 --
-
+drop table if exists `payment_creditcard`;
 CREATE TABLE IF NOT EXISTS `payment_creditcard` (
   `transaction_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -693,7 +693,7 @@ CREATE TABLE IF NOT EXISTS `payment_creditcard` (
 --
 -- Table structure for table `payment_type`
 --
-
+drop table if exists `payment_type`;
 CREATE TABLE IF NOT EXISTS `payment_type` (
   `paymenttype_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -710,7 +710,7 @@ CREATE TABLE IF NOT EXISTS `payment_type` (
 --
 -- Table structure for table `pending`
 --
-
+drop table if exists `pending`;
 CREATE TABLE IF NOT EXISTS `pending` (
   `pending_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
@@ -736,7 +736,7 @@ CREATE TABLE IF NOT EXISTS `pending` (
 --
 -- Table structure for table `permissions`
 --
-
+drop table if exists `permissions`;
 CREATE TABLE IF NOT EXISTS `permissions` (
   `permission_Id` int(11) NOT NULL,
   `permission_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -750,7 +750,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 --
 -- Table structure for table `profiles`
 --
-
+drop table if exists `profiles`;
 CREATE TABLE IF NOT EXISTS `profiles` (
   `profile_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `fb_email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -784,7 +784,7 @@ INSERT INTO `profiles` (`profile_id`, `fb_email`, `user_id`, `uid`, `access_toke
 --
 -- Table structure for table `reviews`
 --
-
+drop table if exists `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
   `review_id` int(11) NOT NULL AUTO_INCREMENT,
   `sub_id` int(11) NOT NULL,
@@ -808,7 +808,7 @@ CREATE TABLE IF NOT EXISTS `reviews` (
 --
 -- Table structure for table `roles`
 --
-
+drop table if exists `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
   `rolename` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -836,7 +836,7 @@ INSERT INTO `roles` (`role_id`, `rolename`, `remarks`) VALUES
 --
 -- Table structure for table `role_permission`
 --
-
+drop table if exists `role_permission`;
 CREATE TABLE IF NOT EXISTS `role_permission` (
   `rolepermission_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) DEFAULT NULL,
@@ -849,7 +849,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
 --
 -- Table structure for table `room`
 --
-
+drop table if exists `room`;
 CREATE TABLE IF NOT EXISTS `room` (
   `room_id` int(11) NOT NULL AUTO_INCREMENT,
   `venue_id` int(11) NOT NULL,
@@ -869,7 +869,7 @@ CREATE TABLE IF NOT EXISTS `room` (
 --
 -- Table structure for table `room_equipment`
 --
-
+drop table if exists `room_equipment`;
 CREATE TABLE IF NOT EXISTS `room_equipment` (
   `roomequipment_id` int(11) NOT NULL AUTO_INCREMENT,
   `room_id` int(11) DEFAULT NULL,
@@ -893,7 +893,7 @@ CREATE TABLE IF NOT EXISTS `room_equipment` (
 --
 -- Table structure for table `submissions`
 --
-
+drop table if exists `submissions`;
 CREATE TABLE IF NOT EXISTS `submissions` (
   `sub_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -917,7 +917,7 @@ CREATE TABLE IF NOT EXISTS `submissions` (
 --
 -- Table structure for table `submission_authors`
 --
-
+drop table if exists `submission_authors`;
 CREATE TABLE IF NOT EXISTS `submission_authors` (
   `sub_id` int(11) NOT NULL,
   `email` varchar(220) COLLATE utf8_unicode_ci NOT NULL,
@@ -937,7 +937,7 @@ CREATE TABLE IF NOT EXISTS `submission_authors` (
 --
 -- Table structure for table `submission_keyword`
 --
-
+drop table if exists `submission_keyword`;
 CREATE TABLE IF NOT EXISTS `submission_keyword` (
   `keyword_id` int(11) NOT NULL,
   `sub_id` int(11) NOT NULL,
@@ -953,7 +953,7 @@ CREATE TABLE IF NOT EXISTS `submission_keyword` (
 --
 -- Table structure for table `submission_topic`
 --
-
+drop table if exists `submission_topic`;
 CREATE TABLE IF NOT EXISTS `submission_topic` (
   `topic_id` int(11) NOT NULL,
   `sub_id` int(11) NOT NULL,
@@ -969,7 +969,7 @@ CREATE TABLE IF NOT EXISTS `submission_topic` (
 --
 -- Table structure for table `sysrole`
 --
-
+drop table if exists `sysrole`;
 CREATE TABLE IF NOT EXISTS `sysrole` (
   `sysrole_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
@@ -996,7 +996,7 @@ INSERT INTO `sysrole` (`sysrole_id`, `user_id`, `role_id`) VALUES
 --
 -- Table structure for table `users`
 --
-
+drop table if exists `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `firstname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1033,7 +1033,7 @@ INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `email`, `email_temp`, 
 --
 -- Table structure for table `user_bill`
 --
-
+drop table if exists `user_bill`;
 CREATE TABLE IF NOT EXISTS `user_bill` (
   `bill_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -1049,7 +1049,7 @@ CREATE TABLE IF NOT EXISTS `user_bill` (
 --
 -- Table structure for table `venue`
 --
-
+drop table if exists `venue`;
 CREATE TABLE IF NOT EXISTS `venue` (
   `venue_id` int(11) NOT NULL AUTO_INCREMENT,
   `venue_name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
