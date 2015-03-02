@@ -39,8 +39,10 @@ class ConferenceUserRoleController extends \BaseController {
                          foreach ($data['emails'] as $email) {
 
                             $targetUser = User::where('email', '=', $email)->first();
+                            $conferenceUserRole = ConferenceUserRole::where('conf_id','=',$data['conf_id'])
+                            ->where('role_id','=',$roleid)->where('user_id','=',$targetUser->user_id)->first();
 
-                            if (!empty($targetUser)) {
+                            if (!empty($targetUser) && empty($conferenceUserRole)) {
                                 $conferenceUserRole = new ConferenceUserRole();
 
                                 $conferenceUserRole->conf_id = $data['conf_id'];
@@ -142,8 +144,10 @@ public function updateReviewPanels() {
                         foreach ($data['emails'] as $email) {
 
                             $targetUser = User::where('email', '=', $email)->first();
+                            $conferenceUserRole = ConferenceUserRole::where('conf_id','=',$data['conf_id'])
+                            ->where('role_id','=',$roleid)->where('user_id','=',$targetUser->user_id)->first();
 
-                            if (!empty($targetUser)) {
+                            if (!empty($targetUser) && empty($conferenceUserRole)) {
                                 // exists, directly assign the review panel
                                 $conferenceUserRole = new ConferenceUserRole();
 
