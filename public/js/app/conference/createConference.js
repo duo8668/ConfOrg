@@ -1,27 +1,27 @@
 var loadedJson;
 
-function loadDateTimePicker(_minDate, _cutOffDays,_offSetDays) {
-    var minConfDate = new moment(_minDate).add(_offSetDays,'day'); 
+function loadDateTimePicker(_minDate, _cutOffDays, _offSetDays) {
+    var minConfDate = new moment(_minDate).add(_offSetDays, 'day');
 
-    $('#datetimepickerBegin').datetimepicker({useCurrent: false, pickTime: false, pickDate: true, minDate:minConfDate });
-    $('#datetimepickerEnd').datetimepicker({useCurrent: false, pickTime: false, pickDate: true, minDate:minConfDate });
-    $('#datetimepickerCutOffDate').datetimepicker({useCurrent: false, pickTime: true, pickDate: true, minDate:_minDate});
+    $('#datetimepickerBegin').datetimepicker({useCurrent: false, pickTime: false, pickDate: true, minDate: minConfDate});
+    $('#datetimepickerEnd').datetimepicker({useCurrent: false, pickTime: false, pickDate: true, minDate: minConfDate});
+    $('#datetimepickerCutOffDate').datetimepicker({useCurrent: false, pickTime: true, pickDate: true, minDate: _minDate});
 
     $('#datetimepickerBegin').data("DateTimePicker").setViewDate(minConfDate);
     $('#datetimepickerEnd').data("DateTimePicker").setViewDate(minConfDate);
     $('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(_minDate);
-    $('#datetimepickerCutOffDate').data("DateTimePicker").setMinDate(new moment(_minDate.add(1,'day').toArray()).add(-1,'minute'));
+    $('#datetimepickerCutOffDate').data("DateTimePicker").setMinDate(new moment(_minDate.add(1, 'day').toArray()).add(-1, 'minute'));
     $("#datetimepickerBegin").on("dp.hide", function (e) {
         $('#datetimepickerEnd').data("DateTimePicker").setMinDate(e.date);
         $('#datetimepickerEnd').data("DateTimePicker").setViewDate(e.date);
 
-        $('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(new moment(e.date.add(1,'day').toArray()).add(-1,'minute'));
-        $('#frmCreateConf').formValidation('revalidateField','beginDate');
+        $('#datetimepickerCutOffDate').data("DateTimePicker").setViewDate(new moment(e.date.add(1, 'day').toArray()).add(-1, 'minute'));
+        $('#frmCreateConf').formValidation('revalidateField', 'beginDate');
     });
     $("#datetimepickerEnd").on("dp.change", function (e) {
         $('#datetimepickerCutOffDate').data("DateTimePicker").setMaxDate(new moment(e.date.toArray().slice(0, 3)).subtract(_cutOffDays, 'day'));
         $('#datetimepickerBegin').data("DateTimePicker").setMaxDate(e.date);
-        $('#frmCreateConf').formValidation('revalidateField','endDate');
+        $('#frmCreateConf').formValidation('revalidateField', 'endDate');
     });
 }
 
@@ -31,19 +31,18 @@ function loadVenueDropDownListAction() {
         showEffect: "fadeIn",
         showEffectSpeed: 220,
         hideEffect: "fadeOut",
-        hideEffectSpeed: 110 ,
-        showFirstOption : true
+        hideEffectSpeed: 110,
+        showFirstOption: true
     });
 
     $("#ddlVenue").off('change').on('change', function (event, item) {
-        var field = $(this).attr('name');
         $('#frmCreateConf').formValidation('revalidateField', 'venue');
         //$('#frmCreateConf').formValidation('disableSubmitButtons',false);
-        
+
         var _rentalCost = $(this).find('option:selected').data('rental_cost');
         var end = $('#datetimepickerEnd').data("DateTimePicker").getDate();
         var start = $('#datetimepickerBegin').data("DateTimePicker").getDate();
-        var days = end.add(1,'day').diff(start, 'days');
+        var days = end.add(1, 'day').diff(start, 'days');
 
         $('#price').val('S$ ' + _rentalCost);
         $('#quantity').val(days);
@@ -101,9 +100,9 @@ function loadPayNowbutton(createInvoiceUrl) {
                         });
                     }
                 });
-}
-});
-});
+            }
+        });
+    });
 }
 
 var _loadVenueIntoDropDownBox;
@@ -200,23 +199,24 @@ function loadFormValidation(availableRoomsUrl) {
             },
             venue: {
                 validators: {
-                 callback: {
-                    message: 'Please select a venue',
-                    callback: function(value, validator, $field) {
+                    callback: {
+                        message: 'Please select a venue',
+                        callback: function (value, validator, $field) {
                             // Get the selected options
-                            return  value !== null &&  value > 0;
+                            console.log(value);
+                            return  value !== null && value > 0;
                         }
                     }
                 }
             }
         }
-    }).on('status.field.fv',function(e,data){
+    }).on('status.field.fv', function (e, data) {
 
-        if(data.status === 'VALID'){
-            $(e.delegateTarget).formValidation('disableSubmitButtons',false);
+        if (data.status === 'VALID') {
+            $(e.delegateTarget).formValidation('disableSubmitButtons', false);
         }
 
-    }).on('err.form.fv', function(e) {
+    }).on('err.form.fv', function (e) {
 
         $(e.target).data('formValidation').disableSubmitButtons(false);
 
@@ -229,15 +229,17 @@ function loadFormValidation(availableRoomsUrl) {
             data.fv.disableSubmitButtons(false);
         }
         if (data.fv._cacheFields.beginDate.val() !== '' && data.fv._cacheFields.endDate.val() !== '' && data.fv._cacheFields.maxSeats.val() !== '') {
-            if(data.field !== 'venue'){
+            if (data.field !== 'venue') {
                 clearTimeout(_loadVenueIntoDropDownBox);
-                _loadVenueIntoDropDownBox = setTimeout(function(){
+                console.log(e);
+                data.fv.revalidateField('venue');
+                _loadVenueIntoDropDownBox = setTimeout(function () {
                     loadVenueIntoDropDownBox(availableRoomsUrl);
-                },500);                
+                }, 500);
             }
-        }else if(data.fv._cacheFields.beginDate.val() === '' || data.fv._cacheFields.endDate.val() === '' || data.fv._cacheFields.maxSeats.val() === ''){
+        } else if (data.fv._cacheFields.beginDate.val() === '' || data.fv._cacheFields.endDate.val() === '' || data.fv._cacheFields.maxSeats.val() === '') {
             //$("#ddlVenue").data("selectBox-selectBoxIt").remove();
-            //$("#ddlVenue").data("selectBox-selectBoxIt").disable();
+            //$("#ddlVenue").data("selectBox-selectBoxIt").disable();           
         }
 
     }).on('success.form.fv', function (e, data) {
@@ -341,31 +343,28 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
                 //* Loop to create option groups and options
                 $.each(data, function (key, value) {
 
-                    if(_optgroup === null){
-                        _optgroup = $('<optgroup>');                        
-                        _optgroup.attr('label',value.venue_name);
-                        curGroup = value.venue_name; 
-                    }else{
-                        if(curGroup !== value.venue_name){
-                            if(_optgroup !== null){
+                    if (_optgroup === null) {
+                        _optgroup = $('<optgroup>');
+                        _optgroup.attr('label', value.venue_name);
+                        curGroup = value.venue_name;
+                    } else {
+                        if (curGroup !== value.venue_name) {
+                            if (_optgroup !== null) {
                                 optGroups.push(_optgroup);
-                                _optgroup = $('<optgroup>');                        
-                                _optgroup.attr('label',value.venue_name);
-                                curGroup = value.venue_name; 
+                                _optgroup = $('<optgroup>');
+                                _optgroup.attr('label', value.venue_name);
+                                curGroup = value.venue_name;
                             }
                         }
-                    }                    
+                    }
 
-                    var $option = $("<option></option>").val(value.room_id).text(value.room_name + '(S$ ' + value.rental_cost + '/day, capacity: '+ value.capacity +')');
+                    var $option = $("<option></option>").val(value.room_id).text(value.room_name + '(S$ ' + value.rental_cost + '/day, capacity: ' + value.capacity + ')');
                     $option.data('rental_cost', value.rental_cost);
-                    _optgroup.append($option);                        
+                    _optgroup.append($option);
 
                 });
-                //* check if the length of groups is == 0 and if the optgroup is not empty
-                if(optGroups.length == 0 && _optgroup !== null){
-                    // manually push the group
-                    optGroups.push(_optgroup);
-                }
+                // always manually push the last to the group
+                optGroups.push(_optgroup);
 
                 //* Loop to inject option groups into ddl
                 $.each(optGroups, function (key, value) {
@@ -377,7 +376,7 @@ function loadVenueIntoDropDownBox(availableRoomsUrl) {
                 //* reset width               
                 $('.venueContainer').width($('#ddlVenueSelectBoxItContainer').width());
             }
-        }).fail(function (xhr, stat, msg) { 
+        }).fail(function (xhr, stat, msg) {
             alert(xhr.responseText);
         }).always(function (data) {
 

@@ -47,7 +47,6 @@ class ConferenceUserRoleController extends \BaseController {
                                 $conferenceUserRole->conf_id = $data['conf_id'];
                                 $conferenceUserRole->role_id = $roleid;
                                 $conferenceUserRole->user_id =$targetUser->user_id ;
-                                $conferenceUserRole->created_by = Auth::user()->user_id;
                                 $saved = $conferenceUserRole->save(); 
 
                                 if (!empty($saved)) {
@@ -152,7 +151,6 @@ public function updateReviewPanels() {
                                 $conferenceUserRole->conf_id = $data['conf_id'];
                                 $conferenceUserRole->role_id = $roleid;
                                 $conferenceUserRole->user_id =$targetUser->user_id ;
-                                $conferenceUserRole->created_by = $user->user_id;
                                 $saved = $conferenceUserRole->save(); 
 
                                 if ($saved) {
