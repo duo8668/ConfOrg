@@ -51,7 +51,7 @@ Invoice & Payment
                         @endif
                         <!-- delete the nerd (uses the destroy method DESTROY /nerds/{id} -->
                         <!-- we will add this later since its a little more complicated than the other two buttons -->
-                        @if($invoice->status=='unpaid')                
+                        @if($invoice->status != 'paid')                
                         {{ Form::open(array('url' => 'invoice/' . $invoice->invoice_id, 'class' => 'inline')) }}
                         {{ Form::hidden('_method', 'DELETE') }}
                         {{ Form::submit('Cancel Purchase', array('class' => 'btn btn-danger btn-xs')) }}
