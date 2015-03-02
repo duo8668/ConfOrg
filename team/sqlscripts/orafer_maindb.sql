@@ -606,6 +606,7 @@ CREATE TABLE IF NOT EXISTS `invoice` (
   `conf_id` int(11) NOT NULL,
   `quantity` int(3) NOT NULL,
   `price` float NOT NULL,
+  `item_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ticket',
   `created_by` int(11) NOT NULL,
   `modified_by` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
