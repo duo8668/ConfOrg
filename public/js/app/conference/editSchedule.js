@@ -156,6 +156,7 @@ function makeDataEvent(el, event) {
 }
 
 function loadCalendar(urlGetConferenceScheduleEvents, confroomschedule_id){
+	
 	$('#calendar').fullCalendar({
 		timezone: 'local',
 		header: {
@@ -211,6 +212,12 @@ function loadCalendar(urlGetConferenceScheduleEvents, confroomschedule_id){
 					$_externalEvents.css('border', 'red thick solid');
 				} else {
 					$_externalEvents.css('border', '');
+				}
+				var $_eventTrash =$('#eventTrash');
+				if (isElemOverDiv($_eventTrash)) {
+					$_eventTrash.css('border', 'red thick solid');
+				} else {
+					$_eventTrash.css('border', '');
 				}
 			});
 		},

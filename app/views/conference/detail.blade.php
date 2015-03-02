@@ -113,11 +113,8 @@ Conference Detail
 		border: 1px solid #ccc;
 		background: #eee;
 		text-align: left;
-		max-height: 20em;	
-		margin-top: 4em;
+		max-height: 20em;
 		margin-bottom: 0px;
-		overflow: scroll;
-		z-index: 10;
 	}
 
 	#external-events:hover {
@@ -181,7 +178,6 @@ Conference Detail
 		margin-top:1px;
 		padding: 0px;
 		padding-bottom: 5px;
-		z-index: 8;
 	}
 
 	.alert-warning:hover {
@@ -992,6 +988,9 @@ $.fn.textWidth = function() {
 								</div>
 								<div class="col-md-12">
 									<div class="col-md-3">
+										<div id='eventAdjust'class="" style="height:4em;">
+											
+										</div>
 										<div id='external-events'class="col-md-12 alert alert-success" role="alert">
 											<h4>Available Submissions</h4>
 										</div>
