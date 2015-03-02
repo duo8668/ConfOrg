@@ -29,80 +29,85 @@ class ConferenceUserRoleController extends \BaseController {
 					$originalPStaffs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::ConferenceStaff()->role_id)->where('is_used','=',0)->get();
 
                     $numRowUpdated = 0;
-                    $result = DB::transaction(function() use ($data, $user, $originalStaffs, $numRowUpdated) {
+                    $result = DB::transaction(function() use ($data, $user, $originalStaffs,$originalPStaffs, $numRowUpdated) {
 
 
                       $roleid = Role::ConferenceStaff()->role_id;
 
                       // add all first
                       if (!empty($data['emails'])) {
-                       foreach ($data['emails'] as $email) {
+                         foreach ($data['emails'] as $email) {
 
-                        $targetUser = User::where('email', '=', $email)->first();
-                        $conferenceUserRole = ConferenceUserRole::where('conf_id','=',$data['conf_id'])
-                        ->where('role_id','=',$roleid)->where('user_id','=',$targetUser->user_id)->first();
+                            $targetUser = User::where('email', '=', $email)->first();                            
 
-                        if (!empty($targetUser) && empty($conferenceUserRole)) {
-                            $conferenceUserRole = new ConferenceUserRole();
+                            if (!empty($targetUser)) {
+                             $conferenceUserRole = ConferenceUserRole::where('conf_id','=',$data['conf_id'])
+                             ->where('role_id','=',$roleid)->where('user_id','=',$targetUser->user_id)->first();
 
-                            $conferenceUserRole->conf_id = $data['conf_id'];
-                            $conferenceUserRole->role_id = $roleid;
-                            $conferenceUserRole->user_id =$targetUser->user_id ;
-                            $saved = $conferenceUserRole->save(); 
+                             if(empty($conferenceUserRole)){
 
-                            if (!empty($saved)) {
+                              $conferenceUserRole = new ConferenceUserRole();
+
+                              $conferenceUserRole->conf_id = $data['conf_id'];
+                              $conferenceUserRole->role_id = $roleid;
+                              $conferenceUserRole->user_id =$targetUser->user_id ;
+                              $saved = $conferenceUserRole->save(); 
+
+                              if (!empty($saved)) {
                                 $numRowUpdated ++;
                             } 
-                        } else {
-                            $inviteToConference = InviteToConference::where(array('conf_id' => $data['conf_id']))
-                            ->Where('email','=', $email)
-                            ->first();
-
-                            if(empty($inviteToConference)){
-                                $sentSaved  = $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
-
-                                if($sentSaved){
-                                    $numRowUpdated ++;
-                                }
-                            }
-
                         }
+
+                    } else {
+                        $inviteToConference = InviteToConference::where(array('conf_id' => $data['conf_id']))
+                        ->Where('email','=', $email)
+                        ->first();
+
+                        if(empty($inviteToConference)){
+                            $sentSaved  = $this->emailForInviteToConference($data['conf_id'],$roleid,$email);
+
+                            if($sentSaved){
+                                $numRowUpdated ++;
+                            }
+                        }
+
                     }
                 }
+            }
 
                     // delete not exist in ConfUserRole
-                if (!empty($originalStaffs)) {
-                  if (empty($data['emails'])) {
-                     $data['emails'] = array();
-                 }
-                 foreach ($originalStaffs as $oristaff) {
-
-                     if (!in_array($oristaff->email, $data['emails'], true)) {
-                        $numRowUpdated += $oristaff->forceDelete();
-                    }
-                }
-            }
-
-            // delete not exist in InviteToConference
-            if (!empty($originalPStaffs)) {
+            if (!empty($originalStaffs)) {
               if (empty($data['emails'])) {
-                 $data['emails'] = array();
-             }
-             foreach ($originalPStaffs as $oriPstaff) {
+               $data['emails'] = array();
+           }
+           foreach ($originalStaffs as $oristaff) {
 
-                 if (!in_array($oriPstaff->email, $data['emails'], true)) {
-                    $numRowUpdated += $oriPstaff->forceDelete();
-                }
+               if (!in_array($oristaff->email, $data['emails'], false)) {
+                $numRowUpdated += $oristaff->forceDelete();
             }
         }
+    }
+
+            // delete not exist in InviteToConference
+    if (!empty($originalPStaffs)) {
+      if (empty($data['emails'])) {
+       $data['emails'] = array();
+   }
+   foreach ($originalPStaffs as $oriPstaff) {
+
+       if (!in_array($oriPstaff->email, $data['emails'], false)) {
+        $numRowUpdated += $oriPstaff->forceDelete();
+    }
+}
+}
 
 
-        return array('numRowUpdated' => $numRowUpdated
-            , 'conStaffs' => ConferenceUserRole::ConferenceStaffs($data['conf_id'])->get()
-          , 'pendingConfStaffs' =>  InviteToConference::where('conf_id','=', $data['conf_id'])
-          ->where('role_id','=',Role::ConferenceStaff()->role_id)
-          ->where('is_used','=',0)->get());
-    });
+return array('numRowUpdated' => $numRowUpdated
+    , 'conStaffs' => ConferenceUserRole::ConferenceStaffs($data['conf_id'])->get()
+    , 'pendingConfStaffs' =>  InviteToConference::where('conf_id','=', $data['conf_id'])
+    ->where('role_id','=',Role::ConferenceStaff()->role_id)
+    ->where('is_used','=',0)->get());
+});
 } catch (Exception $ex) {
 	throw $ex;
 }
@@ -133,7 +138,7 @@ public function updateReviewPanels() {
             try {
 
                 $user = Auth::user();
-                $originalRPs = ConferenceUserRole::ConferenceReviewPanels($data['conf_id']);
+                $originalRPs = ConferenceUserRole::ConferenceReviewPanels($data['conf_id'])->get();
                 $originalPRPs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::Reviewer()->role_id)->where('is_used','=',0)->get();
                 
                 $numRowUpdated = 0;
@@ -147,21 +152,27 @@ public function updateReviewPanels() {
                         foreach ($data['emails'] as $email) {
 
                             $targetUser = User::where('email', '=', $email)->first();
-                            $conferenceUserRole = ConferenceUserRole::where('conf_id','=',$data['conf_id'])
-                            ->where('role_id','=',$roleid)->where('user_id','=',$targetUser->user_id)->first();
+                            
 
-                            if (!empty($targetUser) && empty($conferenceUserRole)) {
+                            if (!empty($targetUser)) {
+                                
                                 // exists, directly assign the review panel
-                                $conferenceUserRole = new ConferenceUserRole();
+                                $conferenceUserRole = ConferenceUserRole::where('conf_id','=',$data['conf_id'])
+                                ->where('role_id','=',$roleid)->where('user_id','=',$targetUser->user_id)->first();
 
-                                $conferenceUserRole->conf_id = $data['conf_id'];
-                                $conferenceUserRole->role_id = $roleid;
-                                $conferenceUserRole->user_id =$targetUser->user_id ;
-                                $saved = $conferenceUserRole->save(); 
+                                if(empty($conferenceUserRole)){                                    
 
-                                if ($saved) {
-                                    $numRowUpdated ++;
-                                } 
+                                    $conferenceUserRole = new ConferenceUserRole();
+
+                                    $conferenceUserRole->conf_id = $data['conf_id'];
+                                    $conferenceUserRole->role_id = $roleid;
+                                    $conferenceUserRole->user_id =$targetUser->user_id ;
+                                    $saved = $conferenceUserRole->save(); 
+
+                                    if ($saved) {
+                                        $numRowUpdated ++;
+                                    } 
+                                }                                
                             } else {
                                 $inviteToConference = InviteToConference::where(array('conf_id' => $data['conf_id']))
                                 ->Where('email','=', $email)
@@ -187,23 +198,23 @@ public function updateReviewPanels() {
                         }
                         foreach ($originalRPs as $oriRP) {
 
-                            if (!in_array($oriRP->email, $data['emails'], true)) {
+                            if (!in_array($oriRP->email, $data['emails'], false)) {
                                 $numRowUpdated += $oriRP->forceDelete();
                             }
                         }
                     }
 
                     // delete not exist in InviteToConference
-                    if (!empty($originalPRPs)) {
+                    if (!empty($originalP_RPs)) {
                         if (empty($data['emails'])) {
                             $data['emails'] = array();
                         }
 
-                        foreach ($originalPRPs as $oriPRP) {
+                        foreach ($originalP_RPs as $oriP_RP) {
 
-                            if (!in_array($oriPRP->email, $data['emails'], true)) {
+                            if (!in_array($oriP_RP->email, $data['emails'], false)) {
 
-                                $numRowUpdated += $oriPRP->forceDelete();
+                                $numRowUpdated += $oriP_RP->forceDelete();
                             }
                         }
                     }
