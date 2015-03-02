@@ -724,7 +724,7 @@ $.fn.textWidth = function() {
 											<tr>
 												<td><a href="{{ URL::to('/invoice').'/'.$inv->invoice_id }}">Invoice #{{ $inv->invoice_id }}</a></td>
 												<td>{{ $inv->user->firstname }} {{ $inv->user->lastname }}</td>
-												<td>${{{ $inv->quantity }}}</td>
+												<td> {{{ $inv->quantity }}}</td>
 												<td>${{{ $inv->total }}}</td>
 											</tr> 
 											@endforeach
