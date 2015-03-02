@@ -51,7 +51,7 @@ Route::post('/send_message', array(
 ));
 
 // TESTING
-// Route::get('/testsql', 'SubmissionController@testsql');
+Route::get('/cron', 'UtilsController@cron');
 
 
 // });

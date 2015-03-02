@@ -64,7 +64,8 @@ class UtilsController extends \BaseController {
 	public static function acceptRejectSubs() {
 		
 		$dt = new DateTime("now", new DateTimeZone('Asia/Singapore'));
-		$confs = Conference::where('cutoff_time', '<=', $dt)->get();
+		// $confs = Conference::where('cutoff_time', '<=', $dt)->get();
+		$confs = Conference::where('conf_id', '=', 1)->get();
 		foreach ($confs as $conf) {
 
 			//accept submissions who passed the minimum score
@@ -97,6 +98,10 @@ class UtilsController extends \BaseController {
 				});
 		}
 		Log::info($dt->format('Y-m-d H:i:s') . ' acceptRejectSubs');
+	}
+
+	public function cron() {
+		UtilsController::acceptRejectSubs();
 	}
 
 	public static function checkHasRole($array, $role) {

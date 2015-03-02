@@ -239,7 +239,7 @@ class ReviewController extends \BaseController {
 			$authors = $submission->authors()->get();
 			// $reviews = $submission->reviews()->get();
 			$reviews = DB::table('reviews')->join('users', 'reviews.user_id', '=', 'users.user_id')
-						->select('users.firstname', 'users.lastname', 'reviews.comment', 'reviews.internal_comment', 'reviews.quality_score', 'reviews.significance_score', 'reviews.presentation_score', 'reviews.relevance_score', 'reviews.originality_score')->get();
+						->select('users.firstname', 'users.lastname', 'reviews.comment', 'reviews.internal_comment', 'reviews.quality_score', 'reviews.significance_score', 'reviews.presentation_score', 'reviews.relevance_score', 'reviews.originality_score')->where('reviews.sub_id', '=', $id)->get();
 			$sub_topics = DB::table('submission_topic')
 			->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
 			->select('submission_topic.topic_id', 'conference_topic.topic_name')->where('submission_topic.sub_id', '=', $id)->get();
