@@ -116,9 +116,9 @@ class ConferenceController extends \BaseController {
 
         $reviewPanels = ConferenceUserRole::ConferenceReviewPanels($conf_id)->get();
 
-        $pendingStaffs = InviteToConference::where('conf_id','=',$conf_id)->where('role_id','=',Role::ConferenceStaff()->role_id)->get();
+        $pendingStaffs = InviteToConference::where('is_used','=',0)->where('conf_id','=',$conf_id)->where('role_id','=',Role::ConferenceStaff()->role_id)->get();
 
-        $pendingReviewers = InviteToConference::where('conf_id','=',$conf_id)->where('role_id','=',Role::Reviewer()->role_id)->get();
+        $pendingReviewers = InviteToConference::where('is_used','=',0)->where('conf_id','=',$conf_id)->where('role_id','=',Role::Reviewer()->role_id)->get();
 
         $submissions = Submission::where('conf_id', '=', $conf_id)->get();
 
