@@ -498,7 +498,6 @@ $.fn.textWidth = function() {
 
 					<!-- Description -->
 					<div role="tabpanel" class="tab-pane fade  in active" id="description">
-					{{ dd((!$isCancel  && ($isChair || $isStaff ))); }}
 						@if(!$isCancel  && ($isChair || $isStaff ))
 						{{ Form::button('Edit Conference Description',  array('class' => 'btn btn-info btn-sm pull-right btnEdit','id'=>'btnEditDescription')) }}
 						@endif
