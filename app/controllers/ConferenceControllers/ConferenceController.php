@@ -116,6 +116,10 @@ class ConferenceController extends \BaseController {
 
         $reviewPanels = ConferenceUserRole::ConferenceReviewPanels($conf_id)->get();
 
+        $pendingStaffs = InviteToConference::where('conf_id','=',$conf_id)->where('role_id','=',Role::ConferenceStaff()->role_id)->get();
+
+        $pendingReviewers = InviteToConference::where('conf_id','=',$conf_id)->where('role_id','=',Role::Reviewer()->role_id)->get();
+
         $submissions = Submission::where('conf_id', '=', $conf_id)->get();
 
         $invoices = Invoice::where('status', '=', 'paid')
@@ -129,12 +133,14 @@ class ConferenceController extends \BaseController {
                 ->where('conference_topic.conf_id', '=', $conf_id)
                 ->groupBy('conference_topic.topic_name')
                 ->get();
-
+                dd(Auth::user()->hasConfRole($conf->conf_id, Role::Reviewer()->rolename));
         $view = View::make(
                         'conference.detail', array('fields' => $fields, 'conf' => $conf
                     , 'confChairUser' => $confChairUser
                     , 'allStaffs' => $allStaffs
+                    , 'pendingStaffs' => $pendingStaffs
                     , 'reviewPanels' => $reviewPanels
+                    , 'pendingReviewers' => $pendingReviewers
                     , 'submissions' => $submissions
                     , 'invoices' => $invoices
                     , 'topics' => $topics

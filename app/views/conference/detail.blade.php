@@ -337,6 +337,8 @@ Conference Detail
 			}
 		});
 
+		$('[data-toggle="tooltip"]').tooltip();
+
 	});
 
 $.fn.textWidth = function() {
@@ -576,6 +578,9 @@ $.fn.textWidth = function() {
 											{{  $staff['firstname'] }},  {{ $staff['lastname'] }}
 										</span>
 										@endforeach
+										@foreach($pendingStaffs as $pendingStaff)
+										<span  class="staffInfo label label-warning" data-toggle="tooltip" data-placement="top" title="Pending signup, email sent." style"color:black;margin:2px;">{{  $pendingStaff->email }}</span> 
+										@endforeach 
 									</div>
 								</td>
 							</tr>
@@ -605,6 +610,9 @@ $.fn.textWidth = function() {
 											{{  $reviewpanel['firstname'] }},  {{ $reviewpanel['lastname'] }}
 										</span>
 										@endforeach
+										@foreach($pendingReviewers as $pendingReviewer)
+										<span  class="staffInfo label label-warning" data-toggle="tooltip" data-placement="top" title="Pending signup, email sent." style"color:black;margin:2px;">{{  $pendingReviewer->email }}</span> 
+										@endforeach 
 									</div>
 								</td>
 							</tr>

@@ -32,8 +32,8 @@
                     }
                 }
             });
-
-            setTimeout(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            setTimeout(function () {                
                 $('#resultModal').modal('hide');
                 $('#staffEditor').modal({keyboard: false, backdrop: 'static', show: true});
             }, 1000);
@@ -128,6 +128,7 @@ if (data.success !== undefined) {
     $('#modalMessage').html(message);
     $('#allStaffContainer').html('');
     if (data.success.conStaffs !== undefined) {
+        $('#allStaffContainer').html('');
 //* put back all into front page
 $.each(data.success.conStaffs, function (key, value) {
 

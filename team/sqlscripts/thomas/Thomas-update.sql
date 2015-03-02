@@ -25,7 +25,7 @@ CREATE TABLE `equipment_category` (
   `updated_at` datetime DEFAULT NULL,
   `status` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Pending',
   PRIMARY KEY (`equipmentcategory_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 SELECT * FROM conforg_db.equipment_category;
 
 DROP TABLE IF EXISTS `equipment`;
@@ -40,7 +40,7 @@ CREATE TABLE `equipment` (
   `updated_at` datetime DEFAULT NULL,
   `equipment_status` varchar(45) NOT NULL DEFAULT 'Pending',
   PRIMARY KEY (`equipment_id`,`equipmentcategory_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS 'room';
 CREATE TABLE `room` (
@@ -55,7 +55,7 @@ CREATE TABLE `room` (
   `updated_at` datetime DEFAULT NULL,
   `available` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`room_id`,`venue_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS 'venue';
 CREATE TABLE `venue` (
@@ -71,7 +71,7 @@ CREATE TABLE `venue` (
   `company_id` int(11) DEFAULT NULL,
   `available` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'yes',
   PRIMARY KEY (`venue_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS 'payment';
 CREATE TABLE `payment` (

@@ -129,6 +129,7 @@
                 $('#modalMessage').html(message);
                 $('#allReviewPanelContainer').html('');
                 if (data.success.reviewPanels !== undefined) {
+                    $('#allReviewPanelContainer').html('');
                     //* put back all into front page
                     $.each(data.success.reviewPanels, function (key, value) {
 
