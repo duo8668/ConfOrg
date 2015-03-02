@@ -48,14 +48,13 @@
         </label>
       </div>
       @endforeach
-      <p class="help-block col-md-12">Categorizing your conference will help in making your conference visible in ORAFER search result</p>
+     
     </div>
   </div>
   <!-- Submit Button -->
   <div class="row">  
     <div class="col-md-8 col-md-offset-2">
       {{ Form::submit('Search Conferences', array('class' => 'btn btn-primary btn-md btn-block')) }}
-
     </div>
   </div>
   {{ Form::close() }}
