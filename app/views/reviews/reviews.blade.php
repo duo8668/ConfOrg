@@ -20,7 +20,20 @@
 	<hr>
 @endif
 
+@if (Auth::user()->hasConfRole($submission->conf_id, 'Conference Chair'))
+	<div class="row">
+		<label class="col-md-2 control-label text-right">Authors</label>
+		<div class="col-md-10">
+		 	@foreach($sub_authors as $author)
+		 		{{{ $author->last_name }}}, {{{ $author->first_name}}}. <em>{{{ $author->organization }}}</em>. {{{ $author->email }}}<br />
+		 	@endforeach
+		</div>
+	</div>
+@endif
+
+
 	@include('reviews._reviewpartials')
+	
 <?php
 	$count = count($reviews);
 ?>
