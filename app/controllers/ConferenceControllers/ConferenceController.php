@@ -133,7 +133,7 @@ class ConferenceController extends \BaseController {
                 ->where('conference_topic.conf_id', '=', $conf_id)
                 ->groupBy('conference_topic.topic_name')
                 ->get();
-                dd(Auth::user()->hasConfRole($conf->conf_id, Role::Reviewer()->rolename));
+               // dd(Auth::user()->hasConfRole($conf->conf_id, Role::Reviewer()->rolename));
         $view = View::make(
                         'conference.detail', array('fields' => $fields, 'conf' => $conf
                     , 'confChairUser' => $confChairUser
