@@ -482,7 +482,7 @@ $.fn.textWidth = function() {
 					<li role="presentation"><a href="#reviewer" aria-controls="reviewer" role="tab" data-toggle="tab">Reviewers</a></li>
 					@endif
 
-					@if($isChair || $isStaff || $isReviewer)
+					@if($isChair)
 					<!-- Submissions -->
 					<li role="presentation"><a href="#submissions" aria-controls="submissions" role="tab" data-toggle="tab">Submissions</a></li>
 					@endif
@@ -620,7 +620,7 @@ $.fn.textWidth = function() {
 					</div>
 					@endif
 
-					@if($isChair || $isStaff || $isReviewer)
+					@if($isChair)
 					<!-- Submissions -->
 					<div role="tabpanel" class="tab-pane fade" id="submissions">
 
