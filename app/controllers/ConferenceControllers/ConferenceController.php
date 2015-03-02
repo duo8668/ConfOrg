@@ -118,7 +118,7 @@ class ConferenceController extends \BaseController {
 
         $submissions = Submission::where('conf_id', '=', $conf_id)->get();
 
-        $invoices = Invoice::where('status', '=', 'Paid')
+        $invoices = Invoice::where('status', '=', 'paid')
                 ->where('conf_id', '=', $conf_id)
                 ->where('user_id', '<>', $confChairUser->user_id)
                 ->get();

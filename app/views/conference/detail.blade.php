@@ -316,22 +316,25 @@ Conference Detail
 		}).off('change.selectBoxIt').on('change.selectBoxIt',function(evt,obj){
 			$publicCalendar.fullCalendar('gotoDate',$ddlPublicSchedule.val()); 
 		});
-		$publicCalendar.fullCalendar('gotoDate',$('#ddlPublicSchedule').val());
 
-		$("ul li a[href^='#']").on('click', function(e) {
-			// prevent default anchor click behavior
-			e.preventDefault();
-			// store hash
-			var hash = this.hash;
-			// animate
-			$(hash).animate({
-				scrollTop: $(hash).offset().top
-			}, 300, function(){
-				// when done, add hash to url
-				// (default click behaviour)
-				window.location.hash = hash;
-			});
+		$('a[href*=#]:not([href=#])').on('shown.bs.tab',function(e) {
 
+			if(e.currentTarget.hash!== undefined){
+				if(e.currentTarget.hash === '#schedule'){
+					$publicCalendar.fullCalendar('gotoDate',$('#ddlPublicSchedule').val());
+				}
+			}
+			
+			if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+				var target = $(this.hash);
+				target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+				console.log(target);
+				if (target.length) {
+					$('html,body').animate({
+						scrollTop: target.offset().top
+					}, 1000);
+				}
+			}
 		});
 
 	});

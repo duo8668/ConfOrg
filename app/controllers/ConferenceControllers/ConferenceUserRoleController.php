@@ -27,8 +27,7 @@ class ConferenceUserRoleController extends \BaseController {
 					$user = Auth::user();
 					$originalStaffs = ConferenceUserRole::ConferenceStaffs($data['conf_id'])->get();
 					$originalPStaffs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::ConferenceStaff()->role_id)->where('is_used','=',0)->get();
-
-                    dd(empty($originalStaffs));
+ 
                     $numRowUpdated = 0;
                     $result = DB::transaction(function() use ($data, $user, $originalStaffs, $numRowUpdated) {
 
