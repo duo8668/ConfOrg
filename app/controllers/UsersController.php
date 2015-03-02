@@ -617,6 +617,7 @@ class UsersController extends \BaseController {
 			->select('conference.conf_id', 'conference.title', 'conference.begin_date', 'conference.end_date', 'confuserrole.role_id', 'venue.venue_name')
 			->where('confuserrole.user_id', '=', Auth::user()->user_id)
 			->groupBy('confUserRole.role_id')
+			->groupBy('conference.title')
 			->get();
 
 			$has_participant = UtilsController::checkHasRole($confs, 8);
