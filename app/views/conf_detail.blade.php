@@ -30,7 +30,7 @@
                 ?>
                 @if (Auth::check())
                     {{-- if conf chair or staff, show edit button  --}}
-                    @if (Auth::user()->hasConfRole($conf->conferences->conf_id, 'Conference Chair') || Auth::user()->hasConfRole($conf->conferences->conf_id, 'Conference Staff') || Auth::user()->hasConfRole($conf->conferences->conf_id, 'Reviewer') )
+                    @if (Auth::user()->hasConfRole($conf->conferences->conf_id, 'Conference Chair') || Auth::user()->hasConfRole($conf->conferences->conf_id, 'Conference Staff')  )
                         <div class="row">
                                 <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
                                     <a href="{{ URL::to('conference/detail?conf_id=' . $conf->conferences->conf_id) }}" class="btn btn-default btn-block" role="button">Edit Conference Info</a>
