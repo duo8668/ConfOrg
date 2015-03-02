@@ -68,7 +68,8 @@ class ConferenceRoomScheduleController extends BaseController {
                     ->whereNotIn('room_id', $listUsed)
                     ->where('room.available','=','yes')
                     ->where('capacity','>=',$maxSeat)
-                    ->select('room_id', 'room_name', 'venue_name','rental_cost','capacity')
+                    ->select('room_id', 'room_name', 'venue_name','rental_cost','capacity')                    
+                    ->orderBy('venue_name')
                     ->orderBy('capacity')
                     ->get();
                 } else {
@@ -76,9 +77,12 @@ class ConferenceRoomScheduleController extends BaseController {
                     ->where('room.available','=','yes')
                     ->where('capacity','>=',$maxSeat)
                     ->select('room_id', 'room_name', 'venue_name', 'rental_cost','capacity')
+                    ->orderBy('venue_name')
                     ->orderBy('capacity')
                     ->get();
                 }
+
+                //dd(DB::getQueryLog());
                 return $available;
             }
         }
