@@ -20,7 +20,7 @@
             <div class="col-md-12" style="margin-bottom:50px;">
                
                 <h2 class="text-center"><u>{{{ $conf->conferences->title }}}</u></h2>
-                <h3 class="text-center">{{ $conf->conferences->Room()->Venue()->venue_name }}</h3>
+                <h3 class="text-center">{{ $conf->conferences->Room()->Venue()->venue_name }} - {{ $conf->conferences->Room()->room_name}}</h3>
                 <h3 class="text-center">{{ date("d F Y",strtotime($conf->conferences->begin_date)) }} to {{ date("d F Y",strtotime($conf->conferences->end_date)) }}</h3>
 
                 <!-- SUBMIT PAPER BUTTON  -->
