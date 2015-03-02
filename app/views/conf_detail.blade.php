@@ -15,17 +15,7 @@
           <li><a href="{{ URL::to('/conference_list') }}" style="color:#777;"><i class="fa fa-arrow-left"></i> Back to Conference List</a></li>
         </ol>
         <hr>
-        
-        <form class="form-horizontal">
-            <div class="form-group">
-                <div class="col-md-10" style="padding-left:0; padding-right:0;" >
-                    <input type="text" class="form-control" id="search_conf" placeholder="Search conference" >
-                </div>
-              <button type="submit" class="btn btn-primary col-md-2">Search Conference</button>
-            </div>
-        </form>
-        <hr>
-        
+                
         <div class="row">
             <div class="col-md-12" style="margin-bottom:50px;">
                
