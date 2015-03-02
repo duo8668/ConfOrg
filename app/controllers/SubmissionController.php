@@ -236,7 +236,7 @@ class SubmissionController extends \BaseController {
 		if (!empty($submission) && $submission->user_id == Auth::user()->user_id) {
 			if ($submission->status == 0 ) {
 				$keywords = $submission->keywords()->get();
-				$conf_id = Input::get('conf_id');
+				$conf_id = $submission->conf_id;
 				$conf_topics = ConferenceTopic::where('conf_id' , '=', $conf_id)->get();
 				$topics = DB::table('submission_topic')
 				->leftJoin('conference_topic', 'submission_topic.topic_id', '=', 'conference_topic.topic_id')
@@ -247,6 +247,8 @@ class SubmissionController extends \BaseController {
 				foreach ($topics as $topic) {
 					array_push($selected_topic, $topic->topic_id);
 				}
+
+				// return var_dump($conf_topics);
 
 				return View::make('submission.edit')->withSubmission($submission)
 				->with('sub_topics', $selected_topic)

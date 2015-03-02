@@ -53,7 +53,7 @@
         <label class="col-md-2 control-label text-right">Topics</label> 
         <div class="col-md-10">
           @foreach ($sub_topics as $topic) 
-            {{{ $topic->topic_name }}}
+            {{{ $topic->topic_name }}}, 
           @endforeach
         </div>
       </div>
@@ -63,7 +63,7 @@
         <label class="col-md-2 control-label text-right">Keywords</label>    
         <div class="col-md-10">
           @foreach ($keyword as $word) 
-            {{{ $word->keyword_name }}}
+            {{{ $word->keyword_name }}},
           @endforeach
         </div>
       </div>

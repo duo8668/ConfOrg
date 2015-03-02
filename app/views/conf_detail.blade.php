@@ -108,7 +108,7 @@
             <div class="col-md-10 col-md-offset-1">
                 <legend>About the Conference</legend>
                 <p class="desc">
-                    {{ $conf->description }}
+                    {{{ $conf->description }}}
                 </p>
                 @if (!empty($topics))
                     <legend>Topics</legend>
