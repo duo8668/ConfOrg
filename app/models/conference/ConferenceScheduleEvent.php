@@ -8,7 +8,7 @@ class ConferenceScheduleEvent extends Eloquent {
     public $timestamps = false;
 
     public function ConferenceRoomSchedule() {
-        $thisConferenceRoomSchedule = ConferenceRoomSchedule::where('confroomschedule_id', '=', $this->conference_room_schedule_id)->get();
+        $thisConferenceRoomSchedule = ConferenceRoomSchedule::withTrashed()->where('confroomschedule_id', '=', $this->conference_room_schedule_id)->get();
         
         if(!empty($thisConferenceRoomSchedule)){
             return $thisConferenceRoomSchedule->first();

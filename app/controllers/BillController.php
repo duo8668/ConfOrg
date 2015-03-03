@@ -204,7 +204,7 @@ class BillController extends \BaseController {
       return Redirect::to('/dashboard')->with('message','I\'m sorry but you can\'t do that !!!');
     }
 
-    $conf = ConferenceRoomSchedule::with('Conferences','Rooms.venues')->where('conf_id', '=', $invoice->conf_id)->first();
+    $conf = ConferenceRoomSchedule::withTrashed()->with('Conferences','Rooms.venues')->where('conf_id', '=', $invoice->conf_id)->first();
 
     $remaining = $conf->rooms->capacity - (Invoice::where('conf_id','=', $id)->where('item_type','=','ticket')->sum('quantity'));
     

@@ -56,11 +56,12 @@ INSERT INTO `conference_field` VALUES ('12', '4', '16', '0', null, '2015-03-02 1
 -- Records of conference_room_schedule
 -- ----------------------------
 TRUNCATE TABLE `conference_room_schedule`;
+TRUNCATE TABLE `conference_cancel`;
 
-INSERT INTO `conference_room_schedule` VALUES ('1', '1', '1', null, '2015-04-02', '2015-04-03', '2015-04-02 09:00:00', '2015-04-03 16:00:00', null, '0', null, '2015-03-02 11:21:27', null);
-INSERT INTO `conference_room_schedule` VALUES ('2', '2', '4', null, '2015-06-04', '2015-06-05', '2015-06-04 09:00:00', '2015-06-05 17:00:00', null, '0', null, '2015-03-02 11:21:27', null);
-INSERT INTO `conference_room_schedule` VALUES ('3', '3', '2', null, '2015-05-06', '2015-05-08', '2015-05-06 10:00:00', '2015-05-08 17:00:00', null, '0', null, '2015-03-02 11:21:27', null);
-INSERT INTO `conference_room_schedule` VALUES ('4', '4', '5', null, '2015-04-16', '2015-04-17', '2015-04-16 09:00:00', '2015-04-17 17:00:00', null, '0', null, '2015-03-02 11:23:53', null);
+INSERT INTO `conference_room_schedule` VALUES ('1', '1', '1', null, '2015-04-02', '2015-04-03', '2015-04-02 09:00:00', '2015-04-03 16:00:00', null, '0', null, '2015-03-02 11:21:27', null, null);
+INSERT INTO `conference_room_schedule` VALUES ('2', '2', '4', null, '2015-06-04', '2015-06-05', '2015-06-04 09:00:00', '2015-06-05 17:00:00', null, '0', null, '2015-03-02 11:21:27', null, null);
+INSERT INTO `conference_room_schedule` VALUES ('3', '3', '2', null, '2015-05-06', '2015-05-08', '2015-05-06 10:00:00', '2015-05-08 17:00:00', null, '0', null, '2015-03-02 11:21:27', null, null);
+INSERT INTO `conference_room_schedule` VALUES ('4', '4', '5', null, '2015-04-16', '2015-04-17', '2015-04-16 09:00:00', '2015-04-17 17:00:00', null, '0', null, '2015-03-02 11:23:53', null, null);
 
 -- ----------------------------
 -- Records of conference_topic

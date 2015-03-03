@@ -1,11 +1,19 @@
 <?php
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
 class ConferenceRoomSchedule extends Eloquent {
+  
+    use SoftDeletingTrait;
 
     protected $table = 'conference_room_schedule';
     protected $fillable = array('conf_id', 'room_id', 'description', 'date_start', 'date_end', 'begin_time', 'end_time', 'remarks', 'created_by', 'modified_by');
     protected $guarded = array('confroomschedule_id');
-    public $timestamps = true;
+    protected $primaryKey = 'confroomschedule_id';
+
+    public $timestamps = true;  
+    protected $softDelete = true;
+    protected $dates = ['deleted_at'];
+    
 
     public function scopeRoom() {
         $thisRoom = Room::where('room_id', '=', $this->room_id)->get();
@@ -42,11 +50,11 @@ class ConferenceRoomSchedule extends Eloquent {
                 (
                     CRS.date_start + INTERVAL(H + T + U) DAY
                     ) AS date
-) AS 'date'
-FROM
-(
-    SELECT 0 H UNION ALL SELECT 100 UNION ALL SELECT 200 UNION ALL SELECT 300 UNION ALL SELECT 400 UNION ALL SELECT 500 UNION ALL SELECT 600
-    ) H
+    ) AS 'date'
+        FROM
+        (
+            SELECT 0 H UNION ALL SELECT 100 UNION ALL SELECT 200 UNION ALL SELECT 300 UNION ALL SELECT 400 UNION ALL SELECT 500 UNION ALL SELECT 600
+            ) H
         CROSS JOIN(
             SELECT 0 T UNION ALL SELECT 10 UNION ALL SELECT 20 UNION ALL SELECT 30 UNION ALL SELECT 40 UNION ALL SELECT 50 UNION ALL SELECT 60 UNION ALL SELECT 70 UNION ALL SELECT 80 UNION ALL SELECT 90
             ) T
@@ -61,11 +69,11 @@ FROM
         AND CRS.date_end
         AND CRS.conf_id = " . $this->conf_id . "
         "), array());
-        $date_selector = array();
-        foreach ($results as $result) {
-            $date_selector[$result->date] = $result->date;
-        }
-        return $date_selector;
-    }
+$date_selector = array();
+foreach ($results as $result) {
+    $date_selector[$result->date] = $result->date;
+}
+return $date_selector;
+}
 
 }

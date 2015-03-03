@@ -454,7 +454,7 @@ class ConferenceController extends \BaseController {
             }
         }
 
-        $data = ConferenceRoomSchedule::with('Conferences.ConferenceFields', 'Rooms.venues')->whereHas('Conferences.ConferenceFields', function($Query) use($item) {
+        $data = ConferenceRoomSchedule::withTrashed()->with('Conferences.ConferenceFields', 'Rooms.venues')->whereHas('Conferences.ConferenceFields', function($Query) use($item) {
             if (!empty($item))
                 $Query->whereIn('interestfield_id', $item);
         });
@@ -475,7 +475,7 @@ class ConferenceController extends \BaseController {
 
         $value = Input::get('iTitle');
 
-        $data = ConferenceRoomSchedule::with('Conferences', 'Rooms.venues')->whereHas('conferences', function($Query) use($value) {
+        $data = ConferenceRoomSchedule::withTrashed()->with('Conferences', 'Rooms.venues')->whereHas('conferences', function($Query) use($value) {
             $Query->where('title', 'LIKE', '%' . $value . '%');
         });
 
@@ -495,7 +495,7 @@ class ConferenceController extends \BaseController {
 
         //$confTitle = Conference::where('title','LIKE','%abc%')->get();
         $value = Input::get('iTitle');
-        $data = ConferenceRoomSchedule::with('Conferences', 'Rooms.venues')->whereHas('conferences', function($Query) use($value) {
+        $data = ConferenceRoomSchedule::withTrashed()->with('Conferences', 'Rooms.venues')->whereHas('conferences', function($Query) use($value) {
             $Query->where('title', 'LIKE', '%' . $value . '%');
         });
 
@@ -507,7 +507,7 @@ class ConferenceController extends \BaseController {
 
     public function conf_public_detail($id) {
 
-        $conf = ConferenceRoomSchedule::with('Conferences', 'Rooms.venues')->where('conf_id', '=', $id)->first();
+        $conf = ConferenceRoomSchedule::withTrashed()->with('Conferences', 'Rooms.venues')->where('conf_id', '=', $id)->first();
 
         $remaining = $conf->rooms->capacity - (Invoice::where('conf_id', '=', $id)->where('item_type', '=', 'ticket')->sum('quantity'));
         //dd($conf->toArray());
@@ -556,6 +556,11 @@ class ConferenceController extends \BaseController {
                     $user = Auth::user();
 
                     $result = DB::transaction(function() use ($data, $user) {
+                                $ConferenceRoomSchedule = ConferenceRoomSchedule::where('conf_id','=', $data['conf_id'])->first();
+                                if(!empty($ConferenceRoomSchedule)){
+                                    $ConferenceRoomSchedule->delete();
+                                }
+
 
                                 //* email to add review panel inform of cancellation
                                 $endUsers = ConferenceUserRole::ConferenceReviewPanels($data['conf_id'])->get();
@@ -592,7 +597,7 @@ class ConferenceController extends \BaseController {
                                     # code...
                                     $this->emailForCancelConference($data['conf_id'], $endUser);
                                 }
-
+ 
                                 $confCancel = new ConferenceCancel();
                                 $confCancel->conf_id = $data['conf_id'];
                                 $confCancel->created_by = $user->user_id;

@@ -29,6 +29,14 @@
                     $date = $dt->format('Y-m-d H:i:s');
                 ?>
                 @if (Auth::check())
+
+                @if(!empty($conf->conferences->ConferenceCancel()->get()->toArray()))
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3" style="margin-top:1em;">
+                            {{ Form::button('CONFERENCE CANCELLED !!!', ['type' => 'button', 'class' => '"btn btn-danger btn-block', 'disabled'])}}
+                        </div>
+                    </div>
+                @else
                     {{-- if conf chair or staff, show edit button  --}}
                     @if (Auth::user()->hasConfRole($conf->conferences->conf_id, 'Conference Chair') || Auth::user()->hasConfRole($conf->conferences->conf_id, 'Conference Staff')  )
                         <div class="row">
@@ -80,6 +88,8 @@
                             </h5>
                         @endif
                     @endif
+                @endif
+                    
 
                 @else
                      @if ($date < $conf->conferences->end_date)

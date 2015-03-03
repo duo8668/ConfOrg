@@ -48,7 +48,7 @@ class Conference extends Eloquent {
     }
 
     public function RoomSchedule(){
-        $roomSchedule = ConferenceRoomSchedule::where('conf_id' ,'=', $this->conf_id)->get();
+        $roomSchedule = ConferenceRoomSchedule::withTrashed()->where('conf_id' ,'=', $this->conf_id)->get();
         if (!empty($roomSchedule)) {
             return $roomSchedule->first();
         }
@@ -72,7 +72,7 @@ class Conference extends Eloquent {
     }
 
     public function scopeConferenceRoomSchedule($query) {
-        $thisConferenceRoomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id);
+        $thisConferenceRoomSchedule = ConferenceRoomSchedule::withTrashed()->where('conf_id', '=', $this->conf_id);
         if (!empty($thisConferenceRoomSchedule)) {
             return $thisConferenceRoomSchedule->first();
         }
@@ -92,7 +92,7 @@ class Conference extends Eloquent {
     }
 
     public function scopeRoom() {
-        $roomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id)->get();
+        $roomSchedule = ConferenceRoomSchedule::withTrashed()->where('conf_id', '=', $this->conf_id)->get();
         
         if(!empty($roomSchedule)){
 
@@ -111,7 +111,7 @@ class Conference extends Eloquent {
     }
 
     public function scopeConfVenue() {
-        $roomSchedule = ConferenceRoomSchedule::where('conf_id', '=', $this->conf_id)->get();
+        $roomSchedule = ConferenceRoomSchedule::withTrashed()->where('conf_id', '=', $this->conf_id)->get();
         
         if(!empty($roomSchedule)){
 
