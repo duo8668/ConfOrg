@@ -321,7 +321,7 @@ $(document).ready(function () {
                                 {{ Form::label('lblCreditCardNumber', 'Credit Card Number :', array('class' => 'col-md-4 control-label')) }}
                                 <div class="col-md-4">
                                     <div class="input-group" id="innerCreditCardNumber">
-                                        {{ Form::text('cardnumber',isset($value)?$value:'',array('id'=>'cardnumber', 'class' => 'form-control necessary','maxlength' => '20', 'data-stripe'=>'number')) }}  
+                                        {{ Form::text('cardnumber',isset($value)?$value:'',array('id'=>'cardnumber', 'class' => 'form-control necessary','maxlength' => '19', 'data-stripe'=>'number','placeholder'=>'4242-4242-4242-4242')) }}  
                                     </div>
                                 </div>
                             </div>
@@ -329,7 +329,7 @@ $(document).ready(function () {
                                 {{ Form::label('lblCVC', 'CVC :', array('class' => 'col-md-4 control-label')) }}       
                                 <div class="col-md-4">
                                     <div class="necessary" id="innerCVC">
-                                        {{ Form::text('cvc',isset($value)?$value:'',array('id'=>'cvc', 'class' => 'form-control necessary', 'data-stripe'=>'cvc','maxlength' => '3')) }}
+                                        {{ Form::text('cvc',isset($value)?$value:'',array('id'=>'cvc', 'class' => 'form-control necessary', 'data-stripe'=>'cvc','maxlength' => '3','placeholder' => '123')) }}
                                     </div>
                                 </div>
                             </div>

@@ -70,7 +70,7 @@
         <div class="form-group @if ($errors->has('email')) has-error @endif">
           <label class="col-md-2 control-label">Card Number</label>
           <div class="col-md-6">
-               <input type="text" data-stripe="number" value="4000000000000002" class="form-control" id="card-number"> 
+               <input type="text" data-stripe="number" value="" class="form-control" id="card-number" maxlength="19" placeholder='4242-4242-4242-4242'> 
           </div>
         </div>
         <div class="clearfix"></div>
@@ -78,7 +78,7 @@
         <div class="form-group @if ($errors->has('email')) has-error @endif">
           <label class="col-md-2 control-label">CVC Number</label>
           <div class="col-md-6">
-            <input type="text" data-stripe="cvc" class="form-control" id = "card-cvc">
+            <input type="text" data-stripe="cvc" class="form-control" id = "card-cvc" placeholder='123' maxlength="3">
           </div>
         </div>
         <div class="clearfix"></div>
@@ -164,6 +164,15 @@
   });
 
   StripeBilling.init();
+
+  $('#card-number').on('keyup', function ()
+    {
+        $(this).val(function (i, v)
+        {
+            var v = v.replace(/[^\d]/g, '').match(/.{1,4}/g);
+            return v ? v.join('-') : '';
+        });
+    });
 
 })();
 </script>     
