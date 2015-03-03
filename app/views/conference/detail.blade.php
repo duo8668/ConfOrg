@@ -215,11 +215,12 @@ Conference Detail
 		// Edit Staff
 		loadEditStaff({{ $conf -> conf_id }}, "{{ URL::to('users/conference_staffs') }}", "{{ URL::to('conference/management/updateConfStaffs') }}", "{{ URL::to('users/likeany') }}");
 		
-		//Edit Review Panel
-		loadEditReviewPanel({{ $conf -> conf_id }}, "{{ URL::to('users/conference_reviewpanels') }}", "{{ URL::to('conference/management/updateReviewPanels') }}", "{{ URL::to('users/likeany') }}");
 		@endif
 
 		@if(!$isCancel  && ($isChair || $isStaff))
+		//Edit Review Panel
+		loadEditReviewPanel({{ $conf -> conf_id }}, "{{ URL::to('users/conference_reviewpanels') }}", "{{ URL::to('conference/management/updateReviewPanels') }}", "{{ URL::to('users/likeany') }}");
+
 		// Edit Particulars
 		loadEditParticular({{ $conf -> conf_id }}, "{{ URL::to('conference/management/updateParticulars') }}");
 
@@ -261,7 +262,7 @@ Conference Detail
 				$(this).children('div:eq(1)').addClass('modal-dialog');
 			}
 		});
-		
+
 		loadPublicCalendar();
 
 		$('[data-toggle="tooltip"]').tooltip();
