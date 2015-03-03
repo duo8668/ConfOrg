@@ -3,6 +3,14 @@
 Invoice & Payment
 @stop
 @section('content')
+<style type="text/css">
+    .table  > tbody > tr > td{
+        text-align: right;
+    }
+    table > thead > tr >  th{
+        text-align: center;
+    }
+</style>
 <!-- BREADCRUMB -->
 <ol class="breadcrumb">
   <li><a href="{{ URL::to('/dashboard') }}">Dashboard</a></li>
@@ -23,7 +31,8 @@ Invoice & Payment
                 <thead>
                     <tr class="filters">
                         <th style="width: 7%;"><input type="text" class="form-control" placeholder="Invoice #" disabled></th>
-                        <th style="width: 20%;"><input type="text" class="form-control" placeholder="Conference" disabled></th>
+                        <th style="width: 18%;"><input type="text" class="form-control" placeholder="Conference" disabled></th>
+                        <th style="width: 8%;"><input type="text" class="form-control" placeholder="Type" disabled></th>
                         <th style="width: 8%;"><input type="text" class="form-control" placeholder="Quantity" disabled></th>
                         <th style="width: 10%;"><input type="text" class="form-control" placeholder="Total" disabled></th>
                         <th style="width: 15%"><input type="text" class="form-control" placeholder="Status" disabled></th>
@@ -39,6 +48,7 @@ Invoice & Payment
                     <td>#{{ $invoice->invoice_id }}</td>                        
                     <!-- add a link to the conference -->
                     <td>{{ $invoice->conference->title }}</td>
+                    <td>{{ $invoice->item_type }}</td>
                     <td>{{ $invoice->quantity }}</td>
                     <td>${{ $invoice->total }}</td>
                     <td>{{ $invoice->status }}</td>
