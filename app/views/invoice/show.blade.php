@@ -29,7 +29,7 @@
             <div class="well">
             <h2>From</h2>
             <p><strong>ORAFER</strong></p>
-            <p>Email: it144a@gmail.com</p>
+            <p>Email: admin@orafer.com</p>
             </div>
           </div><!--/col-->
 
@@ -84,7 +84,7 @@
 
           <div class="col-lg-4 col-sm-5 notice">
             <div class="well">
-              Should you discover any disrespancies with the payment invoice, please contact us at it144a@gmail.com.
+              Should you discover any disrespancies with the payment invoice, please contact us at admin@orafer.com.
             </div>  
           </div><!--/col-->
 
