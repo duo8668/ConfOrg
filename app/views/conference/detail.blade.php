@@ -58,14 +58,13 @@ Conference Detail
 
 @if(!$isCancel  && $isChair)
 <script src="{{ asset('js/app/conference/cancelConference.js') }}"></script>
-<script src="{{ asset('js/app/conference/editReviewPanel.js') }}"></script>
 <script src="{{ asset('js/app/conference/editStaff.js') }}"></script>
 @endif
 
 @if(!$isCancel  && ($isChair || $isStaff))
 <script src="{{ asset('js/app/conference/editParticular.js') }}"></script>
 <script src="{{ asset('js/app/conference/editDescription.js') }}"></script>
-
+<script src="{{ asset('js/app/conference/editReviewPanel.js') }}"></script>
 <script src="{{ asset('js/app/conference/editSchedule.js') }}"></script>
 <script src="{{ asset('js/app/conference/editTopic.js') }}"></script>
 @endif
