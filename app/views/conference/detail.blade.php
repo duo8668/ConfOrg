@@ -261,81 +261,84 @@ Conference Detail
 				$(this).children('div:eq(1)').addClass('modal-dialog');
 			}
 		});
-
-
-
-        // initialize public calendar
-        var $publicCalendar = $('#publicCalendar');
-        
-        //* publicCalendar
-        $publicCalendar.fullCalendar({
-        	timezone: 'local',
-        	header: {
-        		left:'',
-        		center: 'title',
-        		right:''
-        	},
-        	allDaySlot: false,
-        	slotEventOverlap: true,
-        	height:400,
-        	eventOverlapping: true,
-        	selectable: false,
-        	defaultView: 'agendaDay',
-        	editable: false,
-        	events: function(start, end, timezone, callback) {
-
-        		$.ajax({
-        			url: "{{ URL::to('conference/conferenceEvents/getAvailableConferenceScheduleEvents/') }}",
-        			data:{ scheduleId: {{ $conf->ConferenceRoomSchedule()->confroomschedule_id }} },
-        			success: function(doc) {
-        				var arrayToProcess = [];
-        				if(doc.conferenceScheduleEvents !== undefined){
-        					$.each(doc.conferenceScheduleEvents,function(index,value){
-        						value.id = value.eventId;
-        						arrayToProcess.push(value);
-        					});
-
-        					callback(arrayToProcess);
-        				}
-        			}
-        		});
-        	}
-        });
-		//* Public schedule
-		var $ddlPublicSchedule = $("#ddlPublicSchedule");
-
-		$ddlPublicSchedule.selectBoxIt({
-			showEffect: "fadeIn",
-			showEffectSpeed: 200,
-			hideEffect: "fadeOut",
-			hideEffectSpeed: 200
-		}).off('change.selectBoxIt').on('change.selectBoxIt',function(evt,obj){
-			$publicCalendar.fullCalendar('gotoDate',$ddlPublicSchedule.val()); 
-		});
-
-		$('a[href*=#]:not([href=#])').on('shown.bs.tab',function(e) {
-
-			if(e.currentTarget.hash!== undefined){
-				if(e.currentTarget.hash === '#schedule'){
-					$publicCalendar.fullCalendar('gotoDate',$('#ddlPublicSchedule').val());
-				}
-			}
-			
-			if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-				var target = $(this.hash);
-				target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-				console.log(target);
-				if (target.length) {
-					$('html,body').animate({
-						scrollTop: target.offset().top
-					}, 1000);
-				}
-			}
-		});
+		
+		loadPublicCalendar();
 
 		$('[data-toggle="tooltip"]').tooltip();
 
 	});
+
+function loadPublicCalendar(){
+	// initialize public calendar
+	var $publicCalendar = $('#publicCalendar');
+	//* Public schedule
+	var $ddlPublicSchedule = $("#ddlPublicSchedule");
+	//* publicCalendar
+	$publicCalendar.fullCalendar({
+		timezone: 'local',
+		header: {
+			left:'',
+			center: 'title',
+			right:''
+		},
+		allDaySlot: false,
+		slotEventOverlap: true,
+		height:400,
+		eventOverlapping: true,
+		selectable: false,
+		defaultView: 'agendaDay',
+		editable: false,
+		events: function(start, end, timezone, callback) {
+
+			$.ajax({
+				url: "{{ URL::to('conference/conferenceEvents/getConferenceScheduleEvents/') }}",
+				data:{ scheduleId: {{ $conf->ConferenceRoomSchedule()->confroomschedule_id }} },
+				success: function(doc) {
+					var arrayToProcess = [];
+					if(doc.conferenceScheduleEvents !== undefined){
+						$.each(doc.conferenceScheduleEvents,function(index,value){
+							value.id = value.eventId;
+							arrayToProcess.push(value);
+						});
+
+						callback(arrayToProcess);
+					}
+				}
+			});
+		}
+	});
+
+
+	$ddlPublicSchedule.selectBoxIt({
+		showEffect: "fadeIn",
+		showEffectSpeed: 200,
+		hideEffect: "fadeOut",
+		hideEffectSpeed: 200
+	}).off('change.selectBoxIt').on('change.selectBoxIt',function(evt,obj){
+		$publicCalendar.fullCalendar('gotoDate',$ddlPublicSchedule.val()); 
+	});
+
+	$('a[href*=#]:not([href=#])').on('shown.bs.tab',function(e) {
+
+		if(e.currentTarget.hash!== undefined){
+			if(e.currentTarget.hash === '#schedule'){
+				$publicCalendar.fullCalendar('gotoDate',$('#ddlPublicSchedule').val());
+			}
+		}
+
+		if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+			var target = $(this.hash);
+			target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+			console.log(target);
+			if (target.length) {
+				$('html,body').animate({
+					scrollTop: target.offset().top
+				}, 1000);
+			}
+		}
+	});
+
+}
 
 $.fn.textWidth = function() {
 	var html_org = $(this).html();

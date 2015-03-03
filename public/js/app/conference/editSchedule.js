@@ -101,6 +101,7 @@
  					$('#modalMessage').html(message);
  				}
  				setTimeout(function () {
+ 					loadPublicCalendar();
  					$('#resultModal').modal('hide');
  					$('#scheduleEditor').modal('hide');
  				}, 1000);
@@ -117,6 +118,7 @@
  				}
  			}).always(function(){
  				setTimeout(function () {
+ 					loadPublicCalendar();
  					$('#resultModal').modal('hide');
  				}, 1000);
  			});
@@ -197,14 +199,16 @@ function loadCalendar(urlGetConferenceScheduleEvents, confroomschedule_id){
 				$('#external-events').append($eventBack);        				
 				console.log('==========================================================');
 			}
-			if (isElemOverDiv($('#eventTrash'))) {
-				console.log('========     eventDragStop::>eventTrash     ========');
-				$('#calendar').fullCalendar('removeEvents', evt._id);			
-				console.log('====================================================');
-			}
+			if(evt.sub_id === undefined)
+				if (isElemOverDiv($('#eventTrash'))) {
+					console.log('========     eventDragStop::>eventTrash     ========');
+					$('#calendar').fullCalendar('removeEvents', evt._id);			
+					console.log('====================================================');
+				}
 		},
-		eventDragStart: function(event, jsEvent, ui, view) {
-			eventData = event;
+		eventDragStart: function(evt, jsEvent, ui, view) {
+			eventData = evt;
+			console.log(eventData);
 			_viewContainer = $('#calendar').find('.fc-view-container');
 			_viewContainer.off('mousemove').on('mousemove', function() { 
 				var $_externalEvents =$('#external-events');
