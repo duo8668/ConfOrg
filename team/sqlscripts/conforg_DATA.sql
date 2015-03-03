@@ -18,6 +18,8 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Records of company
 -- ----------------------------
+TRUNCATE TABLE `company`;
+
 INSERT INTO `company` VALUES ('5', 'SingEx Venues');
 INSERT INTO `company` VALUES ('6', 'Rock Productions');
 INSERT INTO `company` VALUES ('7', 'Suntec Singapore');
@@ -26,13 +28,17 @@ INSERT INTO `company` VALUES ('8', 'Marina Bay Sands');
 -- ----------------------------
 -- Records of conference
 -- ----------------------------
-INSERT INTO `conference` VALUES ('1', '2015 IEEE Wireless Communications and Networking Conference (WCNC)', 'IEEE WCNC is the world premier wireless event that brings together industry professionals, academics, and individuals from government agencies and other institutions to exchange information and ideas on the advancement of wireless communications and networking technology.\r\n\r\nThe conference will feature a comprehensive technical program offering numerous technical sessions with papers showcasing the latest technologies, applications and services. In addition, the conference program includes workshops, tutorials, keynote talks from industrial leaders and renowned academics, panel discussions, a large exhibition, business and industrial forums.', '2015-04-02', '2015-04-02 09:00:00', '2015-04-03', '2015-04-03 16:00:00', '\0', '2015-03-06 00:00:00', '75', '200.00', '1', '0', '2015-03-02 10:04:07', null);
+TRUNCATE TABLE `conference`;
+
+INSERT INTO `conference` VALUES ('1', '2015 IEEE Wireless Communications and Networking Conference (WCNC)', 'IEEE WCNC is the world premier wireless event that brings together industry professionals, academics, and individuals from government agencies and other institutions to exchange information and ideas on the advancement of wireless communications and networking technology.\r\n\r\nThe conference will feature a comprehensive technical program offering numerous technical sessions with papers showcasing the latest technologies, applications and services. In addition, the conference program includes workshops, tutorials, keynote talks from industrial leaders and renowned academics, panel discussions, a large exhibition, business and industrial forums.', '2015-04-02', '2015-04-02 09:00:00', '2015-04-03', '2015-04-03 16:00:00', '\0', '2015-02-20 00:00:00', '75', '200.00', '1', '0', '2015-03-02 10:04:07', null);
 INSERT INTO `conference` VALUES ('2', 'Gartner IT Infrastructure, Operations & Data Center Summit', 'The must-attend event for I&O and data center professionals\r\nThe Gartner IT Infrastructure, Operations & Data Center Summit 2015 will empower you to formulate and implement a strategy that delivers clear outcomes built on a realistically executable infrastructure and operations roadmap.\r\nThis event will help you lead your IT organization and reinforce the criticality and relevance of your position in the face of increasing change and challenges from ever increasing disruption brought about by Nexus of Forces and digital business.', '2015-06-04', '2015-06-04 09:00:00', '2015-06-05', '2015-06-05 17:00:00', '\0', '2015-04-30 00:00:00', '75', '350.00', '2', null, '2015-03-02 10:04:07', null);
 INSERT INTO `conference` VALUES ('3', 'Gartner Digital Marketing Conference 2015', 'Fuel your marketing strategy as an engine for growth, unlock revenue, gain aggressive market share, build stronger brands and secure your own personal success as a marketing leader.\r\nThis conference was created for senior marketing executives, like you, as the premier outlet for learning the latest digital marketing trends. You will leave with actionable insights and key strategies derived from independent and objective research.', '2015-05-06', '2015-05-06 10:00:00', '2015-05-08', '2015-05-08 17:00:00', '\0', '2015-04-03 00:00:00', '80', '300.00', '2', null, '2015-03-02 10:10:10', null);
 INSERT INTO `conference` VALUES ('4', 'CommunicAsia 2015 Conference', 'The rising size of mobile workforce and increasingly complex user demands, coupled with the proliferation of connected devices has made this industry more dynamic than ever. It has also blurred the line between work and personal time as seen in the rise of mobility driven innovations such as smart living solutions, wearable technologies and many more.\r\n\r\nAt CommunicAsia2015, the latest innovative technologies from Big Data, Business Analytics, Cloud technologies, IoT, to Zigbee will be unveiled. These advances are poised to change the way we live and work.\r\n\r\nCommunicAsia2015 continues to be THE one-stop venue for the ICT industry', '2015-04-16', '2015-04-16 09:00:00', '2015-04-17', '2015-04-17 16:00:00', '\0', '2015-02-20 00:00:00', '75', '200.00', '1', '0', '2015-03-02 10:04:07', null);
 -- ----------------------------
 -- Records of conference_field
 -- ----------------------------
+TRUNCATE TABLE `conference_field`;
+
 INSERT INTO `conference_field` VALUES ('1', '1', '1', '1', null, '2015-03-02 10:21:24', null);
 INSERT INTO `conference_field` VALUES ('2', '1', '9', '1', null, '2015-03-02 10:21:24', null);
 INSERT INTO `conference_field` VALUES ('3', '1', '14', '1', null, '2015-03-02 10:21:24', null);
@@ -49,6 +55,8 @@ INSERT INTO `conference_field` VALUES ('12', '4', '16', '0', null, '2015-03-02 1
 -- ----------------------------
 -- Records of conference_room_schedule
 -- ----------------------------
+TRUNCATE TABLE `conference_room_schedule`;
+
 INSERT INTO `conference_room_schedule` VALUES ('1', '1', '1', null, '2015-04-02', '2015-04-03', '2015-04-02 09:00:00', '2015-04-03 16:00:00', null, '0', null, '2015-03-02 11:21:27', null);
 INSERT INTO `conference_room_schedule` VALUES ('2', '2', '4', null, '2015-06-04', '2015-06-05', '2015-06-04 09:00:00', '2015-06-05 17:00:00', null, '0', null, '2015-03-02 11:21:27', null);
 INSERT INTO `conference_room_schedule` VALUES ('3', '3', '2', null, '2015-05-06', '2015-05-08', '2015-05-06 10:00:00', '2015-05-08 17:00:00', null, '0', null, '2015-03-02 11:21:27', null);
@@ -57,6 +65,8 @@ INSERT INTO `conference_room_schedule` VALUES ('4', '4', '5', null, '2015-04-16'
 -- ----------------------------
 -- Records of conference_topic
 -- ----------------------------
+TRUNCATE TABLE `conference_topic`;
+
 INSERT INTO `conference_topic` VALUES ('1', '1', 'Wireless Communication', '1', '1', '2015-03-02 10:17:52', '2015-03-02 20:26:09');
 INSERT INTO `conference_topic` VALUES ('2', '1', 'Networking and Security', '1', '1', '2015-03-02 10:17:52', '2015-03-02 20:26:09');
 INSERT INTO `conference_topic` VALUES ('3', '1', 'Current Trend in Wireless Technology', '1', '1', '2015-03-02 10:17:52', '2015-03-02 20:26:09');
@@ -74,6 +84,8 @@ INSERT INTO `conference_topic` VALUES ('13', '4', 'Cloud Technology', '0', null,
 -- ----------------------------
 -- Records of confuserrole
 -- ----------------------------
+TRUNCATE TABLE `confuserrole`;
+
 INSERT INTO `confuserrole` VALUES ('1', '4', '1', '1');
 INSERT INTO `confuserrole` VALUES ('2', '4', '2', '3');
 INSERT INTO `confuserrole` VALUES ('3', '4', '2', '2');
@@ -90,6 +102,8 @@ INSERT INTO `confuserrole` VALUES ('13', '8', '2', '1');
 -- ----------------------------
 -- Records of countries
 -- ----------------------------
+TRUNCATE TABLE `countries`;
+
 INSERT INTO `countries` VALUES ('1', 'Afghanistan', 'Islamic Republic of Afghanistan', '93');
 INSERT INTO `countries` VALUES ('2', 'Aland Islands', '&Aring;land Islands', '358');
 INSERT INTO `countries` VALUES ('3', 'Albania', 'Republic of Albania', '355');
@@ -344,6 +358,8 @@ INSERT INTO `countries` VALUES ('250', 'Zimbabwe', 'Republic of Zimbabwe', '263'
 -- ----------------------------
 -- Records of equipment
 -- ----------------------------
+TRUNCATE TABLE `equipment`;
+
 INSERT INTO `equipment` VALUES ('1', '4', 'Brown Chair (vintage)', '60 cm tall, 20 cm wide', null, '4', '4', '2015-02-28 06:10:15', null, 'Pending');
 INSERT INTO `equipment` VALUES ('2', '4', 'Dining Table ', '90 cm diameter', null, '4', '4', '2015-02-28 06:10:15', null, 'Approved');
 INSERT INTO `equipment` VALUES ('3', '5', 'Projector Screen ', '10 by 10 Meters', null, '4', '6', '2015-02-28 06:10:15', null, 'Approved');
@@ -354,6 +370,8 @@ INSERT INTO `equipment` VALUES ('6', '8', 'Mic', 'Big Room', null, '4', null, '2
 -- ----------------------------
 -- Records of equipment_category
 -- ----------------------------
+TRUNCATE TABLE `equipment_category`;
+
 INSERT INTO `equipment_category` VALUES ('4', 'Logisitc', null, '4', null, '2015-02-28 03:10:15', '2015-02-28 06:17:15', 'Approved');
 INSERT INTO `equipment_category` VALUES ('5', 'Technical', null, '4', null, '2015-02-28 03:10:15', '2015-02-28 06:17:18', 'Approved');
 INSERT INTO `equipment_category` VALUES ('6', 'Audio', null, '4', null, '2015-02-28 03:10:15', '2015-02-28 06:17:21', 'Approved');
@@ -364,6 +382,9 @@ INSERT INTO `equipment_category` VALUES ('11', 'Logistic', null, '4', null, '201
 -- ----------------------------
 -- Records of interest_field
 -- ----------------------------
+TRUNCATE TABLE `interest_field`;
+
+
 INSERT INTO `interest_field` VALUES ('1', 'Computer Science', null, '1', null, '2015-01-14 14:48:26', null);
 INSERT INTO `interest_field` VALUES ('2', 'Artificial Intelligence', null, '1', null, '2015-01-14 14:48:35', null);
 INSERT INTO `interest_field` VALUES ('3', 'Databases', null, '1', null, '2015-01-14 14:48:45', null);
@@ -389,12 +410,16 @@ INSERT INTO `interest_field` VALUES ('21', 'Other', null, '1', null, '2015-02-26
 -- ----------------------------
 -- Records of invoice
 -- ----------------------------
+TRUNCATE TABLE `invoice`;
+
 INSERT INTO `invoice` VALUES ('1', '2', '1', '10', '0', 'ticket', '2', null, '2015-03-02 19:52:04', '2015-03-02 19:52:25', '2000', 'paid');
 INSERT INTO `invoice` VALUES ('2', '2', '1', '10', '0', 'ticket', '2', null, '2015-03-02 19:53:01', '2015-03-02 19:53:18', '2000', 'paid');
 
 -- ----------------------------
 -- Records of keywords
 -- ----------------------------
+TRUNCATE TABLE `keywords`;
+
 INSERT INTO `keywords` VALUES ('17', 'penguin', '4', '0', null, '2015-03-02 20:17:14', '2015-03-02 20:17:14');
 INSERT INTO `keywords` VALUES ('18', ' sell', '4', '0', null, '2015-03-02 20:17:14', '2015-03-02 20:17:14');
 INSERT INTO `keywords` VALUES ('19', ' market', '4', '0', null, '2015-03-02 20:17:14', '2015-03-02 20:17:14');
@@ -416,12 +441,16 @@ INSERT INTO `keywords` VALUES ('37', 'analysis', '6', '0', null, '2015-03-02 20:
 -- ----------------------------
 -- Records of payment
 -- ----------------------------
+TRUNCATE TABLE `payment`;
+
 INSERT INTO `payment` VALUES ('1', '1', '2000', '0', '2', null, '2015-03-02 19:52:25', '2015-03-02 19:52:25');
 INSERT INTO `payment` VALUES ('2', '2', '2000', '0', '2', null, '2015-03-02 19:53:18', '2015-03-02 19:53:18');
 
 -- ----------------------------
 -- Records of profiles
 -- ----------------------------
+TRUNCATE TABLE `profiles`;
+
 INSERT INTO `profiles` VALUES ('1', '', '1', '0', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', null, null);
 INSERT INTO `profiles` VALUES ('2', '', '2', '0', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', null, null);
 INSERT INTO `profiles` VALUES ('3', '', '3', '0', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Hi! Thanks for visiting', null, null);
@@ -434,6 +463,8 @@ INSERT INTO `profiles` VALUES ('8', 'duomax8668@hotmail.com', '8', '101530822783
 -- ----------------------------
 -- Records of reviews
 -- ----------------------------
+TRUNCATE TABLE `reviews`;
+
 INSERT INTO `reviews` VALUES ('1', '4', '3', 'Not sure whether should accept or reject', 'Need more work to make it better quality paper', '6', '8', '7', '8', '7', '0', null, '2015-03-02 20:11:41', '2015-03-02 20:11:41');
 INSERT INTO `reviews` VALUES ('2', '3', '3', 'highly recommend to accept', 'This is well-written paper', '8', '8', '8', '7', '9', '0', null, '2015-03-02 20:12:19', '2015-03-02 20:12:19');
 INSERT INTO `reviews` VALUES ('3', '1', '3', 'highly recommend to accept', 'Unexpectedly good. Not that relevant to the topic but it is pretty interesting', '8', '7', '8', '9', '9', '0', null, '2015-03-02 20:14:12', '2015-03-02 20:14:12');
@@ -444,6 +475,8 @@ INSERT INTO `reviews` VALUES ('6', '5', '3', 'Might be good to accept this paper
 -- ----------------------------
 -- Records of roles
 -- ----------------------------
+TRUNCATE TABLE `roles`;
+
 INSERT INTO `roles` VALUES ('1', 'User', 'normal user');
 INSERT INTO `roles` VALUES ('2', 'Resource Provider', 'resource provider');
 INSERT INTO `roles` VALUES ('3', 'Admin', 'super admin account');
@@ -456,6 +489,8 @@ INSERT INTO `roles` VALUES ('8', 'Participant', 'participant');
 -- ----------------------------
 -- Records of room
 -- ----------------------------
+TRUNCATE TABLE `room`;
+
 INSERT INTO `room` VALUES ('1', '1', 'Hall 1', '400', '800.00', '4', null, '2015-02-28 03:10:15', '2015-02-28 06:10:15', 'yes');
 INSERT INTO `room` VALUES ('2', '1', 'Hall 2', '450', '2000.00', '4', null, '2015-02-28 03:10:15', '2015-02-28 06:10:15', 'yes');
 INSERT INTO `room` VALUES ('3', '1', 'Hall 3', '800', '4000.00', '4', null, '2015-02-28 03:10:15', '2015-02-28 06:10:15', 'yes');
@@ -473,6 +508,8 @@ INSERT INTO `room` VALUES ('27', '5', 'Hall AAA', '500', '1200.00', '4', null, '
 -- ----------------------------
 -- Records of room_equipment
 -- ----------------------------
+TRUNCATE TABLE `room_equipment`;
+
 INSERT INTO `room_equipment` VALUES ('1', '1', '1', '400', null, '0', null, '2015-02-28 06:10:15', null, 'Pending');
 INSERT INTO `room_equipment` VALUES ('2', '1', '2', '50', null, '0', null, '2015-02-28 06:10:15', null, 'Pending');
 INSERT INTO `room_equipment` VALUES ('3', '2', '1', '800', null, '0', null, '2015-02-28 06:10:15', null, 'Pending');
@@ -492,16 +529,20 @@ INSERT INTO `room_equipment` VALUES ('16', '27', '1', ' 40', null, '0', null, '2
 -- ----------------------------
 -- Records of submissions
 -- ----------------------------
+TRUNCATE TABLE `submissions`;
+
 INSERT INTO `submissions` VALUES ('1', '1', '2', '1', 'Effect of Cloud Technology in Data Centers', 'As part of its Library Spaces Business Plan initiative, Edmonton Public Library (EPL) conducted interviews paired with photo elicitation to explore customers’ perceptions of their library spaces and to better understand how customers use those spaces. Sixteen interviews were conducted with participants at 5 branches of the EPL with participants taking photographs used during the interview. Findings revealed the comprehensive views participants’ hold about the library; the library’s spaces are not distinct from the collections and services offered within them.', 'uploads/503228.pdf', '', '0', '82', '0', '1', '2015-03-02 11:47:58', '2015-03-02 20:21:40');
-INSERT INTO `submissions` VALUES ('2', '7', '1', '1', 'Effect of Wireless Technology in Society', 'Essentially three approaches could be identiﬁed when choosing a proper search term to detect bibliographic duplicates. Stop words are excluded in all of them, then (1) just the ﬁrst term of an entry will be selected or (2) that term is selected, which produces the smallest number of hits or ﬁnally (3) that term will be used, which has a certain number of hits below a deﬁned threshold. These three procedures are compared with each other here. The results derive from series of measurements done with bibliographic data from the Austrian Central Catalog.', 'uploads/503228.pdf', '', '0', '50', '7', '1', '2015-03-02 11:47:58', '2015-03-02 20:36:11');
+INSERT INTO `submissions` VALUES ('2', '7', '1', '1', 'Effect of Wireless Technology in Society', 'Essentially three approaches could be identiﬁed when choosing a proper search term to detect bibliographic duplicates. Stop words are excluded in all of them, then (1) just the ﬁrst term of an entry will be selected or (2) that term is selected, which produces the smallest number of hits or ﬁnally (3) that term will be used, which has a certain number of hits below a deﬁned threshold. These three procedures are compared with each other here. The results derive from series of measurements done with bibliographic data from the Austrian Central Catalog.', 'uploads/503228.pdf', '', '9', '50', '7', '1', '2015-03-02 11:47:58', '2015-03-02 20:36:11');
 INSERT INTO `submissions` VALUES ('3', '7', '2', '1', 'Managing Data Center', 'This study aimed to investigate the relationship between the different learning styles of Thai youths and their information behavior at a time where rapidly developing information and communication technology has affected the informational environment. This was a qualitative research study which used theoretical sampling to select study areas and involved thirty participants in their fourth, fifth and sixth year in a large secondary school. The Grasha-Riechmann Student Learning Style Scale was used to determine the students’ learning styles. The results indicated that learning styles affected information behavior only slightly because the collaborative style of Thai youths was to divide the task and work individually. Information behavior was best examined at a personal level.', 'uploads/579779.pdf', 'Additional remarks for data center', '0', '80', '0', '7', '2015-03-02 19:42:04', '2015-03-02 20:17:42');
 INSERT INTO `submissions` VALUES ('4', '7', '3', '1', 'B2C Marketing', 'Thailand suffers from frequent flooding during the monsoon season and droughts in summer. In some places, severe cases of both may even occur. Managing water resources effectively requires a good information system for decision-making. There is currently a lack in knowledge sharing between organizations and researchers responsible. These are the experts in monitoring and controlling the water supply and its conditions. The knowledge owned by these experts are not captured, classified and integrated into an information system for decision-making. Ontologies are formal knowledge representation models. Knowledge management and artificial intelligence technology is a basic requirement for developing ontology-based semantic search on the Web. In this paper, we present ontology modeling approach that is based on the experiences of the researchers. The ontology for drought management consists of River Basin Ontology, Statistics Ontology and Task Ontology to facilitate semantic match during search. The hybrid ontology architecture can also be used for drought management.', 'uploads/128092.pdf', 'Add remarks to penguin', '0', '72', '0', '7', '2015-03-02 19:46:55', '2015-03-02 20:17:14');
-INSERT INTO `submissions` VALUES ('5', '7', '1', '1', 'Usage of Wireless Technology in Education', 'Given the budgetary and technological changes facing academic libraries, it has become necessary for librarians to become self-advocates, describing and defending the work they do. Most research in this area is dedicated to public services, with little focus on technical services. A survey conducted in the fall of 2009 found that catalogers in the sample state of New Jersey collect detailed productivity statistics to illustrate their value. This paper analyzes the statistics-gathering process and makes suggestions for developing these methods into a strong assessment model. Quality control assessment is the tool catalogers need to describe their worth to library stakeholders.', 'uploads/858208.pdf', '', '0', '86', '0', null, '2015-03-02 20:46:59', '2015-03-02 20:53:44');
-INSERT INTO `submissions` VALUES ('6', '7', '1', '2', 'Complexities of Networking', 'This paper constitutes a trial of a game- and decision-theory based approach that is intended to examine elements of the complexities of scholarly communication as an economic endeavor. Both individual and institutional kinds of games are analyzed in order to determine what factors would affect the real economic use of game and decision theories. There are interrelationships between the two kinds that add complexity to any possible application. Further, this analysis includes ideal and practical factors that affect real economic application. As is shown here, there are serious challenges to application of the theories, but also important indicators for the furtherance of individual and institutional interests by means of negotiation.', 'uploads/810167.pdf', '', '0', '84', '0', null, '2015-03-02 20:49:48', '2015-03-02 20:52:21');
+INSERT INTO `submissions` VALUES ('5', '7', '1', '1', 'Usage of Wireless Technology in Education', 'Given the budgetary and technological changes facing academic libraries, it has become necessary for librarians to become self-advocates, describing and defending the work they do. Most research in this area is dedicated to public services, with little focus on technical services. A survey conducted in the fall of 2009 found that catalogers in the sample state of New Jersey collect detailed productivity statistics to illustrate their value. This paper analyzes the statistics-gathering process and makes suggestions for developing these methods into a strong assessment model. Quality control assessment is the tool catalogers need to describe their worth to library stakeholders.', 'uploads/858208.pdf', '', '1', '86', '0', null, '2015-03-02 20:46:59', '2015-03-02 20:53:44');
+INSERT INTO `submissions` VALUES ('6', '7', '1', '2', 'Complexities of Networking', 'This paper constitutes a trial of a game- and decision-theory based approach that is intended to examine elements of the complexities of scholarly communication as an economic endeavor. Both individual and institutional kinds of games are analyzed in order to determine what factors would affect the real economic use of game and decision theories. There are interrelationships between the two kinds that add complexity to any possible application. Further, this analysis includes ideal and practical factors that affect real economic application. As is shown here, there are serious challenges to application of the theories, but also important indicators for the furtherance of individual and institutional interests by means of negotiation.', 'uploads/810167.pdf', '', '1', '84', '0', null, '2015-03-02 20:49:48', '2015-03-02 20:52:21');
 
 -- ----------------------------
 -- Records of submission_authors
 -- ----------------------------
+TRUNCATE TABLE `submission_authors`;
+
 INSERT INTO `submission_authors` VALUES ('1', 'hedrensum@ntu.edu.sg', 'Hedren', 'Sum', 'NTU', '0', '0', null, '2015-03-02 11:47:59', '2015-03-02 11:47:59');
 INSERT INTO `submission_authors` VALUES ('1', 'joanwee@ntu.edu.sg', 'Joan ', 'Wee', 'NTU', '1', '0', null, '2015-03-02 11:47:59', '2015-03-02 11:47:59');
 INSERT INTO `submission_authors` VALUES ('2', 'trafalgar@ntu.edu.sg', 'Trafalgar', 'Law', 'Heart Pirates', '1', '7', null, '2015-03-02 11:47:59', '2015-03-02 11:47:59');
@@ -516,6 +557,8 @@ INSERT INTO `submission_authors` VALUES ('6', 'jewelry@email.com', 'Jewelry', 'B
 -- ----------------------------
 -- Records of submission_topic
 -- ----------------------------
+TRUNCATE TABLE `submission_topic`;
+
 INSERT INTO `submission_topic` VALUES ('1', '2', '0', null, '2015-03-02 20:19:01', '2015-03-02 20:19:01');
 INSERT INTO `submission_topic` VALUES ('2', '2', '0', null, '2015-03-02 20:19:01', '2015-03-02 20:19:01');
 INSERT INTO `submission_topic` VALUES ('2', '6', '0', null, '2015-03-02 20:49:48', '2015-03-02 20:49:48');
@@ -530,6 +573,8 @@ INSERT INTO `submission_topic` VALUES ('10', '4', '0', null, '2015-03-02 20:17:1
 -- ----------------------------
 -- Records of sysrole
 -- ----------------------------
+TRUNCATE TABLE `sysrole`;
+
 INSERT INTO `sysrole` VALUES ('2', '1', '1');
 INSERT INTO `sysrole` VALUES ('3', '2', '1');
 INSERT INTO `sysrole` VALUES ('4', '3', '1');
@@ -542,6 +587,8 @@ INSERT INTO `sysrole` VALUES ('9', '8', '1');
 -- ----------------------------
 -- Records of users
 -- ----------------------------
+TRUNCATE TABLE `users`;
+
 INSERT INTO `users` VALUES ('1', 'Chair', 'Bella', 'bella.ratmelia@gmail.com', null, '$2y$10$uWmiDsmMJzClEnwsldsR5emM7xUftD.CJguQ/nx0wqcF3CAMjqt7K', '', 'ONVb8ZWU9y5eiEgJUykDZef3bNcOBGcJaltAyqxh0nIddjRKgUB3hNiL8uqa', '', '1', '2015-02-25 09:39:34', '2015-03-02 20:43:22');
 INSERT INTO `users` VALUES ('2', 'Noverinda', 'Bella', 'bella.ratmelia@hotmail.com', null, '$2y$10$uWmiDsmMJzClEnwsldsR5emM7xUftD.CJguQ/nx0wqcF3CAMjqt7K', null, 'qTUi6lFiE1BSvInj8cNNe8QIGbWuGybuHHbKPxKix3Rh5gDhuHbC4F8aApZY', '', '1', '2015-02-25 09:41:44', '2015-03-02 20:10:07');
 INSERT INTO `users` VALUES ('3', 'Reviewer', 'Thomas', 'batmanray@live.com.sg', null, '$2y$10$uWmiDsmMJzClEnwsldsR5emM7xUftD.CJguQ/nx0wqcF3CAMjqt7K', null, 'svwL5xzPpxs6Kc2bWOWpdGvoRAOu9b9r0LtgtOrdVuepbqaYsts5KSwcIBsz', '', '1', '2015-02-25 09:42:27', '2015-03-02 20:53:52');
@@ -554,6 +601,8 @@ INSERT INTO `users` VALUES ('8', 'Shinn', 'Lee', 'duomax8668@hotmail.com', null,
 -- ----------------------------
 -- Records of venue
 -- ----------------------------
+TRUNCATE TABLE `venue`;
+
 INSERT INTO `venue` VALUES ('1', 'Marina Bay Sand', 'Singapore Marina Bay Sands', '1.2838785', '103.85899', '4', null, '2015-02-28 03:10:15', '2015-02-28 06:10:15', '1', 'yes');
 INSERT INTO `venue` VALUES ('2', 'Singapore Expo', 'Singapore Expo', '1.334632', '103.961381', '4', null, '2015-02-28 03:13:55', '2015-02-28 06:13:55', '1', 'yes');
 INSERT INTO `venue` VALUES ('3', 'SIM UOW', 'Singapore Institude of Management', '1.296864', '103.800775', '4', null, '2015-02-28 03:23:31', '2015-02-28 06:23:31', '1', 'yes');
