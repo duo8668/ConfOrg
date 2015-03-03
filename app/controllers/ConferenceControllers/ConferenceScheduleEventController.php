@@ -18,7 +18,7 @@ class ConferenceScheduleEventController extends BaseController {
         ];
 
         $rules = [
-        'allEvents' => 'required|array'
+        'allEvents' => 'array'
         ,'scheduleId' => 'required|numeric'
         ];
 
@@ -42,54 +42,56 @@ class ConferenceScheduleEventController extends BaseController {
 
                         // find all eventId in the database and if it is not in the incoming list, delete it away
                         $idSInTable = ConferenceScheduleEvent::where('conference_room_schedule_id','=',$data['scheduleId'])
-                            ->get()
-                            ->lists('conference_schedule_event_id');
+                        ->get()
+                        ->lists('conference_schedule_event_id');
                         $idsInSource  = array();
 
-                        
-                        foreach ($allEvents as $event) {
-                            $className = empty($event['className'])? '':$event['className'][0];
+                        if(!empty($allEvents)){
+                            foreach ($allEvents as $event) {
+                                $className = empty($event['className'])? '':$event['className'][0];
 
-                            
-                            if(!empty($event['eventId'])){ 
 
-                                array_push($idsInSource, $event['eventId']);
-                            // if the eventId is not empty, juz update the record
-                                $numRowAffected += ConferenceScheduleEvent::where('conference_schedule_event_id','=',$event['eventId'])
-                                ->update( array('day' => date("Y-m-d", strtotime($event['start']))
-                                    , 'start' => date("Y-m-d H:i:s", strtotime($event['start']))
-                                    , 'end' => date("Y-m-d H:i:s", strtotime($event['end']))
-                                    , 'className' => $className));
-                            }else{
-                                // it is new record
-                               $confScheduleEvent = ConferenceScheduleEvent::create(array('conference_room_schedule_id' => $data['scheduleId']
-                                , 'submission_id' => empty($event['sub_id'])? '':$event['sub_id']
-                                , 'title' => $event['title']
-                                , 'day' => date("Y-m-d", strtotime($event['start']))
-                                , 'start' => date("Y-m-d H:i:s", strtotime($event['start'])) 
-                                , 'end' => date("Y-m-d H:i:s", strtotime($event['end'])) 
-                                , 'className' => $className ));
+                                if(!empty($event['eventId'])){ 
 
-                               if (!empty($confScheduleEvent)) {
+                                    array_push($idsInSource, $event['eventId']);
+                                    // if the eventId is not empty, juz update the record
+                                    $numRowAffected += ConferenceScheduleEvent::where('conference_schedule_event_id','=',$event['eventId'])
+                                    ->update( array('day' => date("Y-m-d", strtotime($event['start']))
+                                        , 'start' => date("Y-m-d H:i:s", strtotime($event['start']))
+                                        , 'end' => date("Y-m-d H:i:s", strtotime($event['end']))
+                                        , 'className' => $className));
+                                }else{
+                                    // it is new record
+                                 $confScheduleEvent = ConferenceScheduleEvent::create(array('conference_room_schedule_id' => $data['scheduleId']
+                                    , 'submission_id' => empty($event['sub_id'])? '':$event['sub_id']
+                                    , 'title' => $event['title']
+                                    , 'day' => date("Y-m-d", strtotime($event['start']))
+                                    , 'start' => date("Y-m-d H:i:s", strtotime($event['start'])) 
+                                    , 'end' => date("Y-m-d H:i:s", strtotime($event['end'])) 
+                                    , 'className' => $className ));
+
+                                 if (!empty($confScheduleEvent)) {
                                     $numRowAffected++;
                                 }
                             }
                         }
+                    }
+
 
                         //* Now, delete those exist in table but not in the source
-                        foreach ($idSInTable as $event_id) {
+                    foreach ($idSInTable as $event_id) {
 
-                            if(!in_array($event_id, $idsInSource)){
-                                 $numRowAffected += ConferenceScheduleEvent::where('conference_schedule_event_id','=',$event_id)
-                                 ->delete();
-                            }
-                        }
-                        
-                    $confScheduleEvents = ConferenceScheduleEvent::where('conference_room_schedule_id', '=', $conference_room_schedule_id)
-                    ->get();
+                        if(!in_array($event_id, $idsInSource)){
+                         $numRowAffected += ConferenceScheduleEvent::where('conference_schedule_event_id','=',$event_id)
+                         ->delete();
+                     }
+                 }
 
-                    return array('numRowAffected' => $numRowAffected, 'confScheduleEvents' => $confScheduleEvents);
-                });
+                 $confScheduleEvents = ConferenceScheduleEvent::where('conference_room_schedule_id', '=', $conference_room_schedule_id)
+                 ->get();
+
+                 return array('numRowAffected' => $numRowAffected, 'confScheduleEvents' => $confScheduleEvents);
+             });
 } catch (Exception $ex) {
     throw $ex;
 }
@@ -125,6 +127,7 @@ public function getConferenceScheduleEvents() {
                 $conferenceScheduleEvents = ConferenceScheduleEvent::where('conference_room_schedule_id','=',$data['scheduleId'])
                 //->where('day','=',$data['selectedDate'])
                 ->select(DB::raw('conference_schedule_event_id as eventId, conference_room_schedule_id as id ,title as title ,start , end, className, submission_id as sub_id'))
+                ->orderBy('start')
                 ->get()
                 ->toArray();
 

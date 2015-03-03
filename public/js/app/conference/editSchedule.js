@@ -101,7 +101,7 @@
  					$('#modalMessage').html(message);
  				}
  				setTimeout(function () {
- 					loadPublicCalendar();
+ 					$('#publicCalendar').fullCalendar('refetchEvents');
  					$('#resultModal').modal('hide');
  					$('#scheduleEditor').modal('hide');
  				}, 1000);
@@ -118,7 +118,7 @@
  				}
  			}).always(function(){
  				setTimeout(function () {
- 					loadPublicCalendar();
+ 					$('#publicCalendar').fullCalendar( 'refetchEvents' );
  					$('#resultModal').modal('hide');
  				}, 1000);
  			});

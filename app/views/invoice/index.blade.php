@@ -52,6 +52,7 @@ Invoice & Payment
                     <td>{{ $invoice->quantity }}</td>
                     <td>${{ $invoice->total }}</td>
                     <td>{{ $invoice->status }}</td>
+                    <td>{{ $invoice->item_type }}</td>
                     <!-- we will also add show, edit, and delete buttons -->
                     <td>
                         <!-- edit this nerd (uses the edit method found at GET /nerds/{id}/edit -->
