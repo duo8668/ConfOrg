@@ -139,11 +139,11 @@ public function updateReviewPanels() {
 
                 $user = Auth::user();
                 $originalRPs = ConferenceUserRole::ConferenceReviewPanels($data['conf_id'])->get();
-                $originalPRPs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::Reviewer()->role_id)->where('is_used','=',0)->get();
+                $originalP_RPs = InviteToConference::where('conf_id','=', $data['conf_id'])->where('role_id','=',Role::Reviewer()->role_id)->where('is_used','=',0)->get();
                 
                 $numRowUpdated = 0;
 
-                $result = DB::transaction(function() use ($data, $user, $originalRPs,$originalPRPs, $numRowUpdated) {
+                $result = DB::transaction(function() use ($data, $user, $originalRPs,$originalP_RPs, $numRowUpdated) {
 
                     $roleid = Role::Reviewer()->role_id;
 

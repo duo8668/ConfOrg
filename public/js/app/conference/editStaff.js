@@ -8,6 +8,7 @@
 
     $('#btnStaffEdit').on('click', function (e) {
         $('#staffName > > [name=emails]').tagsinput('removeAll');
+        $('#innerStaffName').find('.bootstrap-tagsinput').find('.tooltip').detach();
         $.ajax({url: _dataUrl
             , data: {conf_id: _confId}
             , type: 'get'

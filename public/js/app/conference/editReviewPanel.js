@@ -8,7 +8,10 @@
     var $_emailTags = $('#reviewPanel').find('[name=emails]');
     var $_resultModal = $('#resultModal');
 
+    
     $('#btnReviewPanelEdit').on('click', function (e) {
+
+        $('#innerReviewPanel').find('.bootstrap-tagsinput').find('.tooltip').detach();
         // raise ajax request here and set text
         $_emailTags.tagsinput('removeAll');
         $.ajax({url: _dataUrl

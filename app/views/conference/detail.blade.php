@@ -365,9 +365,10 @@ $.fn.textWidth = function() {
 	<div class="col-md-12">
 		<div id="conf_id_col_{{$conf->conf_id}}" class="confclass">
 			<div class="conferencebody">
-				@if ($isCancel)
+				@if ($isCancel && !Auth::user()->hasSysRole('Admin'))
 				<div class="row">
 					<div class="col-md-12 cancelledConf">
+
 						<img src="{{ URL::to('/images/cancelled_stamp.png') }}" height="360px" width="408px">
 					</div>
 				</div>
